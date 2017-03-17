@@ -11,10 +11,10 @@
         private $boot;
 
         private $isAccept;
-        private $isInstall;
-        private $isDirectory;
-        private $isConfig;
-        private $isUser;
+        private $isInstallDirectory;
+        private $isDirectoryPermissionExecute;
+        private $isConfigValidate;
+        private $isUserValidate;
 
         private $applicationDirectory;
         private $applicationPath;
@@ -34,11 +34,11 @@
         {
             $this->boot = $boot;
 
-            $this->isAccept    = true;
-            $this->isInstall   = true;
-            $this->isDirectory = true;
-            $this->isConfig    = true;
-            $this->isUser      = true;
+            $this->isAccept                     = true;
+            $this->isInstallDirectory           = true;
+            $this->isDirectoryPermissionExecute = true;
+            $this->isConfigValidate             = true;
+            $this->isUserValidate               = true;
         }
 
         public function execute()
@@ -55,19 +55,19 @@
         public function installDirectory()
         {
             if ($this->isAccept == false)
-                return ;
+                return;
 
-            $current = new FileInfo(realpath('.'));
-            $path    = $current->getFilePath();
-            $root    = stripos($_SERVER['DOCUMENT_ROOT'], $path) === 0;
+            $current  = new FileInfo(realpath('.'));
+            $path     = $current->getFilePath();
+            $pathRoot = FileInfo::validate(env('SERVER.DOCUMENT_ROOT'));
+            $isRoot   = stripos($pathRoot, $path) === 0;
 
-            if ($root) {
-                $this->applicationDirectory  = substr($path, strlen($_SERVER['DOCUMENT_ROOT']) + 1);
-                $this->applicationPath       = str_replace('\\', $_SERVER['DOCUMENT_ROOT'] . SP . $this->applicaionDirectory);
-                $this->applicationPath       = str_replace('/',  $_SERVER['DOCUMENT_ROOT'] . SP . $this->applicaionDirectory);
+            if ($isRoot) {
+                $this->applicationDirectory  = substr($path, strlen($pathRoot) + 1);
+                $this->applicationPath       = FileInfo::validate($this->applicationDirectory);
                 $this->applicationParentPath = dirname($path);
             } else {
-                $this->applicationDirectory  =  $path == SP ? $path : substr($path, strrpos($path, SP) + 1);
+                $this->applicationDirectory  = $path == SP ? $path : substr($path, strrpos($path, SP) + 1);
                 $this->applicationPath       = $path;
                 $this->applicationParentPath = dirname($path);
             }
@@ -76,8 +76,8 @@
             $this->applicationPath       = FileInfo::validate($this->applicationPath);
             $this->applicationParentPath = FileInfo::validate($this->applicationParentPath);
 
-            $this->isInstall = $root == false;
-            $this->isAccept  = $this->isInstall;
+            $this->isInstallDirectory = $isRoot == false;
+            $this->isAccept           = $this->isInstallDirectory;
         }
 
         /**
@@ -88,9 +88,8 @@
             if ($this->isAccept == false)
                 return;
 
-            $root = $_SERVER['DOCUMENT_ROOT'];
-            $path = $this->applicationPath;
-            $path = FileInfo::validate($path);
+            $root = FileInfo::validate(env('SERVER.DOCUMENT_ROOT'));
+            $path = FileInfo::validate($this->applicationPath);
 
             if (strpos($path, SP) !== false) {
                 $split    = explode(SP, $path);
@@ -110,7 +109,7 @@
                         $validate = true;
                     } else if ($validate) {
                         if (is_dir($current)) {
-                            if (is_writable($current . DS . 'index.php')) {
+                            if (is_writable($current . SP . 'index.php')) {
                                 $validate = true;
                                 $found    = true;
                                 $write    = true;
@@ -135,8 +134,8 @@
                 $this->directoryFound = $found;
                 $this->directoryWrite = $write;
 
-                $this->isDirectory = $validate;
-                $this->isAccept    = $validate;
+                $this->isDirectoryPermissionExecute = $validate;
+                $this->isAccept                     = $validate;
             }
         }
 
@@ -153,8 +152,8 @@
             if ($this->isAccept == false)
                 return;
 
-            $this->isConfig = true;
-            $this->isAccept = $this->isConfig;
+            $this->isConfigValidate = true;
+            $this->isAccept         = $this->isConfigValidate;
         }
 
         /**
@@ -165,8 +164,8 @@
             if ($this->isAccept == false)
                 return;
 
-            $this->isUser   = false;
-            $this->isAccept = $this->isUser;
+            $this->isUserValidate = true;
+            $this->isAccept       = $this->isUserValidate;
         }
 
         /**
@@ -180,33 +179,33 @@
         /**
          * Return result check directory install application
          */
-        public function isInstall()
+        public function isInstallDirectory()
         {
-            return $this->isInstall;
+            return $this->isInstallDirectory;
         }
 
         /**
          * Return result check permission write of directory install application
          */
-        public function isDirectory()
+        public function isDirectoryPermissionExecute()
         {
-            return $this->isDirectory;
+            return $this->isDirectoryPermissionExecute;
         }
 
         /**
          * Return result check config application
          */
-        public function isConfig()
+        public function isConfigValidate()
         {
-            return $this->isConfig;
+            return $this->isConfigValidate;
         }
 
         /**
          * Return result check config user
          */
-        public function isUser()
+        public function isUserValidate()
         {
-            return $this->isUser;
+            return $this->isUserValidate;
         }
 
         /**

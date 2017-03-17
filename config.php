@@ -2,7 +2,7 @@
 
     return [
         'server' => [
-            'document_root' => __DIR__,
+            'document_root' => dirname(__DIR__),
         ],
 
         'app' => [
@@ -22,7 +22,6 @@
                 'root'       => __DIR__,
                 'librarys'   => '${app.path.root}${SP}librarys',
                 'error'      => '${app.path.root}${SP}error',
-                'control'    => '${app.path.root}${SP}control',
                 'resource'   => '${app.path.root}${SP}resource',
                 'theme'      => '${app.path.resource}${SP}theme',
                 'icon'       => '${app.path.resource}${SP}icon',
