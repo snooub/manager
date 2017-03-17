@@ -1,0 +1,103 @@
+body {
+    background-color: #efefef;
+    font-family: Ubuntu;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+a:link, a:visited {
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+div#container {
+    margin: 0 auto;
+    max-width: 640px;
+    padding: 0;
+    position: relative;
+}
+
+div#header {
+    background-color: #00897b;
+
+    -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+       -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+        -ms-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+         -o-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: 640px;
+    height: 55px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+div#header div#logo {
+    float: left;
+    width: 50px;
+    text-align: center;
+}
+
+div#header span#logo {
+    color: #ffffff;
+    font-weight: normal;
+    font-variant: normal;
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 55px;
+    margin: 0;
+    padding: 0;
+}
+
+div#header ul#action,
+div#header ul#action li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    margin-right: 5px;
+    padding: 0;
+}
+
+div#header ul#action {
+    position: absolute;
+    top: 0;
+    left: 60px;
+    right: 0;
+    height: 55px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+div#header ul#action li {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+div#header ul#action li span {
+    color:  #ffffff;
+    font-size: 22px;
+    line-height: 55px;
+}
+
+@media all and (max-width: 260px) {
+    div#header ul#action li.about {
+        display: none;
+    }
+}
+
+div#content {
+    position: relative;
+    top: 100px;
+    left: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+}

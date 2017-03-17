@@ -123,4 +123,10 @@
         echo('</pre>');
     }
 
+    function gotoURL($url)
+    {
+        header('Location:' . $url);
+        exit(0);
+    }
+
 ?>

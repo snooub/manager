@@ -14,7 +14,6 @@
         private $isInstallDirectory;
         private $isDirectoryPermissionExecute;
         private $isConfigValidate;
-        private $isUserValidate;
 
         private $applicationDirectory;
         private $applicationPath;
@@ -46,7 +45,8 @@
             $this->installDirectory();
             $this->directoryPermissionExecute();
             $this->configValidate();
-            $this->userValidate();
+
+            return $this;
         }
 
         /**
@@ -157,18 +157,6 @@
         }
 
         /**
-         * Check config user application
-         */
-        public function userValidate()
-        {
-            if ($this->isAccept == false)
-                return;
-
-            $this->isUserValidate = true;
-            $this->isAccept       = $this->isUserValidate;
-        }
-
-        /**
          * Return result check is success
          */
         public function isAccept()
@@ -198,14 +186,6 @@
         public function isConfigValidate()
         {
             return $this->isConfigValidate;
-        }
-
-        /**
-         * Return result check config user
-         */
-        public function isUserValidate()
-        {
-            return $this->isUserValidate;
         }
 
         /**

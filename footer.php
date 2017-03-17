@@ -1,8 +1,8 @@
-<?php if (!defined('ACCESS')) die('Not access'); ?>
+<?php if (!defined('LOADED')) exit(0); ?>
 
         </div>
         <div id="footer">
-            <span>Version <?php echo VERSION; ?> By <?php echo AUTHOR; ?></span>
+            <span></span>
         </div>
     </body>
 </html>

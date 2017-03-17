@@ -1,29 +1,70 @@
-<?php if (!defined('ACCESS')) die('Not access'); ?>
+<?php if (!defined('LOADED')) exit(0); ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="vi">
+<!DOCTYPE html>
+<html>
     <head>
-        <title><?php echo $title; ?> - File Manager <?php echo VERSION; ?></title>
+        <title><?php echo $title; ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="style.css" media="all,handheld" />
+
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.app'); ?>" media="all,handheld" />
+
+        <?php if (isset($themes) && is_array($themes)) { ?>
+            <?php foreach ($themes AS $entry) { ?>
+                <link rel="stylesheet" type="text/css" href="<?php echo $entry; ?>" media="all,handheld" />
+            <?php } ?>
+            <?php unset($themes); ?>
+        <?php } ?>
+
+        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.icomoon'); ?>" media="all,handheld" />
+
         <link rel="icon" type="image/png" href="icon/icon.png">
         <link rel="icon" type="image/x-icon" href="icon/icon.ico" />
         <link rel="shortcut icon" type="image/x-icon" href="icon/icon.ico" />
     </head>
     <body>
-        <div id="header">
-            <ul>
-                <li><a href="index.php"><img src="icon/home.png"/></a></li>
-                <?php if (!IS_INSTALL_ROOT_DIRECTORY && isset($_SESSION[SESS])) { ?>
-                    <?php if (!defined('IS_CONNECT')) { ?>
-                        <li><a href="database.php"><img src="icon/database.png"/></a></li>
-                    <?php } else { ?>
-                        <li><a href="database_disconnect.php"><img src="icon/disconnect.png"/></a></li>
-                    <?php } ?>
-                    <li><a href="setting.php"><img src="icon/setting.png"/></a></li>
-                    <li><a href="exit.php"><img src="icon/exit.png"/></a></li>
-                <?php } ?>
-            </ul>
-        </div>
         <div id="container">
+            <div id="header">
+                <div id="logo">
+                    <a href="#">
+                        <span id="logo" class="icomoon icon-home"></span>
+                    </a>
+                </div>
+                <ul id="action">
+                    <?php if ($appUser->isLogin()) { ?>
+                        <li>
+                            <a href="#">
+                                <span class="icomoon icon-mysql"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="icomoon icon-user"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="icomoon icon-config"></span>
+                            </a>
+                        </li>
+                        <li class="about">
+                            <a href="#">
+                                <span class="icomoon icon-about"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="icomoon icon-close"></span>
+                            </a>
+                        </li>
+                    <?php } else { ?>
+                        <li>
+                            <a href="#">
+                                <span class="icomoon icon-about"></span>
+                            </a>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </div>
+            <div id="content">

@@ -10,10 +10,9 @@
 
     $boot                       = new Librarys\Boot(require_once('config.php'));
     $appDirectoryInstallChecker = new Librarys\App\AppDirectoryInstallChecker($boot);
+    $appUser                    = new Librarys\App\AppUser($boot);
 
-    $appDirectoryInstallChecker->execute();
-
-    if ($appDirectoryInstallChecker->isAccept() == false) {
+    if ($appDirectoryInstallChecker->execute()->isAccept() == false) {
         if ($appDirectoryInstallChecker->isInstallDirectory() == false)
             trigger_error('Bạn đang cài đặt ứng dụng trên thư mục gốc, hãy cài đặt vào một thư mục con.');
         else if ($appDirectoryInstallChecker->isDirectoryPermissionExecute() == false)
@@ -25,5 +24,7 @@
 
         exit(0);
     }
+
+    $appUser->execute();
 
 ?>

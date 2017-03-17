@@ -15,8 +15,7 @@
                 'init'            => true,
                 'name'            => 'BlogIzeroCs',
                 'cookie_lifetime' => 86400 * 7,
-                'cache_limiter'   => 'private',
-            ],
+                'cache_limiter'   => 'private'            ],
 
             'path' => [
                 'root'       => __DIR__,
@@ -71,6 +70,11 @@
 
                 'validate_post' => true,
                 'validate_get'  => true
+            ],
+
+            'login' => [
+                'session_login_name' => 'LOGIN_MANAGER',
+                'session_token_name' => 'LOGIN_TOKEN_MANAGER'
             ]
         ],
 
@@ -90,7 +94,9 @@
             ],
 
             'theme' => [
-                'app'     => '${app.http.theme}/default/theme.css'
+                'app'     => '${app.http.theme}/default/theme.css',
+                'login'   => '${app.http.theme}/default/login.css',
+                'icomoon' => '${app.http.theme}/default/style.css'
             ]
         ]
     ];
