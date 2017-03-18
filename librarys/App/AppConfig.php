@@ -13,27 +13,27 @@
         public function __construct(Boot $boot, $config = null)
         {
             $this->boot   = $boot;
-            $this->config = $config;
+            $this->parse($config);
         }
 
         public function execute()
         {
-            if (is_array($this->config))
-                $this->parse($this->config);
-            else if (is_file($this->config))
-                $this->parse(file_get_contents($this->config));
-            else if (is_null($this->config) == false)
-                $this->parse(json_decode($this->config, true));
-            else
-                $this->parse([]);
+
         }
 
-        public function parse(array $config)
+        public function parse($config)
         {
             if (is_null($config))
                 return;
 
-
+            if (is_array($config))
+                $this->config = $config;
+            else if (is_file($config))
+                $this->config = require_once($config);
+            else if (is_null($config) == false)
+                $this->config = json_decode($config, true);
+            else
+                $this->config = array();
         }
 
     }

@@ -2,7 +2,7 @@
 
     return [
         'server' => [
-            'document_root' => dirname(__DIR__),
+            'document_root' => dirname(dirname(__DIR__)),
         ],
 
         'app' => [
@@ -15,10 +15,11 @@
                 'init'            => true,
                 'name'            => 'BlogIzeroCs',
                 'cookie_lifetime' => 86400 * 7,
-                'cache_limiter'   => 'private'            ],
+                'cache_limiter'   => 'private'
+            ],
 
             'path' => [
-                'root'       => __DIR__,
+                'root'       => dirname(__DIR__),
                 'librarys'   => '${app.path.root}${SP}librarys',
                 'error'      => '${app.path.root}${SP}error',
                 'resource'   => '${app.path.root}${SP}resource',

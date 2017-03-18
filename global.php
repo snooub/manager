@@ -8,10 +8,10 @@
 
     require_once('Librarys' . SP . 'Boot.php');
 
-    $boot       = new Librarys\Boot(require_once('config.php'));
+    $boot       = new Librarys\Boot(require_once('config' . SP . 'app.php'));
     $appChecker = new Librarys\App\AppChecker($boot);
-    $appConfig  = new Librarys\App\AppConfig($boot);
-    $appUser    = new Librarys\App\AppUser($boot);
+    $appConfig  = new Librarys\App\AppConfig ($boot, 'config' . SP . 'manager.php');
+    $appUser    = new Librarys\App\AppUser   ($boot, 'config' . SP . 'user.php');
 
     if ($appChecker->execute()->isAccept() == false) {
         if ($appChecker->isInstallDirectory() == false)

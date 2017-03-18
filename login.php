@@ -10,13 +10,19 @@
     <?php $password = null; ?>
 
     <?php if (isset($_POST['submit'])) { ?>
+        <?php $user     = null; ?>
         <?php $username = addslashes($_POST['username']); ?>
         <?php $password = addslashes($_POST['password']); ?>
 
         <?php if (empty($username) || empty($password)) { ?>
-
+            Chua nhap gi
+        <?php }else if (($user = $appUser->isUser($username, $password, true)) == false) { ?>
+            Ten dang nhap hoac mat khau khong dung
+        <?php } else if ($user == null) { ?>
+            Nguoi dung khong ton tai
         <?php } else { ?>
-
+            Dang nhap thanh cong:<br/>
+            <?php bug($user); ?>
         <?php } ?>
     <?php } ?>
 
