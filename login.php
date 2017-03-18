@@ -6,10 +6,25 @@
     <?php $themes = [ env('resource.theme.login') ]; ?>
     <?php require_once('header.php'); ?>
 
+    <?php $username = null; ?>
+    <?php $password = null; ?>
+
+    <?php if (isset($_POST['submit'])) { ?>
+        <?php $username = addslashes($_POST['username']); ?>
+        <?php $password = addslashes($_POST['password']); ?>
+
+        <?php if (empty($username) || empty($password)) { ?>
+
+        <?php } else { ?>
+
+        <?php } ?>
+    <?php } ?>
+
     <div id="login">
         <form action="login.php" method="post" id="login-form">
-            <input type="text" name="username" value="" placeholder="<?php echo lng('login.form.input_username_placeholder'); ?>"/>
-            <input type="password" name="password" value="" placeholder="<?php echo lng('login.form.input_password_placeholder'); ?>"/>
+            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="text" name="username" value="<?php echo stripslashes($username); ?>" placeholder="<?php echo lng('login.form.input_username_placeholder'); ?>"/>
+            <input type="password" name="password" value="<?php echo stripslashes($password); ?>" placeholder="<?php echo lng('login.form.input_password_placeholder'); ?>"/>
             <div id="login-form-action">
                 <a href="forgot_password.php" id="forgot-password">
                     <span><?php echo lng('login.form.forgot_password'); ?></span>

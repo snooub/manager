@@ -8,16 +8,17 @@
 
     require_once('Librarys' . SP . 'Boot.php');
 
-    $boot                       = new Librarys\Boot(require_once('config.php'));
-    $appDirectoryInstallChecker = new Librarys\App\AppDirectoryInstallChecker($boot);
-    $appUser                    = new Librarys\App\AppUser($boot);
+    $boot       = new Librarys\Boot(require_once('config.php'));
+    $appChecker = new Librarys\App\AppChecker($boot);
+    $appConfig  = new Librarys\App\AppConfig($boot);
+    $appUser    = new Librarys\App\AppUser($boot);
 
-    if ($appDirectoryInstallChecker->execute()->isAccept() == false) {
-        if ($appDirectoryInstallChecker->isInstallDirectory() == false)
+    if ($appChecker->execute()->isAccept() == false) {
+        if ($appChecker->isInstallDirectory() == false)
             trigger_error('Bạn đang cài đặt ứng dụng trên thư mục gốc, hãy cài đặt vào một thư mục con.');
-        else if ($appDirectoryInstallChecker->isDirectoryPermissionExecute() == false)
+        else if ($appChecker->isDirectoryPermissionExecute() == false)
             trigger_error('Có vẻ host bạn cài ứng dụng không thể thực thi được, bạn vui lòng kiểm tra lại.');
-        else if ($appDirectoryInstallChecker->isConfigValidate() == false)
+        else if ($appChecker->isConfigValidate() == false)
             trigger_error('Cấu hình cho ứng dụng không tồn tại, bạn hãy xóa bỏ ứng dụng và cài lại thử xem.');
         else
             trigger_error('Không thể xác định lỗi, bạn hãy kiểm tra lại, hoặc cài lại ứng dụng');
@@ -25,6 +26,12 @@
         exit(0);
     }
 
+    $appConfig->execute();
     $appUser->execute();
+
+    if ($boot->getCFSRToken()->validatePost() !== true) {
+        trigger_error('CFSR Token không hợp lệ');
+        exit(0);
+    }
 
 ?>

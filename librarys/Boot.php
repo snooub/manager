@@ -157,6 +157,31 @@
             });
         }
 
+        public function getEnvironment()
+        {
+            return $this->environment;
+        }
+
+        public function getLanguage()
+        {
+            return $this->language;
+        }
+
+        public function getFirewall()
+        {
+            return $this->firewall;
+        }
+
+        public function getAutoload()
+        {
+            return $this->autoload;
+        }
+
+        public function getCFSRToken()
+        {
+            return $this->cfsr;
+        }
+
     }
 
 ?>

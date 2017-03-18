@@ -5,7 +5,7 @@
     use Librarys\Boot;
     use Librarys\File\FileInfo;
 
-    final class AppDirectoryInstallChecker
+    final class AppChecker
     {
 
         private $boot;
