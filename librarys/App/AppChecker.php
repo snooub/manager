@@ -64,7 +64,7 @@
 
             if ($isRoot) {
                 $this->applicationDirectory  = substr($path, strlen($pathRoot) + 1);
-                $this->applicationPath       = FileInfo::validate($this->applicationDirectory);
+                $this->applicationPath       = $this->applicationDirectory;
                 $this->applicationParentPath = dirname($path);
             } else {
                 $this->applicationDirectory  = $path == SP ? $path : substr($path, strrpos($path, SP) + 1);
@@ -78,6 +78,10 @@
 
             $this->isInstallDirectory = $isRoot == false;
             $this->isAccept           = $this->isInstallDirectory;
+
+            env('application.directory',   $this->applicationDirectory);
+            env('application.path',        $this->applicationPath);
+            env('application.parent_path', $this->applicationParentPath);
         }
 
         /**

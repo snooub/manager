@@ -8,11 +8,12 @@
 
     require_once('Librarys' . SP . 'Boot.php');
 
-    $boot       = new Librarys\Boot(require_once('config' . SP . 'app.php'));
-    $appChecker = new Librarys\App\AppChecker($boot);
-    $appConfig  = new Librarys\App\AppConfig ($boot, 'config' . SP . 'manager.php');
-    $appUser    = new Librarys\App\AppUser   ($boot, 'config' . SP . 'user.php');
-    $appAlert   = new Librarys\App\AppAlert  ($boot, 'define' . SP . 'alert.php');
+    $boot         = new Librarys\Boot(require_once('config' . SP . 'app.php'));
+    $appChecker   = new Librarys\App\AppChecker   ($boot);
+    $appConfig    = new Librarys\App\AppConfig    ($boot, 'config' . SP . 'manager.php');
+    $appUser      = new Librarys\App\AppUser      ($boot, 'config' . SP . 'user.php');
+    $appAlert     = new Librarys\App\AppAlert     ($boot, 'define' . SP . 'alert.php');
+    $appDirectory = new Librarys\App\AppDirectory ($boot);
 
     if ($appChecker->execute()->isAccept() == false) {
         if ($appChecker->isInstallDirectory() == false)
@@ -34,5 +35,7 @@
         trigger_error('CFSR Token không hợp lệ');
         exit(0);
     }
+
+    $appDirectory->execute();
 
 ?>

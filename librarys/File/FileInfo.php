@@ -103,7 +103,7 @@
                 foreach ($old AS $entry) {
                     $path = $new . DS . $entry;
 
-                    if (self::permission($path) == false) {
+                    if (self::permissionPath($path) == false) {
                         // Abort entry
                     } else if (@is_file($path)) {
                         if (@copy($path, $parent . DS . $entry) == false)
@@ -281,7 +281,7 @@
                 foreach ($path AS $entry) {
                     $filename = $directory . DS . $entry;
 
-                    if (self::permission($filename) == false) {
+                    if (self::permissionPath($filename) == false) {
                         return false;
                     } else if (@is_file($filename)) {
                         if (self::unlink($filename) == false)
@@ -420,7 +420,7 @@
         /**
          * Check permission path
          */
-        public static function permission($path, $isUseName = false)
+        public static function permissionPath($path, $isUseName = false)
         {
             if ($path != null && empty($path) == false) {
                 $ds = SP;
@@ -435,16 +435,22 @@
                 $path = str_replace('/', $ds, $path);
                 $path = strtolower($path);
 
-                $reg = $isUseName ? Boot::$checker->getApplicationDirectory() : Boot::$checker->getApplicationPath();
-                $reg = $reg != null ? strtolower($reg) : null;
+                if ($isUseName)
+                    $reg = env('application.directory');
+                else
+                    $reg = env('application.path');
+
+                if ($reg != null)
+                    $reg = strtolower($reg);
+
                 $reg = str_replace('\\', $dz, $reg);
                 $reg = str_replace('/', $dz, $reg);
 
-                if (@preg_match('#^' . $reg . '$#si', $path))
+                if (preg_match('#^' . $reg . '$#si', $path))
                     return false;
-                else if (@preg_match('#^' . $reg . $ds . '(^\/+|^\\\\+)(.*?)$#si', $path))
+                else if (preg_match('#^' . $reg . $ds . '(^\/+|^\\\\+)(.*?)$#si', $path))
                     return false;
-                else if (@preg_match('#^' . $reg . $ds . '(.*?)$#si', $path))
+                else if (preg_match('#^' . $reg . $ds . '(.*?)$#si', $path))
                     return false;
             }
 

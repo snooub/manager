@@ -7,26 +7,65 @@
     <?php $appAlert->setID(ALERT_INDEX); ?>
     <?php require_once('header.php'); ?>
 
+    <?php $handler = null; ?>
+
+    <?php if ($handler === false || $handler == null) { ?>
+        <?php $appDirectory->setDirectory(env('SERVER.DOCUMENT_ROOT')); ?>
+<?php bug($appDirectory->getDirectory()); ?>
+    <?php } ?>
+
+    <?php if (is_array($handler) == false) { ?>
+        <?php $handler = array(); ?>
+    <?php } ?>
+
     <?php $appAlert->display(); ?>
 
+    <?php $handlerCount = count($handler); ?>
+    <?php $handlerList  = array(); ?>
+
+    <?php $arrayFolder = array(); ?>
+    <?php $arrayFile   = array(); ?>
+
+    <?php foreach ($handler AS $entry) { ?>
+        <?php if ($entry != '.' && $entry != '..') { ?>
+            <?php if ($entry == env('application.directory') && $appDirectory->isAccessParentPath()) { ?>
+
+            <?php } else if (is_dir($appDirectory->getDirectory() . SP . $entry)) { ?>
+                <?php $arrayFolder[] = $entry; ?>
+            <?php } else { ?>
+                <?php $arrayFile[] = $entry; ?>
+            <?php } ?>
+        <?php } ?>
+    <?php } ?>
+
+    <?php if (count($arrayFolder) > 0) { ?>
+        <?php asort($arrayFolder); ?>
+
+        <?php foreach ($arrayFolder AS $entry) { ?>
+            <?php $handlerList[] = [ 'name' => $entry, 'is_directory' => true ]; ?>
+        <?php } ?>
+    <?php } ?>
+
+    <?php if (count($arrayFile) > 0) { ?>
+        <?php asort($arrayFile); ?>
+
+        <?php foreach ($arrayFile AS $entry) { ?>
+            <?php $handlerList[] = [ 'name' => $entry, 'is_directory' => true ]; ?>
+        <?php } ?>
+    <?php } ?>
+
+    <?php $handlerCount = count($handlerList); ?>
+
     <ul class="file-list-home">
-        <li class="back">
-            <a href="#">
-                <span class="icomoon icon-back"></span>
-                <span>Quay lai</span>
-            </a>
-        </li>
-        <li class="empty">
-            <span class="icomoon icon-trash"></span>
-            <span>Thu muc trong</span>
-        </li>
-        <?php for ($i = 0; $i < 20; ++$i) { ?>
+        <?php for ($i = 0; $i < $handlerCount; ++$i) { ?>
+            <?php $entry = $handlerList[$i]; ?>
+
             <li>
                 <a href="#">
                     <span class="icomoon icon-file"></span>
                 </a>
                 <a href="#">
-                    <span class="entry-name"><?php echo 'file-' . $i; ?></span>
+                    <span class="file-name"><?php echo $entry['name']; ?></span>
                 </a>
             </li>
         <?php } ?>
