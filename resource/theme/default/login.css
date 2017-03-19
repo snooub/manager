@@ -1,3 +1,9 @@
+div#content ul.alert {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 320px;
+}
+
 div#content div#login {
     background-color: transparent;
 
@@ -70,11 +76,10 @@ div#content div#login-form-action a#forgot-password {
          -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
             box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 
-    margin-right: 5px;
-    padding: 1px;
+    height: 40px;
+    margin-right: 10px;
     padding-left: 8px;
     padding-right: 8px;
-    line-height: 40px;
     text-decoration: none;
 }
 
@@ -92,6 +97,8 @@ div#content div#login-form-action a#forgot-password span {
 
 div#content div#login-form-action button {
     background-color: #00897b;
+    display: inline-block;
+    float: right;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
        -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
@@ -101,10 +108,10 @@ div#content div#login-form-action button {
 
     border: 0;
     margin: 0;
+    height: 40px;
     padding: 0;
     padding-left: 8px;
     padding-right: 8px;
-    line-height: 40px;
 }
 
 div#content div#login-form-action button:hover {

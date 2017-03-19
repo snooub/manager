@@ -12,6 +12,7 @@
     $appChecker = new Librarys\App\AppChecker($boot);
     $appConfig  = new Librarys\App\AppConfig ($boot, 'config' . SP . 'manager.php');
     $appUser    = new Librarys\App\AppUser   ($boot, 'config' . SP . 'user.php');
+    $appAlert   = new Librarys\App\AppAlert  ($boot, 'define' . SP . 'alert.php');
 
     if ($appChecker->execute()->isAccept() == false) {
         if ($appChecker->isInstallDirectory() == false)

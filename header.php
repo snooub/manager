@@ -8,11 +8,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu"/>
-        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.app'); ?>" media="all,handheld" />
+        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.app'); ?>?rand=<?php echo rand(1000, 9000); ?>" media="all,handheld" />
 
         <?php if (isset($themes) && is_array($themes)) { ?>
             <?php foreach ($themes AS $entry) { ?>
-                <link rel="stylesheet" type="text/css" href="<?php echo $entry; ?>" media="all,handheld" />
+                <link rel="stylesheet" type="text/css" href="<?php echo $entry; ?>?rand=<?php echo rand(1000, 9000); ?>" media="all,handheld" />
             <?php } ?>
             <?php unset($themes); ?>
         <?php } ?>

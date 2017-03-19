@@ -1,0 +1,55 @@
+ul.file-list-home,
+ul.file-list-home li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+ul.file-list-home {
+    background-color: #ffffff;
+
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+
+    margin: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+ul.file-list-home li {
+    border-bottom: 1px solid #efefef;
+
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+         -o-box-sizing: border-box;
+            box-sizing: border-box;
+
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+    padding: 12px;
+    width: 48%;
+    text-align: left;
+}
+
+ul.file-list-home li span.icomoon {
+    font-size: 17px;
+    margin-right: 2.5px;
+}
+
+@media all and (max-width: 640px) {
+    ul.file-list-home li {
+        width: 96%;
+    }
+}
+
+ul.file-list-home li.back,
+ul.file-list-home li.empty {
+    margin: 0;
+    width: 100%;
+}

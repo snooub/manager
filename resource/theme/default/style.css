@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?zet8pb');
-  src:  url('fonts/icomoon.eot?zet8pb#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?zet8pb') format('truetype'),
-    url('fonts/icomoon.woff?zet8pb') format('woff'),
-    url('fonts/icomoon.svg?zet8pb#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?ggvnv5');
+  src:  url('fonts/icomoon.eot?ggvnv5#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?ggvnv5') format('truetype'),
+    url('fonts/icomoon.woff?ggvnv5') format('woff'),
+    url('fonts/icomoon.svg?ggvnv5#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,24 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-file:before {
+  content: "\e90c";
+}
+.icon-back:before {
+  content: "\e90a";
+}
+.icon-trash:before {
+  content: "\e90b";
+}
+.icon-folder-download:before {
+  content: "\e909";
+}
+.icon-folder-upload:before {
+  content: "\e907";
+}
+.icon-folder-create:before {
+  content: "\e908";
+}
 .icon-mysql:before {
   content: "\e903";
 }

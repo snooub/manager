@@ -97,6 +97,8 @@
             'theme' => [
                 'app'     => '${app.http.theme}/default/theme.css',
                 'login'   => '${app.http.theme}/default/login.css',
+                'file'    => '${app.http.theme}/default/file.css',
+                'mysql'   => '${app.http.theme}/default/mysql.css',
                 'icomoon' => '${app.http.theme}/default/style.css'
             ]
         ]

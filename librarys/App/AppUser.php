@@ -3,6 +3,7 @@
     namespace Librarys\App;
 
     use Librarys\Boot;
+    use Librarys\CFSR\CFSRToken;
 
     final class AppUser
     {
@@ -40,7 +41,10 @@
                 $id    = intval($_SESSION[env('app.login.session_login_name')]);
                 $token = addslashes($_SESSION[env('app.login.session_token_name')]);
 
-                $this->isLogin = true;
+                if (isset($this->db[$id]))
+                    $this->isLogin = true;
+                else
+                    $this->isLogin = false;
             } else {
                 $this->isLogin = false;
             }
@@ -91,6 +95,17 @@
             }
 
             return false;
+        }
+
+        public function createSessionUser($id, $token = null)
+        {
+            if ($token == null)
+                $token = CFSRToken::generator();
+
+            $_SESSION[env('app.login.session_login_name')] = intval($id);
+            $_SESSION[env('app.login.session_token_name')] = addslashes($token);
+
+            $this->execute();
         }
 
         public static function passwordEncode($password)
