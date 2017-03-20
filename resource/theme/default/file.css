@@ -37,6 +37,10 @@ ul.file-list-home li {
     text-align: left;
 }
 
+ul.file-list-home li span {
+    vertical-align: middle;
+}
+
 ul.file-list-home li span.icomoon {
     font-size: 17px;
     margin-right: 2.5px;
@@ -52,4 +56,12 @@ ul.file-list-home li.back,
 ul.file-list-home li.empty {
     margin: 0;
     width: 100%;
+}
+
+ul.file-list-home li.type-directory {
+    font-weight: bold;
+}
+
+ul.file-list-home li.type-file {
+    color: #606060;
 }

@@ -31,7 +31,7 @@
                 $this->directory = env('SERVER.DOCUMENT_ROOT');
 
             if ($this->directory != null) {
-                $this->directory       = FileInfo::validate($this->directoryEncode);
+                $this->directory       = FileInfo::validate($this->directory);
                 $this->directoryEncode = self::rawEncode($this->directory);
             }
 

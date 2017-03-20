@@ -9,9 +9,18 @@
 
     <?php $handler = null; ?>
 
+    <?php if (is_dir($appDirectory->getDirectory()) == false) { ?>
+        <?php $appDirectory->setDirectory(env('SERVER.DOCUMENT_ROOT')); ?>
+        <?php $handler = @scandir($appDirectory->getDirectory()); ?>
+        <?php $appAlert->danger('Đường dẫn không tồn tại'); ?>
+    <?php } else { ?>
+        <?php $handler = @scandir($appDirectory->getDirectory()); ?>
+    <?php } ?>
+
     <?php if ($handler === false || $handler == null) { ?>
         <?php $appDirectory->setDirectory(env('SERVER.DOCUMENT_ROOT')); ?>
-<?php bug($appDirectory->getDirectory()); ?>
+        <?php $handler = @scandir($appDirectory->getDirectory()); ?>
+        <?php $appAlert->danger('Không thể lấy danh của đường dẫn này'); ?>
     <?php } ?>
 
     <?php if (is_array($handler) == false) { ?>
@@ -50,7 +59,7 @@
         <?php asort($arrayFile); ?>
 
         <?php foreach ($arrayFile AS $entry) { ?>
-            <?php $handlerList[] = [ 'name' => $entry, 'is_directory' => true ]; ?>
+            <?php $handlerList[] = [ 'name' => $entry, 'is_directory' => false ]; ?>
         <?php } ?>
     <?php } ?>
 
@@ -60,7 +69,7 @@
         <?php for ($i = 0; $i < $handlerCount; ++$i) { ?>
             <?php $entry = $handlerList[$i]; ?>
 
-            <li>
+            <li class="<?php if ($entry['is_directory']) { ?>type-directory<?php } else { ?>type-file<?php } ?>">
                 <a href="#">
                     <span class="icomoon icon-file"></span>
                 </a>

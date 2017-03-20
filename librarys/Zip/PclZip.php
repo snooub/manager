@@ -1,6 +1,7 @@
 <?php
 
-  if (!defined('ACCESS')){die('Not access');}
+  namespace Librarys\Zip;
+
   if (!defined('PCLZIP_READ_BLOCK_SIZE')) {define( 'PCLZIP_READ_BLOCK_SIZE', 2048 );}
   if (!defined('PCLZIP_SEPARATOR')) {define( 'PCLZIP_SEPARATOR', ',' );}
   if (!defined('PCLZIP_ERROR_EXTERNAL')) {define( 'PCLZIP_ERROR_EXTERNAL', 0 );}

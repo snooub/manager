@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('ACCESS')) die('Not access');
+    namespace Librarys\JSON;
 
 /**
 * Marker constant for Services_JSON::decode(), used to flag stack state
@@ -60,7 +60,7 @@ define('SERVICES_JSON_SUPPRESS_ERRORS', 32);
  *
  * @ingroup API
  */
-class Services_JSON
+final class ServicesJSON
 {
     /**
      * constructs a new JSON instance
