@@ -423,17 +423,16 @@
         public static function permissionPath($path, $isUseName = false)
         {
             if ($path != null && empty($path) == false) {
-                $ds = SP;
-                $dz = SP;
+                $sp = SP;
 
-                if ($ds == '\\') {
-                    $ds = $ds . $ds;
-                    $dz = $ds . $ds;
-                }
+                if ($sp == '\\')
+                    $sp = SP . SP;
 
-                $path = str_replace('\\', $ds, $path);
-                $path = str_replace('/', $ds, $path);
                 $path = strtolower($path);
+                $path = self::validate($path);
+
+                if (SP == '\\')
+                    $path = str_replace(SP, $sp, $path);
 
                 if ($isUseName)
                     $reg = env('application.directory');
@@ -443,14 +442,16 @@
                 if ($reg != null)
                     $reg = strtolower($reg);
 
-                $reg = str_replace('\\', $dz, $reg);
-                $reg = str_replace('/', $dz, $reg);
+                $reg = self::validate($reg);
 
-                if (preg_match('#^' . $reg . '$#si', $path))
+                if (SP == '\\')
+                    $reg = str_replace(SP, $sp, $reg);
+
+                if ($reg == $path)
                     return false;
-                else if (preg_match('#^' . $reg . $ds . '(^\/+|^\\\\+)(.*?)$#si', $path))
+                else if (preg_match('#^' . $reg . $sp . '(^\/+|^\\\\+)(.*?)$#si', $path))
                     return false;
-                else if (preg_match('#^' . $reg . $ds . '(.*?)$#si', $path))
+                else if (preg_match('#^' . $reg . $sp . '(.*?)$#si', $path))
                     return false;
             }
 

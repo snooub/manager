@@ -12,11 +12,13 @@
         private $directory;
         private $directoryEncode;
         private $name;
-        private $permission;
+        private $page;
+        private $permissionDeny;
         private $accessParentPath;
 
         const PARAMETER_DIRECTORY_URL = 'directory';
         const PARAMETER_NAME_URL      = 'name';
+        const PARAMETER_PAGE_URL      = 'pager';
 
         public function __construct(Boot $boot)
         {
@@ -40,18 +42,27 @@
             else
                 $this->name = null;
 
+            if (isset($_GET[self::PARAMETER_PAGE_URL]) && empty($_GET[self::PARAMETER_PAGE_URL]) == false)
+                $this->page = intval(addslashes($_GET[self::PARAMETER_PAGE_URL]));
+            else
+                $this->page = 1;
+
+            if ($this->page <= 0)
+                $this->page = 1;
 
             if ($this->directory != '.' && $this->directory != '..') {
                 if (FileInfo::permissionPath(FileInfo::validate($this->directory)))
-                    $this->permission = true;
+                    $this->permissionDeny = false;
                 else if ($this->name != null && File::permissionPath(FileInfo::validate($this->directory . SP . $this->name)))
-                    $this->permission = true;
+                    $this->permissionDeny = false;
+                else
+                    $this->permissionDeny = true;
             }
 
-            if ($this->directory != null && $this->permission == false)
-                $this->accessParentPath = strtolower($this->directory) == strtolower(env('application.path'));
+            if ($this->directory != null && $this->permissionDeny == false)
+                $this->accessParentPath = strtolower($this->directory) == strtolower(env('application.parent_path'));
             else
-                $this->accessParentPath = strtolower(env('application.path')) == strtolower(env('SERVER.DOCUMENT_ROOT'));
+                $this->accessParentPath = strtolower(env('application.parent_path')) == strtolower(env('SERVER.DOCUMENT_ROOT'));
         }
 
         public static function rawEncode($url)
@@ -86,9 +97,14 @@
             return $this->name;
         }
 
-        public function isPermissionPath()
+        public function getPage()
         {
-            return $this->permission;
+            return $this->page;
+        }
+
+        public function isPermissionDenyPath()
+        {
+            return $this->permissionDeny;
         }
 
         public function isAccessParentPath()

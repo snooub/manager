@@ -1,33 +1,39 @@
-<?php define('LOADED', 1); ?>
-<?php require_once('global.php'); ?>
+<?php
 
-<?php if ($appUser->isLogin() == false) { ?>
-    <?php $title = lng('login.title_page'); ?>
-    <?php $themes = [ env('resource.theme.login') ]; ?>
-    <?php $appAlert->setID(ALERT_LOGIN); ?>
-    <?php require_once('header.php'); ?>
+    define('LOADED', 1);
+    require_once('global.php');
 
-    <?php $username = null; ?>
-    <?php $password = null; ?>
+    if ($appUser->isLogin())
+        $appAlert->info(lng('login.alert.login_already'), ALERT_INDEX, env('app.http.host'));
 
-    <?php if (isset($_POST['submit'])) { ?>
-        <?php $user     = null; ?>
-        <?php $username = addslashes($_POST['username']); ?>
-        <?php $password = addslashes($_POST['password']); ?>
+    $title = lng('login.title_page');
+    $themes = [ env('resource.theme.login') ];
+    $appAlert->setID(ALERT_LOGIN);
+    require_once('header.php');
 
-        <?php if (empty($username) || empty($password)) { ?>
-            <?php $appAlert->danger(lng('login.alert.not_input_username_or_password')); ?>
-        <?php }else if (($user = $appUser->isUser($username, $password, true)) == false) { ?>
-            <?php $appAlert->danger(lng('login.alert.username_or_password_wrong')); ?>
-        <?php } else if ($user == null) { ?>
-            <?php $appAlert->danger(lng('login.alert.user_not_exists')); ?>
-        <?php } else { ?>
-            <?php $appUser->createSessionUser($user[Librarys\App\AppUser::KEY_USERNAME]); ?>
-            <?php $appAlert->success(lng('login.alert.login_success'), ALERT_INDEX, env('app.http.host')); ?>
-        <?php } ?>
-    <?php } ?>
+    $username = null;
+    $password = null;
 
-    <?php $appAlert->display(); ?>
+    if (isset($_POST['submit'])) {
+        $user     = null;
+        $username = addslashes($_POST['username']);
+        $password = addslashes($_POST['password']);
+
+        if (empty($username) || empty($password)) {
+            $appAlert->danger(lng('login.alert.not_input_username_or_password'));
+        } else if (($user = $appUser->isUser($username, $password, true)) == false) {
+            $appAlert->danger(lng('login.alert.username_or_password_wrong'));
+        } else if ($user == null) {
+            $appAlert->danger(lng('login.alert.user_not_exists'));
+        } else {
+            $appUser->createSessionUser($user[Librarys\App\AppUser::KEY_USERNAME]);
+            $appAlert->success(lng('login.alert.login_success'), ALERT_INDEX, env('app.http.host'));
+        }
+    }
+
+    $appAlert->display();
+
+?>
 
     <div id="login">
         <form action="login.php" method="post" id="login-form">
@@ -45,7 +51,4 @@
         </form>
     </div>
 
-    <?php require_once('footer.php'); ?>
-<?php } else { ?>
-    <?php $appAlert->info(lng('login.alert.login_already'), ALERT_INDEX, env('app.http.host')); ?>
-<?php } ?>
+<?php require_once('footer.php'); ?>

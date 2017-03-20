@@ -30,13 +30,24 @@ ul.file-list-home li {
          -o-box-sizing: border-box;
             box-sizing: border-box;
 
-    margin-left: 2.5px;
-    margin-right: 2.5px;
-    padding: 12px;
-    width: 48%;
+    float: left;
+    width: 50%;
+    height: 45px;
+    padding-left: 12px;
+    padding-right: 12px;
     text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
+ul.file-list-home li:last-child {
+    border: 0;
+}
+
+ul.file-list-home li a {
+    line-height: 45px;
+}
 ul.file-list-home li span {
     vertical-align: middle;
 }
@@ -58,8 +69,20 @@ ul.file-list-home li.empty {
     width: 100%;
 }
 
+ul.file-list-home li.type-directory,
+ul.file-list-home li.type-file {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
 ul.file-list-home li.type-directory {
     font-weight: bold;
+}
+
+ul.file-list-home li.back span.icomoon,
+ul.file-list-home li.type-directory span.icomoon {
+    color: #ffb300;
+    font-size: 25px;
 }
 
 ul.file-list-home li.type-file {

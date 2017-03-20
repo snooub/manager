@@ -56,8 +56,8 @@
             }
 
             $_SESSION[self::SESSION_NAME_PREFIX . $id][] = [
-                'message' => addslashes($message),
-                'type'    => addslashes($type)
+                'message' => $message,
+                'type'    => $type
             ];
 
             if ($urlGoto !== null)
