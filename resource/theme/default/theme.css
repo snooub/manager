@@ -7,13 +7,21 @@ body {
     position: relative;
 }
 
-a:link, a:visited {
+a:link,
+a:visited {
     color: #505050;
     text-decoration: none;
 }
 
-a:hover, a:focus {
-    color: #707070;
+a:hover,
+a:focus,
+a:hover span,
+a:hover strong,
+a:hover p,
+a:focus span,
+a:focus strong.
+a:focus p {
+    color: #909090;
     text-decoration: none;
 }
 
@@ -101,8 +109,9 @@ div#header ul#action li span {
     line-height: 55px;
 }
 
-div#header ul#action li a:hover span {
-    color: #e0e0e0;
+div#header ul#action li a:hover span,
+div#header ul#action li a:focus span {
+    color: #d0d0d0;
 }
 
 @media all and (max-width: 260px) {
@@ -249,4 +258,67 @@ div#content ul.menu-action li a span.icomoon {
 div#content ul.menu-action li a span {
     color:  #505050;
     vertical-align: middle;
+}
+
+div#content ul.menu-action li a:hover span,
+div#content ul.menu-action li a:hover strong,
+div#content ul.menu-action li a:focus span,
+div#content ul.menu-action li a:focus strong {
+    color:  #909090;
+    vertical-align: middle;
+}
+
+div#content ul.paging,
+div#content ul.paging li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div#content ul.paging {
+    background-color: #ffffff;
+    display: block;
+
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+
+    margin-bottom: 15px;
+    width: 100%;
+    height: 45px;
+    text-align: center;
+}
+
+div#content ul.paging li {
+    line-height: 45px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+div#content ul.paging li.current strong {
+    color: #ffffff;
+    background-color: #00897b;
+    padding: 5px;
+}
+
+div#content ul.paging li.other span {
+    color: #00897b;
+    background-color: #f0f0f0;
+    padding: 5px;
+}
+
+div#content ul.paging li.jump span {
+    color: #707070;
+}
+
+div#content ul.paging li.other a:hover span {
+    color: #ffffff;
+    background-color: #303030;
+}
+
+div#content ul.paging li.jump a:hover span {
+    color: #00897b;
 }

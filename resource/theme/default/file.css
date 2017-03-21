@@ -1,5 +1,45 @@
+ul.location-path,
+ul.location-path li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.location-path {
+    background-color: #ffffff;
+    display: block;
+
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+ul.location-path li {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+ul.location-path li span {
+    color: #505050;
+    font-weight: bold;
+}
+
+ul.location-path li a:hover span,
+ul.location-path li a:focus span {
+    color: #909090;
+    font-weight: bold;
+}
+
 ul.file-list-home,
-ul.file-list-home li {
+ul.file-list-home > li {
     display: inline-block;
     list-style: none;
     margin: 0;
@@ -21,7 +61,8 @@ ul.file-list-home {
     text-align: center;
 }
 
-ul.file-list-home li {
+ul.file-list-home > li {
+    color:  #909090;
     border-bottom: 1px solid #efefef;
 
     -webkit-box-sizing: border-box;
@@ -41,50 +82,78 @@ ul.file-list-home li {
     white-space: nowrap;
 }
 
-ul.file-list-home li:last-child {
+ul.file-list-home > li:last-child {
     border: 0;
 }
 
-ul.file-list-home li a {
+ul.file-list-home > li > a {
     line-height: 45px;
 }
-ul.file-list-home li span {
+
+ul.file-list-home > li span.icomoon {
     vertical-align: middle;
 }
 
-ul.file-list-home li span.icomoon {
+ul.file-list-home > li a:hover span,
+ul.file-list-home > li a:hover strong,
+ul.file-list-home > li a:focus span,
+ul.file-list-home > li a:focus strong {
+    color: #909090;
+}
+
+ul.file-list-home > li span.icomoon {
     font-size: 17px;
     margin-right: 2.5px;
 }
 
 @media all and (max-width: 640px) {
-    ul.file-list-home li {
-        width: 96%;
+    ul.file-list-home > li {
+        width: 100%;
     }
 }
 
-ul.file-list-home li.back,
-ul.file-list-home li.empty {
+ul.file-list-home > li.back,
+ul.file-list-home > li.empty,
+ul.file-list-home > li.paging {
     margin: 0;
     width: 100%;
 }
 
-ul.file-list-home li.type-directory,
-ul.file-list-home li.type-file {
+ul.file-list-home > li.back span.icomoon {
+    margin-right: 5px;
+}
+
+ul.file-list-home > li.paging {
+    float: left;
+    padding-left: 0;
+    padding-right: 0;
+    text-overflow: initial;
+}
+
+ul.file-list-home > li.paging ul.paging {
+    -webkit-box-shadow: none !important;
+       -moz-box-shadow: none !important;
+        -ms-box-shadow: none !important;
+         -o-box-shadow: none !important;
+            box-shadow: none !important;
+}
+
+ul.file-list-home > li.type-directory,
+ul.file-list-home > li.type-file {
     padding-left: 20px;
     padding-right: 20px;
 }
 
-ul.file-list-home li.type-directory {
+ul.file-list-home > li.type-directory {
     font-weight: bold;
 }
 
-ul.file-list-home li.back span.icomoon,
-ul.file-list-home li.type-directory span.icomoon {
+ul.file-list-home > li.back span.icomoon,
+ul.file-list-home > li.type-directory span.icomoon {
     color: #ffb300;
     font-size: 25px;
 }
 
-ul.file-list-home li.type-file {
+ul.file-list-home > li.type-file {
     color: #606060;
 }
