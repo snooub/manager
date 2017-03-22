@@ -6,7 +6,7 @@
     if (defined('SP') == false)
         define('SP', DIRECTORY_SEPARATOR);
 
-    require_once('Librarys' . SP . 'Boot.php');
+    require_once('librarys' . SP . 'Boot.php');
 
     $boot         = new Librarys\Boot(require_once('config' . SP . 'app.php'));
     $appChecker   = new Librarys\App\AppChecker   ($boot);
