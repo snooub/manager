@@ -66,6 +66,48 @@ button {
     cursor: pointer;
 }
 
+ul.radio-choose-tab,
+ul.radio-choose-tab > li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+ul.radio-choose-tab > li {
+    display: inline-block;
+    float: left;
+    width: 50%;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+ul.radio-choose-tab > li input {
+    display: none;
+}
+
+ul.radio-choose-tab > li input + label {
+    display: block;
+    background-color: #f0f0f0;
+    width: 100%;
+}
+
+ul.radio-choose-tab > li input + label span {
+    line-height: 40px;
+}
+
+ul.radio-choose-tab > li input:checked + label {
+    background-color: #00897b;
+}
+
+ul.radio-choose-tab > li input:checked + label span {
+    color: #ffffff;
+}
+
 div#container {
     margin: 0 auto;
     max-width: 640px;
@@ -412,7 +454,10 @@ div.form-action form > ul > li.input span {
 }
 
 div.form-action form > ul > li.radio-choose {
-
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 div.form-action form > ul > li.button {

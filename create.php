@@ -37,10 +37,20 @@
                 </li>
                 </li>
                 <li class="radio-choose">
-                    <input type="radio" name="type" value="1" checked=""/>
-                    <span>Thư mục</span>
-                    <input type="radio" name="type" value="2"/>
-                    <span>Tập tin</span>
+                    <ul class="radio-choose-tab">
+                        <li>
+                            <input type="radio" name="type" value="1" checked="checked" id="type-folder"/>
+                            <label for="type-folder">
+                                <span>Thư mục</span>
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" name="type" value="2" id="type-file"/>
+                            <label for="type-file">
+                                <span>Tập tin</span>
+                            </label>
+                        </li>
+                    </ul>
                 </li>
                 <li class="button">
                     <button type="submit" name="create">
