@@ -13,7 +13,7 @@
 
             'session' => [
                 'init'            => true,
-                'name'            => 'BlogIzeroCs',
+                'name'            => 'ManagerIzeroCs',
                 'cookie_lifetime' => 86400 * 7,
                 'cache_limiter'   => 'private'
             ],

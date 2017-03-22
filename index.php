@@ -2,6 +2,7 @@
 
     use Librarys\App\AppDirectory;
     use Librarys\App\AppPaging;
+    use Librarys\App\AppLocationPath;
 
     define('LOADED', 1);
     require_once('global.php');
@@ -35,8 +36,6 @@
 
     if (is_array($handler) == false)
         $handler = array();
-
-    $appAlert->display();
 
     $handlerCount = count($handler);
     $handlerList  = array();
@@ -91,62 +90,7 @@
             $handlerPage['end'] = $handlerCount;
     }
 
-    $buffer = array(
-        'back'     => null,
-        'location' => null
-    );
-
-    if ($appDirectory->getDirectory() != SP && strpos($appDirectory->getDirectory(), SP) !== false) {
-        $locationSP    = SP;
-
-        if ($locationSP == '\\')
-            $locationSP = SP . SP;
-
-        $locationArray           = explode(SP, preg_replace('|^' . $locationSP . '(.*?)$|', '\1', $appDirectory->getDirectory()));
-        $locationCount           = count($locationArray);
-        $locationIsSeparatorFist = strpos($appDirectory->getDirectory(), SP) === 0;
-        $locationEntry           = null;
-        $locationUrl             = null;
-
-        $buffer['location'] = '<ul class="location-path">';
-
-        foreach ($locationArray AS $locationKey => $locationValue) {
-            if ($locationKey === 0) {
-                $locationSeparator = null;
-
-                if (preg_match('|^' . $locationSP . '(.*?)$|', $appDirectory->getDirectory()) !== false)
-                    $locationSeparator = SP;
-
-                if ($locationIsSeparatorFist)
-                    $locationEntry = $locationSeparator . $locationValue;
-                else
-                    $locationEntry = $locationValue;
-            } else {
-                $locationEntry = SP . $locationValue;
-            }
-
-            if ($locationKey < $locationCount - 1) {
-                $buffer['location'] .= '<li>';
-
-                if ($locationKey > 0 || ($locationKey === 0 && $locationIsSeparatorFist))
-                    $buffer['location'] .= '<span class="separator">' . SP . '</span>';
-
-                $buffer['location'] .= '<a href="index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($locationUrl . $locationEntry) . '">';
-                $buffer['location'] .= '<span>';
-
-                $locationUrl        .= $locationEntry;
-                $buffer['location'] .= $locationValue;
-
-                $buffer['location'] .= '</span>';
-                $buffer['location'] .= '</a>';
-                $buffer['location'] .= '</li>';
-            } else {
-                break;
-            }
-        }
-
-        $buffer['location'] .= '</ul>';
-    }
+    $bufferBack = null;
 
     if (preg_replace('|[a-zA-Z]+:|', '', str_replace('\\', SP, $appDirectory->getDirectory())) != SP) {
         $backPath      = strrchr($appDirectory->getDirectory(), SP);
@@ -163,15 +107,16 @@
             $backDirectory = $appDirectory->getDirectory();
         }
 
-        $buffer['back'] .= '<li class="back">';
-            $buffer['back'] .= '<a href="' . $backPath . '">';
-                $buffer['back'] .= '<span class="icomoon icon-folder-open"></span>';
-                $buffer['back'] .= '<strong>' . $backDirectory . '</strong>';
-            $buffer['back'] .= '</a>';
-        $buffer['back'] .= '</li>';
+        $bufferBack .= '<li class="back">';
+            $bufferBack .= '<a href="' . $backPath . '">';
+                $bufferBack .= '<span class="icomoon icon-folder-open"></span>';
+                $bufferBack .= '<strong>' . $backDirectory . '</strong>';
+            $bufferBack .= '</a>';
+        $bufferBack .= '</li>';
     }
 
-    $pagePaging = new AppPaging(
+    $appLocationPath = new AppLocationPath($appDirectory, 'index.php?');
+    $pagePaging      = new AppPaging(
         'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . $appDirectory->getDirectoryEncode(),
 
         'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . $appDirectory->getDirectoryEncode() .
@@ -179,10 +124,11 @@
     );
 ?>
 
-    <?php echo $buffer['location']; ?>
+    <?php echo $appAlert->display(); ?>
+    <?php echo $appLocationPath->display(); ?>
 
     <ul class="file-list-home">
-        <?php echo $buffer['back']; ?>
+        <?php echo $bufferBack; ?>
 
         <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
             <?php $entry = $handlerList[$i]; ?>
@@ -209,21 +155,26 @@
         <?php } ?>
     </ul>
 
+    <?php $parameter = AppDirectory::createUrlParameter(
+        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
+        AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],       $handlerPage['current'] > 1
+    ); ?>
+
     <ul class="menu-action">
         <li>
-            <a href="create.php">
+            <a href="create.php<?php echo $parameter; ?>">
                 <span class="icomoon icon-folder-create"></span>
                 <span><?php echo lng('home.menu_action.create'); ?></span>
             </a>
         </li>
         <li>
-            <a href="upload.php">
+            <a href="upload.php<?php echo $parameter; ?>">
                 <span class="icomoon icon-folder-upload"></span>
                 <span><?php echo lng('home.menu_action.upload'); ?></span>
             </a>
         </li>
         <li>
-            <a href="import.php">
+            <a href="import.php<?php echo $parameter; ?>">
                 <span class="icomoon icon-folder-download"></span>
                 <span><?php echo lng('home.menu_action.import'); ?></span>
             </a>

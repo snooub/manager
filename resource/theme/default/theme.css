@@ -25,6 +25,43 @@ a:focus p {
     text-decoration: none;
 }
 
+input[type=text],
+input[type=password] {
+    background-color: #ffffff;
+    border: 0;
+
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+         -o-box-sizing: border-box;
+            box-sizing: border-box;
+
+    border-bottom: 2px solid #e0e0e0;
+    padding: 10px;
+    width: 100%;
+    outline: 0;
+}
+
+input[type=text].danger,
+input[type=password].danger {
+    border-bottom-color: #ef5350;
+}
+
+input[type=text].success,
+input[type=password].success {
+    border-bottom-color: #66bb6a;
+}
+
+input[type=text].info,
+input[type=password].info {
+    border-bottom-color: #42a5f5;
+}
+
+input[type=text].warning,
+input[type=password].warning {
+    border-bottom-color: #ffa726;
+}
+
 button {
     cursor: pointer;
 }
@@ -157,19 +194,19 @@ div#content {
     padding-right: 10px;
 }
 
-div#content ul.alert,
-div#content ul.alert li {
+ul.alert,
+ul.alert li {
     display: block;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-div#content ul.alert {
+ul.alert {
     margin-bottom: 20px;
 }
 
-div#content ul.alert li {
+ul.alert li {
     color: #505050;
     font-size: 14px;
     background-color: #ffffff;
@@ -185,32 +222,32 @@ div#content ul.alert li {
     margin-bottom: 8px;
 }
 
-div#content ul.alert li:last-child {
+ul.alert li:last-child {
     margin: 0;
 }
 
-div#content ul.alert li.danger {
+ul.alert li.danger {
     color: #bf1c1c;
     background-color: #ffcdd2;
 }
 
-div#content ul.alert li.success {
+ul.alert li.success {
     color: #33691e;
     background-color: #dcedc8;
 }
 
-div#content ul.alert li.warning {
+ul.alert li.warning {
     color: #ef6c00;
     background-color: #ffe0b2;
 }
 
-div#content ul.alert li.info {
+ul.alert li.info {
     color: #006064;
     background-color: #b2ebf2;
 }
 
-div#content ul.menu-action,
-div#content ul.menu-action li {
+ul.menu-action,
+ul.menu-action li {
     display: inline-block;
     list-style: none;
     margin: 0;
@@ -218,7 +255,7 @@ div#content ul.menu-action li {
     width: 100%;
 }
 
-div#content ul.menu-action {
+ul.menu-action {
     background-color: #ffffff;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
@@ -230,7 +267,7 @@ div#content ul.menu-action {
     margin-bottom: 15px;
 }
 
-div#content ul.menu-action li {
+ul.menu-action li {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
         -ms-box-sizing: border-box;
@@ -245,38 +282,38 @@ div#content ul.menu-action li {
 }
 
 @media all and (min-width: 640px) {
-    div#content ul.menu-action li {
+    ul.menu-action li {
         width: 30%;
     }
 }
 
-div#content ul.menu-action li a span.icomoon {
+ul.menu-action li a span.icomoon {
     font-size: 17px;
     margin-right: 3px;
 }
 
-div#content ul.menu-action li a span {
+ul.menu-action li a span {
     color:  #505050;
     vertical-align: middle;
 }
 
-div#content ul.menu-action li a:hover span,
-div#content ul.menu-action li a:hover strong,
-div#content ul.menu-action li a:focus span,
-div#content ul.menu-action li a:focus strong {
+ul.menu-action li a:hover span,
+ul.menu-action li a:hover strong,
+ul.menu-action li a:focus span,
+ul.menu-action li a:focus strong {
     color:  #909090;
     vertical-align: middle;
 }
 
-div#content ul.paging,
-div#content ul.paging li {
+ul.paging,
+ul.paging li {
     display: inline-block;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-div#content ul.paging {
+ul.paging {
     background-color: #ffffff;
     display: block;
 
@@ -292,33 +329,138 @@ div#content ul.paging {
     text-align: center;
 }
 
-div#content ul.paging li {
+ul.paging li {
     line-height: 45px;
     padding-left: 3px;
     padding-right: 3px;
 }
 
-div#content ul.paging li.current strong {
+ul.paging li.current strong {
     color: #ffffff;
     background-color: #00897b;
     padding: 5px;
 }
 
-div#content ul.paging li.other span {
+ul.paging li.other span {
     color: #00897b;
     background-color: #f0f0f0;
     padding: 5px;
 }
 
-div#content ul.paging li.jump span {
+ul.paging li.jump span {
     color: #707070;
 }
 
-div#content ul.paging li.other a:hover span {
+ul.paging li.other a:hover span {
     color: #ffffff;
     background-color: #303030;
 }
 
-div#content ul.paging li.jump a:hover span {
+ul.paging li.jump a:hover span {
     color: #00897b;
+}
+
+div.form-action {
+    background-color: #ffffff;
+
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+
+    margin-bottom: 15px;
+}
+
+div.form-action form > ul,
+div.form-action form > ul > li {
+    display: block;
+    list-style: none;
+    margin:  0;
+    padding: 0;
+}
+
+div.form-action form > ul {
+    display: block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+div.form-action form > ul > li.input {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+div.form-action form > ul > li.input span,
+div.form-action form > ul > li.input input {
+    display: block;
+}
+
+div.form-action form > ul > li.input input {
+    outline: 0;
+    margin-top: 5px;
+    padding: 10px;
+    width: 100%;
+}
+
+div.form-action form > ul > li.input span {
+    color: #00897b;
+    font-weight: bold;
+}
+
+div.form-action form > ul > li.radio-choose {
+
+}
+
+div.form-action form > ul > li.button {
+    height: 30px;
+    width: 100%;
+    text-align: right;
+}
+
+div.form-action form > ul > li.button button {
+    background-color: transparent;
+    display: inline-block;
+    border: 0;
+    margin: 0;
+    height: 30px;
+    margin-right: 10px;
+    padding: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+div.form-action form > ul > li.button button span {
+    color: #00897b;
+    font-weight: bold;
+}
+
+div.form-action form > ul > li.button button:hover span {
+    color: #00a99b;
+}
+
+div.form-action form > ul > li.button > a {
+    display: inline-block;
+    background-color: transparent;
+    height: 30px;
+    margin-right: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+    text-decoration: none;
+}
+
+div.form-action form > ul > li.button button:hover,
+div.form-action form > ul > li.button > a:hover {
+    background-color: #f0f0f0;
+}
+
+div.form-action form > ul > li.button > a span {
+    color: #404040;
+    font-weight: bold;
+    font-variant: normal;
+    font-size: 13px;
+    line-height: 30px;
 }

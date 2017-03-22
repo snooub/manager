@@ -1,21 +1,64 @@
-<?php define('ACCESS', true);
+<?php
 
-    include_once 'function.php';
+    use Librarys\App\AppDirectory;
+    use Librarys\App\AppLocationPath;
 
-    if (IS_LOGIN) {
-        $title = 'Tạo mới';
+    define('LOADED', 1);
+    require_once('global.php');
 
-        include_once 'header.php';
+    if ($appUser->isLogin() == false)
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
 
-        echo '<div class="title">' . $title . '</div>';
+    $title = lng('create.title_page');
+    $themes = [ env('resource.theme.file') ];
+    $appAlert->setID(ALERT_CREATE);
+    require_once('header.php');
 
-        if ($dir == null || !is_dir(processDirectory($dir))) {
-            echo '<div class="list"><span>Đường dẫn không tồn tại</span></div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/list.png"/> <a href="index.php' . $pages['paramater_0'] . '">Danh sách</a></li>
-            </ul>';
-        } else {
+    if ($appDirectory->getDirectory() == null || is_dir($appDirectory->getDirectory()) == false)
+        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+
+    $appLocationPath = new AppLocationPath($appDirectory, 'create.php?');
+?>
+
+    <?php $appAlert->display(); ?>
+    <?php $appLocationPath->display(); ?>
+
+    <?php $parameterForm = AppDirectory::createUrlParameter(
+        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
+        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
+    ); ?>
+
+    <div class="form-action">
+        <form action="<?php echo $parameterForm; ?>" method="post">
+            <ul>
+                <li class="input">
+                    <span>Tên thư mục hoặc tập tin:</span>
+                    <input type="text" name="name" value="" class="none" placeholder="Nhập tên thư mục hoặc tập tin" />
+                </li>
+                </li>
+                <li class="radio-choose">
+                    <input type="radio" name="type" value="1" checked=""/>
+                    <span>Thư mục</span>
+                    <input type="radio" name="type" value="2"/>
+                    <span>Tập tin</span>
+                </li>
+                <li class="button">
+                    <button type="submit" name="create">
+                        <span>Tạo</span>
+                    </button>
+                    <a href="#">
+                        <span>Hủy</span>
+                    </a>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+<?php require_once('footer.php'); ?>
+
+<?php
+
+/*
             $dir = processDirectory($dir);
 
             if (isset($_POST['submit'])) {
@@ -70,5 +113,5 @@
     } else {
         goURL('login.php');
     }
-
+*/
 ?>

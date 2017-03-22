@@ -42,7 +42,7 @@
             $this->language->execute();
             $this->autoload->execute();
 
-            if (env('app.session.init', false))
+            if (env('app.session.init', false) == true)
                 $this->sessionInit();
 
             $this->firewall = new FirewallProcess($this);
