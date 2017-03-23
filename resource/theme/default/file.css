@@ -17,7 +17,9 @@ ul.location-path {
             box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 
     margin-bottom: 15px;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 45px;
 }
 
 ul.location-path li {
@@ -30,6 +32,7 @@ ul.location-path li {
 ul.location-path li span {
     color: #505050;
     font-weight: bold;
+    line-height: 45px;
 }
 
 ul.location-path li a:hover span,
@@ -119,8 +122,14 @@ ul.file-list-home > li.paging {
     width: 100%;
 }
 
-ul.file-list-home > li.back span.icomoon {
+ul.file-list-home > li.back span.icomoon,
+ul.file-list-home > li.empty span.icomoon {
     margin-right: 5px;
+}
+
+ul.file-list-home > li.empty span {
+    color: red;
+    line-height: 45px;
 }
 
 ul.file-list-home > li.paging {
@@ -139,7 +148,8 @@ ul.file-list-home > li.paging ul.paging {
 }
 
 ul.file-list-home > li.type-directory,
-ul.file-list-home > li.type-file {
+ul.file-list-home > li.type-file,
+ul.file-list-home > li.empty {
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -149,6 +159,7 @@ ul.file-list-home > li.type-directory {
 }
 
 ul.file-list-home > li.back span.icomoon,
+ul.file-list-home > li.empty span.icomoon,
 ul.file-list-home > li.type-directory span.icomoon {
     color: #ffb300;
     font-size: 25px;

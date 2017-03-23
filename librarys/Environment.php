@@ -31,6 +31,7 @@
             $this->cache('app.session.init',            false);
             $this->cache('app.session.name',            session_name());
             $this->cache('app.session.cookie_lifetime', ini_get('session.cookie_lifetime'));
+            $this->cache('app.session.cookie_path',     ini_get('session.cookie_path'));
             $this->cache('app.session.cache_limitter',  session_cache_limiter());
             $this->cache('app.session.cache_expire',    session_cache_expire());
 

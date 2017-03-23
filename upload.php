@@ -1,4 +1,107 @@
-<?php define('ACCESS', true);
+<?php
+
+    use Librarys\File\FileInfo;
+    use Librarys\App\AppDirectory;
+    use Librarys\App\AppLocationPath;
+
+    define('LOADED', 1);
+    require_once('global.php');
+
+    if ($appUser->isLogin() == false)
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+
+    $title   = lng('upload.title_page');
+    $themes  = [ env('resource.theme.file') ];
+    $scripts = [ env('resource.javascript.custom_input_file') ];
+    $appAlert->setID(ALERT_UPLOAD);
+    require_once('header.php');
+
+    if ($appDirectory->getDirectory() == null || is_dir($appDirectory->getDirectory()) == false)
+        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
+        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
+
+    $appLocationPath = new AppLocationPath($appDirectory, 'upload.php?');
+    $appLocationPath->setIsPrintLastEntry(true);
+
+    $parameter = AppDirectory::createUrlParameter(
+        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
+        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
+    );
+
+?>
+
+    <?php $appAlert->display(); ?>
+    <?php $appLocationPath->display(); ?>
+
+    <div class="form-action">
+        <div class="title">
+            <span><?php echo lng('upload.title_page'); ?></span>
+        </div>
+        <form action="upload.php<?php echo $parameter; ?>" method="post">
+            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+
+            <ul>
+                <li class="input-file">
+                    <input type="file" name="files[]" id="file-0"/>
+                    <label for="file-0">
+                        <span>Chon tap tin...</span>
+                    </label>
+                </li>
+                <li class="input-file">
+                    <input type="file" name="files[]" id="file-1"/>
+                    <label for="file-1">
+                        <span>Chon tap tin...</span>
+                    </label>
+                </li>
+                <li class="input-file">
+                    <input type="file" name="files[]" id="file-2"/>
+                    <label for="file-2">
+                        <span>Chon tap tin...</span>
+                    </label>
+                </li>
+                <li class="input-file">
+                    <input type="file" name="files[]" id="file-3"/>
+                    <label for="file-3">
+                        <span>Chon tap tin...</span>
+                    </label>
+                </li>
+                <li class="input-file">
+                    <input type="file" name="files[]" id="file-4"/>
+                    <label for="file-4">
+                        <span>Chon tap tin...</span>
+                    </label>
+                </li>
+                <li class="button">
+                    <button type="submit" name="upload">
+                        <span><?php echo lng('upload.form.button.upload'); ?></span>
+                    </button>
+                    <a href="index.php<?php echo $parameter; ?>">
+                        <span><?php echo lng('upload.form.button.cancel'); ?></span>
+                    </a>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+    <ul class="menu-action">
+        <li>
+            <a href="create.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-folder-create"></span>
+                <span><?php echo lng('home.menu_action.create'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="import.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-folder-download"></span>
+                <span><?php echo lng('home.menu_action.import'); ?></span>
+            </a>
+        </li>
+    </ul>
+
+<?php require_once('footer.php'); ?>
+
+<?php /*define('ACCESS', true);
 
     include_once 'function.php';
 
@@ -73,6 +176,6 @@
         include_once 'footer.php';
     } else {
         goURL('login.php');
-    }
+    }*/
 
 ?>

@@ -9,6 +9,7 @@
 
         private $urlBegin;
         private $urlEnd;
+        private $isPrintLastEntry;
 
         /**
          * [__construct Init object]
@@ -22,6 +23,7 @@
 
             $this->setUrlBegin($urlBegin);
             $this->setUrlEnd($urlEnd);
+            $this->setIsPrintLastEntry(false);
         }
 
          /**
@@ -61,7 +63,25 @@
         }
 
         /**
-         * [display description]
+         * [setIsPrintLastEntry Set flag value is print last entry of path location]
+         * @param [boolean] $isPrint [Flag is print last entry of path location]
+         */
+        public function setIsPrintLastEntry($isPrint)
+        {
+            $this->isPrintLastEntry = $isPrint;
+        }
+
+        /**
+         * [isPrintLastEntry Return flag value is print last entry of path location]
+         * @return boolean [Flag value is print last entry of path location]
+         */
+        public function isPrintLastEntry()
+        {
+            return $this->isPrintLastEntry;
+        }
+
+        /**
+         * [display Display or return html]
          * @return [string] [Return html display of page]
          */
         public function display($print = true)
@@ -105,12 +125,23 @@
 
                         $buffer .= '<a href="' . $this->urlBegin . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($locationUrl . $locationEntry) . $this->urlEnd . '">';
                         $buffer .= '<span>';
+                    } else if ($this->isPrintLastEntry) {
+                        $buffer .= '<li>';
+                        $buffer .= '<span class="separator">' . SP . '</span>';
+                        $buffer .= '<span>';
+                    }
 
+                    if ($locationKey < $locationCount - 1 || $this->isPrintLastEntry) {
                         $locationUrl .= $locationEntry;
                         $buffer      .= $locationValue;
+                    }
 
+                    if ($locationKey < $locationCount - 1) {
                         $buffer .= '</span>';
                         $buffer .= '</a>';
+                        $buffer .= '</li>';
+                    } else if ($this->isPrintLastEntry) {
+                        $buffer .= '</span>';
                         $buffer .= '</li>';
                     } else {
                         break;

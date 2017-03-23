@@ -3,6 +3,8 @@
     return [
         'title_page_root'      => 'Danh sách',
         'title_page_directory' => 'Danh sách: ',
+        
+        'directory_empty' => 'Thư mục trống',
 
         'alert' => [
             'path_not_exists'        => 'Đường dẫn không tồn tại',

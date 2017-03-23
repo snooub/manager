@@ -63,9 +63,13 @@
 
             if ($sessionStart == false) {
                 session_name(env('app.session.name',                         session_name()));
-                session_set_cookie_params(env('app.session.cookie_lifetime', ini_get('session.cookie_lifetime')));
                 session_cache_limiter(env('app.session.cache_limiter',       session_cache_limiter()));
                 session_cache_expire(env('app.session.cache_expire',         session_cache_expire()));
+
+                session_set_cookie_params(
+                    env('app.session.cookie_lifetime', ini_get('session.cookie_lifetime')),
+                    env('app.session.cookie_path',     ini_get('session.cookie_path'))
+                );
 
                 session_start();
             }
@@ -74,6 +78,10 @@
         public function obBufferStart()
         {
             ob_start();
+
+            header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
         }
 
         public function obBufferHandler($label, $message, $title = null)

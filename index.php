@@ -10,7 +10,7 @@
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
 
-    $title = lng('home.title_page_root');
+    $title  = lng('home.title_page_root');
     $themes = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_INDEX);
     require_once('header.php');
@@ -130,21 +130,28 @@
     <ul class="file-list-home">
         <?php echo $bufferBack; ?>
 
-        <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
-            <?php $entry = $handlerList[$i]; ?>
-            <?php $url   = AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($appDirectory->getDirectory() . SP . $entry['name']); ?>
+        <?php if ($handlerCount > 0) { ?>
+            <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
+                <?php $entry = $handlerList[$i]; ?>
+                <?php $url   = AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($appDirectory->getDirectory() . SP . $entry['name']); ?>
 
-            <li class="<?php if ($entry['is_directory']) { ?>type-directory<?php } else { ?>type-file<?php } ?>">
-                <a href="#">
-                    <?php if ($entry['is_directory']) { ?>
-                        <span class="icomoon icon-folder"></span>
-                    <?php } else { ?>
-                        <span class="icomoon icon-file"></span>
-                    <?php } ?>
-                </a>
-                <a href="index.php?<?php echo $url; ?>">
-                    <span class="file-name"><?php echo $entry['name']; ?></span>
-                </a>
+                <li class="<?php if ($entry['is_directory']) { ?>type-directory<?php } else { ?>type-file<?php } ?>">
+                    <a href="#">
+                        <?php if ($entry['is_directory']) { ?>
+                            <span class="icomoon icon-folder"></span>
+                        <?php } else { ?>
+                            <span class="icomoon icon-file"></span>
+                        <?php } ?>
+                    </a>
+                    <a href="index.php?<?php echo $url; ?>">
+                        <span class="file-name"><?php echo $entry['name']; ?></span>
+                    </a>
+                </li>
+            <?php } ?>
+        <?php } else { ?>
+            <li class="empty">
+                <span class="icomoon icon-folder-o"></span>
+                <span><?php echo lng('home.directory_empty'); ?></span>
             </li>
         <?php } ?>
 

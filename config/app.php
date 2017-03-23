@@ -15,6 +15,7 @@
                 'init'            => true,
                 'name'            => 'ManagerIzeroCs',
                 'cookie_lifetime' => 86400 * 7,
+                'cookie_path'     => '/',
                 'cache_limiter'   => 'private'
             ],
 
@@ -91,7 +92,7 @@
 
         'resource' => [
             'javascript' => [
-
+                'custom_input_file' => '${app.http.javascript}/custom_input_file.js'
             ],
 
             'theme' => [

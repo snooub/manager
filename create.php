@@ -1,5 +1,6 @@
 <?php
 
+    use Librarys\File\FileInfo;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
 
@@ -9,119 +10,144 @@
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
 
-    $title = lng('create.title_page');
+    $title  = lng('create.title_page');
     $themes = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_CREATE);
     require_once('header.php');
 
     if ($appDirectory->getDirectory() == null || is_dir($appDirectory->getDirectory()) == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
+        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
 
     $appLocationPath = new AppLocationPath($appDirectory, 'create.php?');
+    $appLocationPath->setIsPrintLastEntry(true);
+
+    $parameter = AppDirectory::createUrlParameter(
+        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
+        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
+    );
+
+    $forms = [
+        'name' => null,
+        'type' => 1,
+        'path' => null
+    ];
+
+    if (isset($_POST['create']) || isset($_POST['create_and_continue'])) {
+        $forms['name'] = addslashes($_POST['name']);
+        $forms['type'] = intval(addslashes($_POST['type']));
+
+        if (empty($forms['name'])) {
+            if ($forms['type'] === 1)
+                $appAlert->danger(lng('create.alert.not_input_name_directory'));
+            else if ($forms['type'] === 2)
+                $appAlert->danger(lng('create.alert.not_input_name_file'));
+            else
+                $appAlert->danger(lng('create.alert.not_choose_type'));
+        } else if ($forms['type'] != null && $forms['type'] !== 1 && $forms['type'] !== 2) {
+            $appAlert->danger(lng('create.alert.not_choose_type'));
+        } else if (FileInfo::isNameError($forms['name']) == true) {
+            if ($forms['type'] === 1)
+                $appAlert->danger(lng('create.alert.name_not_validate_type_directory'));
+            else if ($forms['type'] === 2)
+                $appAlert->danger(lng('create.alert.name_not_validate_type_file'));
+        } else {
+            $forms['path'] = FileInfo::validate($appDirectory->getDirectory() . SP . $forms['name']);
+
+            if (file_exists($forms['path'])) {
+                if (is_dir($forms['path']))
+                    $appAlert->danger(lng('create.alert.name_is_exists_type_directory'));
+                else
+                    $appAlert->danger(lng('create.alert.name_is_exists_type_file'));
+            } else {
+                if ($forms['type'] === 1) {
+                    if (@mkdir($forms['path']) == false) {
+                        $appAlert->danger(lng('create.alert.create_directory_failed'));
+                    } else if (isset($_POST['create_and_continue']) == false) {
+                        $appAlert->success(lng('create.alert.create_directory_success'), ALERT_INDEX, 'index.php' . $parameter);
+                    } else {
+                        $appAlert->success(lng('create.alert.create_directory_success'));
+                        $forms['name'] = null;
+                    }
+
+                } else if ($forms['type'] === 2) {
+                    if (@file_put_contents($forms['path'], '...') === false) {
+                        $appAlert->danger(lng('create.alert.create_file_failed'));
+                    } else if (isset($_POST['create_and_continue']) == false) {
+                        $appAlert->success(lng('create.alert.create_file_success'), ALERT_INDEX, 'index.php' . $parameter);
+                    } else {
+                        $appAlert->success(lng('create.alert.create_file_success'));
+                        $forms['name'] = null;
+                    }
+                } else {
+                    $appAlert->danger(lng('create.alert.not_choose_type'));
+                }
+            }
+        }
+    }
 ?>
 
     <?php $appAlert->display(); ?>
     <?php $appLocationPath->display(); ?>
 
-    <?php $parameterForm = AppDirectory::createUrlParameter(
-        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
-        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
-    ); ?>
-
     <div class="form-action">
-        <form action="<?php echo $parameterForm; ?>" method="post">
+        <div class="title">
+            <span><?php echo lng('create.title_page'); ?></span>
+        </div>
+        <form action="create.php<?php echo $parameter; ?>" method="post">
+            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+
             <ul>
                 <li class="input">
-                    <span>Tên thư mục hoặc tập tin:</span>
-                    <input type="text" name="name" value="" class="none" placeholder="Nhập tên thư mục hoặc tập tin" />
+                    <span><?php echo lng('create.form.input_name'); ?></span>
+                    <input type="text" name="name" value="<?php echo $forms['name']; ?>" class="none" placeholder="<?php echo lng('create.form.placeholder.input_name'); ?>"/>
                 </li>
                 </li>
                 <li class="radio-choose">
                     <ul class="radio-choose-tab">
                         <li>
-                            <input type="radio" name="type" value="1" checked="checked" id="type-folder"/>
+                            <input type="radio" name="type" value="1"<?php if ($forms['type'] == null || $forms['type'] === 1) { ?> checked="checked"<?php } ?> id="type-folder"/>
                             <label for="type-folder">
-                                <span>Thư mục</span>
+                                <span><?php echo lng('create.form.radio_choose_type_directory'); ?></span>
                             </label>
                         </li>
                         <li>
-                            <input type="radio" name="type" value="2" id="type-file"/>
+                            <input type="radio" name="type" value="2" id="type-file"<?php if ($forms['type'] === 2) { ?> checked="checked"<?php } ?>/>
                             <label for="type-file">
-                                <span>Tập tin</span>
+                                <span><?php echo lng('create.form.radio_choose_type_file'); ?></span>
                             </label>
                         </li>
                     </ul>
                 </li>
                 <li class="button">
                     <button type="submit" name="create">
-                        <span>Tạo</span>
+                        <span><?php echo lng('create.form.button.create'); ?></span>
                     </button>
-                    <a href="#">
-                        <span>Hủy</span>
+                    <button type="submit" name="create_and_continue">
+                        <span><?php echo lng('create.form.button.create_and_continue'); ?></span>
+                    </button>
+                    <a href="index.php<?php echo $parameter; ?>">
+                        <span><?php echo lng('create.form.button.cancel'); ?></span>
                     </a>
                 </li>
             </ul>
         </form>
     </div>
 
+    <ul class="menu-action">
+        <li>
+            <a href="upload.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-folder-upload"></span>
+                <span><?php echo lng('home.menu_action.upload'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="import.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-folder-download"></span>
+                <span><?php echo lng('home.menu_action.import'); ?></span>
+            </a>
+        </li>
+    </ul>
+
 <?php require_once('footer.php'); ?>
-
-<?php
-
-/*
-            $dir = processDirectory($dir);
-
-            if (isset($_POST['submit'])) {
-                echo '<div class="notice_failure">';
-
-                if (empty($_POST['name'])) {
-                    echo 'Chưa nhập đầy đủ thông tin';
-                } else if (intval($_POST['type']) === 0 && file_exists($dir . '/' . $_POST['name'])) {
-                    echo 'Tên đã tồn tại dạng thư mục hoặc tập tin';
-                } else if (intval($_POST['type']) === 1 && file_exists($dir . '/' . $_POST['name'])) {
-                    echo 'Tên đã tồn tại dạng thư mục hoặc tập tin';
-                } else if (isNameError($_POST['name'])) {
-                    echo 'Tên không hợp lệ';
-                } else {
-                    if (intval($_POST['type']) === 0) {
-                        if (!@mkdir($dir . '/' . $_POST['name']))
-                            echo 'Tạo thư mục thất bại';
-                        else
-                            goURL('index.php?dir=' . $dirEncode . $pages['paramater_1']);
-                    } else if (intval($_POST['type']) === 1) {
-                        if (!@file_put_contents($dir . '/' . $_POST['name'], '...'))
-                            echo 'Tạo tập tin thất bại';
-                        else
-                            goURL('index.php?dir=' . $dirEncode . $pages['paramater_1']);
-                    } else {
-                        echo 'Lựa chọn không hợp lệ';
-                    }
-                }
-
-                echo '</div>';
-            }
-
-            echo '<div class="list">
-                <span>' . printPath($dir, true) . '</span><hr/>
-                <form action="create.php?dir=' . $dirEncode . $pages['paramater_1'] . '" method="post">
-                    <span class="bull">&bull;</span>Tên thư mục hoặc tập tin:<br/>
-                    <input type="text" name="name" value="' . (isset($_POST['name']) ? $_POST['name'] : null) . '" size="18"/><br/>
-                    <input type="radio" name="type" value="0" checked="checked"/>Thư mục<br/>
-                    <input type="radio" name="type" value="1"/>Tập tin<br/>
-                    <input type="submit" name="submit" value="Tạo"/>
-                </form>
-            </div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/upload.png"/> <a href="upload.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Tải lên tập tin</a></li>
-                <li><img src="icon/import.png"/> <a href="import.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Nhập khẩu tập tin</a></li>
-                <li><img src="icon/list.png"/> <a href="index.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Danh sách</a></li>
-            </ul>';
-        }
-
-        include_once 'footer.php';
-    } else {
-        goURL('login.php');
-    }
-*/
-?>
