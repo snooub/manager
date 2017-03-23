@@ -5,7 +5,7 @@
     if (defined('SP') == false)
         define('SP', DIRECTORY_SEPARATOR);
 
-    error_reporting(E_ALL);
+    error_reporting(0);
 
     require_once(__DIR__ . SP . 'Function.php');
     require_once(__DIR__ . SP . 'Environment.php');
@@ -104,6 +104,9 @@
 
         public function obErrorHandler()
         {
+            if (self::isRunLocal() == false)
+                return;
+
             $this->isErrorHandler = false;
 
             register_shutdown_function(function() {
@@ -188,6 +191,14 @@
         public function getCFSRToken()
         {
             return $this->cfsr;
+        }
+
+        public static function isRunLocal()
+        {
+            $host = env('SERVER.HTTP_HOST');
+
+            if (preg_match('/(localhost|127\.0\.0\.1|izerocs\.mobi)(:8080)?/i', $host))
+                return true;
         }
 
     }
