@@ -5,7 +5,7 @@ div#content ul.alert {
 }
 
 div#content div#login {
-    background-color: transparent;
+    background-color: #ffffff;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
        -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);

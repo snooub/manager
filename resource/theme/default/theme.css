@@ -45,6 +45,11 @@ input[type=file] + label {
     cursor: pointer;
 }
 
+input[type=text],
+input[type=password] {
+    font-size: 14px;
+}
+
 input[type=file] {
     display: none;
 }
@@ -91,6 +96,22 @@ input[type=password].warning:focus {
     border-bottom-color: #ffa726;
 }
 
+input::-webkit-input-placeholder {
+    color: #808080;
+}
+
+input:-ms-input-placeholder {
+    color: #808080;
+}
+
+input:-moz-placeholder {
+    color: #808080;
+}
+
+input::-moz-placeholder {
+    color: #808080;
+}
+
 button {
     cursor: pointer;
     outline: 0;
@@ -116,6 +137,21 @@ ul.radio-choose-tab > li {
     text-align: center;
 }
 
+ul.radio-choose-tab li:first-child:nth-last-child(3),
+ul.radio-choose-tab li:first-child:nth-last-child(3) ~ li {
+    width: 33.3%;
+}
+
+ul.radio-choose-tab li:first-child:nth-last-child(4),
+ul.radio-choose-tab li:first-child:nth-last-child(4) ~ li {
+    width: 25%;
+}
+
+ul.radio-choose-tab li:first-child:nth-last-child(5),
+ul.radio-choose-tab li:first-child:nth-last-child(5) ~ li {
+    width: 20%;
+}
+
 ul.radio-choose-tab > li input {
     display: none;
 }
@@ -124,18 +160,35 @@ ul.radio-choose-tab > li input + label {
     display: block;
     background-color: #f0f0f0;
     width: 100%;
-}
-
-ul.radio-choose-tab > li input + label span {
-    line-height: 40px;
+    cursor: pointer;
 }
 
 ul.radio-choose-tab > li input:checked + label {
+    cursor: default;
+}
+
+ul.radio-choose-tab > li input + label span {
+    color: #505050;
+    line-height: 40px;
+    font-size: 14px;
+}
+
+ul.radio-choose-tab > li input:checked + label,
+ul.radio-choose-tab > li input:checked + label:hover {
     background-color: #00897b;
 }
 
-ul.radio-choose-tab > li input:checked + label span {
+ul.radio-choose-tab > li input + label:hover {
+    background-color: #e0e0e0;
+}
+
+ul.radio-choose-tab > li input:checked + label span,
+ul.radio-choose-tab > li input:checked + label:hover span {
     color: #ffffff;
+}
+
+ul.radio-choose-tab > li input + label:hover span {
+    color:  #00897b;
 }
 
 div#container {
@@ -468,7 +521,7 @@ div.form-action > div.title {
 
 div.form-action > div.title span {
     color: #505050;
-    font-weight: bold;
+    font-weight: normal;
     font-size: 17px;
 }
 
@@ -509,7 +562,8 @@ div.form-action form > ul > li.input input {
 
 div.form-action form > ul > li.input span {
     color: #00897b;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: normal;
 }
 
 div.form-action form > ul > li.radio-choose {
@@ -543,7 +597,8 @@ div.form-action form > ul > li.button button {
 
 div.form-action form > ul > li.button button span {
     color: #00897b;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: normal;
 }
 
 div.form-action form > ul > li.button button:hover span {
@@ -567,12 +622,12 @@ div.form-action form > ul > li.button > a:hover {
 
 div.form-action form > ul > li.button > a span {
     color: #404040;
-    font-weight: bold;
+    font-weight: normal;
     font-variant: normal;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 30px;
 }
 
 div.form-action form > ul > li.button > a:hover span {
-    color: #909090;
+    color: #00897b;
 }

@@ -29,6 +29,32 @@
         AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
     );
 
+    $formFilesCount = 0;
+
+    if (isset($_POST['upload'])) {
+        if (isset($_FILES['files']) == false || isset($_FILES['files']['name']) == false) {
+            $appAlert->danger(lng('upload.alert.data_empty_or_not_validate'));
+        } else {
+            $isEmpty        = true;
+            $formFilesCount = count($_FILES['files']['name']);
+
+            foreach ($_FILES['files']['name'] AS $filename) {
+                if (empty($filename) == false) {
+                    $isEmpty = false;
+                    break;
+                }
+            }
+
+            if ($isEmpty) {
+                $appAlert->danger(lng('upload.alert.not_choose_file'));
+            } else {
+
+            }
+        }
+    }
+
+    if ($formFilesCount <= 0)
+        $formFilesCount++;
 ?>
 
     <?php $appAlert->display(); ?>
@@ -38,41 +64,46 @@
         <div class="title">
             <span><?php echo lng('upload.title_page'); ?></span>
         </div>
-        <form action="upload.php<?php echo $parameter; ?>" method="post">
+        <form action="upload.php<?php echo $parameter; ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul>
-                <li class="input-file">
-                    <input type="file" name="files[]" id="file-0"/>
-                    <label for="file-0">
-                        <span>Chon tap tin...</span>
-                    </label>
+                <?php for ($i = 0; $i < $formFilesCount; ++$i) { ?>
+                    <li class="input-file" id="template-input-file" name="file_0">
+                        <input type="file" name="files[]" id="file_0"/>
+                        <label for="file_0">
+                            <span><?php echo lng('upload.form.input.choose_file'); ?></span>
+                        </label>
+                    </li>
+                <?php } ?>
+
+                <li class="radio-choose">
+                    <ul class="radio-choose-tab">
+                        <li>
+                            <input type="radio" name="exists_func" value="1" id="exists_func_override" checked="checked" />
+                            <label for="exists_func_override">
+                                <span><?php echo lng('upload.form.input.exists_func_override'); ?></span>
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" name="exists_func" value="1" id="exists_func_skip"/>
+                            <label for="exists_func_skip">
+                                <span><?php echo lng('upload.form.input.exists_func_skip'); ?></span>
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" name="exists_func" value="1" id="exists_func_rename"/>
+                            <label for="exists_func_rename">
+                                <span><?php echo lng('upload.form.input.exists_func_rename'); ?></span>
+                            </label>
+                        </li>
+                    </ul>
                 </li>
-                <li class="input-file">
-                    <input type="file" name="files[]" id="file-1"/>
-                    <label for="file-1">
-                        <span>Chon tap tin...</span>
-                    </label>
-                </li>
-                <li class="input-file">
-                    <input type="file" name="files[]" id="file-2"/>
-                    <label for="file-2">
-                        <span>Chon tap tin...</span>
-                    </label>
-                </li>
-                <li class="input-file">
-                    <input type="file" name="files[]" id="file-3"/>
-                    <label for="file-3">
-                        <span>Chon tap tin...</span>
-                    </label>
-                </li>
-                <li class="input-file">
-                    <input type="file" name="files[]" id="file-4"/>
-                    <label for="file-4">
-                        <span>Chon tap tin...</span>
-                    </label>
-                </li>
+
                 <li class="button">
+                    <button type="button" onclick="javasctipt:onAddMoreInputFile('template-input-file', 'file_', 1);">
+                        <span><?php echo lng('upload.form.button.more'); ?></span>
+                    </button>
                     <button type="submit" name="upload">
                         <span><?php echo lng('upload.form.button.upload'); ?></span>
                     </button>
