@@ -4,7 +4,11 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
 
-    define('LOADED', 1);
+    define('LOADED',               1);
+    define('EXISTS_FUNC_OVERRIDE', 1);
+    define('EXISTS_FUNC_SKIP',     2);
+    define('EXISTS_FUNC_RENAME',   3);
+
     require_once('global.php');
 
     if ($appUser->isLogin() == false)
@@ -29,32 +33,96 @@
         AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
     );
 
-    $formFilesCount = 0;
+    $forms = [
+        'files'       => null,
+        'is_empty'    => true,
+        'files_count' => 0,
+        'exists_func' => EXISTS_FUNC_OVERRIDE
+    ];
 
     if (isset($_POST['upload'])) {
+        $forms['exists_func'] = intval(addslashes($_POST['exists_func']));
+
         if (isset($_FILES['files']) == false || isset($_FILES['files']['name']) == false) {
             $appAlert->danger(lng('upload.alert.data_empty_or_not_validate'));
         } else {
-            $isEmpty        = true;
-            $formFilesCount = count($_FILES['files']['name']);
+            $forms['is_empty']    = true;
+            $forms['files_count'] = count($_FILES['files']['name']);
 
-            foreach ($_FILES['files']['name'] AS $filename) {
+            foreach ($_FILES['files']['name'] AS $index => $filename) {
                 if (empty($filename) == false) {
-                    $isEmpty = false;
-                    break;
+                    $forms['is_empty'] = false;
+
+                    $forms['files'][] = [
+                        'name'     => $_FILES['files']['name'][$index],
+                        'type'     => $_FILES['files']['type'][$index],
+                        'size'     => $_FILES['files']['size'][$index],
+                        'error'    => $_FILES['files']['error'][$index],
+                        'tmp_name' => $_FILES['files']['tmp_name'][$index]
+                    ];
                 }
             }
 
-            if ($isEmpty) {
+            if ($forms['is_empty']) {
                 $appAlert->danger(lng('upload.alert.not_choose_file'));
             } else {
+                foreach ($forms['files'] AS $index => $file) {
+                    if ($file['error'] == UPLOAD_ERR_INI_SIZE) {
+                        $appAlert->danger(lng('upload.alert.file_error_max_size', 'filemame', $file['name']));
+                    } else {
+                        $path        = FileInfo::validate($appDirectory->getDirectory() . SP . $file['name']);
+                        $isDirectory = is_dir($path);
+                        $isFile      = is_file($path);
 
+                        if ($isDirectory && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
+                            $appAlert->danger(lng('upload.alert.path_file_error_is_directory', 'filename', $file['name']));
+                        } else if ($isFile && $forms['exists_func'] === EXISTS_FUNC_SKIP) {
+                            $appAlert->info(lng('upload.alert.path_file_is_exists_and_skip', 'filename', $file['name']));
+                        } else if ($isFile && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
+                            if (FileInfo::unlink($path)) {
+
+                                if (FileInfo::copy($file['tmp_name'], $path))
+                                    $appAlert->success(lng('upload.alert.upload_file_exists_override_is_success', 'filename', $file['name']));
+                                else
+                                    $appAlert->danger(lng('upload.alert.upload_file_exists_override_is_failed', 'filename', $file['name']));
+                            } else {
+                                $appAlert->danger(lng('upload.alert.error_delete_file_exists', 'filename', $file['name']));
+                            }
+                        } else if ($isFile && $forms['exists_func'] === EXISTS_FUNC_RENAME) {
+                            $fileRename = null;
+                            $pathRename = null;
+
+                            for ($i = 0; $i < 50; ++$i) {
+                                $fileRename = rand(10000, 99999) . '_' . $file['name'];
+                                $pathRename = FileInfo::validate($appDirectory->getDirectory() . SP . $fileRename);
+
+                                if (FileInfo::fileExists($pathRename) == false) {
+                                    break;
+                                } else {
+                                    $fileRename = null;
+                                    $pathRename = null;
+                                }
+                            }
+
+                            if ($fileRename == null || $pathRename == null)
+                                $appAlert->danger(lng('upload.alert.create_new_filename_exists_rename_is_failed', 'filename', $file['name']));
+                            else if (FileInfo::copy($file['tmp_name'], $pathRename))
+                                $appAlert->success(lng('upload.alert.upload_file_exists_rename_is_success', 'filename', $fileRename));
+                            else
+                                $appAlert->danger(lng('upload.alert.upload_file_exists_rename_is_failed', 'filename', $fileRename));
+                        } else if ($isFile || FileInfo::copy($file['tmp_name'], $path) == false) {
+                            $appAlert->danger(lng('upload.alert.upload_file_is_failed', 'filename', $file['name']));
+                        } else {
+                            $appAlert->success(lng('upload.alert.upload_file_is_success', 'filename', $file['name']));
+                        }
+                    }
+                }
             }
         }
     }
 
-    if ($formFilesCount <= 0)
-        $formFilesCount++;
+    if ($forms['files_count'] <= 0)
+        $forms['files_count']++;
 ?>
 
     <?php $appAlert->display(); ?>
@@ -68,11 +136,11 @@
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul>
-                <?php for ($i = 0; $i < $formFilesCount; ++$i) { ?>
-                    <li class="input-file" id="template-input-file" name="file_0">
-                        <input type="file" name="files[]" id="file_0"/>
-                        <label for="file_0">
-                            <span><?php echo lng('upload.form.input.choose_file'); ?></span>
+                <?php for ($i = 0; $i < $forms['files_count']; ++$i) { ?>
+                    <li class="input-file"<?php if ($i === $forms['files_count'] - 1) { ?> id="template-input-file"<?php } ?> name="file_<?php echo $i; ?>">
+                        <input type="file" name="files[]" id="file_<?php echo $i; ?>"/>
+                        <label for="file_<?php echo $i; ?>">
+                            <span lng="<?php echo lng('upload.form.input.choose_file'); ?>"><?php echo lng('upload.form.input.choose_file'); ?></span>
                         </label>
                     </li>
                 <?php } ?>
@@ -80,19 +148,19 @@
                 <li class="radio-choose">
                     <ul class="radio-choose-tab">
                         <li>
-                            <input type="radio" name="exists_func" value="1" id="exists_func_override" checked="checked" />
+                            <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_OVERRIDE; ?>" id="exists_func_override"<?php if ($forms['exists_func'] === EXISTS_FUNC_OVERRIDE) { ?> checked="checked"<?php } ?>/>
                             <label for="exists_func_override">
                                 <span><?php echo lng('upload.form.input.exists_func_override'); ?></span>
                             </label>
                         </li>
                         <li>
-                            <input type="radio" name="exists_func" value="1" id="exists_func_skip"/>
+                            <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_SKIP; ?>" id="exists_func_skip"<?php if ($forms['exists_func'] === EXISTS_FUNC_SKIP) { ?> checked="checked"<?php } ?>/>
                             <label for="exists_func_skip">
                                 <span><?php echo lng('upload.form.input.exists_func_skip'); ?></span>
                             </label>
                         </li>
                         <li>
-                            <input type="radio" name="exists_func" value="1" id="exists_func_rename"/>
+                            <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_RENAME; ?>" id="exists_func_rename"<?php if ($forms['exists_func'] == EXISTS_FUNC_RENAME) { ?> checked="checked"<?php } ?>/>
                             <label for="exists_func_rename">
                                 <span><?php echo lng('upload.form.input.exists_func_rename'); ?></span>
                             </label>
@@ -101,7 +169,7 @@
                 </li>
 
                 <li class="button">
-                    <button type="button" onclick="javasctipt:onAddMoreInputFile('template-input-file', 'file_', 1);">
+                    <button type="button" onclick="javasctipt:onAddMoreInputFile('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');">
                         <span><?php echo lng('upload.form.button.more'); ?></span>
                     </button>
                     <button type="submit" name="upload">
@@ -131,82 +199,3 @@
     </ul>
 
 <?php require_once('footer.php'); ?>
-
-<?php /*define('ACCESS', true);
-
-    include_once 'function.php';
-
-    if (IS_LOGIN) {
-        $title = 'Tải lên tập tin';
-
-        include_once 'header.php';
-
-        echo '<div class="title">' . $title . '</div>';
-
-        if ($dir == null || !is_dir(processDirectory($dir))) {
-            echo '<div class="list"><span>Đường dẫn không tồn tại</span></div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/list.png"/> <a href="index.php' . $pages['paramater_0'] . '">Danh sách</a></li>
-            </ul>';
-        } else {
-            $dir = processDirectory($dir);
-
-            if (isset($_POST['submit'])) {
-                $isEmpty = true;
-
-                foreach ($_FILES['file']['name'] AS $entry) {
-                    if (!empty($entry)) {
-                        $isEmpty = false;
-                        break;
-                    }
-                }
-
-                if ($isEmpty) {
-                    echo '<div class="notice_failure">Chưa chọn tập tin</div>';
-                } else {
-                    for ($i = 0; $i < count($_FILES['file']['name']); ++$i) {
-                        if (!empty($_FILES['file']['name'][$i])) {
-                            if ($_FILES['file']['error'] == UPLOAD_ERR_INI_SIZE) {
-                                echo '<div class="notice_failure">Tập tin <strong class="file_name_upload">' . $_FILES['file']['name'][$i] . '</strong> vượt quá kích thước cho phép</div>';
-                            } else {
-                                if (copy($_FILES['file']['tmp_name'][$i], $dir . '/' . str_replace(array('_jar', '.jar1', '.jar2'), '.jar', $_FILES['file']['name'][$i])))
-                                    echo '<div class="notice_succeed">Tải lên tập tin <strong class="file_name_upload">' . $_FILES['file']['name'][$i] . '</strong>, <span class="file_size_upload">' . size($_FILES['file']['size'][$i]) . '</span> thành công</div>';
-                                else
-                                    echo '<div class="notice_failure">Tải lên tập tin <strong class="file_name_upload">' . $_FILES['file']['name'][$i] . '</strong> thất bại</div>';
-                            }
-                        }
-                    }
-                }
-            }
-
-            echo '<div class="list">
-                <span>' . printPath($dir, true) . '</span><hr/>
-                <form action="upload.php?dir=' . $dirEncode . $pages['paramater_1'] . '" method="post" enctype="multipart/form-data">
-                    <span class="bull">&bull;</span>Tập tin 1:<br/>
-                    <input type="file" name="file[]" size="18"/><br/>
-                    <span class="bull">&bull;</span>Tập tin 2:<br/>
-                    <input type="file" name="file[]" size="18"/><br/>
-                    <span class="bull">&bull;</span>Tập tin 3:<br/>
-                    <input type="file" name="file[]" size="18"/><br/>
-                    <span class="bull">&bull;</span>Tập tin 4:<br/>
-                    <input type="file" name="file[]" size="18"/><br/>
-                    <span class="bull">&bull;</span>Tập tin 5:<br/>
-                    <input type="file" name="file[]" size="18"/><br/>
-                    <input type="submit" name="submit" value="Tải lên"/>
-                </form>
-            </div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/create.png"/> <a href="create.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Tạo mới</a></li>
-                <li><img src="icon/import.png"/> <a href="import.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Nhập khẩu tập tin</a></li>
-                <li><img src="icon/list.png"/> <a href="index.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Danh sách</a></li>
-            </ul>';
-        }
-
-        include_once 'footer.php';
-    } else {
-        goURL('login.php');
-    }*/
-
-?>

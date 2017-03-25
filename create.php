@@ -4,7 +4,10 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
 
-    define('LOADED', 1);
+    define('LOADED',      1);
+    define('TYPE_FOLDER', 1);
+    define('TYPE_FILE',   2);
+
     require_once('global.php');
 
     if ($appUser->isLogin() == false)
@@ -30,7 +33,7 @@
 
     $forms = [
         'name' => null,
-        'type' => 1,
+        'type' => TYPE_FOLDER,
         'path' => null
     ];
 
@@ -39,18 +42,18 @@
         $forms['type'] = intval(addslashes($_POST['type']));
 
         if (empty($forms['name'])) {
-            if ($forms['type'] === 1)
+            if ($forms['type'] === TYPE_FOLDER)
                 $appAlert->danger(lng('create.alert.not_input_name_directory'));
-            else if ($forms['type'] === 2)
+            else if ($forms['type'] === TYPE_FILE)
                 $appAlert->danger(lng('create.alert.not_input_name_file'));
             else
                 $appAlert->danger(lng('create.alert.not_choose_type'));
-        } else if ($forms['type'] != null && $forms['type'] !== 1 && $forms['type'] !== 2) {
+        } else if ($forms['type'] != null && $forms['type'] !== TYPE_FOLDER && $forms['type'] !== TYPE_FILE) {
             $appAlert->danger(lng('create.alert.not_choose_type'));
         } else if (FileInfo::isNameError($forms['name']) == true) {
-            if ($forms['type'] === 1)
+            if ($forms['type'] === TYPE_FOLDER)
                 $appAlert->danger(lng('create.alert.name_not_validate_type_directory'));
-            else if ($forms['type'] === 2)
+            else if ($forms['type'] === TYPE_FILE)
                 $appAlert->danger(lng('create.alert.name_not_validate_type_file'));
         } else {
             $forms['path'] = FileInfo::validate($appDirectory->getDirectory() . SP . $forms['name']);
@@ -61,23 +64,22 @@
                 else
                     $appAlert->danger(lng('create.alert.name_is_exists_type_file'));
             } else {
-                if ($forms['type'] === 1) {
+                if ($forms['type'] === TYPE_FOLDER) {
                     if (@mkdir($forms['path']) == false) {
-                        $appAlert->danger(lng('create.alert.create_directory_failed'));
+                        $appAlert->danger(lng('create.alert.create_directory_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
-                        $appAlert->success(lng('create.alert.create_directory_success'), ALERT_INDEX, 'index.php' . $parameter);
+                        $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $parameter);
                     } else {
-                        $appAlert->success(lng('create.alert.create_directory_success'));
+                        $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']));
                         $forms['name'] = null;
                     }
-
-                } else if ($forms['type'] === 2) {
+                } else if ($forms['type'] === TYPE_FILE) {
                     if (@file_put_contents($forms['path'], '...') === false) {
-                        $appAlert->danger(lng('create.alert.create_file_failed'));
+                        $appAlert->danger(lng('create.alert.create_file_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
-                        $appAlert->success(lng('create.alert.create_file_success'), ALERT_INDEX, 'index.php' . $parameter);
+                        $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $parameter);
                     } else {
-                        $appAlert->success(lng('create.alert.create_file_success'));
+                        $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']));
                         $forms['name'] = null;
                     }
                 } else {
@@ -107,13 +109,13 @@
                 <li class="radio-choose">
                     <ul class="radio-choose-tab">
                         <li>
-                            <input type="radio" name="type" value="1"<?php if ($forms['type'] == null || $forms['type'] === 1) { ?> checked="checked"<?php } ?> id="type-folder"/>
+                            <input type="radio" name="type" value="<?php echo TYPE_FOLDER; ?>"<?php if ($forms['type'] === TYPE_FOLDER) { ?> checked="checked"<?php } ?> id="type-folder"/>
                             <label for="type-folder">
                                 <span><?php echo lng('create.form.radio_choose_type_directory'); ?></span>
                             </label>
                         </li>
                         <li>
-                            <input type="radio" name="type" value="2" id="type-file"<?php if ($forms['type'] === 2) { ?> checked="checked"<?php } ?>/>
+                            <input type="radio" name="type" value="<?php echo TYPE_FILE; ?>" id="type-file"<?php if ($forms['type'] === TYPE_FILE) { ?> checked="checked"<?php } ?>/>
                             <label for="type-file">
                                 <span><?php echo lng('create.form.radio_choose_type_file'); ?></span>
                             </label>

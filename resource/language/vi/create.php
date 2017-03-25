@@ -30,10 +30,10 @@
             'name_not_permission_type_directory' => 'Xin lỗi bạn đang tạo thư mục trong đường dẫn của ứng dụng',
             'name_not_permission_type_file' => 'Xin lỗi bạn đang tạo tập tin trong đường dẫn của ứng dụng',
 
-            'create_directory_failed'  => 'Tạo thư mục thất bại',
-            'create_directory_success' => 'Tạo thư mục thành công',
-            'create_file_failed'       => 'Tạo tập tin thất bại',
-            'create_file_success'      => 'Tạo tập tin thành công'
+            'create_directory_failed'  => 'Tạo thư mục <strong>{$filename}</strong> thất bại',
+            'create_directory_success' => 'Tạo thư mục <strong>{$filename}</strong> thành công',
+            'create_file_failed'       => 'Tạo tập tin <strong>{$filename}</strong> thất bại',
+            'create_file_success'      => 'Tạo tập tin <strong>{$filename}</strong> thành công'
         ]
     ];
 

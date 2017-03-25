@@ -422,6 +422,11 @@
             return false;
         }
 
+        public static function fileExists($path)
+        {
+            return file_exists($path);
+        }
+
         /**
          * Check permission path
          */

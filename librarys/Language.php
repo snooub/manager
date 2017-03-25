@@ -159,14 +159,22 @@
             return $array;
         }
 
-        protected static function langMatchesString($str)
+        protected static function langMatchesString($str, $params = null)
         {
-            if (is_array($str) || preg_match('/\#\{(.+?)\}/si', $str) == false)
+            if (is_array($str) || (preg_match('/\#\{(.+?)\}/si', $str) == false && preg_match('/lng\{(.+?)\}/si', $str, $matches) == false))
                 return $str;
 
-            return preg_replace_callback('/\#\{(.+?)\}/si', function($matches) {
-                return lng(trim($matches[1]));
+            $GLOBALS['langMatchesString$Params'] = $params;
+
+            $str = preg_replace_callback('/\#\{(.+?)\}/si', function($matches) {
+                return lng(trim($matches[1]), $GLOBALS['langMatchesString$Params']);
             }, $str);
+
+            $str = preg_replace_callback('/lng\{(.+?)\}/si', function($matches) {
+                return lng(trim($matches[1]), $GLOBALS['langMatchesString$Params']);
+            }, $str);
+
+            return $str;
         }
 
         public static function toJson()

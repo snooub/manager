@@ -1,6 +1,13 @@
 function onChangeInputFileEventListener(env) {
-    if (typeof env.target.nextElementSibling !== "undefined")
-        env.target.nextElementSibling.innerHTML = env.target.value;
+    if (typeof env.target.nextElementSibling !== "undefined") {
+        var nextElement = env.target.nextElementSibling;
+        var spanElement = nextElement.getElementsByTagName("span");
+
+        if (spanElement !== "undefined" && spanElement.length >= 1)
+            spanElement[0].innerHTML = env.target.value;
+        else
+            nextElement.innerHTML = env.target.value;
+    }
 }
 
 function onAddEventChangeInputFile() {
@@ -21,6 +28,17 @@ function getAttribute(element, name) {
         return element.getAttribute(name);
     else if (element.getAttributeNode)
          return element.getAttributeNode(name);
+}
+
+function hasAttribute(element, name) {
+    var attr = getAttribute(element, node);
+
+    if (attr == null)
+        return false;
+    else if (typeof attr === "undefined")
+        return false;
+
+    return true;
 }
 
 function setAttribute(element, name, value) {
@@ -57,7 +75,7 @@ function replaceAttributeName(childNodes, name, value) {
     }
 }
 
-function onAddMoreInputFile(idTemplateInputFile, namePrefix) {
+function onAddMoreInputFile(idTemplateInputFile, namePrefix, placeHolderText) {
     var elementTemplate = document.getElementById(idTemplateInputFile);
     var elementClone    = elementTemplate.cloneNode(true);
     var parentElement   = elementTemplate.parentElement;
@@ -75,9 +93,46 @@ function onAddMoreInputFile(idTemplateInputFile, namePrefix) {
 
         if (attributeNameTemplate != null && attributeNameTemplate.indexOf(namePrefix, 0) === 0) {
             indexCurrentTemplate = attributeNameTemplate.substring(namePrefix.length);
-            indexCurrentTemplate = parseInt(indexCurrentTemplate);
+            indexCurrentTemplate = parseInt(indexCurrentTemplate);;
         } else {
             indexCurrentTemplate = 0;
+        }
+
+        var inputFileClone = elementClone.getElementsByTagName("input");
+        var labelFileClone  = elementClone.getElementsByTagName("label");
+
+        for (var i = 0; i < inputFileClone.length; ++i) {
+            var input    = inputFileClone[i];
+            var inputNew = document.createElement("input");
+
+            inputNew.setAttribute("type", getAttribute(input, "type"));
+            inputNew.setAttribute("name", getAttribute(input, "name"));
+            inputNew.setAttribute("id",   getAttribute(input, "id"));
+            elementClone.replaceChild(inputNew, input);
+        }
+
+        for (var i = 0; i < labelFileClone.length; ++i) {
+            var label = labelFileClone[i];
+            var span  = label.getElementsByTagName("span");
+
+            if (span != null && typeof span !== "undefined" && span.length >= 1) {
+                var attributes = span[0].attributes;
+                var attrLng    = attributes.lng;
+                var attrValue  = attributes.value;
+                var inner      = null;
+
+                if (attrLng.value && attrLng.value != null)
+                    inner = attrLng.value;
+                else if (attrValue.value && attrValue.value != null)
+                    inner = attrValue.value;
+
+                span[0].innerHTML = inner;
+            } else {
+                if (typeof placeHolderText !== "string")
+                    placeHolderText = null;
+
+                label.innerHTML = placeHolderText;
+            }
         }
 
         var valueIndexCurrent = namePrefix + (indexCurrentTemplate + 1);
