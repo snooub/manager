@@ -468,6 +468,20 @@
             return true;
         }
 
+        public static function getChmodPermission($path)
+        {
+            $perms = fileperms($path);
+
+            if ($perms !== false) {
+                $perms = decoct($perms);
+                $perms = substr($perms, strlen($perms) == 5 ? 2 : 3, 3);
+            } else {
+                $perms = 0;
+            }
+
+            return $perms;
+        }
+
 	}
 
 ?>

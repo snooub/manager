@@ -5,7 +5,7 @@
 	final class FileMime
 	{
 
-		private static $mimes = array(
+		private static $mimes = [
 			// Text
 			'txt'  => 'text/plain',
 			'htm'  => 'text/html',
@@ -58,7 +58,118 @@
 			// Open office
 			'odt'  => 'application/vnd.oasis.opendocument.text',
 			'ods'  => 'application/vnd.oasis.opendocument.spreadsheet'
-        );
+        ];
+
+        private static $formats = [
+            'image' => [
+                'jpg',
+                'jpeg',
+                'gif',
+                'png',
+                'bmp',
+                'ico'
+            ],
+
+            'text' => [
+                'txt'
+            ],
+
+            'code' => [
+                'h',
+                'xml',
+                'asp',
+                'cpp',
+                'sql',
+                'c',
+                'py',
+                'php',
+                'java',
+                'css',
+                'html',
+                'tpl',
+                'ini',
+                'pl',
+                'rb',
+                'rss',
+                'csv',
+                'htaccess',
+                'js',
+                'lng',
+                'pas',
+                'sh',
+                'cnf',
+                'config',
+                'conf',
+                'conv'
+            ],
+
+            'archive' => [
+                'zip',
+                'rar',
+                'jar',
+                'jar1',
+                'jar2',
+                '7z',
+                'tar',
+                'tarz'
+            ],
+
+            'audio' => [
+                'wav',
+                'aac',
+                'mid',
+                'mp3'
+            ],
+
+            'video' => [
+                '3gp',
+                'mpg',
+                'flv',
+                'm4v',
+                'avi',
+                'mp4',
+                'mp4',
+                'mov',
+                'swf'
+            ],
+
+            'document' => [
+                'pps',
+                'xlxs',
+                'ppt',
+                'docx',
+                'xls',
+                'doc',
+                'pdf'
+            ],
+
+            'binary' => [
+                'dot',
+                'exe',
+                'dat',
+                'pak',
+                'deb'
+            ],
+
+            'source' => [
+                'changelog',
+                'copyright',
+                'license',
+                'readme'
+            ],
+
+            'other' => [
+
+            ]
+        ];
+
+        private $fileInfo;
+
+
+        public function __construct(FileInfo $fileInfo)
+        {
+            $this->fileInfo = $fileInfo;
+        }
 
 		public static function get(FileInfo $fileinfo)
 		{
@@ -80,6 +191,78 @@
 
 			return 'application/octet-stream';
 		}
+
+        private function isFormat($array)
+        {
+            if (in_array($this->fileInfo->getFileExt(), $array))
+                return true;
+
+            return false;
+        }
+
+        public function isFormatImage()
+        {
+            return $this->isFormat(self::$formats['image']);
+        }
+
+        public function isFormatText()
+        {
+            return $this->isFormat(self::$formats['text']);
+        }
+
+        public function isFormatArchive()
+        {
+            return $this->isFormat(self::$formats['archive']);
+        }
+
+        public function isFormatAudio()
+        {
+            return $this->isFormat(self::$formats['audio']);
+        }
+
+        public function isFormatVideo()
+        {
+            return $this->isFormat(self::$formats['video']);
+        }
+
+        public function isFormatBinary()
+        {
+            return $this->isFormat(self::$formats['binary']);
+        }
+
+        public function isFormatDocument()
+        {
+            return $this->isFormat(self::$formats['document']);
+        }
+
+        public function isFormatCode()
+        {
+            return $this->isFormat(self::$formats['code']);
+        }
+
+        public function isFormatSource()
+        {
+            $name = $this->fileInfo->getFileName();
+            $ext  = $name;
+
+            if (strpos($name, '.') !== false)
+                $ext = substr($name, 0, strpos($name, '.'));
+            else
+                $ext = $this->fileInfo->getFileExt();
+
+            if (in_array($ext, self::$formats['source']))
+                return true;
+
+            return false;
+        }
+
+        public function isFormatOther()
+        {
+            if (in_array($this->fileInfo->getFileExt(), self::$formats['other']))
+                return true;
+
+            return false;
+        }
 
 	}
 

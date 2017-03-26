@@ -4,6 +4,9 @@
     use Librarys\App\AppPaging;
     use Librarys\App\AppLocationPath;
 
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
+
     define('LOADED', 1);
     require_once('global.php');
 
@@ -127,26 +130,87 @@
     <?php echo $appAlert->display(); ?>
     <?php echo $appLocationPath->display(); ?>
 
+    <?php $parameter = AppDirectory::createUrlParameter(
+        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
+        AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],       $handlerPage['current'] > 1
+    ); ?>
+
     <ul class="file-list-home">
         <?php echo $bufferBack; ?>
 
         <?php if ($handlerCount > 0) { ?>
             <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
-                <?php $entry = $handlerList[$i]; ?>
-                <?php $url   = AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($appDirectory->getDirectory() . SP . $entry['name']); ?>
+                <?php $entry      = $handlerList[$i]; ?>
+                <?php $entryPath  = FileInfo::validate($appDirectory->getDirectory() . SP . $entry['name']); ?>
+                <?php $chmodPerms = FileInfo::getChmodPermission($entryPath); ?>
 
-                <li class="<?php if ($entry['is_directory']) { ?>type-directory<?php } else { ?>type-file<?php } ?>">
-                    <a href="#">
-                        <?php if ($entry['is_directory']) { ?>
-                            <span class="icomoon icon-folder"></span>
-                        <?php } else { ?>
-                            <span class="icomoon icon-file"></span>
-                        <?php } ?>
-                    </a>
-                    <a href="index.php?<?php echo $url; ?>">
-                        <span class="file-name"><?php echo $entry['name']; ?></span>
-                    </a>
-                </li>
+                <?php if ($entry['is_directory']) { ?>
+                    <li class="type-directory">
+                        <div class="icon">
+                            <a href="#">
+                                <span class="icomoon icon-folder"></span>
+                            </a>
+                        </div>
+                        <a href="index.php?<?php echo AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath); ?>" class="file-name">
+                            <span><?php echo $entry['name']; ?></span>
+                        </a>
+                        <a href="#" class="chmod-permission">
+                            <span><?php echo $chmodPerms; ?></span>
+                        </a>
+                    </li>
+                <?php } else { ?>
+                    <?php $info   = new FileInfo($entryPath); ?>
+                    <?php $mime   = new FileMime($info); ?>
+                    <?php $icon   = null; ?>
+                    <?php $isEdit = false; ?>
+
+                    <?php
+                        if ($mime->isFormatText()) {
+                            $icon   = 'icon-file-text';
+                            $isEdit = true;
+                        } else if ($mime->isFormatCode()) {
+                            $icon   = 'icon-file-code';
+                            $isEdit = true;
+                        } else if ($mime->isFormatArchive()) {
+                            $icon   = 'icon-file-archive';
+                            $isEdit = false;
+                        } else if ($mime->isFormatAudio()) {
+                            $icon   = 'icon-file-audio';
+                            $isEdit = false;
+                        } else if ($mime->isFormatVideo()) {
+                            $icon   = 'icon-file-video';
+                            $isEdit = false;
+                        } else if ($mime->isFormatDocument()) {
+                            $icon   = 'icon-file-document';
+                            $isEdit = false;
+                        } else if ($mime->isFormatImage()) {
+                            $icon   = 'icon-file-image';
+                            $isEdit = false;
+                        } else if ($mime->isFormatSource()) {
+                            $icon   = 'icon-file-code';
+                            $isEdit = true;
+                        } else {
+                            $icon   = 'icon-file';
+                            $isEdit = true;
+                        }
+
+                        $url = 'file_info.php' . $parameter . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']);
+                    ?>
+
+                    <li class="type-file">
+                        <div class="icon">
+                            <?php if ($isEdit) { ?><a href="#"><?php } ?>
+                                <span class="icomoon <?php echo $icon; ?>"></span>
+                            <?php if ($isEdit) { ?></a><?php } ?>
+                        </div>
+                        <a href="<?php echo $url; ?>" class="file-name">
+                            <span><?php echo $entry['name']; ?></span>
+                        </a>
+                        <a href="#" class="chmod-permission">
+                            <span><?php echo $chmodPerms; ?></span>
+                        </a>
+                    </li>
+                <?php } ?>
             <?php } ?>
         <?php } else { ?>
             <li class="empty">
@@ -161,11 +225,6 @@
             </li>
         <?php } ?>
     </ul>
-
-    <?php $parameter = AppDirectory::createUrlParameter(
-        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
-        AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],       $handlerPage['current'] > 1
-    ); ?>
 
     <ul class="menu-action">
         <li>

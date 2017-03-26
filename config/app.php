@@ -15,7 +15,7 @@
                 'init'            => true,
                 'name'            => 'ManagerIzeroCs',
                 'cookie_lifetime' => 86400 * 7,
-                'cookie_path'     => '${app.path.root}',
+                'cookie_path'     => '/manager',
                 'cache_limiter'   => 'private'
             ],
 

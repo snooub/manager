@@ -65,7 +65,6 @@ ul.file-list-home {
 }
 
 ul.file-list-home > li {
-    color:  #909090;
     border-bottom: 1px solid #efefef;
 
     -webkit-box-sizing: border-box;
@@ -77,12 +76,10 @@ ul.file-list-home > li {
     float: left;
     width: 50%;
     height: 45px;
+    position: relative;
     padding-left: 12px;
     padding-right: 12px;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    text-align: left;;
 }
 
 ul.file-list-home > li:last-child {
@@ -97,16 +94,16 @@ ul.file-list-home > li span.icomoon {
     vertical-align: middle;
 }
 
+ul.file-list-home > li a:hover,
 ul.file-list-home > li a:hover span,
-ul.file-list-home > li a:hover strong,
-ul.file-list-home > li a:focus span,
-ul.file-list-home > li a:focus strong {
+ul.file-list-home > li a:hover strong {
     color: #909090;
 }
 
 ul.file-list-home > li span.icomoon {
-    font-size: 17px;
-    margin-right: 2.5px;
+    font-size: 20px;
+    margin-right: 5px;
+    line-height: 45px;
 }
 
 @media all and (max-width: 640px) {
@@ -158,6 +155,13 @@ ul.file-list-home > li.type-directory {
     font-weight: bold;
 }
 
+ul.file-list-home > li.type-directory div.icon,
+ul.file-list-home > li.type-file div.icon {
+    display: inline-block;
+    float: left;
+    height: 45px;
+}
+
 ul.file-list-home > li.back span.icomoon,
 ul.file-list-home > li.empty span.icomoon,
 ul.file-list-home > li.type-directory span.icomoon {
@@ -167,4 +171,25 @@ ul.file-list-home > li.type-directory span.icomoon {
 
 ul.file-list-home > li.type-file {
     color: #606060;
+}
+
+ul.file-list-home > li.type-file span.icomoon {
+    margin-right: 10px;
+}
+
+ul.file-list-home > li.type-directory a.file-name,
+ul.file-list-home > li.type-file a.file-name {
+    display: inline-block;
+    max-width: 80%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+ul.file-list-home > li.type-directory a.chmod-permission,
+ul.file-list-home > li.type-file a.chmod-permission {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    line-height: 45px;
 }

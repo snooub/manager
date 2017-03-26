@@ -25,7 +25,7 @@
     else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'import.php?');
+    $appLocationPath = new AppLocationPath($appDirectory, 'import.php');
     $appLocationPath->setIsPrintLastEntry(true);
 
     $parameter = AppDirectory::createUrlParameter(
@@ -36,9 +36,12 @@
     $forms = [
         'files'       => null,
         'is_empty'    => true,
-        'files_count' => 0,
+        'urls_count'  => 0,
         'exists_func' => EXISTS_FUNC_OVERRIDE
     ];
+
+    if ($forms['urls_count'] <= 0)
+        $forms['urls_count']++;
 ?>
 
     <?php $appAlert->display(); ?>
@@ -52,12 +55,9 @@
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul>
-                <?php for ($i = 0; $i < $forms['files_count']; ++$i) { ?>
-                    <li class="input-file"<?php if ($i === $forms['files_count'] - 1) { ?> id="template-input-file"<?php } ?> name="file_<?php echo $i; ?>">
-                        <input type="file" name="files[]" id="file_<?php echo $i; ?>"/>
-                        <label for="file_<?php echo $i; ?>">
-                            <span lng="<?php echo lng('upload.form.input.choose_file'); ?>"><?php echo lng('upload.form.input.choose_file'); ?></span>
-                        </label>
+                <?php for ($i = 0; $i < $forms['urls_count']; ++$i) { ?>
+                    <li class="input"<?php if ($i === $forms['urls_count'] - 1) { ?> id="template-input-url"<?php } ?> name="url_<?php echo $i; ?>">
+                        <input type="text" name="urls[]"/>
                     </li>
                 <?php } ?>
 
@@ -86,13 +86,13 @@
 
                 <li class="button">
                     <button type="button" onclick="javasctipt:onAddMoreInputFile('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');">
-                        <span><?php echo lng('upload.form.button.more'); ?></span>
+                        <span><?php echo lng('import.form.button.more'); ?></span>
                     </button>
                     <button type="submit" name="upload">
-                        <span><?php echo lng('upload.form.button.upload'); ?></span>
+                        <span><?php echo lng('import.form.button.import'); ?></span>
                     </button>
                     <a href="index.php<?php echo $parameter; ?>">
-                        <span><?php echo lng('upload.form.button.cancel'); ?></span>
+                        <span><?php echo lng('import.form.button.cancel'); ?></span>
                     </a>
                 </li>
             </ul>

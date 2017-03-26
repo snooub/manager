@@ -1,4 +1,76 @@
-<?php define('ACCESS', true);
+<?php
+
+    use Librarys\File\FileInfo;
+    use Librarys\App\AppDirectory;
+    use Librarys\App\AppLocationPath;
+
+    define('LOADED', 1);
+    require_once('global.php');
+
+    if ($appUser->isLogin() == false)
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+
+    $title   = lng('file_info.title_page');
+    $themes  = [ env('resource.theme.file') ];
+    $appAlert->setID(ALERT_FILE_INFO);
+    require_once('header.php');
+
+    if ($appDirectory->getDirectory() == null || is_dir($appDirectory->getDirectory()) == false)
+        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
+        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
+
+    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath->setIsPrintLastEntry(true);
+    $appLocationPath->setIsLinkLastEntry(true);
+
+    $parameter = AppDirectory::createUrlParameter(
+        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
+        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
+    );
+?>
+
+    <?php $appAlert->display(); ?>
+    <?php $appLocationPath->display(); ?>
+
+    <ul class="menu-action">
+        <li>
+            <a href="download.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-download"></span>
+                <span><?php echo lng('file_info.menu_action.download'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="rename.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-edit"></span>
+                <span><?php echo lng('file_info.menu_action.rename'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="copy.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-copy"></span>
+                <span><?php echo lng('file_info.menu_action.copy'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="delete.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-trash"></span>
+                <span><?php echo lng('file_info.menu_action.delete'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="chmod.php<?php echo $parameter; ?>">
+                <span class="icomoon icon-key"></span>
+                <span><?php echo lng('file_info.menu_action.chmod'); ?></span>
+            </a>
+        </li>
+    </ul>
+
+<?php require_once('footer.php'); ?>
+
+<?php
+
+    /*define('ACCESS', true);
 
     include_once 'function.php';
 
@@ -68,6 +140,6 @@
         include_once 'footer.php';
     } else {
         goURL('login.php');
-    }
+    }*/
 
 ?>

@@ -1,6 +1,7 @@
 # Manager
 # Author **IzeroCs**
 
+
 # Sửa lỗi cache php trên trình duyệt
 # Thêm chức năng thêm input file upload bằng javascript
 
@@ -11,3 +12,4 @@
 # Thêm tìm kiếm file và chức năng
 # Thêm xác thực bằng mã gửi qua email
 # Thêm cảnh báo nếu dùng tài khoản mặc định
+# Thêm nén thư mục và tải về

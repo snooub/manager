@@ -10,6 +10,7 @@
         private $urlBegin;
         private $urlEnd;
         private $isPrintLastEntry;
+        private $isLinkLastEntry;
 
         /**
          * [__construct Init object]
@@ -24,6 +25,7 @@
             $this->setUrlBegin($urlBegin);
             $this->setUrlEnd($urlEnd);
             $this->setIsPrintLastEntry(false);
+            $this->setIsLinkLastEntry(false);
         }
 
          /**
@@ -81,6 +83,24 @@
         }
 
         /**
+         * [setIsLinkLastEntry Set flag value is print tag a last entry of path location]
+         * @param [boolean] $isPrint [Flag is tag a last entry of path location]
+         */
+        public function setIsLinkLastEntry($isLink)
+        {
+            $this->isLinkLastEntry = $isLink;
+        }
+
+        /**
+         * [isPrintLastEntry Return flag value is print tag a last entry of path location]
+         * @return boolean [Flag value is print tag a last entry of path location]
+         */
+        public function isLinkLastEntry()
+        {
+            return $this->isLinkLastEntry;
+        }
+
+        /**
          * [display Display or return html]
          * @return [string] [Return html display of page]
          */
@@ -117,13 +137,18 @@
                         $locationEntry = SP . $locationValue;
                     }
 
-                    if ($locationKey < $locationCount - 1) {
+                    if ($locationKey < $locationCount - 1 || ($this->isPrintLastEntry && $this->isLinkLastEntry)) {
                         $buffer .= '<li>';
 
                         if ($locationKey > 0 || ($locationKey === 0 && $locationIsSeparatorFist))
                             $buffer .= '<span class="separator">' . SP . '</span>';
 
-                        $buffer .= '<a href="' . $this->urlBegin . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($locationUrl . $locationEntry) . $this->urlEnd . '">';
+                        $urlBetween = AppDirectory::createUrlParameter(
+                            AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::rawEncode($locationUrl . $locationEntry), true,
+                            AppDirectory::PARAMETER_PAGE_URL,      $this->appDirectory->getPage(), $this->appDirectory->getPage() > 1 && $this->appDirectory->getDirectory() == $locationUrl . $locationEntry
+                        );
+
+                        $buffer .= '<a href="' . $this->urlBegin . $urlBetween . $this->urlEnd . '">';
                         $buffer .= '<span>';
                     } else if ($this->isPrintLastEntry) {
                         $buffer .= '<li>';
@@ -131,12 +156,12 @@
                         $buffer .= '<span>';
                     }
 
-                    if ($locationKey < $locationCount - 1 || $this->isPrintLastEntry) {
+                    if ($locationKey < $locationCount - 1 || $this->isPrintLastEntry || $this->isLinkLastEntry) {
                         $locationUrl .= $locationEntry;
                         $buffer      .= $locationValue;
                     }
 
-                    if ($locationKey < $locationCount - 1) {
+                    if ($locationKey < $locationCount - 1 || ($this->isPrintLastEntry && $this->isLinkLastEntry)) {
                         $buffer .= '</span>';
                         $buffer .= '</a>';
                         $buffer .= '</li>';

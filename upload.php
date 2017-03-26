@@ -25,7 +25,7 @@
     else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'upload.php?');
+    $appLocationPath = new AppLocationPath($appDirectory, 'upload.php');
     $appLocationPath->setIsPrintLastEntry(true);
 
     $parameter = AppDirectory::createUrlParameter(

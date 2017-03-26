@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?3tqwn8');
-  src:  url('fonts/icomoon.eot?3tqwn8#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?3tqwn8') format('truetype'),
-    url('fonts/icomoon.woff?3tqwn8') format('woff'),
-    url('fonts/icomoon.svg?3tqwn8#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?wkcgo2');
+  src:  url('fonts/icomoon.eot?wkcgo2#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?wkcgo2') format('truetype'),
+    url('fonts/icomoon.woff?wkcgo2') format('woff'),
+    url('fonts/icomoon.svg?wkcgo2#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,41 +24,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-paste:before {
-  content: "\e911";
-}
-.icon-copy:before {
-  content: "\e912";
-}
-.icon-file-excel:before {
-  content: "\e915";
-}
-.icon-file-word:before {
-  content: "\e916";
-}
-.icon-file-openoffice:before {
-  content: "\e917";
-}
-.icon-file-pdf:before {
+.icon-file-binary:before {
   content: "\e918";
 }
-.icon-file-zip:before {
-  content: "\e919";
-}
-.icon-file-video:before {
-  content: "\e91a";
-}
-.icon-file-play:before {
-  content: "\e91b";
-}
-.icon-file-music:before {
-  content: "\e91c";
-}
-.icon-file-picture:before {
-  content: "\e91d";
-}
-.icon-file-text:before {
-  content: "\e91e";
+.icon-copy:before {
+  content: "\e917";
 }
 .icon-file:before {
   content: "\e90c";
@@ -80,6 +50,42 @@
 }
 .icon-mysql:before {
   content: "\e903";
+}
+.icon-key:before {
+  content: "\e911";
+}
+.icon-archive:before {
+  content: "\e913";
+}
+.icon-download:before {
+  content: "\e914";
+}
+.icon-edit:before {
+  content: "\e915";
+}
+.icon-file-code:before {
+  content: "\e919";
+}
+.icon-file-video:before {
+  content: "\e91a";
+}
+.icon-file-audio:before {
+  content: "\e91b";
+}
+.icon-file-archive:before {
+  content: "\e91c";
+}
+.icon-file-image:before {
+  content: "\e91d";
+}
+.icon-file-document:before {
+  content: "\e945";
+}
+.icon-file-text:before {
+  content: "\e946";
+}
+.icon-exit:before {
+  content: "\e916";
 }
 .icon-folder:before {
   content: "\e90d";
