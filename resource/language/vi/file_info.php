@@ -3,6 +3,12 @@
     return [
         'title_page' => 'Thông tin',
 
+        'label_name'        => 'Tên:',
+        'label_format'      => 'Định dạng:',
+        'label_size'        => 'Kích thước:',
+        'label_chmod'       => 'Phân quyền:',
+        'label_time_modify' => 'Ngày sửa:',
+
         'menu_action' => [
             'info'           => 'Thông tin',
             'edit_text'      => 'Sửa văn bản',

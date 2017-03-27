@@ -4,14 +4,16 @@
         'title_page' => 'Tạo mới',
 
         'form' => [
-            'input_name'                  => 'Tên thư mục hoặc tập tin:',
-            'radio_choose_type_directory' => 'Thư mục',
-            'radio_choose_type_file'      => 'Tập tin',
+            'input' => [
+                'name'                        => 'Tên thư mục hoặc tập tin:',
+                'radio_choose_type_directory' => 'Thư mục',
+                'radio_choose_type_file'      => 'Tập tin'
+            ],
 
             'button' => [
                 'create'              => 'Tạo',
                 'create_and_continue' => 'Tiếp tục',
-                'cancel'              => 'Hủy'
+                'cancel'              => 'Hủy bỏ'
             ],
 
             'placeholder' => [

@@ -102,7 +102,7 @@
 
             <ul>
                 <li class="input">
-                    <span><?php echo lng('create.form.input_name'); ?></span>
+                    <span><?php echo lng('create.form.input.name'); ?></span>
                     <input type="text" name="name" value="<?php echo $forms['name']; ?>" class="none" placeholder="<?php echo lng('create.form.placeholder.input_name'); ?>"/>
                 </li>
                 </li>
@@ -111,13 +111,13 @@
                         <li>
                             <input type="radio" name="type" value="<?php echo TYPE_FOLDER; ?>"<?php if ($forms['type'] === TYPE_FOLDER) { ?> checked="checked"<?php } ?> id="type-folder"/>
                             <label for="type-folder">
-                                <span><?php echo lng('create.form.radio_choose_type_directory'); ?></span>
+                                <span><?php echo lng('create.form.input.radio_choose_type_directory'); ?></span>
                             </label>
                         </li>
                         <li>
                             <input type="radio" name="type" value="<?php echo TYPE_FILE; ?>" id="type-file"<?php if ($forms['type'] === TYPE_FILE) { ?> checked="checked"<?php } ?>/>
                             <label for="type-file">
-                                <span><?php echo lng('create.form.radio_choose_type_file'); ?></span>
+                                <span><?php echo lng('create.form.input.radio_choose_type_file'); ?></span>
                             </label>
                         </li>
                     </ul>

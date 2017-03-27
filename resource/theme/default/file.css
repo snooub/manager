@@ -191,5 +191,89 @@ ul.file-list-home > li.type-file a.chmod-permission {
     position: absolute;
     top: 0;
     right: 10px;
-    line-height: 45px;
+}
+
+ul.file-list-home > li.type-directory a.chmod-permission span,
+ul.file-list-home > li.type-file a.chmod-permission span {
+    color: #d0d0d0;
+}
+
+ul.file-list-home > li.type-directory a.chmod-permission:hover span,
+ul.file-list-home > li.type-file a.chmod-permission:hover span {
+    color: #a0a0a0;
+}
+
+ul.file-info,
+ul.file-info > li,
+ul.file-info > li > ul,
+ul.file-info > li > ul li {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.file-info {
+    background-color: #ffffff;
+    margin-bottom: 15px;
+
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+ul.file-info > li.title {
+    padding: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+ul.file-info > li.title > span {
+    color: #505050;
+    font-weight: normal;
+    font-size: 17px;
+}
+
+ul.file-info > li.label,
+ul.file-info > li.value {
+    display: inline-block;
+}
+
+ul.file-info > li li {
+    height: 30px;
+}
+
+ul.file-info > li li > span {
+    line-height: 30px;
+}
+
+ul.file-info > li.label li {
+    padding-left: 10px;
+}
+
+ul.file-info > li.label span {
+    color: #00897b;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+ul.file-info > li.value,
+ul.file-info > li.value span {
+    color: #707070;
+}
+
+ul.file-info > li.value {
+    max-width: 70%;
+}
+
+ul.file-info > li.label li,
+ul.file-info > li.value li {
+    padding-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

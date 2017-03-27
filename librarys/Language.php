@@ -12,6 +12,7 @@
         private $cache;
 
         private static $instance;
+        private static $params;
 
         public function __construct(Boot $boot)
         {
@@ -68,7 +69,7 @@
                     return (self::$instance->cache[$name] = 'Resource');
 
                 $array = Environment::envMatchesString($array);
-                $array = Language::langMatchesString($array);
+                $array = Language::langMatchesString($array, $params);
 
                 if (is_array($params) && count($params) > 0) {
                     $count = count($params);
@@ -159,19 +160,19 @@
             return $array;
         }
 
-        protected static function langMatchesString($str, $params = null)
+        protected static function langMatchesString($str, $params)
         {
             if (is_array($str) || (preg_match('/\#\{(.+?)\}/si', $str) == false && preg_match('/lng\{(.+?)\}/si', $str, $matches) == false))
                 return $str;
 
-            $GLOBALS['langMatchesString$Params'] = $params;
+            self::$params = $params;
 
             $str = preg_replace_callback('/\#\{(.+?)\}/si', function($matches) {
-                return lng(trim($matches[1]), $GLOBALS['langMatchesString$Params']);
+                return lng(trim($matches[1]), self::$params);
             }, $str);
 
             $str = preg_replace_callback('/lng\{(.+?)\}/si', function($matches) {
-                return lng(trim($matches[1]), $GLOBALS['langMatchesString$Params']);
+                return lng(trim($matches[1]), self::$params);
             }, $str);
 
             return $str;

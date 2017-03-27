@@ -14,10 +14,16 @@
         return Environment::env($name, $default);
     }
 
-    function lng($name, $params = null)
+    /**
+     * [lng Load value for key language]
+     * @param  [string] $name [Key name language]
+     * @return [string]       [Value for key language]
+     */
+    function lng($name)
     {
+        $params = null;
+
         if (is_array($params) == false) {
-            $params = array();
             $nums   = func_num_args() - 1;
 
             if ($nums > 0 && $nums % 2 == 0) {
@@ -29,7 +35,12 @@
         return Language::lng($name, $params);
     }
 
-    function lngToJson($load = null)
+    /**
+     * [lngToJson List language to json]
+     * @param  [array]  $argument... [List file language load]
+     * @return [string] [Json array string]
+     */
+    function lngToJson()
     {
         if (is_array($load) == false) {
             $load = array();

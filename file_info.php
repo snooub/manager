@@ -19,6 +19,8 @@
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
     else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
+    else if (is_file(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) == false)
+        $appAlert->danger(lng('home.alert.path_not_is_file'), ALERT_INDEX, env('app.http.host'));
 
     $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
     $appLocationPath->setIsPrintLastEntry(true);
@@ -26,12 +28,39 @@
 
     $parameter = AppDirectory::createUrlParameter(
         AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
-        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
+        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1,
+        AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getName(),      true
     );
+
+    $fileInfo = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
 ?>
 
     <?php $appAlert->display(); ?>
     <?php $appLocationPath->display(); ?>
+
+    <ul class="file-info">
+        <li class="title">
+            <span><?php echo lng('file_info.title_page'); ?></span>
+        </li>
+        <li class="label">
+            <ul>
+                <li><span><?php echo lng('file_info.label_name'); ?></span></li>
+                <li><span><?php echo lng('file_info.label_format'); ?></span></li>
+                <li><span><?php echo lng('file_info.label_size'); ?></span></li>
+                <li><span><?php echo lng('file_info.label_chmod'); ?></span></li>
+                <li><span><?php echo lng('file_info.label_time_modify'); ?></span></li>
+            </ul>
+        </li>
+        <li class="value">
+            <ul>
+                <li><span><?php echo $fileInfo->getFileName(); ?></span></li>
+                <li><span><?php echo $fileInfo->getFileExt(); ?></span></li>
+                <li><span><?php echo FileInfo::sizeToString(filesize($fileInfo->getFilePath())); ?></span></li>
+                <li><span><?php echo FileInfo::getChmodPermission($fileInfo->getFilePath()); ?></span></li>
+                <li><span><?php echo date('H:i - d.m.Y', filemtime($fileInfo->getFilePath())); ?></span></li>
+            </ul>
+        </li>
+    </ul>
 
     <ul class="menu-action">
         <li>
@@ -41,25 +70,25 @@
             </a>
         </li>
         <li>
-            <a href="rename.php<?php echo $parameter; ?>">
+            <a href="file_rename.php<?php echo $parameter; ?>">
                 <span class="icomoon icon-edit"></span>
                 <span><?php echo lng('file_info.menu_action.rename'); ?></span>
             </a>
         </li>
         <li>
-            <a href="copy.php<?php echo $parameter; ?>">
+            <a href="file_copy.php<?php echo $parameter; ?>">
                 <span class="icomoon icon-copy"></span>
                 <span><?php echo lng('file_info.menu_action.copy'); ?></span>
             </a>
         </li>
         <li>
-            <a href="delete.php<?php echo $parameter; ?>">
+            <a href="file_delete.php<?php echo $parameter; ?>">
                 <span class="icomoon icon-trash"></span>
                 <span><?php echo lng('file_info.menu_action.delete'); ?></span>
             </a>
         </li>
         <li>
-            <a href="chmod.php<?php echo $parameter; ?>">
+            <a href="file_chmod.php<?php echo $parameter; ?>">
                 <span class="icomoon icon-key"></span>
                 <span><?php echo lng('file_info.menu_action.chmod'); ?></span>
             </a>

@@ -520,6 +520,9 @@ div.form-action {
 div.form-action > div.title {
     padding: 10px;
     margin-bottom: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 div.form-action > div.title span {
