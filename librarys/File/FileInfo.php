@@ -281,22 +281,11 @@
         /**
          * [rrmdir Delete directory and delete entry in directory]
          * @param  [string|array]  $path                    [Path directory or array entry]
-         * @param  boolean &$isHasFileAppPermission         [Flag set true if has directory app]
-         * @return [boolean]                                [Return true if delete success]
-         */
-        public static function rrmdir($path, &$isHasFileAppPermission = false)
-        {
-            return self::removeDirectory($path, $isHasFileAppPermission);
-        }
-
-        /**
-         * [removeDirectory Delete directory and delete entry in directory]
-         * @param  [string|array]  $path                    [Path directory or array entry]
-         * @param  [string]        $directory               [Path directory entry, not set of use]
+         * @param  [string]        $directory               [Path directory container array entry, set of $path is array entry]
          * @param  boolean         &$isHasFileAppPermission [Flag set true if has directory app]
          * @return [boolean]                                [Return true if delete success]
          */
-        private static function removeDirectory($path, $directory = null, &$isHasFileAppPermission = false)
+        public static function rrmdir($path, $directory = null, & $isHasFileAppPermission = false)
         {
             if (is_array($path)) {
                 foreach ($path AS $entry) {
@@ -306,12 +295,11 @@
                         return false;
                     } else if (self::permissionPath($filename) == false) {
                         $isHasFileAppPermission = true;
-                        return true;
                     } else if (@is_file($filename)) {
                         if (self::unlink($filename) == false)
                             return false;
                     } else if (@is_dir($filename)) {
-                        if (self::rrmdir($filename) == false)
+                        if (self::rrmdir($filename, $directory, $isHasFileAppPermission) == false)
                             return false;
                     } else {
                         return false;
@@ -333,12 +321,11 @@
                                 return false;
                             } else if (self::permissionPath($filename) == false) {
                                 $isHasFileAppPermission = true;
-                                return true;
-                            } else if (@is_file($filename)) {
+                            } else if (@is_file($filename)) { bug($filename);
                                 if (self::unlink($filename) == false)
                                     return false;
                             } else if (@is_dir($filename)) {
-                                if (self::rrmdir($filename) == false)
+                                if (self::rrmdir($filename, null, $isHasFileAppPermission) == false)
                                     return false;
                             } else {
                                 return false;

@@ -41,13 +41,16 @@
         if ($isDirectory) {
             $isHasFileAppPermission = false;
 
-            if (FileInfo::rrmdir(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), $isHasFileAppPermission)) {
+            if (FileInfo::rrmdir(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), null, $isHasFileAppPermission) && $isHasFileAppPermission == false) {
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-                //$appAlert->success(lng('file_delete.alert.delete_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString(true));
+                $appAlert->success(lng('file_delete.alert.delete_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString(true));
             } else {
                 if ($isHasFileAppPermission) {
-                    $appAlert->warning(lng('file_delete.alert.not_delete_file_app'));
-                    $appAlert->success(lng('file_delete.alert.delete_entry_in_directory_success', 'filename', $appDirectory->getName()));
+                    $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+                    $appParameter->toString(true);
+
+                    $appAlert->warning(lng('file_delete.alert.not_delete_file_app', 'filename', $appDirectory->getName()), ALERT_INDEX);
+                    $appAlert->success(lng('file_delete.alert.delete_entry_in_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
                 } else {
                     $appAlert->danger(lng('file_delete.alert.delete_directory_failed', 'filename', $appDirectory->getName()));
                 }
