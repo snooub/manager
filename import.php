@@ -21,7 +21,7 @@
     $appAlert->setID(ALERT_IMPORT);
     require_once('header.php');
 
-    if ($appDirectory->getDirectory() == null || is_dir($appDirectory->getDirectory()) == false)
+    if ($appDirectory->getDirectoryExists() == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
     else if ($appDirectory->isPermissionDenyPath())
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));

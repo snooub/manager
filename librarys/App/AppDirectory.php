@@ -132,6 +132,71 @@
             return $this->accessParentPath;
         }
 
+        public function isDirectoryExists()
+        {
+            if ($this->directory != null || empty($this->directory) || is_readable($this->directory) == false)
+                return false;
+
+            if
+            return is_dir($this->directory);
+        }
+
+        public function isDirectorySeparatorNameExists()
+        {
+            if ($this->isDirectoryExists() == false)
+                return false;
+
+            if ($this->name != null || empty($this->name))
+                return false;
+
+            $path = FileInfo::validate($this->directory . SP . $this->name);
+
+            if (is_readable($path) == false)
+                return false;
+
+            return is_dir($path);
+        }
+
+        public function isFileSeparatorNameExists()
+        {
+            if ($this->isDirectoryExists() == false)
+                return false;
+
+            if ($this->name != null || empty($this->name))
+                return false;
+
+            $path = FileInfo::validate($this->directory . SP . $this->name);
+
+            if (is_readable($path) == false)
+                return false;
+
+            return is_file($path);
+        }
+
+        public function isFileExistsDirectory()
+        {
+            if ($this->directory != null || empty($this->directory) || is_readable($this->directory) == false)
+                return false;
+
+            return file_exists($this->directory);
+        }
+
+        public function isFileExistsDirectorySeparatorName()
+        {
+            if ($this->isDirectoryExists() == false)
+                return false;
+
+            if ($this->name != null || empty($this->name))
+                return false;
+
+            $path = FileInfo::validate($this->directory . SP . $this->name);
+
+            if (is_readable($path) == false)
+                return false;
+
+            return file_exists($path);
+        }
+
     }
 
 ?>
