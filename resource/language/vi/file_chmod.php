@@ -20,7 +20,7 @@
 
             'button' => [
                 'chmod'  => 'Phân quyền',
-                'cancel' => 'Hủy bỏ'
+                'cancel' => 'Quay lại'
             ],
 
             'placeholder' => [

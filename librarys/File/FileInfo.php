@@ -57,6 +57,11 @@
 			return $this->fileMime;
 		}
 
+        public function getFileSize()
+        {
+            return filesize($this->filePath);
+        }
+
         public static function isNameError($name)
         {
             return strpos($name, '\\') !== false || strpos($name, '/') !== false;

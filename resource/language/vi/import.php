@@ -7,7 +7,7 @@
             'button' => [
                 'more'   => 'Thêm...',
                 'import' => 'Nhập khẩu',
-                'cancel' => 'Hủy'
+                'cancel' => 'Quay lại'
             ]
         ],
 

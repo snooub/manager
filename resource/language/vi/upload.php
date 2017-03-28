@@ -14,7 +14,7 @@
             'button' => [
                 'more'   => 'Thêm...',
                 'upload' => 'Tải lên',
-                'cancel' => 'Hủy bỏ'
+                'cancel' => 'Quay lại'
             ]
         ],
 

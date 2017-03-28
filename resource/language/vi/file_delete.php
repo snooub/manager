@@ -10,7 +10,7 @@
 
             'button' => [
                 'delete' => 'Xóa',
-                'cancel' => 'Hủy bỏ'
+                'cancel' => 'Quay lại'
             ]
         ],
 

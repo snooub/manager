@@ -12,7 +12,7 @@
 
             'button' => [
                 'rename' => 'Đổi tên',
-                'cancel' => 'Hủy bỏ'
+                'cancel' => 'Quay lại'
             ],
 
             'placeholder' => [

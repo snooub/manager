@@ -10,6 +10,7 @@
     define('EXISTS_FUNC_SKIP',     2);
     define('EXISTS_FUNC_RENAME',   3);
 
+    set_time_limit(0);
     require_once('global.php');
 
     if ($appUser->isLogin() == false)

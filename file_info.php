@@ -86,7 +86,7 @@
     <ul class="menu-action">
         <?php if ($isDirectory == false) { ?>
             <li>
-                <a href="download.php<?php echo $appParameter->toString(); ?>">
+                <a href="file_download.php<?php echo $appParameter->toString(); ?>">
                     <span class="icomoon icon-download"></span>
                     <span><?php echo lng('file_info.menu_action.download'); ?></span>
                 </a>

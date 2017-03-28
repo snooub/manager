@@ -13,7 +13,7 @@
             'button' => [
                 'create'              => 'Tạo',
                 'create_and_continue' => 'Tiếp tục',
-                'cancel'              => 'Hủy bỏ'
+                'cancel'              => 'Quay lại'
             ],
 
             'placeholder' => [
