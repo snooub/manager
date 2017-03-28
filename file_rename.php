@@ -3,6 +3,7 @@
     use Librarys\File\FileInfo;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
+    use Librarys\App\AppParameter;
 
     define('LOADED', 1);
     require_once('global.php');
@@ -19,11 +20,10 @@
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
-    $parameter = AppDirectory::createUrlParameter(
-        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
-        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1,
-        AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getName(),      true
-    );
+    $appParameter = new AppParameter();
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getName(),      true);
 
     $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
     $isDirectory = $fileInfo->isDirectory();
@@ -68,11 +68,8 @@
                 else
                     $appAlert->danger(lng('file_rename.alert.rename_file_failed'));
             } else {
-                $redirect = 'file_rename.php' . AppDirectory::createUrlParameter(
-                    AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(),           true,
-                    AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage() > 1,            true,
-                    AppDirectory::PARAMETER_NAME_URL,      AppDirectory::rawEncode($forms['name']), true
-                );
+                $appParameter->set(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::rawEncode($forms['name']), true);
+                $redirect = 'file_rename.php' . $appParameter->toString(true);
 
                 if ($isDirectory)
                     $appAlert->success(lng('file_rename.alert.rename_directory_success'), null, $redirect);
@@ -94,7 +91,7 @@
                 <span><?php echo lng('file_rename.title_page_file'); ?>: <?php echo $appDirectory->getName(); ?></span>
             <?php } ?>
         </div>
-        <form action="file_rename.php<?php echo $parameter; ?>" method="post">
+        <form action="file_rename.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul>
@@ -110,7 +107,7 @@
                     <button type="submit" name="rename">
                         <span><?php echo lng('file_rename.form.button.rename'); ?></span>
                     </button>
-                    <a href="index.php<?php echo $parameter; ?>">
+                    <a href="index.php<?php echo $appParameter->toString(); ?>">
                         <span><?php echo lng('file_rename.form.button.cancel'); ?></span>
                     </a>
                 </li>
@@ -120,31 +117,33 @@
 
     <ul class="menu-action">
         <li>
-            <a href="file_info.php<?php echo $parameter; ?>">
+            <a href="file_info.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-about"></span>
                 <span><?php echo lng('file_info.menu_action.info'); ?></span>
             </a>
         </li>
+        <?php if ($isDirectory == false) { ?>
+            <li>
+                <a href="download.php<?php echo $appParameter->toString(); ?>">
+                    <span class="icomoon icon-download"></span>
+                    <span><?php echo lng('file_info.menu_action.download'); ?></span>
+                </a>
+            </li>
+        <?php } ?>
         <li>
-            <a href="download.php<?php echo $parameter; ?>">
-                <span class="icomoon icon-download"></span>
-                <span><?php echo lng('file_info.menu_action.download'); ?></span>
-            </a>
-        </li>
-        <li>
-            <a href="file_copy.php<?php echo $parameter; ?>">
+            <a href="file_copy.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-copy"></span>
                 <span><?php echo lng('file_info.menu_action.copy'); ?></span>
             </a>
         </li>
         <li>
-            <a href="file_delete.php<?php echo $parameter; ?>">
+            <a href="file_delete.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-trash"></span>
                 <span><?php echo lng('file_info.menu_action.delete'); ?></span>
             </a>
         </li>
         <li>
-            <a href="file_chmod.php<?php echo $parameter; ?>">
+            <a href="file_chmod.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-key"></span>
                 <span><?php echo lng('file_info.menu_action.chmod'); ?></span>
             </a>
@@ -152,79 +151,3 @@
     </ul>
 
 <?php require_once('footer.php'); ?>
-
-<?php
-
-/*define('ACCESS', true);
-
-    include_once 'function.php';
-
-    if (IS_LOGIN) {
-        $title = 'Đổi tên tập tin';
-
-        include_once 'header.php';
-
-        echo '<div class="title">' . $title . '</div>';
-
-        if ($dir == null || $name == null || !is_file(processDirectory($dir . '/' . $name))) {
-            echo '<div class="list"><span>Đường dẫn không tồn tại</span></div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/list.png"/> <a href="index.php' . $pages['paramater_0'] . '">Danh sách</a></li>
-            </ul>';
-        } else {
-            $dir = processDirectory($dir);
-            $format = getFormat($name);
-
-            if (isset($_POST['submit'])) {
-                echo '<div class="notice_failure">';
-
-                if (empty($_POST['name']))
-                    echo 'Chưa nhập đầy đủ thông tin';
-                else if (isNameError($_POST['name']))
-                    echo 'Tên tập tin không hợp lệ';
-                else if (!@rename($dir . '/' . $name, $dir . '/' . $_POST['name']))
-                    echo 'Thay đổi thất bại';
-                else
-                    goURL('index.php?dir=' . $dirEncode . $pages['paramater_1']);
-
-                echo '</div>';
-            }
-
-            echo '<div class="list">
-                <span class="bull">&bull;</span><span>' . printPath($dir . '/' . $name) . '</span><hr/>
-                <form action="file_rename.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '" method="post">
-                    <span class="bull">&bull;</span>Tên tập tin:<br/>
-                    <input type="text" name="name" value="' . (isset($_POST['name']) ? $_POST['name'] : $name) . '" size="18"/><br/>
-                    <input type="submit" name="submit" value="Thay đổi"/>
-                </form>
-            </div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/info.png"/> <a href="file.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Thông tin</a></li>';
-
-                if (isFormatText($name)) {
-                    echo '<li><img src="icon/edit.png"/> <a href="edit_text.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sửa văn bản</a></li>';
-                    echo '<li><img src="icon/edit_text_line.png"/> <a href="edit_text_line.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sửa theo dòng</a></li>';
-                } else if (in_array($format, $formats['zip'])) {
-                    echo '<li><img src="icon/unzip.png"/> <a href="file_viewzip.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Xem</a></li>';
-                    echo '<li><img src="icon/unzip.png"/> <a href="file_unzip.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Giải nén</a></li>';
-                } else if (isFormatUnknown($name)) {
-                    echo '<li><img src="icon/edit.png"/> <a href="edit_text.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sửa dạng văn bản</a></li>';
-                }
-
-                echo '<li><img src="icon/download.png"/> <a href="file_download.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Tải về</a></li>
-                <li><img src="icon/copy.png"/> <a href="file_copy.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sao chép</a></li>
-                <li><img src="icon/move.png"/> <a href="file_move.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Di chuyển</a></li>
-                <li><img src="icon/delete.png"/> <a href="file_delete.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Xóa</a></li>
-                <li><img src="icon/access.png"/> <a href="file_chmod.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Chmod</a></li>
-                <li><img src="icon/list.png"/> <a href="index.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Danh sách</a></li>
-            </ul>';
-        }
-
-        include_once 'footer.php';
-    } else {
-        goURL('login.php');
-    }*/
-
-?>

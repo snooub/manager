@@ -9,9 +9,9 @@
     use Librarys\Environment;
     use Librarys\Language;
 
-    function env($name, $default = null)
+    function env($name, $default = null, $renew = false)
     {
-        return Environment::env($name, $default);
+        return Environment::env($name, $default, $renew);
     }
 
     /**

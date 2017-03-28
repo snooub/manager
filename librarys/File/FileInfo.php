@@ -276,17 +276,31 @@
         }
 
         /**
-         * @param $path = Array entry name | Path directory, file
-         * @param $directory = Path directory container entry array
-         * @return boolean
+         * [rrmdir Delete directory and delete entry in directory]
+         * @param  [string|array]  $path                    [Path directory or array entry]
+         * @param  boolean &$isHasFileAppPermission         [Flag set true if has directory app]
+         * @return [boolean]                                [Return true if delete success]
          */
-        public static function rrmdir($path, $directory = null)
+        public static function rrmdir($path, &$isHasFileAppPermission = false)
+        {
+            return self::removeDirectory($path, $isHasFileAppPermission);
+        }
+
+        /**
+         * [removeDirectory Delete directory and delete entry in directory]
+         * @param  [string|array]  $path                    [Path directory or array entry]
+         * @param  [string]        $directory               [Path directory entry, not set of use]
+         * @param  boolean         &$isHasFileAppPermission [Flag set true if has directory app]
+         * @return [boolean]                                [Return true if delete success]
+         */
+        private static function removeDirectory($path, $directory = null, &$isHasFileAppPermission = false)
         {
             if (is_array($path)) {
                 foreach ($path AS $entry) {
                     $filename = $directory . DS . $entry;
 
                     if (self::permissionPath($filename) == false) {
+                        $isHasFileAppPermission = true;
                         return false;
                     } else if (@is_file($filename)) {
                         if (self::unlink($filename) == false)

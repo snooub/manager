@@ -32,7 +32,6 @@
     }
 
     $appAlert->display();
-
 ?>
 
     <div id="login">

@@ -5,7 +5,7 @@
     if (defined('SP') == false)
         define('SP', DIRECTORY_SEPARATOR);
 
-    error_reporting(0);
+    error_reporting(E_ALL);
 
     require_once(__DIR__ . SP . 'Function.php');
     require_once(__DIR__ . SP . 'Environment.php');

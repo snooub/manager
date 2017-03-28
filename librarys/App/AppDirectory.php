@@ -112,57 +112,6 @@
             return $this->accessParentPath;
         }
 
-        /**
-         * [createUrlParameter Create url use parameter]
-         * @param  [function argument...] $args... [Index n + 0 is name, Index n + 1 is value, Index n + 2 is flag put parameter to buffer result]
-         * @return [string]       [Return url]
-         */
-        public static function createUrlParameter($args)
-        {
-            $nums   = func_num_args();
-            $buffer = null;
-
-            if ($nums >= 3) {
-                $args          = func_get_args();
-                $parameterFist = true;
-
-                for ($i = 0; $i < $nums; ++$i) {
-                    $name = $args[$i];
-                    $value   = null;
-                    $isPut   = true;
-                    $isStop  = false;
-
-                    if ($i + 1 < $nums) {
-                        $value = $args[++$i];
-
-                        if ($i + 1 < $nums)
-                            $isPut = $args[++$i];
-                        else
-                            $isStop = true;
-                    } else {
-                        $isStop = true;
-                    }
-
-                    if ($isPut) {
-                        if ($parameterFist)
-                            $buffer .= '?';
-                        else
-                            $buffer .= '&';
-
-                        $buffer        .= $name;
-                        $buffer        .= '=';
-                        $buffer        .= $value;
-                        $parameterFist  = false;
-                    }
-
-                    if ($isStop)
-                        break;
-                }
-            }
-
-            return $buffer;
-        }
-
     }
 
 ?>

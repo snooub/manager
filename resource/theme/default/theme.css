@@ -547,7 +547,8 @@ div.form-action form > ul {
 }
 
 div.form-action form > ul > li.input,
-div.form-action form > ul > li.input-file {
+div.form-action form > ul > li.input-file,
+div.form-action form > ul > li.accept {
     margin-left: 15px;
     margin-right: 15px;
     padding-top: 10px;
@@ -577,6 +578,14 @@ div.form-action form > ul > li.radio-choose {
     margin-bottom: 10px;
     padding-left: 15px;
     padding-right: 15px;
+}
+
+div.form-action form > ul > li.accept span {
+    color: #505050;
+}
+
+div.form-action form > ul > li.accept strong {
+    color: #e53935;
 }
 
 div.form-action form > ul > li.button {

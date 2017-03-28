@@ -3,6 +3,7 @@
     use Librarys\File\FileInfo;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
+    use Librarys\App\AppParameter;
 
     define('LOADED',               1);
     define('EXISTS_FUNC_OVERRIDE', 1);
@@ -28,10 +29,9 @@
     $appLocationPath = new AppLocationPath($appDirectory, 'import.php');
     $appLocationPath->setIsPrintLastEntry(true);
 
-    $parameter = AppDirectory::createUrlParameter(
-        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
-        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
-    );
+    $appParameter = new AppParameter();
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1);
 
     $forms = [
         'files'       => null,
@@ -51,7 +51,7 @@
         <div class="title">
             <span><?php echo lng('import.title_page'); ?></span>
         </div>
-        <form action="import.php<?php echo $parameter; ?>" method="post" enctype="multipart/form-data">
+        <form action="import.php<?php echo $appParameter->toString(); ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul>
@@ -91,7 +91,7 @@
                     <button type="submit" name="upload">
                         <span><?php echo lng('import.form.button.import'); ?></span>
                     </button>
-                    <a href="index.php<?php echo $parameter; ?>">
+                    <a href="index.php<?php echo $appParameter->toString(); ?>">
                         <span><?php echo lng('import.form.button.cancel'); ?></span>
                     </a>
                 </li>
@@ -101,13 +101,13 @@
 
     <ul class="menu-action">
         <li>
-            <a href="create.php<?php echo $parameter; ?>">
+            <a href="create.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-folder-create"></span>
                 <span><?php echo lng('home.menu_action.create'); ?></span>
             </a>
         </li>
         <li>
-            <a href="upload.php<?php echo $parameter; ?>">
+            <a href="upload.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-folder-upload"></span>
                 <span><?php echo lng('home.menu_action.upload'); ?></span>
             </a>

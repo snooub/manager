@@ -2,6 +2,10 @@
 
     namespace Librarys;
 
+    require_once('File' . SP . 'FileInfo.php');
+
+    use Librarys\File\FileInfo;
+
     class Environment
     {
 
@@ -43,15 +47,27 @@
             $this->cache('app.path.icon',       env('app.path.resource') . SP . 'icon');
             $this->cache('app.path.javascript', env('app.path.resource') . SP . 'javascript');
 
-            if (strcmp(env('server.document_root'), env('app.path.root')) === 0)
+            if (strcmp(env('server.document_root'), env('app.path.root')) === 0) {
                 $this->cache('app.directory', '');
-            else
-                $this->cache('app.directory', substr(env('app.path.root'), strlen(env('server.document_root')) + 1));
+                $this->cache('app.directory_absolute', '');
+            } else {
+                $appDirectory         = FileInfo::validate(substr(env('app.path.root'), strlen(env('server.document_root'))));
+                $appDirectoryAbsolute = FileInfo::validate(substr(env('app.path.root'), strlen(env('SERVER.DOCUMENT_ROOT'))));
 
-            if (env('app.directory') == null || env('app.directory') == '')
+                if (strpos($appDirectory, SP) === 0)
+                    $appDirectory = substr($appDirectory, 1);
+
+                if (strpos($appDirectoryAbsolute, SP) === 0)
+                    $appDirectoryAbsolute = substr($appDirectoryAbsolute, 1);
+
+                $this->cache('app.directory',          $appDirectory);
+                $this->cache('app.directory_absolute', $appDirectoryAbsolute);
+            }
+
+            if (env('app.directory_absolute') == null || env('app.directory_absolute') == '')
                 $this->cache('app.http.host', env('server.http_host'));
             else
-                $this->cache('app.http.host', env('server.http_host') . '/' . env('app.directory'));
+                $this->cache('app.http.host', separator(env('server.http_host') . '/' . env('app.directory_absolute'), '/'));
 
             $lengthRoot     = strlen(env('app.path.root')) + 1;
             $lengthResource = strlen(env('app.path.resource')) + 1;
@@ -90,7 +106,11 @@
             $this->cache('app.cfsr.use_token',   true);
             $this->cache('app.cfsr.key_name',    '_cfsr_token');
             $this->cache('app.cfsr.time_live',   60000);
-            $this->cache('app.cfsr.path_cookie', '/');
+
+            if (env('app.directory_absolute') == '')
+                $this->cache('app.cfsr.path_cookie', '/');
+            else
+                $this->cache('app.cfsr.path_cookie', env('app.directory_absolute'));
 
             $this->cache('app.cfsr.validate_post', true);
             $this->cache('app.cfsr.validate_get',  true);

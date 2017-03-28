@@ -3,6 +3,7 @@
     use Librarys\File\FileInfo;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
+    use Librarys\App\AppParameter;
 
     define('LOADED', 1);
     require_once('global.php');
@@ -10,29 +11,31 @@
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
 
-    $title   = lng('file_info.title_page');
-    $themes  = [ env('resource.theme.file') ];
-    $appAlert->setID(ALERT_FILE_INFO);
-    require_once('header.php');
-
     if ($appDirectory->getDirectory() == null || is_dir($appDirectory->getDirectory()) == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
     else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
-    else if (is_file(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) == false)
-        $appAlert->danger(lng('home.alert.path_not_is_file'), ALERT_INDEX, env('app.http.host'));
 
     $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
-    $parameter = AppDirectory::createUrlParameter(
-        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
-        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1,
-        AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getName(),      true
-    );
+    $appParameter = new AppParameter();
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getName(),      true);
 
     $fileInfo = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $isDirectory = $fileInfo->isDirectory();
+
+    if ($isDirectory)
+        $title = lng('file_info.title_page_directory');
+    else
+        $title = lng('file_info.title_page_file');
+
+    $themes = [ env('resource.theme.file') ];
+    $appAlert->setID(ALERT_FILE_INFO);
+    require_once('header.php');
 ?>
 
     <?php $appAlert->display(); ?>
@@ -40,7 +43,11 @@
 
     <ul class="file-info">
         <li class="title">
-            <span><?php echo lng('file_info.title_page'); ?></span>
+            <?php if ($isDirectory) { ?>
+                <span><?php echo lng('file_info.title_page_directory'); ?></span>
+            <?php } else { ?>
+                <span><?php echo lng('file_info.title_page_file'); ?></span>
+            <?php } ?>
         </li>
         <li class="label">
             <ul>
@@ -53,42 +60,58 @@
         </li>
         <li class="value">
             <ul>
-                <li><span><?php echo $fileInfo->getFileName(); ?></span></li>
-                <li><span><?php echo $fileInfo->getFileExt(); ?></span></li>
-                <li><span><?php echo FileInfo::sizeToString(filesize($fileInfo->getFilePath())); ?></span></li>
-                <li><span><?php echo FileInfo::getChmodPermission($fileInfo->getFilePath()); ?></span></li>
-                <li><span><?php echo date('H:i - d.m.Y', filemtime($fileInfo->getFilePath())); ?></span></li>
+                <li>
+                    <span><?php echo $fileInfo->getFileName(); ?></span>
+                </li>
+                <li>
+                    <?php if ($isDirectory) { ?>
+                        <span><?php echo lng('file_info.format_directory'); ?></span>
+                    <?php } else { ?>
+                        <span><?php echo $fileInfo->getFileExt(); ?></span>
+                    <?php } ?>
+                </li>
+                <li>
+                    <span><?php echo FileInfo::sizeToString(filesize($fileInfo->getFilePath())); ?></span>
+                </li>
+                <li>
+                    <span><?php echo FileInfo::getChmodPermission($fileInfo->getFilePath()); ?></span>
+                </li>
+                <li>
+                    <span><?php echo date('H:i - d.m.Y', filemtime($fileInfo->getFilePath())); ?></span>
+                </li>
             </ul>
         </li>
     </ul>
 
     <ul class="menu-action">
+        <?php if ($isDirectory == false) { ?>
+            <li>
+                <a href="download.php<?php echo $appParameter->toString(); ?>">
+                    <span class="icomoon icon-download"></span>
+                    <span><?php echo lng('file_info.menu_action.download'); ?></span>
+                </a>
+            </li>
+        <?php } ?>
         <li>
-            <a href="download.php<?php echo $parameter; ?>">
-                <span class="icomoon icon-download"></span>
-                <span><?php echo lng('file_info.menu_action.download'); ?></span>
-            </a>
-        </li>
-        <li>
-            <a href="file_rename.php<?php echo $parameter; ?>">
+            <a href="file_rename.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-edit"></span>
                 <span><?php echo lng('file_info.menu_action.rename'); ?></span>
             </a>
         </li>
         <li>
-            <a href="file_copy.php<?php echo $parameter; ?>">
+            <a href="file_copy.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-copy"></span>
                 <span><?php echo lng('file_info.menu_action.copy'); ?></span>
             </a>
         </li>
         <li>
-            <a href="file_delete.php<?php echo $parameter; ?>">
+            <a href="file_delete.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-trash"></span>
                 <span><?php echo lng('file_info.menu_action.delete'); ?></span>
             </a>
         </li>
         <li>
-            <a href="file_chmod.php<?php echo $parameter; ?>">
+            <a href="file_chmod.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-key"></span>
                 <span><?php echo lng('file_info.menu_action.chmod'); ?></span>
             </a>

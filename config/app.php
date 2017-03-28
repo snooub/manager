@@ -15,7 +15,7 @@
                 'init'            => true,
                 'name'            => 'ManagerIzeroCs',
                 'cookie_lifetime' => 86400 * 7,
-                'cookie_path'     => '/manager',
+                'cookie_path'     => separator(env('app.directory_absolute'), '/'),
                 'cache_limiter'   => 'private'
             ],
 

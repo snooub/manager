@@ -3,6 +3,7 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppPaging;
     use Librarys\App\AppLocationPath;
+    use Librarys\App\AppParameter;
 
     use Librarys\File\FileInfo;
     use Librarys\File\FileMime;
@@ -130,31 +131,33 @@
     <?php echo $appAlert->display(); ?>
     <?php echo $appLocationPath->display(); ?>
 
-    <?php $parameter = AppDirectory::createUrlParameter(
-        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
-        AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],       $handlerPage['current'] > 1
-    ); ?>
+    <?php
+        $appParameter = new AppParameter();
+        $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true);
+        $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],       $handlerPage['current'] > 1);
+    ?>
 
     <ul class="file-list-home">
         <?php echo $bufferBack; ?>
 
         <?php if ($handlerCount > 0) { ?>
             <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
-                <?php $entry      = $handlerList[$i]; ?>
-                <?php $entryPath  = FileInfo::validate($appDirectory->getDirectory() . SP . $entry['name']); ?>
-                <?php $chmodPerms = FileInfo::getChmodPermission($entryPath); ?>
+                <?php $entry        = $handlerList[$i]; ?>
+                <?php $entryPath    = FileInfo::validate($appDirectory->getDirectory() . SP . $entry['name']); ?>
+                <?php $chmodPerms   = FileInfo::getChmodPermission($entryPath); ?>
+                <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
 
                 <?php if ($entry['is_directory']) { ?>
                     <li class="type-directory">
                         <div class="icon">
-                            <a href="#">
+                            <a href="file_info.php<?php echo $urlParameter; ?>">
                                 <span class="icomoon icon-folder"></span>
                             </a>
                         </div>
                         <a href="index.php?<?php echo AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath); ?>" class="file-name">
                             <span><?php echo $entry['name']; ?></span>
                         </a>
-                        <a href="#" class="chmod-permission">
+                        <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
                             <span><?php echo $chmodPerms; ?></span>
                         </a>
                     </li>
@@ -193,8 +196,6 @@
                             $icon   = 'icon-file';
                             $isEdit = true;
                         }
-
-                        $url = 'file_info.php' . $parameter . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']);
                     ?>
 
                     <li class="type-file">
@@ -203,10 +204,10 @@
                                 <span class="icomoon <?php echo $icon; ?>"></span>
                             <?php if ($isEdit) { ?></a><?php } ?>
                         </div>
-                        <a href="<?php echo $url; ?>" class="file-name">
+                        <a href="file_info.php<?php echo $urlParameter; ?>" class="file-name">
                             <span><?php echo $entry['name']; ?></span>
                         </a>
-                        <a href="#" class="chmod-permission">
+                        <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
                             <span><?php echo $chmodPerms; ?></span>
                         </a>
                     </li>
@@ -228,19 +229,19 @@
 
     <ul class="menu-action">
         <li>
-            <a href="create.php<?php echo $parameter; ?>">
+            <a href="create.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-folder-create"></span>
                 <span><?php echo lng('home.menu_action.create'); ?></span>
             </a>
         </li>
         <li>
-            <a href="upload.php<?php echo $parameter; ?>">
+            <a href="upload.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-folder-upload"></span>
                 <span><?php echo lng('home.menu_action.upload'); ?></span>
             </a>
         </li>
         <li>
-            <a href="import.php<?php echo $parameter; ?>">
+            <a href="import.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-folder-download"></span>
                 <span><?php echo lng('home.menu_action.import'); ?></span>
             </a>

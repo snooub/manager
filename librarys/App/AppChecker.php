@@ -72,9 +72,9 @@
                 $this->applicationParentPath = dirname($path);
             }
 
-            $this->applicationDirectory  = FileInfo::validate($this->applicationDirectory);
-            $this->applicationPath       = FileInfo::validate($this->applicationPath);
-            $this->applicationParentPath = FileInfo::validate($this->applicationParentPath);
+            $this->applicationDirectory    = FileInfo::validate($this->applicationDirectory);
+            $this->applicationPath         = FileInfo::validate($this->applicationPath);
+            $this->applicationParentPath   = FileInfo::validate($this->applicationParentPath);
 
             $this->isInstallDirectory = $isRoot == false;
             $this->isAccept           = $this->isInstallDirectory;

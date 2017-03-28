@@ -119,6 +119,7 @@
                 $locationIsSeparatorFist = strpos($this->appDirectory->getDirectory(), SP) === 0;
                 $locationEntry           = null;
                 $locationUrl             = null;
+                $locationParameter       = new AppParameter();
 
                 $buffer .= '<ul class="location-path">';
 
@@ -143,12 +144,11 @@
                         if ($locationKey > 0 || ($locationKey === 0 && $locationIsSeparatorFist))
                             $buffer .= '<span class="separator">' . SP . '</span>';
 
-                        $urlBetween = AppDirectory::createUrlParameter(
-                            AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::rawEncode($locationUrl . $locationEntry), true,
-                            AppDirectory::PARAMETER_PAGE_URL,      $this->appDirectory->getPage(), $this->appDirectory->getPage() > 1 && $this->appDirectory->getDirectory() == $locationUrl . $locationEntry
-                        );
+                        $locationParameter->clear();
+                        $locationParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::rawEncode($locationUrl . $locationEntry), true);
+                        $locationParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $this->appDirectory->getPage(), $this->appDirectory->getPage() > 1 && $this->appDirectory->getDirectory() == $locationUrl . $locationEntry);
 
-                        $buffer .= '<a href="' . $this->urlBegin . $urlBetween . $this->urlEnd . '">';
+                        $buffer .= '<a href="' . $this->urlBegin . $locationParameter->toString(true) . $this->urlEnd . '">';
                         $buffer .= '<span>';
                     } else if ($this->isPrintLastEntry) {
                         $buffer .= '<li>';

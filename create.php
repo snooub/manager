@@ -26,10 +26,9 @@
     $appLocationPath = new AppLocationPath($appDirectory, 'create.php');
     $appLocationPath->setIsPrintLastEntry(true);
 
-    $parameter = AppDirectory::createUrlParameter(
-        AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true,
-        AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1
-    );
+    $appParameter = new AppParameter();
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1);
 
     $forms = [
         'name' => null,
@@ -68,7 +67,7 @@
                     if (@mkdir($forms['path']) == false) {
                         $appAlert->danger(lng('create.alert.create_directory_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
-                        $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $parameter);
+                        $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $appParameter->toString());
                     } else {
                         $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']));
                         $forms['name'] = null;
@@ -77,7 +76,7 @@
                     if (@file_put_contents($forms['path'], '...') === false) {
                         $appAlert->danger(lng('create.alert.create_file_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
-                        $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $parameter);
+                        $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $appParameter->toString());
                     } else {
                         $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']));
                         $forms['name'] = null;
@@ -97,7 +96,7 @@
         <div class="title">
             <span><?php echo lng('create.title_page'); ?></span>
         </div>
-        <form action="create.php<?php echo $parameter; ?>" method="post">
+        <form action="create.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul>
@@ -129,7 +128,7 @@
                     <button type="submit" name="create_and_continue">
                         <span><?php echo lng('create.form.button.create_and_continue'); ?></span>
                     </button>
-                    <a href="index.php<?php echo $parameter; ?>">
+                    <a href="index.php<?php echo $appParameter->toString(); ?>">
                         <span><?php echo lng('create.form.button.cancel'); ?></span>
                     </a>
                 </li>
@@ -139,13 +138,13 @@
 
     <ul class="menu-action">
         <li>
-            <a href="upload.php<?php echo $parameter; ?>">
+            <a href="upload.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-folder-upload"></span>
                 <span><?php echo lng('home.menu_action.upload'); ?></span>
             </a>
         </li>
         <li>
-            <a href="import.php<?php echo $parameter; ?>">
+            <a href="import.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-folder-download"></span>
                 <span><?php echo lng('home.menu_action.import'); ?></span>
             </a>
