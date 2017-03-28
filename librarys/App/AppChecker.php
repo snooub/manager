@@ -72,9 +72,9 @@
                 $this->applicationParentPath = dirname($path);
             }
 
-            $this->applicationDirectory    = FileInfo::validate($this->applicationDirectory);
-            $this->applicationPath         = FileInfo::validate($this->applicationPath);
-            $this->applicationParentPath   = FileInfo::validate($this->applicationParentPath);
+            $this->applicationDirectory  = FileInfo::validate($this->applicationDirectory);
+            $this->applicationPath       = FileInfo::validate($this->applicationPath);
+            $this->applicationParentPath = FileInfo::validate($this->applicationParentPath);
 
             $this->isInstallDirectory = $isRoot == false;
             $this->isAccept           = $this->isInstallDirectory;
@@ -113,7 +113,7 @@
                         $validate = true;
                     } else if ($validate) {
                         if (is_dir($current)) {
-                            if (is_writable($current . SP . 'index.php')) {
+                            if (is_readable($current)) {
                                 $validate = true;
                                 $found    = true;
                                 $write    = true;
