@@ -38,7 +38,7 @@
     require_once('header.php');
 
     $forms = [
-        'name'     => null,
+        'name'     => $appDirectory->getName(),
         'path_old' => null,
         'path_new' => null
     ];

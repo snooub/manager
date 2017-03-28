@@ -92,7 +92,8 @@
 
         'resource' => [
             'javascript' => [
-                'custom_input_file' => '${app.http.javascript}/custom_input_file.js'
+                'custom_input_file' => '${app.http.javascript}/custom_input_file.js',
+                'chmod_input'       => '${app.http.javascript}/chmod_input.js'
             ],
 
             'theme' => [

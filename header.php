@@ -39,15 +39,12 @@
                         <span id="logo" class="icomoon icon-home"></span>
                     </a>
                 </div>
-                <div id="search">
-                    <form action="#" method="post">
-                        <input type="text" name="keyword" value=""/>
-                        <button type="submit" name="serach">
-                            <span class="icomoon icon-search"></span>
-                        </button>
-                    </form>
-                </div>
                 <ul id="action">
+                    <li>
+                        <a href="#">
+                            <span class="icomoon icon-search"></span>
+                        </a>
+                    </li>
                     <?php if ($appUser->isLogin()) { ?>
                         <li>
                             <a href="#">
@@ -71,7 +68,7 @@
                         </li>
                         <li>
                             <a href="#">
-                                <span class="icomoon icon-close"></span>
+                                <span class="icomoon icon-exit"></span>
                             </a>
                         </li>
                     <?php } else { ?>

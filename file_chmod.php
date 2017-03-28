@@ -33,9 +33,47 @@
     else
         $title = lng('file_chmod.title_page_file');
 
-    $themes = [ env('resource.theme.file') ];
+    $themes  = [ env('resource.theme.file') ];
+    $scripts = [ env('resource.javascript.chmod_input') ];
     $appAlert->setID(ALERT_FILE_CHMOD);
     require_once('header.php');
+
+    $forms = [
+        'chmod' => FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()))
+    ];
+
+    if (isset($_POST['chmod'])) {
+        $forms['chmod'] = addslashes($_POST['chmod_permission']);
+
+        if (empty($forms['chmod'])) {
+            if ($isDirectory)
+                $appAlert->danger(lng('file_chmod.alert.not_input_chmod_permission_directory'));
+            else
+                $appAlert->danger(lng('file_chmod.alert.not_input_chmod_permission_file'));
+        } else {
+            $chmod = intval($forms['chmod'], 8);
+
+            if (FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), $chmod) == false) {
+                if ($isDirectory)
+                    $appAlert->danger(lng('file_chmod.alert.chmod_permission_directory_failed', 'filename', $appDirectory->getName()));
+                else
+                    $appAlert->danger(lng('file_chmod.alert.chmod_permission_file_failed', 'filename', $appDirectory->getName()));
+            } else {
+                $chmodTmp = FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()));
+
+                if ($chmodTmp != $chmod) {
+                    if ($isDirectory)
+                        $appAlert->danger(lng('file_chmod.alert.chmod_permission_directory_failed', 'filename', $appDirectory->getName()));
+                    else
+                        $appAlert->danger(lng('file_chmod.alert.chmod_permission_file_failed', 'filename', $appDirectory->getName()));
+                } else if ($isDirectory) {
+                    $appAlert->success(lng('file_chmod.alert.chmod_permission_directory_success', 'filename', $appDirectory->getName()));
+                } else {
+                    $appAlert->success(lng('file_chmod.alert.chmod_permission_file_success', 'filename', $appDirectory->getName()));
+                }
+            }
+        }
+    }
 ?>
 
     <?php $appAlert->display(); ?>
@@ -49,6 +87,11 @@
                 <span><?php echo lng('file_chmod.title_page_file'); ?>: <?php echo $appDirectory->getName(); ?></span>
             <?php } ?>
         </div>
+        <script type="text/javascript">
+            window.onload = function() {
+                onAddEventChmodListener("input-chmod", "input-chmod-checkbox");
+            };
+        </script>
         <form action="file_chmod.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
@@ -59,34 +102,35 @@
                     <?php } else { ?>
                         <span><?php echo lng('file_chmod.form.input.chmod_file'); ?></span>
                     <?php } ?>
-                    <input type="text" name="name" value="" placeholder="<?php if ($isDirectory) echo lng('file_rename.form.placeholder.input_name_directory'); else echo lng('file_rename.form.placeholder.input_name_file'); ?>"/>
+                    <input type="number" name="chmod_permission" value="<?php echo $forms['chmod']; ?>" placeholder="<?php if ($isDirectory) echo lng('file_chmod.form.placeholder.input_chmod_directory'); else echo lng('file_chmod.form.placeholder.input_chmod_file'); ?>" id="input-chmod" max="777"/>
                 </li>
                 <li class="input-chmod">
-                    <ul>
+                    <ul id="input-chmod-checkbox">
                         <li><span><?php echo lng('file_chmod.form.input.chmod_label_system'); ?></span></li>
                         <li><span><?php echo lng('file_chmod.form.input.chmod_label_group'); ?></span></li>
                         <li><span><?php echo lng('file_chmod.form.input.chmod_label_user'); ?></span></li>
 
+                        <?php $group = [ "system", "group", "user" ]; ?>
                         <?php for ($i = 0; $i < 3; ++$i) { ?>
                             <li>
-                                <input type="checkbox" name="chmod-read[<?php echo $i; ?>]" value="4" id="chmod-read-<?php echo $i; ?>"/>
-                                <label for="chmod-read-<?php echo $i; ?>">
+                                <input type="checkbox" name="chmod_read_<?php echo $group[$i]; ?>" value="4" id="chmod-read-<?php echo $group[$i]; ?>"/>
+                                <label for="chmod-read-<?php echo $group[$i]; ?>">
                                     <span><?php echo lng('file_chmod.form.input.chmod_value_read'); ?></span>
                                 </label>
                             </li>
                         <?php } ?>
                         <?php for ($i = 0; $i < 3; ++$i) { ?>
                             <li>
-                                <input type="checkbox" name="chmod-write[<?php echo $i; ?>]" value="2" id="chmod-write-<?php echo $i; ?>"/>
-                                <label for="chmod-write-<?php echo $i; ?>">
+                                <input type="checkbox" name="chmod_write_<?php echo $group[$i]; ?>" value="2" id="chmod-write-<?php echo $group[$i]; ?>"/>
+                                <label for="chmod-write-<?php echo $group[$i]; ?>">
                                     <span><?php echo lng('file_chmod.form.input.chmod_value_write'); ?></span>
                                 </label>
                             </li>
                         <?php } ?>
                         <?php for ($i = 0; $i < 3; ++$i) { ?>
                             <li>
-                                <input type="checkbox" name="chmod-execute[<?php echo $i; ?>]" value="1" id="chmod-execute-<?php echo $i; ?>"/>
-                                <label for="chmod-execute-<?php echo $i; ?>">
+                                <input type="checkbox" name="chmod_execute_<?php echo $group[$i]; ?>" value="1" id="chmod-execute-<?php echo $group[$i]; ?>"/>
+                                <label for="chmod-execute-<?php echo $group[$i]; ?>">
                                     <span><?php echo lng('file_chmod.form.input.chmod_value_execute'); ?></span>
                                 </label>
                             </li>
@@ -94,7 +138,7 @@
                     </ul>
                 </li>
                 <li class="button">
-                    <button type="submit" name="rename">
+                    <button type="submit" name="chmod">
                         <span><?php echo lng('file_chmod.form.button.chmod'); ?></span>
                     </button>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">
