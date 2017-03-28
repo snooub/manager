@@ -41,9 +41,9 @@
         if ($isDirectory) {
             $isHasFileAppPermission = false;
 
-            if (FileInfo::rrmdir($fileInfo->getFilePath(), $isHasFileAppPermission)) {
+            if (FileInfo::rrmdir(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), $isHasFileAppPermission)) {
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-                $appAlert->success(lng('file_delete.alert.delete_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString(true));
+                //$appAlert->success(lng('file_delete.alert.delete_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString(true));
             } else {
                 if ($isHasFileAppPermission) {
                     $appAlert->warning(lng('file_delete.alert.not_delete_file_app'));
@@ -53,7 +53,7 @@
                 }
             }
         } else {
-            if (FileInfo::unlink($fileInfo->getFilePath())) {
+            if (FileInfo::unlink(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()))) {
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
                 $appAlert->success(lng('file_delete.alert.delete_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString(true));
             } else {

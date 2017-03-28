@@ -90,7 +90,7 @@
                 }
 
                 return $perms;
-            } else {
+            } else if (is_readable($path)) {
                 return @chmod($path, $chmod);
             }
         }
@@ -272,7 +272,10 @@
 
         public static function rename($old, $new)
         {
-            return @rename($old, $new);
+            if (is_readable($old))
+                return rename($old, $new);
+
+            return false;
         }
 
         /**
@@ -299,9 +302,11 @@
                 foreach ($path AS $entry) {
                     $filename = $directory . DS . $entry;
 
-                    if (self::permissionPath($filename) == false) {
-                        $isHasFileAppPermission = true;
+                    if (is_readable($filename)) {
                         return false;
+                    } else if (self::permissionPath($filename) == false) {
+                        $isHasFileAppPermission = true;
+                        return true;
                     } else if (@is_file($filename)) {
                         if (self::unlink($filename) == false)
                             return false;
@@ -314,7 +319,7 @@
                 }
 
                 return true;
-            } else if (is_file($path)) {
+            } else if (is_readable($path) && is_file($path)) {
                 return self::unlink($path);
             } else {
                 $handle = @scandir($path);
@@ -322,19 +327,27 @@
                 if ($handle !== false) {
                     foreach ($handle AS $entry) {
                         if ($entry != '.' && $entry != '..') {
-                            $filename = $path . '/' . $entry;
+                            $filename = $path . SP . $entry;
 
-                            if (@is_file($filename)) {
-                                if (!@unlink($filename))
+                            if (is_readable($filename) == false) {
+                                return false;
+                            } else if (self::permissionPath($filename) == false) {
+                                $isHasFileAppPermission = true;
+                                return true;
+                            } else if (@is_file($filename)) {
+                                if (self::unlink($filename) == false)
                                     return false;
                             } else if (@is_dir($filename)) {
-                                if (!self::rrmdir($filename))
+                                if (self::rrmdir($filename) == false)
                                     return false;
                             } else {
                                 return false;
                             }
                         }
                     }
+
+                    if ($isHasFileAppPermission)
+                        return true;
 
                     return @rmdir($path);
                 }
