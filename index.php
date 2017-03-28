@@ -123,7 +123,7 @@
         $bufferBack .= '</li>';
     }
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'index.php?');
+    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
     $pagePaging      = new AppPaging(
         'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . $appDirectory->getDirectoryEncode(),
 
@@ -137,8 +137,8 @@
 
     <?php
         $appParameter = new AppParameter();
-        $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true);
-        $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],       $handlerPage['current'] > 1);
+        $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
+        $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],            $handlerPage['current'] > 1);
     ?>
 
     <ul class="file-list-home">

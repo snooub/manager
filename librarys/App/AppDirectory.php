@@ -10,8 +10,9 @@
 
         private $boot;
         private $directory;
-        private $directoryEncode;
         private $name;
+        private $directoryEncode;
+        private $nameEncode;
         private $page;
         private $permissionDeny;
         private $accessParentPath;
@@ -37,10 +38,12 @@
                 $this->directoryEncode = self::rawEncode($this->directory);
             }
 
-            if (isset($_GET[self::PARAMETER_NAME_URL]) && empty($_GET[self::PARAMETER_NAME_URL]) == false)
-                $this->name = addslashes($_GET[self::PARAMETER_NAME_URL]);
-            else
+            if (isset($_GET[self::PARAMETER_NAME_URL]) && empty($_GET[self::PARAMETER_NAME_URL]) == false) {
+                $this->name       = addslashes($_GET[self::PARAMETER_NAME_URL]);
+                $this->nameEncode = self::rawEncode($this->name);
+            } else {
                 $this->name = null;
+            }
 
             if (isset($_GET[self::PARAMETER_PAGE_URL]) && empty($_GET[self::PARAMETER_PAGE_URL]) == false)
                 $this->page = intval(addslashes($_GET[self::PARAMETER_PAGE_URL]));
@@ -51,9 +54,13 @@
                 $this->page = 1;
 
             if ($this->directory != '.' && $this->directory != '..') {
-                if (FileInfo::permissionPath(FileInfo::validate($this->directory)))
-                    $this->permissionDeny = false;
-                else if ($this->name != null && FileInfo::permissionPath(FileInfo::validate($this->directory . SP . $this->name)))
+                $isPermissionDenyDirectory     = FileInfo::permissionDenyPath(FileInfo::validate($this->directory));
+                $isPermissionDenyDirectoryName = false;
+
+                if ($this->name != null)
+                    $isPermissionDenyDirectoryName = FileInfo::permissionDenyPath(FileInfo::validate($this->directory . SP . $this->name));
+
+                if ($isPermissionDenyDirectory == false && $isPermissionDenyDirectoryName == false)
                     $this->permissionDeny = false;
                 else
                     $this->permissionDeny = true;
@@ -95,6 +102,19 @@
         public function getName()
         {
             return $this->name;
+        }
+
+        public function getNameEncode()
+        {
+            return $this->nameEncode;
+        }
+
+        public function getDirectoryAndName()
+        {
+            if ($this->name != null)
+                return $this->directory . SP . $this->name;
+
+            return $this->directory;
         }
 
         public function getPage()

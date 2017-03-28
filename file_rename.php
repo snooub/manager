@@ -14,16 +14,16 @@
     if ($appDirectory->getDirectory() == null || is_dir($appDirectory->getDirectory()) == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
     else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
+        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
     $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),      $appDirectory->getPage() > 1);
-    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getName(),      true);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
 
     $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
     $isDirectory = $fileInfo->isDirectory();
@@ -68,7 +68,7 @@
                 else
                     $appAlert->danger(lng('file_rename.alert.rename_file_failed'));
             } else {
-                $appParameter->set(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::rawEncode($forms['name']), true);
+                $appParameter->set(AppDirectory::PARAMETER_NAME_URL, AppDirectory::rawEncode($forms['name']), true);
                 $redirect = 'file_rename.php' . $appParameter->toString(true);
 
                 if ($isDirectory)

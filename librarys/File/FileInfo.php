@@ -108,7 +108,7 @@
                 foreach ($old AS $entry) {
                     $path = $new . DS . $entry;
 
-                    if (self::permissionPath($path) == false) {
+                    if (self::permissionDenyPath($path)) {
                         // Abort entry
                     } else if (@is_file($path)) {
                         if (@copy($path, $parent . DS . $entry) == false)
@@ -293,7 +293,7 @@
 
                     if (is_readable($filename)) {
                         return false;
-                    } else if (self::permissionPath($filename) == false) {
+                    } else if (self::permissionDenyPath($filename)) {
                         $isHasFileAppPermission = true;
                     } else if (@is_file($filename)) {
                         if (self::unlink($filename) == false)
@@ -321,10 +321,10 @@
 
                             if (is_readable($filename) == false) {
                                 return false;
-                            } else if (self::permissionPath($filename) == false) {
+                            } else if (self::permissionDenyPath($filename)) {
                                 $isHasFileAppPermission        = true;
                                 $directoryCurrentHasPermission = true;
-                            } else if (@is_file($filename)) { bug($filename);
+                            } else if (@is_file($filename)) {
                                 if (self::unlink($filename) == false)
                                     return false;
                             } else if (@is_dir($filename)) {
@@ -446,20 +446,18 @@
 
         /**
          * Check permission path
+         * If path is deny permission return true
          */
-        public static function permissionPath($path, $isUseName = false)
+        public static function permissionDenyPath($path, $isUseName = false)
         {
             if ($path != null && empty($path) == false) {
                 $sp = SP;
 
-                if ($sp == '\\')
+                if (SP == '\\')
                     $sp = SP . SP;
 
                 $path = strtolower($path);
                 $path = self::validate($path);
-
-                if (SP == '\\')
-                    $path = str_replace(SP, $sp, $path);
 
                 if ($isUseName)
                     $reg = env('application.directory');
@@ -474,15 +472,15 @@
                 if (SP == '\\')
                     $reg = str_replace(SP, $sp, $reg);
 
-                if ($reg == $path)
-                    return false;
+                if (preg_match('#^' . $reg . '$#si', $path))
+                    return true;
                 else if (preg_match('#^' . $reg . $sp . '(^\/+|^\\\\+)(.*?)$#si', $path))
-                    return false;
+                    return true;
                 else if (preg_match('#^' . $reg . $sp . '(.*?)$#si', $path))
-                    return false;
+                    return true;
             }
 
-            return true;
+            return false;
         }
 
         public static function getChmodPermission($path)
