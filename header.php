@@ -20,9 +20,9 @@
 
         <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.icomoon'); ?>" media="all,handheld" />
 
-        <link rel="icon" type="image/png" href="icon/icon.png">
-        <link rel="icon" type="image/x-icon" href="icon/icon.ico" />
-        <link rel="shortcut icon" type="image/x-icon" href="icon/icon.ico" />
+        <link rel="icon" type="image/png" href="<?php echo env('resource.icon.favicon_png'); ?>"/>
+        <link rel="icon" type="image/x-icon" href="<?php echo env('resource.icon.favicon_ico'); ?>"/>
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo env('resource.icon.favicon_ico'); ?>"/>
 
         <?php if (isset($scripts) && is_array($scripts)) { ?>
             <?php foreach ($scripts AS $entry) { ?>
@@ -35,7 +35,7 @@
         <div id="container">
             <div id="header">
                 <div id="logo">
-                    <a href="#">
+                    <a href="<?php echo env('app.http.host'); ?>">
                         <span id="logo" class="icomoon icon-home"></span>
                     </a>
                 </div>

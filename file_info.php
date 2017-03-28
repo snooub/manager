@@ -25,7 +25,7 @@
     $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
     $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
 
-    $fileInfo = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
     $isDirectory = $fileInfo->isDirectory();
 
     if ($isDirectory)
