@@ -63,9 +63,9 @@
 
                 if ($chmodTmp != $chmod) {
                     if ($isDirectory)
-                        $appAlert->danger(lng('file_chmod.alert.chmod_permission_directory_failed', 'filename', $appDirectory->getName()));
+                        $appAlert->warning(lng('file_chmod.alert.chmod_permission_directory_failed_not_change', 'filename', $appDirectory->getName()));
                     else
-                        $appAlert->danger(lng('file_chmod.alert.chmod_permission_file_failed', 'filename', $appDirectory->getName()));
+                        $appAlert->warning(lng('file_chmod.alert.chmod_permission_file_failed_not_change', 'filename', $appDirectory->getName()));
                 } else if ($isDirectory) {
                     $appAlert->success(lng('file_chmod.alert.chmod_permission_directory_success', 'filename', $appDirectory->getName()));
                 } else {

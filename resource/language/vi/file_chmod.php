@@ -30,12 +30,14 @@
         ],
 
         'alert' => [
-            'not_input_chmod_permission_directory' => 'Chưa nhập phân quyền thư mục',
-            'not_input_chmod_permission_file'      => 'Chưa nhập phân quyền tập tin',
-            'chmod_permission_directory_failed'    => 'Phân quyền thư mục <strong>{$filename}</strong> thất bại',
-            'chmod_permission_directory_success'   => 'Phân quyền thư mục <strong>{$filename}</strong> thành công',
-            'chmod_permission_file_failed'         => 'Phân quyền tập tin <strong>{$filename}</strong> thất bại',
-            'chmod_permission_file_success'        => 'Phân quyền tập tin <strong>{$filename}</strong> thành công'
+            'not_input_chmod_permission_directory'         => 'Chưa nhập phân quyền thư mục',
+            'not_input_chmod_permission_file'              => 'Chưa nhập phân quyền tập tin',
+            'chmod_permission_directory_failed'            => 'Phân quyền thư mục <strong>{$filename}</strong> thất bại',
+            'chmod_permission_directory_failed_not_change' => 'Phân quyền thư mục <strong>{$filename}</strong> thất bại, phân quyền chưa thay đổi',
+            'chmod_permission_directory_success'           => 'Phân quyền thư mục <strong>{$filename}</strong> thành công',
+            'chmod_permission_file_failed'                 => 'Phân quyền tập tin <strong>{$filename}</strong> thất bại',
+            'chmod_permission_file_failed_not_change'      => 'Phân quyền tập tin <strong>{$filename}</strong> thất bại, phân quyền chưa thay đổi',
+            'chmod_permission_file_success'                => 'Phân quyền tập tin <strong>{$filename}</strong> thành công'
         ]
     ];
 
