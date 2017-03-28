@@ -19,12 +19,18 @@
     $appAlert->setID(ALERT_INDEX);
     require_once('header.php');
 
-    $handler = null;
+    $handler              = null;
+    $isPermissionDenyPath = $appDirectory->isPermissionDenyPath();
 
-    if (is_dir($appDirectory->getDirectory()) == false) {
+    if ($isPermissionDenyPath)
+        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()));
+
+    if ($isPermissionDenyPath || is_readable($appDirectory->getDirectory()) == false || is_dir($appDirectory->getDirectory()) == false) {
         $appDirectory->setDirectory(env('SERVER.DOCUMENT_ROOT'));
         $handler = @scandir($appDirectory->getDirectory());
-        $appAlert->danger(lng('home.alert.path_not_exists'));
+
+        if ($isPermissionDenyPath == false)
+            $appAlert->danger(lng('home.alert.path_not_exists'));
     } else {
         $handler = @scandir($appDirectory->getDirectory());
     }
@@ -34,9 +40,6 @@
         $handler = @scandir($appDirectory->getDirectory());
         $appAlert->danger(lng('home.alert.path_not_receiver_list'));
     }
-
-    if ($appDirectory->isPermissionDenyPath())
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()));
 
     if (is_array($handler) == false)
         $handler = array();
@@ -75,20 +78,21 @@
 
     $handlerCount = count($handlerList);
     $handlerPage  = array(
-        'current' => $appDirectory->getPage(),
-        'begin'   => 0,
-        'end'     => $handlerCount,
-        'total'   => 0
+        'current'  => $appDirectory->getPage(),
+        'begin'    => 0,
+        'end'      => $handlerCount,
+        'total'    => 0,
+        'list_max' => $appConfig->get('paging.file_home_list')
     );
 
-    if ($handlerCount > 0 && $handlerCount > $appConfig->get('paging.file_home_list')) {
-        $handlerPage['total'] = ceil($handlerCount / $appConfig->get('paging.file_home_list'));
+    if ($handlerCount > 0 && $handlerPage['list_max'] > 0 && $handlerCount > $handlerPage['list_max']) {
+        $handlerPage['total'] = ceil($handlerCount / $handlerPage['list_max']);
 
         if ($handlerPage['total'] <= 0 || $handlerPage['current'] > $handlerPage['total'])
             $handlerPage['current'] = 1;
 
-        $handlerPage['begin'] = ($handlerPage['current'] * $appConfig->get('paging.file_home_list')) - $appConfig->get('paging.file_home_list');
-        $handlerPage['end']   = ($handlerPage['begin'] + $appConfig->get('paging.file_home_list'));
+        $handlerPage['begin'] = ($handlerPage['current'] * $handlerPage['list_max']) - $handlerPage['list_max'];
+        $handlerPage['end']   = ($handlerPage['begin'] + $handlerPage['list_max']);
 
         if ($handlerPage['end'] > $handlerCount)
             $handlerPage['end'] = $handlerCount;

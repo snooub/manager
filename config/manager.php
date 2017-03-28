@@ -6,7 +6,7 @@
         ],
 
         'paging' => [
-            'file_home_list' => 10
+            'file_home_list' => 0
         ]
     ];
 

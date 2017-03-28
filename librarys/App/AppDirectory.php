@@ -53,7 +53,7 @@
             if ($this->directory != '.' && $this->directory != '..') {
                 if (FileInfo::permissionPath(FileInfo::validate($this->directory)))
                     $this->permissionDeny = false;
-                else if ($this->name != null && File::permissionPath(FileInfo::validate($this->directory . SP . $this->name)))
+                else if ($this->name != null && FileInfo::permissionPath(FileInfo::validate($this->directory . SP . $this->name)))
                     $this->permissionDeny = false;
                 else
                     $this->permissionDeny = true;

@@ -11,9 +11,9 @@
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
 
-    if ($appDirectory->getDirectory() == null || is_dir($appDirectory->getDirectory()) == false)
+    if ($appDirectory->getDirectory() == null || file_exists($appDirectory->getDirectory() . SP . $appDirectory->getName()) == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
+    else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory() . SP . $appDirectory->getName()))
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
 
     $appLocationPath = new AppLocationPath($appDirectory, 'index.php');

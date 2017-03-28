@@ -299,7 +299,7 @@
                         if (self::unlink($filename) == false)
                             return false;
                     } else if (@is_dir($filename)) {
-                        if (self::rrmdir($filename, $directory, $isHasFileAppPermission) == false)
+                        if (self::rrmdir($filename, null, $isHasFileAppPermission) == false)
                             return false;
                     } else {
                         return false;
@@ -313,6 +313,8 @@
                 $handle = @scandir($path);
 
                 if ($handle !== false) {
+                    $directoryCurrentHasPermission = false;
+
                     foreach ($handle AS $entry) {
                         if ($entry != '.' && $entry != '..') {
                             $filename = $path . SP . $entry;
@@ -320,7 +322,8 @@
                             if (is_readable($filename) == false) {
                                 return false;
                             } else if (self::permissionPath($filename) == false) {
-                                $isHasFileAppPermission = true;
+                                $isHasFileAppPermission        = true;
+                                $directoryCurrentHasPermission = true;
                             } else if (@is_file($filename)) { bug($filename);
                                 if (self::unlink($filename) == false)
                                     return false;
@@ -333,7 +336,7 @@
                         }
                     }
 
-                    if ($isHasFileAppPermission)
+                    if ($directoryCurrentHasPermission)
                         return true;
 
                     return @rmdir($path);
