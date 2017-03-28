@@ -134,10 +134,9 @@
 
         public function isDirectoryExists()
         {
-            if ($this->directory != null || empty($this->directory) || is_readable($this->directory) == false)
+            if ($this->directory == null || empty($this->directory) || is_readable($this->directory) == false)
                 return false;
 
-            if
             return is_dir($this->directory);
         }
 
@@ -146,7 +145,7 @@
             if ($this->isDirectoryExists() == false)
                 return false;
 
-            if ($this->name != null || empty($this->name))
+            if ($this->name == null || empty($this->name))
                 return false;
 
             $path = FileInfo::validate($this->directory . SP . $this->name);
@@ -162,7 +161,7 @@
             if ($this->isDirectoryExists() == false)
                 return false;
 
-            if ($this->name != null || empty($this->name))
+            if ($this->name == null || empty($this->name))
                 return false;
 
             $path = FileInfo::validate($this->directory . SP . $this->name);
@@ -175,7 +174,7 @@
 
         public function isFileExistsDirectory()
         {
-            if ($this->directory != null || empty($this->directory) || is_readable($this->directory) == false)
+            if ($this->directory == null || empty($this->directory) || is_readable($this->directory) == false)
                 return false;
 
             return file_exists($this->directory);
@@ -186,7 +185,7 @@
             if ($this->isDirectoryExists() == false)
                 return false;
 
-            if ($this->name != null || empty($this->name))
+            if ($this->name == null || empty($this->name))
                 return false;
 
             $path = FileInfo::validate($this->directory . SP . $this->name);
