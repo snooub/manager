@@ -51,26 +51,15 @@
             else
                 $appAlert->danger(lng('file_chmod.alert.not_input_chmod_permission_file'));
         } else {
-            $chmod = intval($forms['chmod'], 8);
-
-            if (FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), $chmod) == false) {
+            if (FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), intval($forms['chmod'], 8)) == false) {
                 if ($isDirectory)
                     $appAlert->danger(lng('file_chmod.alert.chmod_permission_directory_failed', 'filename', $appDirectory->getName()));
                 else
                     $appAlert->danger(lng('file_chmod.alert.chmod_permission_file_failed', 'filename', $appDirectory->getName()));
+            } else if ($isDirectory) {
+                $appAlert->success(lng('file_chmod.alert.chmod_permission_directory_success', 'filename', $appDirectory->getName()));
             } else {
-                $chmodTmp = FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()));
-
-                if ($chmodTmp != $chmod) {
-                    if ($isDirectory)
-                        $appAlert->warning(lng('file_chmod.alert.chmod_permission_directory_failed_not_change', 'filename', $appDirectory->getName()));
-                    else
-                        $appAlert->warning(lng('file_chmod.alert.chmod_permission_file_failed_not_change', 'filename', $appDirectory->getName()));
-                } else if ($isDirectory) {
-                    $appAlert->success(lng('file_chmod.alert.chmod_permission_directory_success', 'filename', $appDirectory->getName()));
-                } else {
-                    $appAlert->success(lng('file_chmod.alert.chmod_permission_file_success', 'filename', $appDirectory->getName()));
-                }
+                $appAlert->success(lng('file_chmod.alert.chmod_permission_file_success', 'filename', $appDirectory->getName()));
             }
         }
     }

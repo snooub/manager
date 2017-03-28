@@ -90,9 +90,11 @@
                 }
 
                 return $perms;
-            } else if (is_readable($path)) {
-                return @chmod($path, $chmod);
+            } else if (@chmod($path, $chmod)) {
+                return true;
             }
+
+            return false;
         }
 
         /**
