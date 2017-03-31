@@ -64,17 +64,28 @@
 
             if (FileInfo::rename($forms['path_old'], $forms['path_new']) == false) {
                 if ($isDirectory)
-                    $appAlert->danger(lng('file_rename.alert.rename_directory_failed'));
+                    $appAlert->danger(lng('file_rename.alert.rename_directory_failed', 'filename', $appDirectory->getName()));
                 else
-                    $appAlert->danger(lng('file_rename.alert.rename_file_failed'));
+                    $appAlert->danger(lng('file_rename.alert.rename_file_failed', 'filename', $appDirectory->getName()));
             } else {
-                $appParameter->set(AppDirectory::PARAMETER_NAME_URL, AppDirectory::rawEncode($forms['name']), true);
-                $redirect = 'file_rename.php' . $appParameter->toString(true);
+                $idAlert = null;
+                $urlGoto = null;
+
+                if ($appConfig->get('auto_redirect.file_rename', true)) {
+                    $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+                    $appParameter->toString(true);
+
+                    $idAlert = ALERT_INDEX;
+                    $urlGoto = 'index.php' . $appParameter->toString();
+                } else {
+                    $appParameter->set(AppDirectory::PARAMETER_NAME_URL, AppDirectory::rawEncode($forms['name']), true);
+                    $urlGoto = 'file_rename.php' . $appParameter->toString(true);
+                }
 
                 if ($isDirectory)
-                    $appAlert->success(lng('file_rename.alert.rename_directory_success'), null, $redirect);
+                    $appAlert->success(lng('file_rename.alert.rename_directory_success', 'filename', $appDirectory->getName()), $idAlert, $urlGoto);
                 else
-                    $appAlert->success(lng('file_rename.alert.rename_file_success'), null, $redirect);
+                    $appAlert->success(lng('file_rename.alert.rename_file_success', 'filename', $appDirectory->getName()), $idAlert, $urlGoto);
             }
         }
     }

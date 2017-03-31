@@ -27,10 +27,10 @@
             'name_directory_not_validate' => 'Tên thư mục không hợp lệ',
             'name_file_not_validate'      => 'Tên tập tin không hợp lệ',
             'name_not_change'             => 'Tên không có gì thay đổi',
-            'rename_directory_failed'     => 'Đổi tên thư mục thất bại',
-            'rename_file_failed'          => 'Đổi tên tập tin thất bại',
-            'rename_directory_success'    => 'Đổi tên thư mục thành công',
-            'rename_file_success'         => 'Đổi tên tập tin thành công'
+            'rename_directory_failed'     => 'Đổi tên thư mục <strong>{$filename}</strong> thất bại',
+            'rename_file_failed'          => 'Đổi tên tập tin <strong>{$filename}</strong> thất bại',
+            'rename_directory_success'    => 'Đổi tên thư mục <strong>{$filename}</strong> thành công',
+            'rename_file_success'         => 'Đổi tên tập tin <strong>{$filename}</strong> thành công'
         ]
     ];
 

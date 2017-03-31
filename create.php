@@ -74,7 +74,7 @@
                         $forms['name'] = null;
                     }
                 } else if ($forms['type'] === TYPE_FILE) {
-                    if (@file_put_contents($forms['path'], '...') === false) {
+                    if (@file_put_contents($forms['path'], '#') === false) {
                         $appAlert->danger(lng('create.alert.create_file_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
                         $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $appParameter->toString());
