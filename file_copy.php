@@ -41,22 +41,24 @@
     require_once('incfiles' . SP . 'header.php');
 
     $forms = [
-        'path' => null,
+        'path'   => $appDirectory->getDirectory(),
         'action' => ACTION_COPY
     ];
 
     if (isset($_POST['browser'])) {
-    
+
     } else if (isset($_POST['copy'])) {
-        $path   = addslashes($_POST['path']);
-        $action = intval(addslashes($_POST['action']));
+        $forms['path']   = addslashes($_POST['path']);
+        $forms['action'] = intval(addslashes($_POST['action']));
 
         if (empty($path)) {
             $appAlert->danger(lng('file_copy.alert.not_input_path_copy'));
         } else if ($action !== ACTION_COPY && $action !== ACTION_MOVE) {
-            $appAlert->danger(lng('file_copy.alert.action_not_validate'));        
+            $appAlert->danger(lng('file_copy.alert.action_not_validate'));
+        } else if (FileInfo::permissionDenPath($path)) {
+            $appAlert->danger(lng('file_copy.alert.not_copy_file_to_directory_app'));
         } else {
-            
+
         }
     }
 ?>
@@ -78,7 +80,7 @@
             <ul>
                 <li class="input">
                     <span><?php echo lng('file_copy.form.input.path_copy'); ?></span>
-                    <input type="text" name="path" value="<?php echo stripslashes($forms['path']); ?>" placeholder="<?php echo lng('file_copy.form.placeholder.input_path_copy'); ?>"/>
+                    <input type="text" name="path" value="<?php echo $forms['path']; ?>" placeholder="<?php echo lng('file_copy.form.placeholder.input_path_copy'); ?>"/>
                 </li>
                 <li class="radio-choose">
                     <ul class="radio-choose-tab">

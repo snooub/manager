@@ -109,22 +109,22 @@
          * @param $move = Is delete source of copy success
          * @return boolean
          */
-        public static function copy($old, $new, $parent = true, $move = false)
+        public static function copy($old, $new, $parent = true, $move = false, & $isHasFileAppPermission = false)
         {
             if (is_array($old)) {
                 foreach ($old AS $entry) {
-                    $path = $new . DS . $entry;
+                    $path = $new . SP . $entry;
 
                     if (self::permissionDenyPath($path)) {
-                        // Abort entry
-                    } else if (@is_file($path)) {
-                        if (@copy($path, $parent . DS . $entry) == false)
+                        $isHasFileAppPermission = true;
+                    } else if (is_file($path)) {
+                        if (@copy($path, $parent . SP . $entry) == false)
                             return false;
 
                         if ($move)
                             self::unlink($path);
-                    } else if (@is_dir($path)) {
-                        if (self::copy($path, $parent . DS . $entry) == false)
+                    } else if (is_dir($path)) {
+                        if (self::copy($path, $parent . SP . $entry, $move, $isHasFileAppPermission) == false)
                             return false;
                     } else {
                         return false;
@@ -132,52 +132,62 @@
                 }
 
                 return true;
-            } else if (@is_file($old)) {
-                if (@copy($old, $new) == false)
-                    return false;
-
-                if ($move)
-                    self::unlink($old);
-
-                return true;
-            } else if (@is_dir($old)) {
-                $handle = @scandir($old);
-
-                if ($handle !== false) {
-                    if ($$parent && $old != '/') {
-                        $end = $new = $new . '/' . end(explode('/', $old));
-
-                        if (@is_file($end) || (!@is_dir($end) && !@mkdir($end)))
-                            return false;
-                    } else if (!$$parent && !@is_dir($new) && !@mkdir($new)) {
+            } else if (is_file($old)) {
+                if (self::permissionDenyPath($old)) {
+                    $isHasFileAppPermission = true;
+                } else {
+                    if (copy($old, $new) == false)
                         return false;
-                    }
-
-                    foreach ($handler AS $entry) {
-                        if ($entry != '.' && $entry != '..') {
-                            $source = $old . '/' . $entry;
-                            $dest = $new . '/' . $entry;
-
-                            if (@is_file($source)) {
-                                if (!@copy($source, $dest))
-                                    return false;
-
-                                if ($move)
-                                    self::unlink($source);
-                            } else if (@is_dir($source)) {
-                                if (!copydir($source, $dest, false))
-                                    return false;
-                            } else {
-                                return false;
-                            }
-                        }
-                    }
 
                     if ($move)
-                        return self::rrmdir($old);
-                    else
-                        return true;
+                        self::unlink($old);
                 }
+
+                return true;
+            } else if (is_dir($old)) {
+                if (self::permissionDenyPath($old)) {
+                    $isHasFileAppPermission = true;
+                } else {
+                    $handle = @scandir($old);
+
+                    if ($handle !== false) {
+                        if ($parent && $old != SP) {
+                            $end = $new = $new . SP . end(explode(SP, $old));
+
+                            if (is_file($end) || (is_dir($end) == false && @mkdir($end)) == false)
+                                return false;
+                        } else if ($parent == false && is_dir($new) == false && @mkdir($new) == false) {
+                            return false;
+                        }
+
+                        foreach ($handler AS $entry) {
+                            if ($entry != '.' && $entry != '..') {
+                                $source = $old . SP . $entry;
+                                $dest   = $new . SP . $entry;
+
+                                if (is_file($source)) {
+                                    if (@copy($source, $dest) == false)
+                                        return false;
+
+                                    if ($move)
+                                        self::unlink($source);
+                                } else if (is_dir($source)) {
+                                    if (self::copy($source, $dest, false) == false)
+                                        return false;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        }
+
+                        if ($move)
+                            return self::rrmdir($old);
+                        else
+                            return true;
+                    }
+                }
+
+                return true;
             }
 
             return false;
@@ -279,10 +289,7 @@
 
         public static function rename($old, $new)
         {
-            if (is_readable($old))
-                return rename($old, $new);
-
-            return false;
+            return rename($old, $new);
         }
 
         /**
@@ -302,10 +309,10 @@
                         return false;
                     } else if (self::permissionDenyPath($filename)) {
                         $isHasFileAppPermission = true;
-                    } else if (@is_file($filename)) {
+                    } else if (is_file($filename)) {
                         if (self::unlink($filename) == false)
                             return false;
-                    } else if (@is_dir($filename)) {
+                    } else if (is_dir($filename)) {
                         if (self::rrmdir($filename, null, $isHasFileAppPermission) == false)
                             return false;
                     } else {
@@ -331,10 +338,10 @@
                             } else if (self::permissionDenyPath($filename)) {
                                 $isHasFileAppPermission        = true;
                                 $directoryCurrentHasPermission = true;
-                            } else if (@is_file($filename)) {
+                            } else if (is_file($filename)) {
                                 if (self::unlink($filename) == false)
                                     return false;
-                            } else if (@is_dir($filename)) {
+                            } else if (is_dir($filename)) {
                                 if (self::rrmdir($filename, null, $isHasFileAppPermission) == false)
                                     return false;
                             } else {

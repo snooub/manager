@@ -29,6 +29,9 @@
 
         public function __construct(array $config)
         {
+            $_SERVER = filter_var_array($_SERVER, FILTER_SANITIZE_STRING);
+            $_GET    = filter_var_array($_GET,    FILTER_SANITIZE_STRING);
+
             $this->environment = new Environment($config);
             $this->language    = new Language($this);
             $this->autoload    = new Autoload($this);
