@@ -6,13 +6,16 @@
     if (defined('SP') == false)
         define('SP', DIRECTORY_SEPARATOR);
 
-    require_once('librarys' . SP . 'Boot.php');
+    if (defined('ROOT') == false)
+        define('ROOT', '');
 
-    $boot         = new Librarys\Boot(require_once('config' . SP . 'app.php'));
+    require_once(ROOT . 'librarys' . SP . 'Boot.php');
+
+    $boot         = new Librarys\Boot(require_once(ROOT . 'config' . SP . 'app.php'));
     $appChecker   = new Librarys\App\AppChecker   ($boot);
-    $appConfig    = new Librarys\App\AppConfig    ($boot, 'config' . SP . 'manager.php');
-    $appUser      = new Librarys\App\AppUser      ($boot, 'config' . SP . 'user.php');
-    $appAlert     = new Librarys\App\AppAlert     ($boot, 'define' . SP . 'alert.php');
+    $appConfig    = new Librarys\App\AppConfig    ($boot, ROOT . 'config' . SP . 'manager.php');
+    $appUser      = new Librarys\App\AppUser      ($boot, ROOT . 'config' . SP . 'user.php');
+    $appAlert     = new Librarys\App\AppAlert     ($boot, ROOT . 'define' . SP . 'alert.php');
     $appDirectory = new Librarys\App\AppDirectory ($boot);
 
     if ($appChecker->execute()->isAccept() == false) {

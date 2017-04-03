@@ -6,13 +6,15 @@
     use Librarys\App\AppParameter;
 
     define('LOADED', 1);
-    require_once('global.php');
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    @apache_setenv('no-gzip', 1);
+    if (function_exists('apache_setenv'))
+        @apache_setenv('no-gzip', 1);
+
     @ini_set('zlib.output_compression', 'Off');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
 
     if ($appDirectory->isFileSeparatorNameExists() == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
@@ -88,7 +90,7 @@
         }
     }
 
-        // File save was a success
-        @fclose($file);
-        exit;
+    // File save was a success
+    @fclose($file);
+    exit;
 ?>

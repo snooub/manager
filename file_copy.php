@@ -9,10 +9,10 @@
     define('ACTION_COPY', 1);
     define('ACTION_MOVE', 2);
 
-    require_once('global.php');
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
 
     if ($appDirectory->isFileExistsDirectorySeparatorName() == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
@@ -38,13 +38,27 @@
 
     $themes  = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_FILE_COPY);
-    require_once('header.php');
+    require_once('incfiles' . SP . 'header.php');
 
     $forms = [
         'path' => null,
         'action' => ACTION_COPY
     ];
 
+    if (isset($_POST['browser'])) {
+    
+    } else if (isset($_POST['copy'])) {
+        $path   = addslashes($_POST['path']);
+        $action = intval(addslashes($_POST['action']));
+
+        if (empty($path)) {
+            $appAlert->danger(lng('file_copy.alert.not_input_path_copy'));
+        } else if ($action !== ACTION_COPY && $action !== ACTION_MOVE) {
+            $appAlert->danger(lng('file_copy.alert.action_not_validate'));        
+        } else {
+            
+        }
+    }
 ?>
 
     <?php $appAlert->display(); ?>
@@ -64,7 +78,7 @@
             <ul>
                 <li class="input">
                     <span><?php echo lng('file_copy.form.input.path_copy'); ?></span>
-                    <input type="text" name="name" value="" placeholder="<?php echo lng('file_copy.form.placeholder.input_path_copy'); ?>"/>
+                    <input type="text" name="path" value="<?php echo stripslashes($forms['path']); ?>" placeholder="<?php echo lng('file_copy.form.placeholder.input_path_copy'); ?>"/>
                 </li>
                 <li class="radio-choose">
                     <ul class="radio-choose-tab">
@@ -83,7 +97,10 @@
                     </ul>
                 </li>
                 <li class="button">
-                    <button type="submit" name="rename">
+                    <button type="submit" name="browser">
+                        <span><?php echo lng('file_copy.form.button.browser'); ?></span>
+                    </button>
+                    <button type="submit" name="copy">
                         <span><?php echo lng('file_copy.form.button.copy'); ?></span>
                     </button>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">
@@ -129,7 +146,7 @@
         </li>
     </ul>
 
-<?php require_once('footer.php'); ?>
+<?php require_once('incfiles' . SP . 'footer.php'); ?>
 
 <?php
 

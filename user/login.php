@@ -1,7 +1,8 @@
 <?php
 
     define('LOADED', 1);
-    require_once('global.php');
+    define('ROOT',   '..' . DIRECTORY_SEPARATOR);
+    require_once('..' . DIRECTORY_SEPARATOR . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin())
         $appAlert->info(lng('login.alert.login_already'), ALERT_INDEX, env('app.http.host'));
@@ -9,7 +10,7 @@
     $title = lng('login.title_page');
     $themes = [ env('resource.theme.login') ];
     $appAlert->setID(ALERT_LOGIN);
-    require_once('header.php');
+    require_once('..' . SP . 'incfiles' . SP . 'header.php');
 
     $username = null;
     $password = null;
@@ -50,4 +51,4 @@
         </form>
     </div>
 
-<?php require_once('footer.php'); ?>
+<?php require_once('..' .SP . 'incfiles' . SP . 'footer.php'); ?>

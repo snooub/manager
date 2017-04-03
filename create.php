@@ -9,15 +9,15 @@
     define('TYPE_FOLDER', 1);
     define('TYPE_FILE',   2);
 
-    require_once('global.php');
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
 
     $title  = lng('create.title_page');
     $themes = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_CREATE);
-    require_once('header.php');
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'header.php');
 
     if ($appDirectory->isDirectoryExists() == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
@@ -152,4 +152,4 @@
         </li>
     </ul>
 
-<?php require_once('footer.php'); ?>
+<?php require_once('incfiles' . SP . 'footer.php'); ?>

@@ -6,10 +6,10 @@
     use Librarys\App\AppParameter;
 
     define('LOADED', 1);
-    require_once('global.php');
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
 
     if ($appDirectory->isFileExistsDirectorySeparatorName() == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
@@ -36,7 +36,7 @@
     $themes  = [ env('resource.theme.file') ];
     $scripts = [ env('resource.javascript.chmod_input') ];
     $appAlert->setID(ALERT_FILE_CHMOD);
-    require_once('header.php');
+    require_once('incfiles' . SP . 'header.php');
 
     $forms = [
         'chmod' => FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()))
@@ -103,7 +103,7 @@
                     <?php } else { ?>
                         <span><?php echo lng('file_chmod.form.input.chmod_file'); ?></span>
                     <?php } ?>
-                    <input type="number" name="chmod_permission" value="<?php echo $forms['chmod']; ?>" placeholder="<?php if ($isDirectory) echo lng('file_chmod.form.placeholder.input_chmod_directory'); else echo lng('file_chmod.form.placeholder.input_chmod_file'); ?>" id="input-chmod" max="777"/>
+                    <input type="number" name="chmod_permission" value="<?php echo stripslashes($forms['chmod']); ?>" placeholder="<?php if ($isDirectory) echo lng('file_chmod.form.placeholder.input_chmod_directory'); else echo lng('file_chmod.form.placeholder.input_chmod_file'); ?>" id="input-chmod" max="777"/>
                 </li>
                 <li class="input-chmod">
                     <ul id="input-chmod-checkbox">
@@ -185,4 +185,4 @@
         </li>
     </ul>
 
-<?php require_once('footer.php'); ?>
+<?php require_once('incfiles' . SP . 'footer.php'); ?>

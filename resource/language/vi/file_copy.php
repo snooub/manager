@@ -12,8 +12,9 @@
             ],
 
             'button' => [
-                'copy'   => 'Sao chép',
-                'cancel' => 'Quay lại'
+                'browser' => 'Duyệt...',
+                'copy'    => 'Sao chép',
+                'cancel'  => 'Quay lại'
             ],
 
             'placeholder' => [
@@ -22,7 +23,9 @@
         ],
 
         'alert' => [
-
+            'not_input_path_copy' => 'Chưa nhập đường dẫn sao chép',
+            'action_not_validate' => 'Hành động không hợp lệ',
+            
         ]
    ];
 

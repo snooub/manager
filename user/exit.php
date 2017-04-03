@@ -1,4 +1,6 @@
-<?php define('ACCESS', true);
+<?php
+
+/*define('ACCESS', true);
 
     include_once 'function.php';
 
@@ -14,6 +16,6 @@
             goURL($ref != null ? $ref : 'index.php');
     } else {
         goURL('login.php');
-    }
+    }*/
 
 ?>

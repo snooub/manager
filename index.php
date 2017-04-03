@@ -9,15 +9,15 @@
     use Librarys\File\FileMime;
 
     define('LOADED', 1);
-    require_once('global.php');
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
 
     $title  = lng('home.title_page_root');
     $themes = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_INDEX);
-    require_once('header.php');
+    require_once('incfiles' . SP . 'header.php');
 
     $handler              = null;
     $isPermissionDenyPath = $appDirectory->isPermissionDenyPath();
@@ -252,4 +252,4 @@
         </li>
     </ul>
 
-<?php require_once('footer.php'); ?>
+<?php require_once('incfiles' . SP . 'footer.php'); ?>

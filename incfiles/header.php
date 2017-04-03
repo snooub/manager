@@ -47,33 +47,33 @@
                     </li>
                     <?php if ($appUser->isLogin()) { ?>
                         <li>
-                            <a href="#">
+                            <a href="mysql/index.php">
                                 <span class="icomoon icon-mysql"></span>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="system/user.php">
                                 <span class="icomoon icon-user"></span>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="system/config.php">
                                 <span class="icomoon icon-config"></span>
                             </a>
                         </li>
                         <li class="about">
-                            <a href="#">
+                            <a href="about.php">
                                 <span class="icomoon icon-about"></span>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="user/exit.php">
                                 <span class="icomoon icon-exit"></span>
                             </a>
                         </li>
                     <?php } else { ?>
                         <li>
-                            <a href="#">
+                            <a href="about.php">
                                 <span class="icomoon icon-about"></span>
                             </a>
                         </li>

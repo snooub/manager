@@ -6,10 +6,10 @@
     use Librarys\App\AppParameter;
 
     define('LOADED', 1);
-    require_once('global.php');
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
 
     if ($appDirectory->isFileExistsDirectorySeparatorName() == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
@@ -35,7 +35,7 @@
 
     $themes  = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_FILE_RENAME);
-    require_once('header.php');
+    require_once('incfiles' . SP . 'header.php');
 
     $forms = [
         'name'     => $appDirectory->getName(),
@@ -112,7 +112,7 @@
                     <?php } else { ?>
                         <span><?php echo lng('file_rename.form.input.name_file'); ?></span>
                     <?php } ?>
-                    <input type="text" name="name" value="<?php echo $forms['name']; ?>" placeholder="<?php if ($isDirectory) echo lng('file_rename.form.placeholder.input_name_directory'); else echo lng('file_rename.form.placeholder.input_name_file'); ?>"/>
+                    <input type="text" name="name" value="<?php echo stripslashes($forms['name']); ?>" placeholder="<?php if ($isDirectory) echo lng('file_rename.form.placeholder.input_name_directory'); else echo lng('file_rename.form.placeholder.input_name_file'); ?>"/>
                 </li>
                 <li class="button">
                     <button type="submit" name="rename">
@@ -161,4 +161,4 @@
         </li>
     </ul>
 
-<?php require_once('footer.php'); ?>
+<?php require_once('incfiles' . SP . 'footer.php'); ?>
