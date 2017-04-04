@@ -88,6 +88,8 @@
                     $appAlert->success(lng('file_rename.alert.rename_file_success', 'filename', $appDirectory->getName()), $idAlert, $urlGoto);
             }
         }
+
+        $forms['name'] = stripslashes($forms['name']);
     }
 ?>
 
@@ -112,7 +114,7 @@
                     <?php } else { ?>
                         <span><?php echo lng('file_rename.form.input.name_file'); ?></span>
                     <?php } ?>
-                    <input type="text" name="name" value="<?php echo stripslashes($forms['name']); ?>" placeholder="<?php if ($isDirectory) echo lng('file_rename.form.placeholder.input_name_directory'); else echo lng('file_rename.form.placeholder.input_name_file'); ?>"/>
+                    <input type="text" name="name" value="<?php echo $forms['name']; ?>" placeholder="<?php if ($isDirectory) echo lng('file_rename.form.placeholder.input_name_directory'); else echo lng('file_rename.form.placeholder.input_name_file'); ?>"/>
                 </li>
                 <li class="button">
                     <button type="submit" name="rename">

@@ -39,7 +39,7 @@
 
     if (isset($_POST['create']) || isset($_POST['create_and_continue'])) {
         $forms['name'] = addslashes($_POST['name']);
-        $forms['type'] = intval(addslashes($_POST['type']));
+        $forms['type'] = intval($_POST['type']);
 
         if (empty($forms['name'])) {
             if ($forms['type'] === TYPE_FOLDER)

@@ -4,6 +4,7 @@
     use Librarys\App\AppPaging;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\AppFileCopy;
 
     use Librarys\File\FileInfo;
     use Librarys\File\FileMime;
@@ -130,6 +131,58 @@
         'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . $appDirectory->getDirectoryEncode() .
                  '&' . AppDirectory::PARAMETER_PAGE_URL      . '='
     );
+
+    $appFileCopy = new AppFileCopy();
+
+    if ($appFileCopy->isSession()) {
+        $isDirectoryCopy         = is_dir(FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName()));
+        $isDirectoryCurrentEqual = false;
+
+        $appFileCopyHrefParamater = new AppParameter();
+        $appFileCopyHrefParamater->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appFileCopy->getDirectory(), true);
+        $appFileCopyHrefParamater->add(AppDirectory::PARAMETER_NAME_URL,      $appFileCopy->getName(),      true);
+        $appFileCopyHrefParamater->add(AppDirectory::PARAMETER_PAGE_URL,      $appFileCopy->getPage(),      $appFileCopy->getPage() > 1);
+
+        $appFileCopyHref = 'file_copy.php' . $appFileCopyHrefParamater->toString(true);
+
+        if ($appDirectory->getDirectory() == FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName())) {
+            if ($appFileCopy->isMove() == false)
+                $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
+            else
+                $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'));
+
+            $isDirectoryCurrentEqual = true;
+        }
+
+        if ($appFileCopy->isMove() == false) {
+            if ($isDirectoryCurrentEqual) {
+                if ($isDirectoryCopy)
+                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_copy_directory', 'filename', $appFileCopy->getName()), ALERT_INDEX);
+                else
+                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_copy_file', 'filename', $appFileCopy->getName()), ALERT_INDEX);
+            } else {
+                if ($isDirectoryCopy)
+                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_copy_directory_href', 'filename', $appFileCopy->getName(), 'href', $appFileCopyHref), ALERT_INDEX);
+                else
+                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_copy_file_href', 'filename', $appFileCopy->getName(), 'href', $appFileCopyHref), ALERT_INDEX);
+            }
+        } else {
+            if ($isDirectoryCurrentEqual) {
+                if ($isDirectoryCopy)
+                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_move_directory_href', 'filename', $appFileCopy->getName()), ALERT_INDEX);
+                else
+                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_move_file_href', 'filename', $appFileCopy->getName()), ALERT_INDEX);
+            } else {
+                if ($isDirectoryCopy)
+                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_move_directory_href', 'filename', $appFileCopy->getName(), 'href', $appFileCopyHref), ALERT_INDEX);
+                else
+                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_move_file_href', 'filename', $appFileCopy->getName(), 'href', $appFileCopyHref), ALERT_INDEX);
+            }
+        }
+
+        $appFileCopy->setPath($appDirectory->getDirectory());
+        $appFileCopy->flushSession();
+    }
 ?>
 
     <?php echo $appAlert->display(); ?>

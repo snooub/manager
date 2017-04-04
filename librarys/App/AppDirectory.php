@@ -46,7 +46,7 @@
             }
 
             if (isset($_GET[self::PARAMETER_PAGE_URL]) && empty($_GET[self::PARAMETER_PAGE_URL]) == false)
-                $this->page = intval(addslashes($_GET[self::PARAMETER_PAGE_URL]));
+                $this->page = intval($_GET[self::PARAMETER_PAGE_URL]);
             else
                 $this->page = 1;
 

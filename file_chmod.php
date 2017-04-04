@@ -74,6 +74,8 @@
                     $appAlert->success(lng('file_chmod.alert.chmod_permission_file_success', 'filename', $appDirectory->getName()), $idAlert, $urlGoto);
             }
         }
+
+        $forms['chmod'] = stripslashes($forms['chmod']);
     }
 ?>
 
@@ -103,7 +105,7 @@
                     <?php } else { ?>
                         <span><?php echo lng('file_chmod.form.input.chmod_file'); ?></span>
                     <?php } ?>
-                    <input type="number" name="chmod_permission" value="<?php echo stripslashes($forms['chmod']); ?>" placeholder="<?php if ($isDirectory) echo lng('file_chmod.form.placeholder.input_chmod_directory'); else echo lng('file_chmod.form.placeholder.input_chmod_file'); ?>" id="input-chmod" max="777"/>
+                    <input type="number" name="chmod_permission" value="<?php echo $forms['chmod']; ?>" placeholder="<?php if ($isDirectory) echo lng('file_chmod.form.placeholder.input_chmod_directory'); else echo lng('file_chmod.form.placeholder.input_chmod_file'); ?>" id="input-chmod" max="777"/>
                 </li>
                 <li class="input-chmod">
                     <ul id="input-chmod-checkbox">

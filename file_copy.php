@@ -4,6 +4,7 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\AppFileCopy;
 
     define('LOADED',      1);
     define('ACTION_COPY', 1);
@@ -19,6 +20,7 @@
     else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
+    $appFileCopy     = new AppFileCopy();
     $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
@@ -46,19 +48,86 @@
     ];
 
     if (isset($_POST['browser'])) {
+        $forms['path']   = $_POST['path'];
+        $forms['action'] = intval($_POST['action']);
 
-    } else if (isset($_POST['copy'])) {
-        $forms['path']   = addslashes($_POST['path']);
-        $forms['action'] = intval(addslashes($_POST['action']));
-
-        if (empty($path)) {
-            $appAlert->danger(lng('file_copy.alert.not_input_path_copy'));
-        } else if ($action !== ACTION_COPY && $action !== ACTION_MOVE) {
+        if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
             $appAlert->danger(lng('file_copy.alert.action_not_validate'));
-        } else if (FileInfo::permissionDenPath($path)) {
+        } else {
+            $appFileCopy->setSession($appDirectory->getDirectory(), $appDirectory->getName(), $action->action);
+
+            $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+            $appParameter->toString(true);
+
+            $appAlert->gotoURL('index.php' . $appParameter->toString());
+        }
+    } else if (isset($_POST['copy'])) {
+        $forms['path']   = $_POST['path'];
+        $forms['action'] = intval($_POST['action']);
+
+        if (empty($forms['path'])) {
+            $appAlert->danger(lng('file_copy.alert.not_input_path_copy'));
+        } else if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
+            $appAlert->danger(lng('file_copy.alert.action_not_validate'));
+        } else if (FileInfo::validate($forms['path'] . SP . $appDirectory->getName()) == FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
+            if ($forms['action'] === ACTION_COPY)
+                $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
+            else
+                $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'));
+        } else if (@is_dir(FileInfo::validate($forms['path'])) == false) {
+            $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'));
+        } else if (FileInfo::permissionDenyPath($forms['path'])) {
             $appAlert->danger(lng('file_copy.alert.not_copy_file_to_directory_app'));
         } else {
+            $filePathOld            = FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName());
+            $filePathNew            = FileInfo::validate($forms['path'] . SP . $appDirectory->getName());
+            $isHasFileAppPermission = false;
 
+            if (FileInfo::copy($filePathOld, $filePathNew, true, $forms['action'] === ACTION_MOVE, $isHasFileAppPermission) == false) {
+                if ($isDirectory)
+                    $appAlert->danger(lng('file_copy.alert.copy_directory_failed', 'filename', $appDirectory->getName()));
+                else
+                    $appAlert->danger(lng('file_copy.alert.copy_file_failed', 'filename', $appDirectory->getName()));
+            } else {
+                if ($isHasFileAppPermission)
+                    $appAlert->warning(lng('file_copy.alert.has_file_app_not_permission_copy'), ALERT_INDEX);
+
+                $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+                $appParameter->toString(true);
+
+                if ($isDirectory)
+                    $appAlert->success(lng('file_copy.alert.copy_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                else
+                    $appAlert->success(lng('file_copy.alert.copy_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
+            }
+        }
+    }
+
+    if ($appFileCopy->isSession()) {
+        $appFileCopyPathSrc          = FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName());
+        $appFileCopyPathDest         = FileInfo::validate($appFileCopy->getPath()      . SP . $appFileCopy->getName());
+        $isChooseDirectoryPathFailed = true;
+
+        bug($appFileCopy);
+        if (is_dir($appFileCopy->getPath()) == false) {
+            //$appAlert->danger(lng('file_copy.alert.path_copy_not_exists'), ALERT_INDEX);
+            bug("Not found");
+        } else if ($appFileCopyPathSrc == $appFileCopyPathDest) {
+            //if ($appFileCopy->isMove())
+                //$appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'), ALERT_INDEX);
+            //else
+                //$appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'), ALERT_INDEX);
+            bug("Is equal");
+        }
+        } else {
+            $isChooseDirectoryPathFailed = false;
+        }
+
+        if ($isChooseDirectoryPathFailed) {
+            //$appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+            //$appParameter->toString(true);
+
+            //$appAlert->gotoURL('index.php' . $appParameter->toString());
         }
     }
 ?>
@@ -99,11 +168,11 @@
                     </ul>
                 </li>
                 <li class="button">
-                    <button type="submit" name="browser">
-                        <span><?php echo lng('file_copy.form.button.browser'); ?></span>
-                    </button>
                     <button type="submit" name="copy">
                         <span><?php echo lng('file_copy.form.button.copy'); ?></span>
+                    </button>
+                    <button type="submit" name="browser">
+                        <span><?php echo lng('file_copy.form.button.browser'); ?></span>
                     </button>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">
                         <span><?php echo lng('file_copy.form.button.cancel'); ?></span>

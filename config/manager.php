@@ -11,7 +11,7 @@
 
         'auto_redirect' => [
             'file_rename' => true,
-            'file_chmod'  => true
+            'file_chmod'  => true,
         ]
     ];
 

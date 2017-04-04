@@ -17,7 +17,10 @@
             'user_not_exists'                => 'Người dùng không tồn tại',
             'login_success'                  => 'Đăng nhập thành công',
             'login_already'                  => 'Bạn hiện đang ở trạng thái đăng nhập',
-            'not_login'                      => 'Bạn chưa đăng nhập'
+            'not_login'                      => 'Bạn chưa đăng nhập',
+
+            'exit_session_failed'  => 'Đăng xuất phiên thất bại',
+            'exit_session_success' => 'Đăng xuất phiên thành công'
         ]
     ];
 

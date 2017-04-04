@@ -42,7 +42,7 @@
     ];
 
     if (isset($_POST['upload'])) {
-        $forms['exists_func'] = intval(addslashes($_POST['exists_func']));
+        $forms['exists_func'] = intval($_POST['exists_func']);
 
         if (isset($_FILES['files']) == false || isset($_FILES['files']['name']) == false) {
             $appAlert->danger(lng('upload.alert.data_empty_or_not_validate'));

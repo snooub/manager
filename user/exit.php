@@ -1,21 +1,17 @@
 <?php
 
-/*define('ACCESS', true);
+    define('LOADED', 1);
+    define('ROOT',   '..' . DIRECTORY_SEPARATOR);
 
-    include_once 'function.php';
+    require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if (IS_LOGIN) {
-        unset($_SESSION[SESS]);
-
-        $ref = $_SERVER['REQUEST_URI'];
-        $ref = $ref != $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ? $ref : null;
-
-        if (IS_LOGIN)
-            goURL('login.php');
+    if ($appUser->isLogin()) {
+    	if (session_destroy())
+    		$appAlert->success(lng('login.alert.exit_session_success'), ALERT_LOGIN, 'login.php');
         else
-            goURL($ref != null ? $ref : 'index.php');
+        	$appAlert->danger(lng('login.alert.exit_session_failed'), ALERT_INDEX, env('app.http.host'));
     } else {
-        goURL('login.php');
-    }*/
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'login.php');
+    }
 
 ?>

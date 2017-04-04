@@ -152,9 +152,7 @@
 
                     if ($handle !== false) {
                         if ($parent && $old != SP) {
-                            $end = $new = $new . SP . end(explode(SP, $old));
-
-                            if (is_file($end) || (is_dir($end) == false && @mkdir($end)) == false)
+                            if (is_file($new) || (is_dir($new) == false && @mkdir($new)) == false)
                                 return false;
                         } else if ($parent == false && is_dir($new) == false && @mkdir($new) == false) {
                             return false;

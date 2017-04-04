@@ -8,7 +8,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noindex, nofollow, noodp, nodir"/>
 
-        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu"/>
         <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.app'); ?>?rand=<?php echo rand(1000, 9000); ?>" media="all,handheld" />
 
         <?php if (isset($themes) && is_array($themes)) { ?>

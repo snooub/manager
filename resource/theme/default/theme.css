@@ -362,7 +362,6 @@ ul.alert {
 }
 
 ul.alert li {
-    color: #505050;
     font-size: 14px;
     background-color: #ffffff;
 
@@ -382,24 +381,42 @@ ul.alert li:last-child {
     margin: 0;
 }
 
-ul.alert li.danger {
+ul.alert li,
+ul.alert li * {
+    color: #505050;
+}
+
+ul.alert li a:hover {
+    color: #707070;
+}
+
+ul.alert li.danger,
+ul.alert li.danger * {
     color: #bf1c1c;
     background-color: #ffcdd2;
 }
 
-ul.alert li.success {
+ul.alert li.success,
+ul.alert li.success * {
     color: #33691e;
     background-color: #dcedc8;
 }
 
-ul.alert li.warning {
+ul.alert li.warning,
+ul.alert li.warning * {
     color: #ef6c00;
     background-color: #ffe0b2;
 }
 
-ul.alert li.info {
+ul.alert li.info,
+ul.alert li.info * {
     color: #006064;
     background-color: #b2ebf2;
+}
+
+ul.alert li.info a:hover,
+ul.alert li.info a:hover * {
+    color: #00acc1;
 }
 
 ul.menu-action,

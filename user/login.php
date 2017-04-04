@@ -2,7 +2,8 @@
 
     define('LOADED', 1);
     define('ROOT',   '..' . DIRECTORY_SEPARATOR);
-    require_once('..' . DIRECTORY_SEPARATOR . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
+
+    require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin())
         $appAlert->info(lng('login.alert.login_already'), ALERT_INDEX, env('app.http.host'));

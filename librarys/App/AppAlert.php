@@ -48,6 +48,8 @@
 
         public function add($message, $type = self::DANGER, $id = null, $urlGoto = null)
         {
+        	$this->boot->sessionInit();
+
             if ($id == null) {
                 if ($this->id == null)
                     $this->id = time();
@@ -86,6 +88,11 @@
         public function setID($id)
         {
             $this->id = $id;
+        }
+
+        public function gotoURL($url)
+        {
+            gotoURL($url);
         }
 
     }
