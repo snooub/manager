@@ -42,6 +42,7 @@
             'choose_directory_path_for_move_directory_href' => 'lng{file_copy.alert.choose_directory_path_for_move_directory}, nhấn vào <a href="{$href}"><strong>đây</strong></a> để chọn',
             'choose_directory_path_for_copy_file_href'      => 'lng{file_copy.alert.choose_directory_path_for_copy_file}, nhấn vào <a href="{$href}"><strong>đây</strong></a> để chọn',
             'choose_directory_path_for_move_file_href'      => 'lng{file_copy.alert.choose_directory_path_for_move_file}, nhấn vào <a href="{$href}"><strong>đây</strong></a> để chọn',
+            'directory_path_choose_is_validate'             => 'Đường dẫn <strong>{$path}</strong> được chọn hợp lệ'
         ]
    ];
 

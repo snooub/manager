@@ -65,6 +65,8 @@
         $forms['path']   = $_POST['path'];
         $forms['action'] = intval($_POST['action']);
 
+        $appFileCopy->clearSession();
+
         if (empty($forms['path'])) {
             $appAlert->danger(lng('file_copy.alert.not_input_path_copy'));
         } else if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
@@ -108,26 +110,25 @@
         $appFileCopyPathDest         = FileInfo::validate($appFileCopy->getPath()      . SP . $appFileCopy->getName());
         $isChooseDirectoryPathFailed = true;
 
-        bug($appFileCopy);
         if (is_dir($appFileCopy->getPath()) == false) {
-            //$appAlert->danger(lng('file_copy.alert.path_copy_not_exists'), ALERT_INDEX);
-            bug("Not found");
-        } else if ($appFileCopyPathSrc == $appFileCopyPathDest) {
-            //if ($appFileCopy->isMove())
-                //$appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'), ALERT_INDEX);
-            //else
-                //$appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'), ALERT_INDEX);
-            bug("Is equal");
-        }
+            $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'), ALERT_INDEX);
+        } else if ($appFileCopyPathSrc == $appFileCopyPathDest || $appFileCopyPathSrc == $appFileCopy->getPath()) {
+            if ($appFileCopy->isMove())
+                $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'), ALERT_INDEX);
+            else
+                $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'), ALERT_INDEX);
         } else {
+            $forms['path']               = $appFileCopy->getPath();
             $isChooseDirectoryPathFailed = false;
+
+            $appAlert->success(lng('file_copy.alert.directory_path_choose_is_validate', 'path', $appFileCopy->getPath()));
         }
 
         if ($isChooseDirectoryPathFailed) {
-            //$appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-            //$appParameter->toString(true);
+            $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+            $appParameter->toString(true);
 
-            //$appAlert->gotoURL('index.php' . $appParameter->toString());
+            $appAlert->gotoURL('index.php' . $appParameter->toString());
         }
     }
 ?>
