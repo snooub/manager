@@ -145,9 +145,7 @@
 
         $appFileCopyHref = 'file_copy.php' . $appFileCopyHrefParamater->toString(true);
 
-        if ($appDirectory->getDirectory() == FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName()) ||
-            $appDirectory->getDirectory() == FileInfo::validate($appFileCopy->getDirectory()))
-        {
+        if (FileInfo::validate($appDirectory->getDirectory() . SP . $appFileCopy->getName()) == FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName())) {
             if ($appFileCopy->isMove() == false)
                 $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
             else

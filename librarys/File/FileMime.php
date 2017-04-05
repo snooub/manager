@@ -160,6 +160,13 @@
 
             'other' => [
 
+            ],
+
+            'zip' => [
+                'zip',
+                'jar',
+                'jar1',
+                'jar2'
             ]
         ];
 
@@ -262,6 +269,11 @@
                 return true;
 
             return false;
+        }
+
+        public function isFormatArchiveZip()
+        {
+            return $this->isFormat(self::$formats['zip']);
         }
 
 	}

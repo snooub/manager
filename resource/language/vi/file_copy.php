@@ -6,9 +6,13 @@
 
         'form' => [
             'input' => [
-                'path_copy' => 'Đường dẫn sao chép đến:',
-                'radio_action_copy' => 'Sao chép',
-                'radio_action_move' => 'Di chuyển'
+                'path_copy'              => 'Đường dẫn sao chép đến:',
+                'radio_action_copy'      => 'Sao chép',
+                'radio_action_move'      => 'Di chuyển',
+                'if_has_entry_is_exists' => 'Nếu có thư mục hoặc tập tin đã tồn tại:',
+                'exists_func_override'   => 'Ghi đè',
+                'exists_func_skip'       => 'Bỏ qua',
+                'exists_func_rename'     => 'Đổi tên'
             ],
 
             'button' => [

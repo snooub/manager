@@ -5,7 +5,7 @@
     if (defined('SP') == false)
         define('SP', DIRECTORY_SEPARATOR);
 
-    error_reporting(0);
+    error_reporting(E_ALL);
 
     require_once(__DIR__ . SP . 'Function.php');
     require_once(__DIR__ . SP . 'Environment.php');
@@ -93,7 +93,7 @@
                     env('error.handler')  .
                     env('error.mime');
 
-            if (is_file($path)) {
+            /*if (is_file($path)) {
                 if ($title == null)
                     $title = $label;
 
@@ -102,7 +102,7 @@
 
                 header('Content-Type: text/html');
                 require_once($path);
-            }
+            }*/
         }
 
         public function obErrorHandler()

@@ -581,13 +581,21 @@ div.form-action form > ul {
 }
 
 div.form-action form > ul > li.input,
+div.form-action form > ul > li.chmod,
+div.form-action form > ul > li.radio-choose {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+div.form-action form > ul > li.input,
 div.form-action form > ul > li.input-file,
 div.form-action form > ul > li.input-chmod,
 div.form-action form > ul > li.accept {
     margin-left: 15px;
     margin-right: 15px;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 20px;
 }
 
 div.form-action form > ul > li.input span,
@@ -687,9 +695,17 @@ div.form-action form > ul > li.input-chmod input[type=checkbox]:checked + label:
 
 div.form-action form > ul > li.radio-choose {
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     padding-left: 15px;
     padding-right: 15px;
+}
+
+div.form-action form > ul > li.radio-choose > span:first-child {
+    color: #00897b;
+    display:block;
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom:10px;
 }
 
 div.form-action form > ul > li.accept span {

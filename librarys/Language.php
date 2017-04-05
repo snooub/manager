@@ -36,23 +36,28 @@
             if ($name == null || empty($name))
                 trigger_error('Name is null');
 
-            if (preg_match('/^([a-zA-Z0-9_]+)\.(.+?)$/si', $name, $matches)) {
-                if ($matches[2] == null || empty($matches[2]))
-                    return null;
-
-                $matches[2] = trim($matches[2]);
+            if (preg_match('/^[a-zA-Z0-9_]+\..+?$/si', $name)) {
 
                 if (array_key_exists($name, self::$instance->cache))
                     return self::$instance->cache[$name];
 
-                $filepath = null;
-                $keys     = explode('.', $matches[2]);
-                $array    = self::load($matches[1], $filepath);
+                $filepath   = null;
+                $prefixKey  = null;
+                $keyCurrent = $name;
+                $array      = self::load($name, $filepath, true, $prefixKey);
 
-                if (is_array($keys) == false)
-                    $keys = array($key);
+                if ($prefixKey != null)
+                    $keyCurrent = substr($keyCurrent, strlen($prefixKey));
 
-                foreach ($keys AS $entry) {
+                if (strpos($keyCurrent, '.') === 0)
+                    $keyCurrent = substr($keyCurrent, 1);
+
+                $arrayKeys = explode('.', $keyCurrent);
+
+                if (is_array($arrayKeys) == false)
+                    return trigger_error('Key "' . $name . '" not found in language "' . $filepath . '"');
+
+                foreach ($arrayKeys AS $entry) {
                     $entry = trim($entry);
 
                     if (array_key_exists($entry, $array) == false)
@@ -111,38 +116,81 @@
             return self::$instance->toJson();
         }
 
-        public static function load($filename, &$filepath = null, $loadRequire = true)
+        public static function load($filename, &$filepath = null, $loadRequire = true, &$prefixKey = null)
         {
-            $languagePath   = env('app.language.path');
-            $languageMime   = env('app.language.mime');
-            $languageLocale = env('app.language.locale', 'en');
-            $languageKey    = $languageLocale . '.' . $filename;
-            $languageArray  = array();
+            if (strpos($filename, '.') === false)
+                return trigger_error('File name "' . $filename . '" not matches symbol "."');
 
-            if (array_key_exists($languageKey, self::$instance->lang)) {
-                $languageArray = self::$instance->lang[$languageKey];
-            } else {
-                $languageFile = $filepath = $languagePath . SP . $languageLocale . SP . $filename . $languageMime;
+            $container = env('app.language.path');
+            $mime      = env('app.language.mime');
+            $locale    = env('app.language.locale', 'en');
+            $key       = null;
 
-                if (is_file($languageFile) == false && $languageLocale != 'en') {
-                    $languageFileDefault = $languagePath . SP . 'en' . SP . $filename . $languageMime;
-                    $languageKeyDefault  = 'en' . '.' . $filename;
+            // Split string to array of symbol "."
+            $splitFilename = explode('.', $filename);
 
-                    if (array_key_exists($languageKeyDefault, self::$instance->lang))
-                        $languageArray = self::$instance->lang[$languageKeyDefault];
-                    else if (is_file($languageFileDefault) == false)
-                        trigger_error('File language "' . $languageFile . '" not found');
-                    else
-                        self::$instance->lang[$languageKeyDefault] = ($languageArray = require_once($languageFileDefault));
-                } else {
-                    self::$instance->lang[$languageKey] = ($languageArray = require_once($languageFile));
+            // Check array split name is array
+            if (is_array($splitFilename) == false || count($splitFilename) <= 0)
+                return trigger_error('File name "' . $filename . '" is wrong');
+
+            $path = null;
+
+            // Find path file language
+            foreach ($splitFilename AS $index => $value) {
+                if ($index === 0) {
+                    $path = $container . SP . $locale . SP . $value;
+
+                    // Check file in locale set of user is exists
+                    if (is_dir($path) == false) {
+                        if (is_file($path . $mime)) {
+                            $path .= $mime;
+                            $key   = $locale . '.' . $value;
+
+                            break;
+                        } else {
+                            $locale = 'en';
+                            $path   = $container . SP . $locale . SP . $value;
+
+                            // Check file in locale default is exists
+                            if (is_dir($path) == false) {
+                                if (is_file($path . $mime) == false) {
+                                    return trigger_error('File name "' . $filename . '" not found');
+                                } else {
+                                    $path .= $mime;
+                                    $key   = $locale . '.' . $value;
+
+                                    break;
+                                }
+                            } else {
+                                $locale . '.' . $value;
+                            }
+                        }
+                    } else {
+                        $key = $locale . '.' . $value;
+                    }
+                } else if (is_dir($path . SP . $value)) {
+                    $path .= SP . $value;
+                } else if (is_file($path . SP . $value . $mime)) {
+                    $path .= SP . $value . $mime;
+                    $key  .= '.' . $value;
                 }
             }
 
-            if ($loadRequire && is_array($languageArray))
-                return self::loadRequire($languageArray);
+            $prefixKey = substr($key, strlen($locale) + 1);
+            $array     = array();
+            $filepath  = $path;
 
-            return $languageArray;
+            if (array_key_exists($key, self::$instance->lang))
+                $array = self::$instance->lang[$key];
+            else if ($path != null && is_file($path))
+                self::$instance->lang[$key] = ($array = require_once($path));
+            else
+                return trigger_error('File language "' . $filename . '" not found');
+
+            if ($loadRequire && is_array($array))
+                return self::loadRequire($array);
+
+            return $array;
         }
 
         private static function loadRequire(array &$array)

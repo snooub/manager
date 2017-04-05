@@ -1,4 +1,72 @@
-<?php define('ACCESS', true);
+<?php
+
+    use Librarys\App\AppPaging;
+    use Librarys\App\AppLocationPath;
+    use Librarys\App\AppParameter;
+
+    define('LOADED', 1);
+    define('ROOT',   '..' . DIRECTORY_SEPARATOR);
+    require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
+
+    if ($appUser->isLogin() == false)
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
+
+    $title  = lng('mysql.home.title_page');
+    $themes = [ env('resource.theme.mysql') ];
+    $appAlert->setID(ALERT_MYSQL_HOME);
+    require_once(ROOT . 'incfiles' . SP . 'header.php');
+
+    $forms = [
+        'host'     => null,
+        'username' => null,
+        'password' => null,
+        'name'     => null
+    ];
+?>
+
+    <?php echo $appAlert->display(); ?>
+
+    <div class="form-action">
+        <div class="title">
+            <span><?php echo lng('mysql.home.title_page'); ?></span>
+        </div>
+        <form action="mysql.php" method="post">
+            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+
+            <ul>
+                <li class="input">
+                    <span><?php echo lng('mysql.home.form.input.host'); ?></span>
+                    <input type="text" name="name" value="<?php echo $forms['host']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_host'); ?>"/>
+                </li>
+                <li class="input">
+                    <span><?php echo lng('mysql.home.form.input.username'); ?></span>
+                    <input type="text" name="name" value="<?php echo $forms['username']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_username'); ?>"/>
+                </li>
+                <li class="input">
+                    <span><?php echo lng('mysql.home.form.input.password'); ?></span>
+                    <input type="text" name="name" value="<?php echo $forms['password']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_password'); ?>"/>
+                </li>
+                <li class="input">
+                    <span><?php echo lng('mysql.home.form.input.name'); ?></span>
+                    <input type="text" name="name" value="<?php echo $forms['name']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_name'); ?>"/>
+                </li>
+                <li class="button">
+                    <button type="submit" name="rename">
+                        <span><?php echo lng('mysql.home.form.button.connect'); ?></span>
+                    </button>
+                    <a href="index.php">
+                        <span><?php echo lng('mysql.home.form.button.cancel'); ?></span>
+                    </a>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+<?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>
+
+<?php
+
+/*define('ACCESS', true);
 
     include_once 'function.php';
 
@@ -94,6 +162,6 @@
         include_once 'footer.php';
     } else {
         goURL('login.php');
-    }
+    }*/
 
 ?>

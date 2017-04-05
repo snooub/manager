@@ -133,7 +133,7 @@
 
                 return true;
             } else if (is_file($old)) {
-                if (self::permissionDenyPath($old)) {
+                if (self::permissionDenyPath($old) || self::permissionDenyPath($new)) {
                     $isHasFileAppPermission = true;
                 } else {
                     if (copy($old, $new) == false)
@@ -145,20 +145,20 @@
 
                 return true;
             } else if (is_dir($old)) {
-                if (self::permissionDenyPath($old)) {
+                if (self::permissionDenyPath($old) || self::permissionDenyPath($new)) {
                     $isHasFileAppPermission = true;
                 } else {
                     $handle = @scandir($old);
 
                     if ($handle !== false) {
                         if ($parent && $old != SP) {
-                            if (is_file($new) || (is_dir($new) == false && @mkdir($new)) == false)
+                            if (is_file($new) || (is_dir($new) == false && @mkdir($new) == false))
                                 return false;
                         } else if ($parent == false && is_dir($new) == false && @mkdir($new) == false) {
                             return false;
                         }
 
-                        foreach ($handler AS $entry) {
+                        foreach ($handle AS $entry) {
                             if ($entry != '.' && $entry != '..') {
                                 $source = $old . SP . $entry;
                                 $dest   = $new . SP . $entry;
@@ -170,7 +170,7 @@
                                     if ($move)
                                         self::unlink($source);
                                 } else if (is_dir($source)) {
-                                    if (self::copy($source, $dest, false) == false)
+                                    if (self::copy($source, $dest, false, $move, $isHasFileAppPermission) == false)
                                         return false;
                                 } else {
                                     return false;
@@ -179,7 +179,7 @@
                         }
 
                         if ($move)
-                            return self::rrmdir($old);
+                            return self::rrmdir($old, null, $isHasFileAppPermission);
                         else
                             return true;
                     }

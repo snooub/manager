@@ -1,6 +1,7 @@
 <?php
 
     use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
@@ -26,6 +27,7 @@
     $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
 
     $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $fileMime    = new FileMime($fileInfo);
     $isDirectory = $fileInfo->isDirectory();
 
     if ($isDirectory)
@@ -91,6 +93,21 @@
                     <span><?php echo lng('file_info.menu_action.download'); ?></span>
                 </a>
             </li>
+
+            <?php if ($fileMime->isFormatArchiveZip()) { ?>
+                <li>
+                    <a href="file_unzip.php<?php echo $appParameter->toString(); ?>">
+                        <span class="icomoon icon-archive"></span>
+                        <span><?php echo lng('file_info.menu_action.unzip'); ?></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="file_viewzip.php<?php echo $appParameter->toString(); ?>">
+                        <span class="icomoon icon-archive"></span>
+                        <span><?php echo lng('file_info.menu_action.viewzip'); ?></span>
+                    </a>
+                </li>
+            <?php } ?>
         <?php } ?>
         <li>
             <a href="file_rename.php<?php echo $appParameter->toString(); ?>">
