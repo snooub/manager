@@ -5,8 +5,13 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\Zip\PclZip;
 
-    define('LOADED', 1);
+    define('LOADED',               1);
+    define('EXISTS_FUNC_OVERRIDE', 1);
+    define('EXISTS_FUNC_SKIP',     2);
+    define('EXISTS_FUNC_RENAME',   3);
+
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
@@ -30,17 +35,172 @@
     $fileMime    = new FileMime($fileInfo);
     $isDirectory = $fileInfo->isDirectory();
 
-    if ($isDirectory)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    if ($isDirectory) {
+        $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, $appParameter->toString(true));
+    }
+
+    if ($fileMime->isFormatArchiveZip() == false) {
+        $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+        $appAlert->danger(lng('file_unzip.alert.file_is_not_format_archive_zip'), ALERT_INDEX, $appParameter->toString(true));
+    }
 
     $title   = lng('file_unzip.title_page');
     $themes  = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_FILE_UNZIP);
     require_once('incfiles' . SP . 'header.php');
+
+    $forms = [
+        'path'        => $appDirectory->getDirectory(),
+        'exists_func' => EXISTS_FUNC_OVERRIDE
+    ];
+
+    if (isset($_POST['browser'])) {
+        $forms['path']        = $_POST['path'];
+        $forms['action']      = intval($_POST['action']);
+        $forms['exists_func'] = intval($_POST['exists_func']);
+
+        if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
+            $appAlert->danger(lng('file_copy.alert.action_not_validate'));
+        } else {
+            $appFileCopy->setSession($appDirectory->getDirectory(), $appDirectory->getName(), $forms['action'] === ACTION_MOVE, $forms['exists_func']);
+
+            $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+            $appParameter->toString(true);
+
+            $appAlert->gotoURL('index.php' . $appParameter->toString());
+        }
+    } else if (isset($_POST['unzip'])) {
+        $forms['path']        = $_POST['path'];
+        $forms['exists_func'] = intval($_POST['exists_func']);
+
+        //$appFileCopy->clearSession();
+
+        if (empty($forms['path'])) {
+            $appAlert->danger(lng('file_unzip.alert.not_input_path_unzip'));
+        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE &&
+                   $forms['exists_func'] !== EXISTS_FUNC_SKIP     &&
+                   $forms['exists_func'] !== EXISTS_FUNC_RENAME)
+        {
+            $appAlert->danger(lng('file_unzip.alert.exists_func_not_validate'));
+        } else if (@is_dir(FileInfo::validate($forms['path'])) == false) {
+            $appAlert->danger(lng('file_unzip.alert.path_unzip_not_exists'));
+        } else if (FileInfo::permissionDenyPath($forms['path'])) {
+            $appAlert->danger(lng('file_unzip.alert.not_unzip_file_to_directory_app'));
+        } else {
+            $pclzip = new PclZip($appDirectory->getDirectory() . SP . $appDirectory->getName());
+
+            $callbackPreExtract = function($event, $header) {
+                return isPathNotPermission($header['filename']) == false ? 1 : 0;
+            }
+
+            if ($pclzip->extract(PCLZIP_OPT_PATH, FileInfo::validate($forms['path']), PCLZIP_CB_PRE_EXTRACT, $callbackPreExtract) != false) {
+
+            } else {
+
+            }
+
+/*            $filePathOld            = FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName());
+            $filePathNew            = FileInfo::validate($forms['path'] . SP . $appDirectory->getName());
+            $isHasFileAppPermission = false;
+
+            $callbackFileExists = function($directory, $filename, $isDirectory) {
+                global $forms;
+
+                if ($forms['exists_func'] === EXISTS_FUNC_SKIP) {
+                    return null;
+                } else if ($forms['exists_func'] === EXISTS_FUNC_RENAME) {
+                    $fileRename = null;
+                    $pathRename = null;
+
+                    while (true) {
+                        $fileRename = rand(10000, 99999) . '_' . $filename;
+                        $pathRename = FileInfo::validate($directory . SP . $fileRename);
+
+                        if (FileInfo::fileExists($pathRename) == false) {
+                            break;
+                        }
+                    }
+
+                    return $pathRename;
+                }
+
+                return $directory . SP . $filename;
+            };
+
+            if (FileInfo::copy($filePathOld, $filePathNew, true, $forms['action'] === ACTION_MOVE, $isHasFileAppPermission, $callbackFileExists) == false) {
+                if ($isDirectory)
+                    $appAlert->danger(lng('file_copy.alert.copy_directory_failed', 'filename', $appDirectory->getName()));
+                else
+                    $appAlert->danger(lng('file_copy.alert.copy_file_failed', 'filename', $appDirectory->getName()));
+            } else {
+                if ($isHasFileAppPermission)
+                    $appAlert->warning(lng('file_copy.alert.has_file_app_not_permission_copy'), ALERT_INDEX);
+
+                $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+                $appParameter->toString(true);
+
+                if ($isDirectory)
+                    $appAlert->success(lng('file_copy.alert.copy_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                else
+                    $appAlert->success(lng('file_copy.alert.copy_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
+            }*/
+        }
+    }
 ?>
 
     <?php $appAlert->display(); ?>
     <?php $appLocationPath->display(); ?>
+
+    <div class="form-action">
+        <div class="title">
+            <span><?php echo lng('file_unzip.title_page'); ?>: <?php echo $appDirectory->getName(); ?></span>
+        </div>
+        <form action="file_unzip.php<?php echo $appParameter->toString(); ?>" method="post">
+            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+
+            <ul>
+                <li class="input">
+                    <span><?php echo lng('file_unzip.form.input.path_unzip'); ?></span>
+                    <input type="text" name="path" value="<?php echo $forms['path']; ?>" placeholder="<?php echo lng('file_unzip.form.placeholder.input_path_unzip'); ?>"/>
+                </li>
+                <li class="radio-choose">
+                    <span><?php echo lng('file_unzip.form.input.if_has_entry_is_exists'); ?></span>
+                    <ul class="radio-choose-tab">
+                        <li>
+                            <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_OVERRIDE; ?>" id="exists_func_override"<?php if ($forms['exists_func'] === EXISTS_FUNC_OVERRIDE) { ?> checked="checked"<?php } ?>/>
+                            <label for="exists_func_override">
+                                <span><?php echo lng('file_unzip.form.input.exists_func_override'); ?></span>
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_SKIP; ?>" id="exists_func_skip"<?php if ($forms['exists_func'] === EXISTS_FUNC_SKIP) { ?> checked="checked"<?php } ?>/>
+                            <label for="exists_func_skip">
+                                <span><?php echo lng('file_unzip.form.input.exists_func_skip'); ?></span>
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_RENAME; ?>" id="exists_func_rename"<?php if ($forms['exists_func'] == EXISTS_FUNC_RENAME) { ?> checked="checked"<?php } ?>/>
+                            <label for="exists_func_rename">
+                                <span><?php echo lng('file_unzip.form.input.exists_func_rename'); ?></span>
+                            </label>
+                        </li>
+                    </ul>
+                </li>
+                <li class="button">
+                    <button type="submit" name="unzip">
+                        <span><?php echo lng('file_unzip.form.button.unzip'); ?></span>
+                    </button>
+                    <button type="submit" name="browser">
+                        <span><?php echo lng('file_unzip.form.button.browser'); ?></span>
+                    </button>
+                    <a href="index.php<?php echo $appParameter->toString(); ?>">
+                        <span><?php echo lng('file_unzip.form.button.cancel'); ?></span>
+                    </a>
+                </li>
+            </ul>
+        </form>
+    </div>
 
     <ul class="menu-action">
         <li>

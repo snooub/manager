@@ -17,6 +17,7 @@
     /**
      * [lng Load value for key language]
      * @param  [string] $name [Key name language]
+     * @param  [array|string] $params [Array params replace in language result]
      * @return [string]       [Value for key language]
      */
     function lng($name)
@@ -24,12 +25,13 @@
         $params = null;
 
         if (is_array($params) == false) {
-            $nums   = func_num_args() - 1;
+            $nums = func_num_args() - 1;
+            $args = func_get_args();
 
-            if ($nums > 0 && $nums % 2 == 0) {
-                $params = func_get_args();
-                $params = array_splice($params, 1, $nums);
-            }
+            if ($nums >= 1 && is_array($args[1]))
+                $params = $args[1];
+            else if ($nums > 0 && $nums % 2 == 0)
+                $params = array_splice($args, 1, $nums);
         }
 
         return Language::lng($name, $params);

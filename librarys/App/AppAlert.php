@@ -9,6 +9,7 @@
 
         private $boot;
         private $id;
+        private $langMsg;
 
         const SESSION_NAME_PREFIX = 'ALERT_';
 
@@ -57,6 +58,9 @@
                 $id = $this->id;
             }
 
+            if ($message == null && $this->langMsg != null)
+                $message = $this->langMsg;
+
             $_SESSION[self::SESSION_NAME_PREFIX . $id][] = [
                 'message' => $message,
                 'type'    => $type
@@ -88,6 +92,29 @@
         public function setID($id)
         {
             $this->id = $id;
+        }
+
+        public function setLangMsg($key)
+        {
+            $args = func_get_args();
+            $nums = func_num_args();
+
+            if ($nums <= 1)
+                $args = [];
+            else
+                $args = array_splice($args, 1, $nums);
+
+            $this->langMsg = lng($key, $args);
+        }
+
+        public function removeLangMsg()
+        {
+            $this->langMsg = null;
+        }
+
+        public function getLangMsg()
+        {
+            return $this->langMsg;
         }
 
         public function gotoURL($url)

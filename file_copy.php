@@ -54,13 +54,14 @@
     ];
 
     if (isset($_POST['browser'])) {
-        $forms['path']   = $_POST['path'];
-        $forms['action'] = intval($_POST['action']);
+        $forms['path']        = $_POST['path'];
+        $forms['action']      = intval($_POST['action']);
+        $forms['exists_func'] = intval($_POST['exists_func']);
 
         if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
             $appAlert->danger(lng('file_copy.alert.action_not_validate'));
         } else {
-            $appFileCopy->setSession($appDirectory->getDirectory(), $appDirectory->getName(), $action->action);
+            $appFileCopy->setSession($appDirectory->getDirectory(), $appDirectory->getName(), $forms['action'] === ACTION_MOVE, $forms['exists_func']);
 
             $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
             $appParameter->toString(true);
@@ -68,8 +69,9 @@
             $appAlert->gotoURL('index.php' . $appParameter->toString());
         }
     } else if (isset($_POST['copy'])) {
-        $forms['path']   = $_POST['path'];
-        $forms['action'] = intval($_POST['action']);
+        $forms['path']        = $_POST['path'];
+        $forms['action']      = intval($_POST['action']);
+        $forms['exists_func'] = intval($_POST['exists_func']);
 
         $appFileCopy->clearSession();
 
@@ -77,6 +79,11 @@
             $appAlert->danger(lng('file_copy.alert.not_input_path_copy'));
         } else if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
             $appAlert->danger(lng('file_copy.alert.action_not_validate'));
+        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE &&
+                   $forms['exists_func'] !== EXISTS_FUNC_SKIP     &&
+                   $forms['exists_func'] !== EXISTS_FUNC_RENAME)
+        {
+            $appAlert->danger(lng('file_copy.alert.exists_func_not_validate'));
         } else if (FileInfo::validate($forms['path'] . SP . $appDirectory->getName()) == FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
             if ($forms['action'] === ACTION_COPY)
                 $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
@@ -91,7 +98,31 @@
             $filePathNew            = FileInfo::validate($forms['path'] . SP . $appDirectory->getName());
             $isHasFileAppPermission = false;
 
-            if (FileInfo::copy($filePathOld, $filePathNew, true, $forms['action'] === ACTION_MOVE, $isHasFileAppPermission) == false) {
+            $callbackFileExists = function($directory, $filename, $isDirectory) {
+                global $forms;
+
+                if ($forms['exists_func'] === EXISTS_FUNC_SKIP) {
+                    return null;
+                } else if ($forms['exists_func'] === EXISTS_FUNC_RENAME) {
+                    $fileRename = null;
+                    $pathRename = null;
+
+                    while (true) {
+                        $fileRename = rand(10000, 99999) . '_' . $filename;
+                        $pathRename = FileInfo::validate($directory . SP . $fileRename);
+
+                        if (FileInfo::fileExists($pathRename) == false) {
+                            break;
+                        }
+                    }
+
+                    return $pathRename;
+                }
+
+                return $directory . SP . $filename;
+            };
+
+            if (FileInfo::copy($filePathOld, $filePathNew, true, $forms['action'] === ACTION_MOVE, $isHasFileAppPermission, $callbackFileExists) == false) {
                 if ($isDirectory)
                     $appAlert->danger(lng('file_copy.alert.copy_directory_failed', 'filename', $appDirectory->getName()));
                 else
@@ -117,18 +148,38 @@
         $isChooseDirectoryPathFailed = true;
 
         if ($appFileCopyPathSrc == FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
+            $idAlert = null;
+
+            if (isset($_SERVER['HTTP_REFERER']) && strpos(strtolower($_SERVER['HTTP_REFERER']), 'index.php') !== false)
+                $idAlert = ALERT_INDEX;
+
             if (is_dir($appFileCopy->getPath()) == false) {
-                $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'), ALERT_INDEX);
+                $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'), $idAlert);
             } else if ($appFileCopyPathSrc == $appFileCopyPathDest) {
+                if ($idAlert !== ALERT_INDEX) {
+                    if ($appFileCopy->isMove() == false)
+                        $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
+                    else
+                        $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'));
+                }
+
                 $isChooseDirectoryPathFailed = true;
             } else {
                 $forms['path']               = $appFileCopy->getPath();
+                $forms['exists_func']        = $appFileCopy->getExistsFunc();
+                $forms['action']             = ACTION_COPY;
                 $isChooseDirectoryPathFailed = false;
+
+                if ($appFileCopy->isMove())
+                    $forms['action'] = ACTION_MOVE;
 
                 $appAlert->success(lng('file_copy.alert.directory_path_choose_is_validate', 'path', $appFileCopy->getPath()));
             }
 
-            if ($isChooseDirectoryPathFailed) {
+            if ($isChooseDirectoryPathFailed)
+                $appFileCopy->clearSession();
+
+            if ($isChooseDirectoryPathFailed && $idAlert === ALERT_INDEX) {
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
                 $appParameter->toString(true);
 

@@ -54,7 +54,7 @@
                     <button type="submit" name="rename">
                         <span><?php echo lng('mysql.home.form.button.connect'); ?></span>
                     </button>
-                    <a href="index.php">
+                    <a href="<?php echo env('app.http.host'); ?>">
                         <span><?php echo lng('mysql.home.form.button.cancel'); ?></span>
                     </a>
                 </li>

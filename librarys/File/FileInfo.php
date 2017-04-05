@@ -107,10 +107,18 @@
          * @param $new = Path directory parent copy of $old = array list path | Path directory, file copy to
          * @param $parent = Path directory parent copy to of $old = array list path | Not set of $old is not array list path
          * @param $move = Is delete source of copy success
+         * @param $isHasFileAppPermission = Result check has file of app in path
+         * @param $callbackIsFileExists = Callback if file is exists function($directory, $filename, $isDirectory) {}
          * @return boolean
          */
-        public static function copy($old, $new, $parent = true, $move = false, & $isHasFileAppPermission = false)
+        public static function copy($old, $new, $parent = true, $move = false, & $isHasFileAppPermission = false, & $callbackIsFileExists = null)
         {
+            if ($callbackIsFileExists == null) {
+                $callbackIsFileExists = function($directory, $filename, $isDirectory) {
+                    return $directory . SP . $filename;
+                };
+            }
+
             if (is_array($old)) {
                 foreach ($old AS $entry) {
                     $path = $new . SP . $entry;
@@ -118,13 +126,31 @@
                     if (self::permissionDenyPath($path)) {
                         $isHasFileAppPermission = true;
                     } else if (is_file($path)) {
-                        if (@copy($path, $parent . SP . $entry) == false)
+                        $file = $parent . SP . $entry;
+
+                        if (id_file($file))
+                            $file = $callbackIsFileExists($parent, $entry, false);
+
+                        // If file is null skip file
+                        if ($file == null)
+                            return true;
+
+                        if (@copy($path, $file) == false)
                             return false;
 
                         if ($move)
                             self::unlink($path);
                     } else if (is_dir($path)) {
-                        if (self::copy($path, $parent . SP . $entry, $move, $isHasFileAppPermission) == false)
+                        $file = $parent . SP . $entry;
+
+                        if (is_dir($file))
+                            $file = $callbackIsFileExists($parent, $entry, true);
+
+                        // If file is null skip file
+                        if ($file == null)
+                            return true;
+
+                        if (self::copy($path, $file, $move, $isHasFileAppPermission) == false)
                             return false;
                     } else {
                         return false;
@@ -136,6 +162,21 @@
                 if (self::permissionDenyPath($old) || self::permissionDenyPath($new)) {
                     $isHasFileAppPermission = true;
                 } else {
+                    if (is_file($new)) {
+                        $separatorLastIndex = strrpos($new, SP);
+
+                        if ($separatorLastIndex === false)
+                            return false;
+
+                        $directory          = substr($new, 0, $separatorLastIndex);
+                        $filename           = substr($new, $separatorLastIndex + 1);
+
+                        $new = $callbackIsFileExists($directory, $filename, false);
+                    }
+
+                    if ($new == null)
+                        return true;
+
                     if (copy($old, $new) == false)
                         return false;
 
@@ -151,11 +192,26 @@
                     $handle = @scandir($old);
 
                     if ($handle !== false) {
-                        if ($parent && $old != SP) {
-                            if (is_file($new) || (is_dir($new) == false && @mkdir($new) == false))
+                        if (($parent && $old != SP) || $parent == false) {
+                            if (is_file($new))
                                 return false;
-                        } else if ($parent == false && is_dir($new) == false && @mkdir($new) == false) {
-                            return false;
+
+                            if (is_dir($new) == false) {
+                                $separatorLastIndex = strrpos($new, SP);
+
+                                if ($separatorLastIndex === false)
+                                    return false;
+
+                                $directory = substr($new, 0, $separatorLastIndex);
+                                $filename  = substr($new, $separatorLastIndex + 1);
+                                $new       = $callbackIsFileExists($directory, $filename, true);
+                            }
+
+                            if ($new == null)
+                                return true;
+
+                            if (is_dir($new) == false && @mkdir($new) == false)
+                                return false;
                         }
 
                         foreach ($handle AS $entry) {
@@ -164,12 +220,24 @@
                                 $dest   = $new . SP . $entry;
 
                                 if (is_file($source)) {
+                                    if (is_file($dest))
+                                        $dest = $callbackIsFileExists($new, $entry, false);
+
+                                    if ($dest == null)
+                                        return true;
+
                                     if (@copy($source, $dest) == false)
                                         return false;
 
                                     if ($move)
                                         self::unlink($source);
                                 } else if (is_dir($source)) {
+                                    if (is_dir($dest))
+                                        $dest = $callbackIsFileExists($new, $entry, true);
+
+                                    if ($dest == null)
+                                        return true;
+
                                     if (self::copy($source, $dest, false, $move, $isHasFileAppPermission) == false)
                                         return false;
                                 } else {
