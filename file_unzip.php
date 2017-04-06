@@ -6,6 +6,7 @@
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
     use Librarys\Zip\PclZip;
+    use Librarys\Zip\ZipFileRead;
 
     define('LOADED',               1);
     define('EXISTS_FUNC_OVERRIDE', 1);
@@ -88,16 +89,30 @@
         } else if (FileInfo::permissionDenyPath($forms['path'])) {
             $appAlert->danger(lng('file_unzip.alert.not_unzip_file_to_directory_app'));
         } else {
-            $pclzip = new PclZip($appDirectory->getDirectory() . SP . $appDirectory->getName());
+            $pclzip                 = new PclZip($appDirectory->getDirectory() . SP . $appDirectory->getName());
+            $isHasFileAppPermission = false;
 
             $callbackPreExtract = function($event, $header) {
-                return isPathNotPermission($header['filename']) == false ? 1 : 0;
+                global $isHasFileAppPermission;
+
+                if (FileInfo::permissionDenyPath($header['filename']) == false) {
+                    return 1;
+                }
+
+                $isHasFileAppPermission = true;
+                return 0;
             };
 
             if ($pclzip->extract(PCLZIP_OPT_PATH, FileInfo::validate($forms['path']), PCLZIP_CB_PRE_EXTRACT, $callbackPreExtract) != false) {
+                $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+                $appParameter->toString(true);
 
+                if ($isHasFileAppPermission)
+                    $appAlert->warning(lng('file_unzip.alert.file_zip_has_file_app'), ALERT_INDEX);
+
+                $appAlert->success(lng('file_unzip.alert.unzip_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
             } else {
-
+                $appAlert->danger(lng('file_unzip.alert.unzip_file_failed', 'filename', $appDirectory->getName(), 'error', $pclzip->errorinfo(true)));
             }
 
 /*            $filePathOld            = FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName());
@@ -146,6 +161,24 @@
                     $appAlert->success(lng('file_copy.alert.copy_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
             }*/
         }
+    }
+
+    $zip = new ZipFileRead(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()));
+
+    if ($zip->open()) {
+        bug("Open zip success");
+
+        while ($zip->readEntry() != false) {
+            bug($zip->readEntryName());
+            bug($zip->copyEntryTo($appDirectory->getDirectory() . SP . 'a.png'));
+            bug("-----");
+
+            $zip->closeEntry();
+        }
+
+        $zip->close();
+    } else {
+        bug("Error zip open");
     }
 ?>
 
