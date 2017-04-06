@@ -9,7 +9,7 @@
     require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
 
     $title  = lng('mysql.home.title_page');
     $themes = [ env('resource.theme.mysql') ];

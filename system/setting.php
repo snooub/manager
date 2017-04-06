@@ -1,4 +1,20 @@
-<?php define('ACCESS', true);
+<?php
+
+    define('LOADED', 1);
+    define('ROOT',   '..' . DIRECTORY_SEPARATOR);
+    require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
+
+    if ($appUser->isLogin() == false)
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
+
+    $title = null;
+    require_once(ROOT . 'incfiles' . SP . 'header.php');
+?>
+
+<?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>
+<?php
+
+/*define('ACCESS', true);
 
     include_once 'function.php';
 
@@ -98,6 +114,6 @@
         include_once 'footer.php';
     } else {
         goURL('login.php');
-    }
+    }*/
 
 ?>

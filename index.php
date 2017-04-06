@@ -286,10 +286,11 @@
                         </a>
                     </li>
                 <?php } else { ?>
-                    <?php $info   = new FileInfo($entryPath); ?>
-                    <?php $mime   = new FileMime($info); ?>
-                    <?php $icon   = null; ?>
-                    <?php $isEdit = false; ?>
+                    <?php $info     = new FileInfo($entryPath); ?>
+                    <?php $mime     = new FileMime($info); ?>
+                    <?php $icon     = null; ?>
+                    <?php $isEdit   = false; ?>
+                    <?php $editHref = 'file_edit_text.php' . $urlParameter; ?>
 
                     <?php
                         if ($mime->isFormatText()) {
@@ -301,6 +302,11 @@
                         } else if ($mime->isFormatArchive()) {
                             $icon   = 'icon-file-archive';
                             $isEdit = false;
+
+                            if ($mime->isFormatArchiveZip()) {
+                                $isEdit = true;
+                                $editHref = 'file_unzip.php' . $urlParameter;
+                            }
                         } else if ($mime->isFormatAudio()) {
                             $icon   = 'icon-file-audio';
                             $isEdit = false;
@@ -324,7 +330,7 @@
 
                     <li class="type-file">
                         <div class="icon">
-                            <?php if ($isEdit) { ?><a href="#"><?php } ?>
+                            <?php if ($isEdit) { ?><a href="<?php echo $editHref; ?>"><?php } ?>
                                 <span class="icomoon <?php echo $icon; ?>"></span>
                             <?php if ($isEdit) { ?></a><?php } ?>
                         </div>

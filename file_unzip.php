@@ -92,7 +92,7 @@
 
             $callbackPreExtract = function($event, $header) {
                 return isPathNotPermission($header['filename']) == false ? 1 : 0;
-            }
+            };
 
             if ($pclzip->extract(PCLZIP_OPT_PATH, FileInfo::validate($forms['path']), PCLZIP_CB_PRE_EXTRACT, $callbackPreExtract) != false) {
 

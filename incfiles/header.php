@@ -46,33 +46,33 @@
                     </li>
                     <?php if ($appUser->isLogin()) { ?>
                         <li>
-                            <a href="mysql/index.php">
+                            <a href="<?php echo env('app.http.host'); ?>/mysql/index.php">
                                 <span class="icomoon icon-mysql"></span>
                             </a>
                         </li>
                         <li>
-                            <a href="system/user.php">
+                            <a href="<?php echo env('app.http.host'); ?>/user/profile.php">
                                 <span class="icomoon icon-user"></span>
                             </a>
                         </li>
                         <li>
-                            <a href="system/config.php">
+                            <a href="<?php echo env('app.http.host'); ?>/system/setting.php">
                                 <span class="icomoon icon-config"></span>
                             </a>
                         </li>
                         <li class="about">
-                            <a href="about.php">
+                            <a href="<?php echo env('app.http.host'); ?>/about.php">
                                 <span class="icomoon icon-about"></span>
                             </a>
                         </li>
                         <li>
-                            <a href="user/exit.php">
+                            <a href="<?php echo env('app.http.host'); ?>/user/exit.php">
                                 <span class="icomoon icon-exit"></span>
                             </a>
                         </li>
                     <?php } else { ?>
                         <li>
-                            <a href="about.php">
+                            <a href="<?php echo env('app.http.host'); ?>/about.php">
                                 <span class="icomoon icon-about"></span>
                             </a>
                         </li>
