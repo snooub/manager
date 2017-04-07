@@ -5,13 +5,13 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\AppFileUnzip;
     use Librarys\Zip\PclZip;
     use Librarys\Zip\ZipFileRead;
 
     define('LOADED',               1);
     define('EXISTS_FUNC_OVERRIDE', 1);
     define('EXISTS_FUNC_SKIP',     2);
-    define('EXISTS_FUNC_RENAME',   3);
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
@@ -23,6 +23,7 @@
     else if ($appDirectory->isPermissionDenyPath())
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
+    $appFileUnzip    = new AppFileUnzip();
     $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
@@ -58,13 +59,12 @@
 
     if (isset($_POST['browser'])) {
         $forms['path']        = $_POST['path'];
-        $forms['action']      = intval($_POST['action']);
         $forms['exists_func'] = intval($_POST['exists_func']);
 
-        if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
-            $appAlert->danger(lng('file_copy.alert.action_not_validate'));
+        if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP) {
+            $appAlert->danger(lng('file_unzip.alert.exists_func_not_validate'));
         } else {
-            $appFileCopy->setSession($appDirectory->getDirectory(), $appDirectory->getName(), $forms['action'] === ACTION_MOVE, $forms['exists_func']);
+            $appFileUnzip->setSession($appDirectory->getDirectory(), $appDirectory->getName(), $forms['exists_func']);
 
             $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
             $appParameter->toString(true);
@@ -75,110 +75,73 @@
         $forms['path']        = $_POST['path'];
         $forms['exists_func'] = intval($_POST['exists_func']);
 
-        //$appFileCopy->clearSession();
+        $appFileUnzip->clearSession();
 
         if (empty($forms['path'])) {
             $appAlert->danger(lng('file_unzip.alert.not_input_path_unzip'));
-        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE &&
-                   $forms['exists_func'] !== EXISTS_FUNC_SKIP     &&
-                   $forms['exists_func'] !== EXISTS_FUNC_RENAME)
-        {
+        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP) {
             $appAlert->danger(lng('file_unzip.alert.exists_func_not_validate'));
         } else if (@is_dir(FileInfo::validate($forms['path'])) == false) {
             $appAlert->danger(lng('file_unzip.alert.path_unzip_not_exists'));
         } else if (FileInfo::permissionDenyPath($forms['path'])) {
             $appAlert->danger(lng('file_unzip.alert.not_unzip_file_to_directory_app'));
         } else {
-            $pclzip                 = new PclZip($appDirectory->getDirectory() . SP . $appDirectory->getName());
+            $zipFileRead            = new ZipFileRead(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), FileInfo::validate($forms['path']));
             $isHasFileAppPermission = false;
 
-            $callbackPreExtract = function($event, $header) {
-                global $isHasFileAppPermission;
+            $callbackPreExtract = function(&$fileName, &$filePath, $isDirectory, $pathExtract) {
+                global $forms, $isHasFileAppPermission;
 
-                if (FileInfo::permissionDenyPath($header['filename']) == false) {
-                    return 1;
-                }
+                if (FileInfo::permissionDenyPath($pathExtract))
+                    $isHasFileAppPermission = true;
+                else if ($forms['exists_func'] !== EXISTS_FUNC_SKIP)
+                    return true;
 
-                $isHasFileAppPermission = true;
-                return 0;
+                return false;
             };
 
-            if ($pclzip->extract(PCLZIP_OPT_PATH, FileInfo::validate($forms['path']), PCLZIP_CB_PRE_EXTRACT, $callbackPreExtract) != false) {
-                $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-                $appParameter->toString(true);
-
+            if ($zipFileRead->open() && $zipFileRead->extract($callbackPreExtract)) {
                 if ($isHasFileAppPermission)
                     $appAlert->warning(lng('file_unzip.alert.file_zip_has_file_app'), ALERT_INDEX);
 
-                $appAlert->success(lng('file_unzip.alert.unzip_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
-            } else {
-                $appAlert->danger(lng('file_unzip.alert.unzip_file_failed', 'filename', $appDirectory->getName(), 'error', $pclzip->errorinfo(true)));
-            }
-
-/*            $filePathOld            = FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName());
-            $filePathNew            = FileInfo::validate($forms['path'] . SP . $appDirectory->getName());
-            $isHasFileAppPermission = false;
-
-            $callbackFileExists = function($directory, $filename, $isDirectory) {
-                global $forms;
-
-                if ($forms['exists_func'] === EXISTS_FUNC_SKIP) {
-                    return null;
-                } else if ($forms['exists_func'] === EXISTS_FUNC_RENAME) {
-                    $fileRename = null;
-                    $pathRename = null;
-
-                    while (true) {
-                        $fileRename = rand(10000, 99999) . '_' . $filename;
-                        $pathRename = FileInfo::validate($directory . SP . $fileRename);
-
-                        if (FileInfo::fileExists($pathRename) == false) {
-                            break;
-                        }
-                    }
-
-                    return $pathRename;
-                }
-
-                return $directory . SP . $filename;
-            };
-
-            if (FileInfo::copy($filePathOld, $filePathNew, true, $forms['action'] === ACTION_MOVE, $isHasFileAppPermission, $callbackFileExists) == false) {
-                if ($isDirectory)
-                    $appAlert->danger(lng('file_copy.alert.copy_directory_failed', 'filename', $appDirectory->getName()));
-                else
-                    $appAlert->danger(lng('file_copy.alert.copy_file_failed', 'filename', $appDirectory->getName()));
-            } else {
-                if ($isHasFileAppPermission)
-                    $appAlert->warning(lng('file_copy.alert.has_file_app_not_permission_copy'), ALERT_INDEX);
-
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+                $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::validate($forms['path']), true);
                 $appParameter->toString(true);
 
-                if ($isDirectory)
-                    $appAlert->success(lng('file_copy.alert.copy_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
-                else
-                    $appAlert->success(lng('file_copy.alert.copy_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
-            }*/
+                $appAlert->success(lng('file_unzip.alert.unzip_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
+            } else {
+                $appAlert->danger(lng('file_unzip.alert.unzip_file_failed', 'filename', $appDirectory->getName()));
+            }
         }
     }
 
-    $zip = new ZipFileRead(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()));
+    $idAlert = null;
 
-    if ($zip->open()) {
-        bug("Open zip success");
+    if (isset($_SERVER['HTTP_REFERER']) && strpos(strtolower($_SERVER['HTTP_REFERER']), 'index.php') !== false)
+        $idAlert = ALERT_INDEX;
 
-        while ($zip->readEntry() != false) {
-            bug($zip->readEntryName());
-            bug($zip->copyEntryTo($appDirectory->getDirectory() . SP . 'a.png'));
-            bug("-----");
+    if ($appFileUnzip->isSession()) {
+        $isChooseDirectoryPathFailed = true;
 
-            $zip->closeEntry();
+        if (is_dir($appFileUnzip->getPath()) == false) {
+            $appAlert->danger(lng('file_unzip.alert.path_unzip_not_exists'), $idAlert);
+        } else {
+            $forms['path']               = $appFileUnzip->getPath();
+            $forms['exists_func']        = $appFileUnzip->getExistsFunc();
+            $isChooseDirectoryPathFailed = false;
+
+            $appAlert->success(lng('file_unzip.alert.directory_path_choose_is_validate', 'path', $appFileUnzip->getPath()));
         }
 
-        $zip->close();
-    } else {
-        bug("Error zip open");
+        if ($isChooseDirectoryPathFailed)
+            $appFileUnzip->clearSession();
+
+        if ($isChooseDirectoryPathFailed && $idAlert === ALERT_INDEX) {
+            $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+            $appParameter->toString(true);
+
+            $appAlert->gotoURL('index.php' . $appParameter->toString());
+        }
     }
 ?>
 
@@ -212,12 +175,6 @@
                                 <span><?php echo lng('file_unzip.form.input.exists_func_skip'); ?></span>
                             </label>
                         </li>
-                        <li>
-                            <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_RENAME; ?>" id="exists_func_rename"<?php if ($forms['exists_func'] == EXISTS_FUNC_RENAME) { ?> checked="checked"<?php } ?>/>
-                            <label for="exists_func_rename">
-                                <span><?php echo lng('file_unzip.form.input.exists_func_rename'); ?></span>
-                            </label>
-                        </li>
                     </ul>
                 </li>
                 <li class="button">
@@ -227,9 +184,17 @@
                     <button type="submit" name="browser">
                         <span><?php echo lng('file_unzip.form.button.browser'); ?></span>
                     </button>
+                    <?php if ($idAlert == ALERT_INDEX && $appFileUnzip->isSession()) { ?>
+                        <?php $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::validate($appFileUnzip->getPath()), true); ?>
+                        <?php $appParameter->toString(true); ?>
+                    <?php } ?>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">
                         <span><?php echo lng('file_unzip.form.button.cancel'); ?></span>
                     </a>
+                    <?php if ($idAlert == ALERT_INDEX && $appFileUnzip->isSession()) { ?>
+                        <?php $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true); ?>
+                        <?php $appParameter->toString(true); ?>
+                    <?php } ?>
                 </li>
             </ul>
         </form>
@@ -278,94 +243,3 @@
     </ul>
 
 <?php require_once('incfiles' . SP . 'footer.php'); ?>
-
-<?php
-/*define('ACCESS', true);
-
-    include_once 'function.php';
-
-    if (IS_LOGIN) {
-        $title = 'Giải nén tập tin';
-        $format = $name == null ? null : getFormat($name);
-
-        include_once 'header.php';
-
-        echo '<div class="title">' . $title . '</div>';
-
-        if ($dir == null || $name == null || !is_file(processDirectory($dir . '/' . $name))) {
-            echo '<div class="list"><span>Đường dẫn không tồn tại</span></div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/list.png"/> <a href="index.php' . $pages['paramater_0'] . '">Danh sách</a></li>
-            </ul>';
-        } else if (!in_array($format, array('zip', 'jar'))) {
-            echo '<div class="list"><span>Tập tin không phải zip</span></div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/list.png"/> <a href="index.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Danh sách</a></li>
-            </ul>';
-        } else {
-            $dir = processDirectory($dir);
-            $format = getFormat($name);
-
-            if (isset($_POST['submit'])) {
-                echo '<div class="notice_failure">';
-
-                if (empty($_POST['path'])) {
-                    echo 'Chưa nhập đầy đủ thông tin';
-                } else if (!is_dir(processDirectory($_POST['path']))) {
-                    echo 'Đường dẫn giải nén không tồn tại';
-                } else if (isPathNotPermission(processDirectory($_POST['path']))) {
-                    echo 'Bạn không thể giải nén tập tin zip tới đường dẫn của File Manager';
-                } else {
-                    include 'pclzip.class.php';
-
-                    $zip = new PclZip($dir . '/' . $name);
-
-                    function callback_pre_extract($event, $header)
-                    {
-                        return isPathNotPermission($header['filename']) == false ? 1 : 0;
-                    }
-
-                    if ($zip->extract(PCLZIP_OPT_PATH, processDirectory($_POST['path']), PCLZIP_CB_PRE_EXTRACT, 'callback_pre_extract') != false) {
-                        if (isset($_POST['is_delete']))
-                            @unlink($dir . '/' . $name);
-
-                        goURL('index.php?dir=' . $dirEncode . $pages['paramater_1']);
-                    } else {
-                        echo 'Giải nén tập tin lỗi';
-                    }
-                }
-
-                echo '</div>';
-            }
-
-            echo '<div class="list">
-                <span class="bull">&bull;</span><span>' . printPath($dir . '/' . $name) . '</span><hr/>
-                <form action="file_unzip.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '" method="post">
-                    <span class="bull">&bull;</span>Đường dẫn giải nén:<br/>
-                    <input type="text" name="path" value="' . (isset($_POST['path']) ? $_POST['path'] : $dir) . '" size="18"/><br/>
-                    <input type="checkbox" name="is_delete" value="1"' . (isset($_POST['is_delete']) ? ' checked="checked"' : null) . '/> Xóa tập tin zip<br/>
-                    <input type="submit" name="submit" value="Giải nén"/>
-                </form>
-            </div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/info.png"/> <a href="file.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Thông tin</a></li>
-                <li><img src="icon/unzip.png"/> <a href="file_viewzip.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Xem</a></li>
-                <li><img src="icon/download.png"/> <a href="file_download.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Tải về</a></li>
-                <li><img src="icon/rename.png"/> <a href="file_rename.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Đổi tên</a></li>
-                <li><img src="icon/copy.png"/> <a href="file_copy.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sao chép</a></li>
-                <li><img src="icon/move.png"/> <a href="file_move.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Di chuyển</a></li>
-                <li><img src="icon/delete.png"/> <a href="file_delete.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Xóa</a></li>
-                <li><img src="icon/access.png"/> <a href="file_chmod.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Chmod</a></li>
-                <li><img src="icon/list.png"/> <a href="index.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Danh sách</a></li>
-            </ul>';
-        }
-
-        include_once 'footer.php';
-    } else {
-        goURL('login.php');
-    }*/
-
-?>

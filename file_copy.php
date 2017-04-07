@@ -60,6 +60,8 @@
 
         if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
             $appAlert->danger(lng('file_copy.alert.action_not_validate'));
+        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP && $forms['exists_func'] !== EXISTS_FUNC_RENAME) {
+            $appAlert->danger(lng('file_copy.alert.exists_func_not_validate'));
         } else {
             $appFileCopy->setSession($appDirectory->getDirectory(), $appDirectory->getName(), $forms['action'] === ACTION_MOVE, $forms['exists_func']);
 
@@ -79,10 +81,7 @@
             $appAlert->danger(lng('file_copy.alert.not_input_path_copy'));
         } else if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
             $appAlert->danger(lng('file_copy.alert.action_not_validate'));
-        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE &&
-                   $forms['exists_func'] !== EXISTS_FUNC_SKIP     &&
-                   $forms['exists_func'] !== EXISTS_FUNC_RENAME)
-        {
+        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP && $forms['exists_func'] !== EXISTS_FUNC_RENAME) {
             $appAlert->danger(lng('file_copy.alert.exists_func_not_validate'));
         } else if (FileInfo::validate($forms['path'] . SP . $appDirectory->getName()) == FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
             if ($forms['action'] === ACTION_COPY)
@@ -132,6 +131,7 @@
                     $appAlert->warning(lng('file_copy.alert.has_file_app_not_permission_copy'), ALERT_INDEX);
 
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+                $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::validate($forms['path']), true);
                 $appParameter->toString(true);
 
                 if ($isDirectory)
@@ -142,17 +142,17 @@
         }
     }
 
+    $idAlert = null;
+
+    if (isset($_SERVER['HTTP_REFERER']) && strpos(strtolower($_SERVER['HTTP_REFERER']), 'index.php') !== false)
+        $idAlert = ALERT_INDEX;
+
     if ($appFileCopy->isSession()) {
         $appFileCopyPathSrc          = FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName());
         $appFileCopyPathDest         = FileInfo::validate($appFileCopy->getPath()      . SP . $appFileCopy->getName());
         $isChooseDirectoryPathFailed = true;
 
         if ($appFileCopyPathSrc == FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
-            $idAlert = null;
-
-            if (isset($_SERVER['HTTP_REFERER']) && strpos(strtolower($_SERVER['HTTP_REFERER']), 'index.php') !== false)
-                $idAlert = ALERT_INDEX;
-
             if (is_dir($appFileCopy->getPath()) == false) {
                 $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'), $idAlert);
             } else if ($appFileCopyPathSrc == $appFileCopyPathDest) {
@@ -254,9 +254,17 @@
                     <button type="submit" name="browser">
                         <span><?php echo lng('file_copy.form.button.browser'); ?></span>
                     </button>
+                    <?php if ($idAlert == ALERT_INDEX && $appFileCopy->isSession()) { ?>
+                        <?php $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::validate($appFileCopy->getPath()), true); ?>
+                        <?php $appParameter->toString(true); ?>
+                    <?php } ?>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">
                         <span><?php echo lng('file_copy.form.button.cancel'); ?></span>
                     </a>
+                    <?php if ($idAlert == ALERT_INDEX && $appFileCopy->isSession()) { ?>
+                        <?php $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectory(), true); ?>
+                        <?php $appParameter->toString(true); ?>
+                    <?php } ?>
                 </li>
             </ul>
         </form>

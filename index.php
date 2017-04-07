@@ -5,6 +5,7 @@
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
     use Librarys\App\AppFileCopy;
+    use Librarys\App\AppFileUnzip;
 
     use Librarys\File\FileInfo;
     use Librarys\File\FileMime;
@@ -136,7 +137,8 @@
     $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
     $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],            $handlerPage['current'] > 1);
 
-    $appFileCopy = new AppFileCopy();
+    $appFileCopy  = new AppFileCopy();
+    $appFileUnzip = new AppFileUnzip();
 
     if ($appFileCopy->isSession()) {
         $isDirectoryCopy         = is_dir(FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName()));
@@ -255,6 +257,35 @@
 
         $appFileCopy->setPath($appDirectory->getDirectory());
         $appFileCopy->flushSession();
+    } else if ($appFileUnzip->isSession()) {
+        if (isset($_GET['cancel_unzip'])) {
+            if (addslashes($_GET['cancel_unzip']) === md5(date('H', time()))) {
+                $appFileUnzip->clearSession();
+                $appAlert->success(lng('file_unzip.alert.cancel_unzip_success', 'filename', $appFileUnzip->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
+            } else {
+                $appAlert->danger(lng('file_unzip.alert.cancel_unzip_failed', 'filename', $appFileUnzip->getName()));
+            }
+        }
+
+        $appFileUnzipHrefParamater = new AppParameter();
+        $appFileUnzipHrefParamater->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appFileUnzip->getDirectory(), true);
+        $appFileUnzipHrefParamater->add(AppDirectory::PARAMETER_NAME_URL,      $appFileUnzip->getName(),      true);
+        $appFileUnzipHref = 'file_unzip.php' . $appFileUnzipHrefParamater->toString(true);
+
+        $appParameter->add('cancel_unzip', md5(date('H', time())), true);
+        $appFileUnzipHrefCancel = 'index.php' . $appParameter->toString(true);
+
+        $appAlert->info(lng('file_unzip.alert.choose_directory_path_for_unzip_href_cancel',
+            'filename', $appFileUnzip->getName(),
+            'href', $appFileUnzipHref,
+            'href_cancel', $appFileUnzipHrefCancel
+        ), ALERT_INDEX);
+
+        $appParameter->remove('cancel_unzip');
+        $appParameter->toString(true);
+
+        $appFileUnzip->setPath($appDirectory->getDirectory());
+        $appFileUnzip->flushSession();
     }
 ?>
 
@@ -320,7 +351,7 @@
                             $icon   = 'icon-file-image';
                             $isEdit = false;
                         } else if ($mime->isFormatSource()) {
-                            $icon   = 'icon-file-code';
+                            $icon   = 'icon-file-text';
                             $isEdit = true;
                         } else {
                             $icon   = 'icon-file';

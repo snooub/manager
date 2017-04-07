@@ -4,21 +4,19 @@
 
     use Librarys\File\FileInfo;
 
-    final class AppFileCopy
+    final class AppFileUnzip
     {
 
         private $isSession;
         private $directory;
         private $name;
         private $path;
-        private $isMove;
         private $existsFunc;
 
-        const SESSION_KEY           = 'COPY_INFOS';
+        const SESSION_KEY           = 'UNZIP_INFOS';
         const ARRAY_KEY_DIRECTORY   = 'directory';
         const ARRAY_KEY_NAME        = 'name';
         const ARRAY_KEY_PATH        = 'path';
-        const ARRAY_KEY_IS_MOVE     = 'is_move';
         const ARRAY_KEY_EXISTS_FUNC = 'exists_func';
 
         public function __construct()
@@ -34,11 +32,6 @@
                 if (isset($array[self::ARRAY_KEY_PATH]))
                     $this->setPath($array[self::ARRAY_KEY_PATH]);
 
-                if (isset($array[self::ARRAY_KEY_IS_MOVE]))
-                    $this->setIsMove($array[self::ARRAY_KEY_IS_MOVE]);
-                else
-                    $this->setIsMove(false);
-
                 if (isset($array[self::ARRAY_KEY_EXISTS_FUNC]))
                     $this->setExistsFunc($array[self::ARRAY_KEY_EXISTS_FUNC]);
                 else
@@ -50,17 +43,16 @@
             }
         }
 
-        public function setSession($directory, $name, $isMove, $existsFunc)
+        public function setSession($directory, $name, $existsFunc)
         {
-            $appFileUnzip = new AppFileUnzip();
+            $appFileCopy = new AppFileCopy();
 
-            if ($appFileUnzip->isSession())
-                $appFileUnzip->clearSession();
+            if ($appFileCopy->isSession())
+                $appFileCopy->clearSession();
 
             $this->setDirectory($directory);
             $this->setName($name);
             $this->setPath(FileInfo::validate($directory));
-            $this->setIsMove($isMove);
             $this->setExistsFunc($existsFunc);
             $this->flushSession();
         }
@@ -71,7 +63,6 @@
                 self::ARRAY_KEY_DIRECTORY   => $this->directory,
                 self::ARRAY_KEY_NAME        => $this->name,
                 self::ARRAY_KEY_PATH        => $this->path,
-                self::ARRAY_KEY_IS_MOVE     => $this->isMove,
                 self::ARRAY_KEY_EXISTS_FUNC => $this->existsFunc
             ];
         }
@@ -109,16 +100,6 @@
         public function getPath()
         {
             return $this->path;
-        }
-
-        public function setIsMove($isMove)
-        {
-            $this->isMove = $isMove;
-        }
-
-        public function isMove()
-        {
-            return $this->isMove;
         }
 
         public function setExistsFunc($existsFunc)
