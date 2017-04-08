@@ -42,6 +42,7 @@
 
     <?php $appAlert->display(); ?>
     <?php $appLocationPath->display(); ?>
+    <?php $imageSize = null; ?>
 
     <ul class="file-info">
         <li class="title">
@@ -51,11 +52,29 @@
                 <span><?php echo lng('file_info.title_page_file'); ?></span>
             <?php } ?>
         </li>
+        <?php if ($fileMime->isFormatImage()) { ?>
+            <?php $imageSize = getImageSize($fileInfo->getFilePath()); ?>
+
+            <li class="image">
+                <?php if ($imageSize === false) { ?>
+                    <span><?php echo lng('file_info.alert.image_error'); ?></span>
+                <?php } else { ?>
+                    <img
+                        src="image.php<?php echo $appParameter->toString(); ?>"
+                        alt="<?php echo $fileInfo->getFileName(); ?>"
+                        width="<?php if ($imageSize[0] > 200) echo 200; else echo $imageSize[0]; ?>px"
+                        height="auto"/>
+                <?php } ?>
+            </li>
+        <?php } ?>
         <li class="label">
             <ul>
                 <li><span><?php echo lng('file_info.label_name'); ?></span></li>
                 <li><span><?php echo lng('file_info.label_format'); ?></span></li>
                 <li><span><?php echo lng('file_info.label_size'); ?></span></li>
+                <?php if (is_array($imageSize)) { ?>
+                    <li><span><?php echo lng('file_info.label_image_size'); ?></span></li>
+                <?php } ?>
                 <li><span><?php echo lng('file_info.label_chmod'); ?></span></li>
                 <li><span><?php echo lng('file_info.label_time_modify'); ?></span></li>
             </ul>
@@ -75,6 +94,11 @@
                 <li>
                     <span><?php echo FileInfo::sizeToString(filesize($fileInfo->getFilePath())); ?></span>
                 </li>
+                <?php if (is_array($imageSize)) { ?>
+                    <li>
+                        <span><?php echo $imageSize[0] . lng('file_info.value_image_size_split') . $imageSize[1]; ?></span>
+                    </li>
+                <?php } ?>
                 <li>
                     <span><?php echo FileInfo::getChmodPermission($fileInfo->getFilePath()); ?></span>
                 </li>
@@ -86,6 +110,29 @@
     </ul>
 
     <ul class="menu-action">
+        <?php if ($fileMime->isFormatTextEdit()) { ?>
+            <?php if ($fileMime->isFormatTextAsEdit()) { ?>
+                <li>
+                    <a href="file_edit_text.php<?php echo $appParameter->toString(); ?>">
+                        <span class="icomoon icon-edit"></span>
+                        <span><?php echo lng('file_info.menu_action.edit_as_text'); ?></span>
+                    </a>
+                </li>
+            <?php } else { ?>
+                <li>
+                    <a href="file_edit_text.php<?php echo $appParameter->toString(); ?>">
+                        <span class="icomoon icon-edit"></span>
+                        <span><?php echo lng('file_info.menu_action.edit_text'); ?></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="file_edit_text_line.php<?php echo $appParameter->toString(); ?>">
+                        <span class="icomoon icon-edit"></span>
+                        <span><?php echo lng('file_info.menu_action.edit_text_line'); ?></span>
+                    </a>
+                </li>
+            <?php } ?>
+        <?php } ?>
         <?php if ($isDirectory == false) { ?>
             <li>
                 <a href="file_download.php<?php echo $appParameter->toString(); ?>">
@@ -136,79 +183,3 @@
     </ul>
 
 <?php require_once('incfiles' . SP . 'footer.php'); ?>
-
-<?php
-
-    /*define('ACCESS', true);
-
-    include_once 'function.php';
-
-    if (IS_LOGIN) {
-        $title = 'Thông tin tập tin';
-
-        include_once 'header.php';
-
-        echo '<div class="title">' . $title . '</div>';
-
-        if ($dir == null || $name == null || !is_file(processDirectory($dir . '/' . $name))) {
-            echo '<div class="list"><span>Đường dẫn không tồn tại</span></div>
-            <div class="title">Chức năng</div>
-            <ul class="list">
-                <li><img src="icon/list.png"/> <a href="index.php' . $pages['paramater_1'] . '">Danh sách</a></li>
-            </ul>';
-        } else {
-            $dir = processDirectory($dir);
-            $path = $dir . '/' . $name;
-            $format = getFormat($name);
-            $isImage = false;
-            $pixel = null;
-
-            echo '<ul class="info">';
-            echo '<li class="not_ellipsis"><span class="bull">&bull;</span><strong>Đường dẫn</strong>: <span>' . printPath($dir, true) . '</span></li>';
-
-                if ($format != null && in_array($format, array('png', 'ico', 'jpg', 'jpeg', 'gif', 'bmp'))) {
-                    $pixel = getimagesize($path);
-                    $isImage = true;
-
-                    echo '<li><center><img src="read_image.php?path=' . rawurlencode($path) . '" width="' . ($pixel[0] > 200 ? 200 : $pixel[0]) . 'px"/></center><br/></li>';
-                }
-
-                echo '<li><span class="bull">&bull;</span><strong>Tên</strong>: <span>' . $name . '</span></li>
-                <li><span class="bull">&bull;</span><strong>Kích thước</strong>: <span>' . size(filesize($path)) . '</span></li>
-                <li><span class="bull">&bull;</span><strong>Chmod</strong>: <span>' . getChmod($path) . '</span></li>';
-
-                if ($isImage)
-                    echo '<li><span class="bull">&bull;</span><strong>Độ phân giải</strong>: <span>' . $pixel[0] . 'x' . $pixel[1] . '</span></li>';
-
-                echo '<li><span class="bull">&bull;</span><strong>Định dạng</strong>: <span>' . ($format == null ? 'Không rõ' : $format) . '</span></li>
-                <li><span class="bull">&bull;</span><strong>Ngày sửa</strong>: <span>' . @date('d.m.Y - H:i', filemtime($path)) . '</span></li>
-            </ul>
-            <div class="title">Chức năng</div>
-            <ul class="list">';
-
-                if (isFormatText($name)) {
-                    echo '<li><img src="icon/edit.png"/> <a href="edit_text.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sửa văn bản</a></li>';
-                    echo '<li><img src="icon/edit_text_line.png"/> <a href="edit_text_line.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sửa theo dòng</a></li>';
-                } else if (in_array($format, $formats['zip'])) {
-                    echo '<li><img src="icon/unzip.png"/> <a href="file_viewzip.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Xem</a></li>';
-                    echo '<li><img src="icon/unzip.png"/> <a href="file_unzip.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Giải nén</a></li>';
-                } else if (isFormatUnknown($name)) {
-                    echo '<li><img src="icon/edit.png"/> <a href="edit_text.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sửa dạng văn bản</a></li>';
-                }
-
-                echo '<li><img src="icon/download.png"/> <a href="file_download.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Tải về</a></li>
-                <li><img src="icon/rename.png"/> <a href="file_rename.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Đổi tên</a></li>
-                <li><img src="icon/copy.png"/> <a href="file_copy.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Sao chép</a></li>
-                <li><img src="icon/move.png"/> <a href="file_move.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Di chuyển</a></li>
-                <li><img src="icon/delete.png"/> <a href="file_delete.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Xóa</a></li>
-                <li><img src="icon/access.png"/> <a href="file_chmod.php?dir=' . $dirEncode . '&name=' . $name . $pages['paramater_1'] . '">Chmod</a></li>
-                <li><img src="icon/list.png"/> <a href="index.php?dir=' . $dirEncode . $pages['paramater_1'] . '">Danh sách</a></li>
-            </ul>';
-        }
-
-        include_once 'footer.php';
-    } else {
-        goURL('login.php');
-    }*/
-
-?>

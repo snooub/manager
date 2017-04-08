@@ -278,3 +278,20 @@ ul.file-info > li.value li {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+ul.file-info > li.image {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    text-align: center;
+}
+
+ul.file-info > li.image span {
+    color: #c0c0c0;
+}
+
+ul.file-info > li.image img {
+    width: 90%;
+}

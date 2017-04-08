@@ -100,7 +100,8 @@
                 'cnf',
                 'config',
                 'conf',
-                'conv'
+                'conv',
+                'md'
             ],
 
             'archive' => [
@@ -171,7 +172,6 @@
         ];
 
         private $fileInfo;
-
 
         public function __construct(FileInfo $fileInfo)
         {
@@ -274,6 +274,30 @@
         public function isFormatArchiveZip()
         {
             return $this->isFormat(self::$formats['zip']);
+        }
+
+        public function isFormatTextAsEdit()
+        {
+            if ($this->isFormatText()   ||
+                $this->isFormatSource() ||
+                $this->isFormatCode()
+            )
+                return false;
+
+            return true;
+        }
+
+        public function isFormatTextEdit()
+        {
+            if ($this->isFormatArchive() ||
+                $this->isFormatAudio()   ||
+                $this->isFormatVideo()   ||
+                $this->isFormatImage()   ||
+                $this->isFormatDocument()
+            )
+                return false;
+
+            return true;
         }
 
 	}

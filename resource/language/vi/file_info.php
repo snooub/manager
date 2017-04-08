@@ -7,8 +7,11 @@
         'label_name'        => 'Tên:',
         'label_format'      => 'Định dạng:',
         'label_size'        => 'Kích thước:',
+        'label_image_size'  => 'Độ phân giải:',
         'label_chmod'       => 'Phân quyền:',
         'label_time_modify' => 'Ngày sửa:',
+
+        'value_image_size_split' => 'x',
 
         'format_directory' => 'Thư mục',
 
@@ -16,7 +19,7 @@
             'info'           => 'Thông tin',
             'edit_text'      => 'Sửa văn bản',
             'edit_text_line' => 'Sửa theo dòng',
-            'edit_of_text'   => 'Sửa dạng văn bản',
+            'edit_as_text'   => 'Sửa dạng văn bản',
             'view'           => 'Xem',
             'unzip'          => 'Giải nén zip',
             'viewzip'        => 'Xem tập tin zip',

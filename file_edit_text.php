@@ -1,4 +1,105 @@
-<?php define('ACCESS', true);
+<?php
+
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
+    use Librarys\App\AppDirectory;
+    use Librarys\App\AppLocationPath;
+    use Librarys\App\AppParameter;
+
+    define('LOADED', 1);
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
+
+    if ($appUser->isLogin() == false)
+        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
+
+    if ($appDirectory->isFileSeparatorNameExists() == false)
+        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if ($appDirectory->isPermissionDenyPath())
+        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
+
+    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath->setIsPrintLastEntry(true);
+    $appLocationPath->setIsLinkLastEntry(true);
+
+    $appParameter = new AppParameter();
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
+
+    $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $fileMime    = new FileMime($fileInfo);
+    $isDirectory = $fileInfo->isDirectory();
+
+    if ($isDirectory) {
+        $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, $appParameter->toString(true));
+    }
+
+    if ($fileMime->isFormatTextEdit() == false) {
+        $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
+        $appAlert->danger(lng('file_edit_text.alert.file_is_not_format_text_edit'), ALERT_INDEX, $appParameter->toString(true));
+    }
+
+    if ($fileMime->isFormatTextAsEdit() == false)
+        $title = lng('file_edit_text.title_page');
+    else
+        $title = lng('file_edit_text.title_page_as');
+
+    $themes = [ env('resource.theme.file') ];
+    $appAlert->setID(ALERT_FILE_EDIT_TEXT);
+    require_once('incfiles' . SP . 'header.php');
+
+?>
+
+    <?php $appAlert->display(); ?>
+    <?php $appLocationPath->display(); ?>
+
+    <ul class="menu-action">
+        <li>
+            <a href="file_info.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-about"></span>
+                <span><?php echo lng('file_info.menu_action.info'); ?></span>
+            </a>
+        </li>
+        <?php if ($fileMime->isFormatTextEdit() && $fileMime->isFormatTextAsEdit() == false) { ?>
+            <li>
+                <a href="file_edit_text_line.php<?php echo $appParameter->toString(); ?>">
+                    <span class="icomoon icon-edit"></span>
+                    <span><?php echo lng('file_info.menu_action.edit_text_line'); ?></span>
+                </a>
+            </li>
+        <?php } ?>
+        <li>
+            <a href="file_download.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-download"></span>
+                <span><?php echo lng('file_info.menu_action.download'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="file_rename.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-edit"></span>
+                <span><?php echo lng('file_info.menu_action.rename'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="file_copy.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-copy"></span>
+                <span><?php echo lng('file_info.menu_action.copy'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="file_chmod.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-key"></span>
+                <span><?php echo lng('file_info.menu_action.chmod'); ?></span>
+            </a>
+        </li>
+    </ul>
+
+<?php require_once('incfiles' . SP . 'footer.php'); ?>
+
+<?php
+
+/*define('ACCESS', true);
 
     include_once 'function.php';
 
@@ -164,6 +265,6 @@
         include_once 'footer.php';
     } else {
         goURL('login.php');
-    }
+    }*/
 
 ?>

@@ -25,6 +25,7 @@
         public function __construct(AppDirectory $appDirectory, $urlBegin = null, $urlEnd = null)
         {
             $this->appDirectory = $appDirectory;
+            $this->entrys       = array();
 
             $this->setUrlBegin($urlBegin);
             $this->setUrlEnd($urlEnd);
@@ -135,9 +136,19 @@
                 $locationUrl             = null;
                 $locationParameter       = new AppParameter();
 
+                if (is_array($this->entrys) && count($this->entrys) > 0)
+                    $locationArray = array_merge($locationArray, $this->entrys);
+
                 $buffer .= '<ul class="location-path">';
 
                 foreach ($locationArray AS $locationKey => $locationValue) {
+                    $entryArray = null;
+
+                    if (is_array($locationValue)) {
+                        $entryArray    = $locationValue;
+                        $locationValue = $entryArray[self::ARRAY_KEY_NAME];
+                    }
+
                     if ($locationKey === 0) {
                         $locationSeparator = null;
 

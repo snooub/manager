@@ -55,8 +55,8 @@
     $zipCountArrayEntry = 0;
 
     if (isset($_GET[PARAMETER_ZIP_PATH]) && empty($_GET[PARAMETER_ZIP_PATH]) == false) {
-        $zipDirectoryOrigin = AppDirectory::rawDecode($_GET[PARAMETER_ZIP_PATH]);
-        $zipDirectory       = $zipDirectory . ZipFileRead::SEPARATOR_ZIP_ENTRY;
+        $zipDirectoryOrigin = separator(FileInfo::validate(AppDirectory::rawDecode($_GET[PARAMETER_ZIP_PATH])), ZipFileRead::SEPARATOR_ZIP_ENTRY);
+        $zipDirectory       = separator($zipDirectoryOrigin . ZipFileRead::SEPARATOR_ZIP_ENTRY,   ZipFileRead::SEPARATOR_ZIP_ENTRY);
     }
 
     if ($zipFileRead->open()) {
@@ -73,7 +73,7 @@
                     'entry_is_dir' => false,
                     'entry_size'   => $zipFileRead->readEntryFileSize()
                 ];
-            } else if (preg_match('#(' . $zipDirectory . '(.+?))(/|$)+#', $zipEntryName, $entryMatches)) {
+            } else if (preg_match('#(' . $zipDirectory . '(.+?))(' . ZipFileRead::SEPARATOR_ZIP_ENTRY . '|$)+#', $zipEntryName, $entryMatches)) {
                 if ($entryMatches[3] == ZipFileRead::SEPARATOR_ZIP_ENTRY && isset($zipArrayFolders[$entryMatches[2]]) == false) {
                     $zipArrayFolders[$entryMatches[2]] = [
                         'entry_path'   => $entryMatches[1],
@@ -82,7 +82,7 @@
                         'entry_size'   => 0
                     ];
                 } else if ($entryMatches[3] != ZipFileRead::SEPARATOR_ZIP_ENTRY && $zipFileRead->isEntryCompressedMethodDeflated()) {
-                    $zipArrayFolders[$entryMatches[2]] = [
+                    $zipArrayFiles[$entryMatches[2]] = [
                         'entry_path'   => $entryMatches[1],
                         'entry_name'   => $entryMatches[2],
                         'entry_is_dir' => false,
@@ -90,7 +90,11 @@
                     ];
                 }
             }
+
+            $zipFileRead->closeEntry();
         }
+
+        $zipFileRead->close();
 
         $zipArrayEntrys      = array();
         $zipCountArrayFolder = count($zipArrayFolders);
@@ -118,6 +122,15 @@
         $zipArrayEntrys     = null;
         $zipCountArrayEntry = 0;
     }
+
+    if ($zipDirectoryOrigin != null) {
+        $zipLocationPath = explode(ZipFileRead::SEPARATOR_ZIP_ENTRY, $zipDirectoryOrigin);
+        $appLocationPath->addEntry($appDirectory->getName(), null);
+
+        if (is_array($zipLocationPath) && count($zipLocationPath) > 0)
+            foreach ($zipLocationPath AS $zipLocation)
+                $appLocationPath->addEntry($zipLocation, null);
+    }
 ?>
 
     <?php $appAlert->display(); ?>
@@ -138,12 +151,12 @@
                                 <span class="icomoon icon-folder"></span>
                             </a>
                         </div>
-                        <a href="" class="file-name">
+                        <a href="file_viewzip.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ZIP_PATH; ?>=<?php echo AppDirectory::rawEncode($zipEntry['entry_path']); ?>" class="file-name">
                             <span><?php echo $zipEntry['entry_name']; ?></span>
                         </a>
                     </li>
                 <?php } else { ?>
-                    <?php $info = new FileInfo($zipEntry['entry_path']); ?>
+                    <?php $info = new FileInfo($zipEntry['entry_path'], false); ?>
                     <?php $mime = new FileMime($info); ?>
                     <?php $icon = null; ?>
 
@@ -230,7 +243,8 @@
 
 <?php
 
-/*define('ACCESS', true);
+/*
+define('ACCESS', true);
 
     include_once 'function.php';
 

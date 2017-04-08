@@ -9,9 +9,9 @@
 		private $fileExt;
 		private $fileMime;
 
-		public function __construct($filePath)
+		public function __construct($filePath, $receiverMime = true)
 		{
-			$this->setFilePath($filePath);
+			$this->setFilePath($filePath, $receiverMime);
 		}
 
 		public function isFile()
@@ -29,12 +29,13 @@
 			readfile($this->filePath);
 		}
 
-		public function setFilePath($filePath)
+		public function setFilePath($filePath, $receiverMime = true)
 		{
 			$this->filePath = separator($filePath, SP);
-
 			$this->fileExt  = FileInfo::extFile($this->getFileName());
-			$this->fileMime = FileMime::get($this);
+
+            if ($receiverMime)
+    			$this->fileMime = FileMime::get($this);
 		}
 
 		public function getFilePath()
@@ -54,6 +55,9 @@
 
 		public function getFileMime()
 		{
+            if ($this->fileMime == null)
+                $this->fileMime = FileMime::get($this);
+
 			return $this->fileMime;
 		}
 

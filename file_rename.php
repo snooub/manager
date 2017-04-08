@@ -137,6 +137,29 @@
                 <span><?php echo lng('file_info.menu_action.info'); ?></span>
             </a>
         </li>
+        <?php if ($fileMime->isFormatTextEdit()) { ?>
+            <?php if ($fileMime->isFormatTextAsEdit()) { ?>
+                <li>
+                    <a href="file_edit_text.php<?php echo $appParameter->toString(); ?>">
+                        <span class="icomoon icon-edit"></span>
+                        <span><?php echo lng('file_info.menu_action.edit_as_text'); ?></span>
+                    </a>
+                </li>
+            <?php } else { ?>
+                <li>
+                    <a href="file_edit_text.php<?php echo $appParameter->toString(); ?>">
+                        <span class="icomoon icon-edit"></span>
+                        <span><?php echo lng('file_info.menu_action.edit_text'); ?></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="file_edit_text_line.php<?php echo $appParameter->toString(); ?>">
+                        <span class="icomoon icon-edit"></span>
+                        <span><?php echo lng('file_info.menu_action.edit_text_line'); ?></span>
+                    </a>
+                </li>
+            <?php } ?>
+        <?php } ?>
         <?php if ($isDirectory == false) { ?>
             <li>
                 <a href="file_download.php<?php echo $appParameter->toString(); ?>">
