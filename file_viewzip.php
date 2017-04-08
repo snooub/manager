@@ -51,8 +51,8 @@
     $zipDirectoryOrigin = null;
     $zipDirectory       = null;
     $zipFileRead        = new ZipFileRead(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()));
-    $zipArrayFolders    = [];
-    $zipArrayFiles      = [];
+    $zipArrayEntrys     = null;
+    $zipCountArrayEntry = 0;
 
     if (isset($_GET[PARAMETER_ZIP_PATH]) && empty($_GET[PARAMETER_ZIP_PATH]) == false) {
         $zipDirectoryOrigin = AppDirectory::rawDecode($_GET[PARAMETER_ZIP_PATH]);
@@ -60,6 +60,9 @@
     }
 
     if ($zipFileRead->open()) {
+        $zipArrayFolders = [];
+        $zipArrayFiles   = [];
+
         while ($zipFileRead->readNextEntry()) {
             $zipEntryName = $zipFileRead->readEntryName();
 
@@ -89,10 +92,31 @@
             }
         }
 
-        bug($zipArrayFolders);
-        bug($zipArrayFiles);
-    } else {
+        $zipArrayEntrys      = array();
+        $zipCountArrayFolder = count($zipArrayFolders);
+        $zipCountArrayFile   = count($zipArrayFiles);
 
+        if ($zipCountArrayFolder > 0) {
+            ksort($zipArrayFolders);
+
+            foreach ($zipArrayFolders AS $entry)
+                $zipArrayEntrys[] = $entry;
+        }
+
+        if ($zipCountArrayFile > 0) {
+            ksort($zipArrayFiles);
+
+            foreach ($zipArrayFiles AS $entry)
+                $zipArrayEntrys[] = $entry;
+        }
+
+        array_splice($zipArrayFolders, 0, $zipCountArrayFolder);
+        array_splice($zipArrayFiles,   0, $zipCountArrayFile);
+
+        $zipCountArrayEntry = count($zipArrayEntrys);
+    } else {
+        $zipArrayEntrys     = null;
+        $zipCountArrayEntry = 0;
     }
 ?>
 
@@ -100,10 +124,64 @@
     <?php $appLocationPath->display(); ?>
 
     <ul class="file-list-home">
-        <li class="empty">
-            <span class="icomoon icon-folder-o"></span>
-            <span><?php echo lng('home.directory_empty'); ?></span>
-        </li>
+        <?php if ($zipArrayEntrys == null || $zipCountArrayEntry <= 0) { ?>
+            <li class="empty">
+                <span class="icomoon icon-folder-o"></span>
+                <span><?php echo lng('home.directory_empty'); ?></span>
+            </li>
+        <?php } else { ?>
+            <?php foreach ($zipArrayEntrys AS $zipEntry) { ?>
+                <?php if ($zipEntry['entry_is_dir']) { ?>
+                    <li class="type-directory">
+                        <div class="icon">
+                            <a href="#">
+                                <span class="icomoon icon-folder"></span>
+                            </a>
+                        </div>
+                        <a href="" class="file-name">
+                            <span><?php echo $zipEntry['entry_name']; ?></span>
+                        </a>
+                    </li>
+                <?php } else { ?>
+                    <?php $info = new FileInfo($zipEntry['entry_path']); ?>
+                    <?php $mime = new FileMime($info); ?>
+                    <?php $icon = null; ?>
+
+                    <?php
+                        if ($mime->isFormatText())
+                            $icon   = 'icon-file-text';
+                        else if ($mime->isFormatCode())
+                            $icon   = 'icon-file-code';
+                        else if ($mime->isFormatArchive())
+                            $icon   = 'icon-file-archive';
+                        else if ($mime->isFormatAudio())
+                            $icon   = 'icon-file-audio';
+                        else if ($mime->isFormatVideo())
+                            $icon   = 'icon-file-video';
+                        else if ($mime->isFormatDocument())
+                            $icon   = 'icon-file-document';
+                        else if ($mime->isFormatImage())
+                            $icon   = 'icon-file-image';
+                        else if ($mime->isFormatSource())
+                            $icon   = 'icon-file-code';
+                        else
+                            $icon   = 'icon-file';
+                    ?>
+
+                    <li class="type-file">
+                        <div class="icon">
+                            <span class="icomoon <?php echo $icon; ?>"></span>
+                        </div>
+                        <a href="" class="file-name">
+                            <span><?php echo $zipEntry['entry_name']; ?></span>
+                        </a>
+                        <div class="chmod-size">
+                            <span class="size"><?php echo FileInfo::sizeToString($zipEntry['entry_size']); ?></span>
+                        </div>
+                    </li>
+                <?php } ?>
+            <?php } ?>
+        <?php } ?>
     </ul>
 
     <ul class="menu-action">

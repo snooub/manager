@@ -7,10 +7,14 @@
 
         private $appDirectory;
 
+        private $entrys;
         private $urlBegin;
         private $urlEnd;
         private $isPrintLastEntry;
         private $isLinkLastEntry;
+
+        const ARRAY_KEY_NAME = 'name';
+        const ARRAY_KEY_URL  = 'url';
 
         /**
          * [__construct Init object]
@@ -26,6 +30,16 @@
             $this->setUrlEnd($urlEnd);
             $this->setIsPrintLastEntry(false);
             $this->setIsLinkLastEntry(false);
+        }
+
+        public function addEntry($name, $url)
+        {
+            $this->entrys[] = [
+                self::ARRAY_KEY_NAME => $name,
+                self::ARRAY_KEY_URL  => $url
+            ];
+
+            return $this;
         }
 
          /**

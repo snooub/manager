@@ -337,9 +337,12 @@
                         <a href="file_info.php<?php echo $urlParameter; ?>" class="file-name">
                             <span><?php echo $entry['name']; ?></span>
                         </a>
-                        <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
-                            <span><?php echo $chmodPerms; ?></span>
-                        </a>
+                        <div class="chmod-size">
+                            <span class="size"><?php echo FileInfo::sizeToString($info->getFileSize()); ?></span><span>,</span>
+                            <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
+                                <span><?php echo $chmodPerms; ?></span>
+                            </a>
+                        </div>
                     </li>
                 <?php } ?>
             <?php } ?>

@@ -106,7 +106,7 @@ ul.file-list-home > li span.icomoon {
     line-height: 45px;
 }
 
-@media all and (max-width: 640px) {
+@media all and (max-width: 780px) {
     ul.file-list-home > li {
         width: 100%;
     }
@@ -180,26 +180,27 @@ ul.file-list-home > li.type-file span.icomoon {
 ul.file-list-home > li.type-directory a.file-name,
 ul.file-list-home > li.type-file a.file-name {
     display: inline-block;
-    max-width: 80%;
+    max-width: 60%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
 ul.file-list-home > li.type-directory a.chmod-permission,
-ul.file-list-home > li.type-file a.chmod-permission {
+ul.file-list-home > li.type-file div.chmod-size {
     position: absolute;
     top: 0;
     right: 10px;
 }
 
 ul.file-list-home > li.type-directory a.chmod-permission span,
-ul.file-list-home > li.type-file a.chmod-permission span {
+ul.file-list-home > li.type-file div.chmod-size span {
     color: #d0d0d0;
+    line-height: 45px;
 }
 
 ul.file-list-home > li.type-directory a.chmod-permission:hover span,
-ul.file-list-home > li.type-file a.chmod-permission:hover span {
+ul.file-list-home > li.type-file div.chmod-size a:hover span {
     color: #a0a0a0;
 }
 

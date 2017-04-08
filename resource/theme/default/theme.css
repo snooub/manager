@@ -223,7 +223,7 @@ ul.radio-choose-tab > li input + label:hover span {
 
 div#container {
     margin: 0 auto;
-    max-width: 640px;
+    max-width: 780px;
     padding: 0;
     position: relative;
 }
@@ -241,7 +241,7 @@ div#header {
     top: 0;
     left: 0;
     right: 0;
-    max-width: 640px;
+    max-width: 780px;
     height: 55px;
     margin: 0 auto;
     padding: 0;
