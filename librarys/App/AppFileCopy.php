@@ -52,11 +52,6 @@
 
         public function setSession($directory, $name, $isMove, $existsFunc)
         {
-            $appFileUnzip = new AppFileUnzip();
-
-            if ($appFileUnzip->isSession())
-                $appFileUnzip->clearSession();
-
             $this->setDirectory($directory);
             $this->setName($name);
             $this->setPath(FileInfo::validate($directory));

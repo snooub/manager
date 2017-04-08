@@ -20,8 +20,9 @@
         private $entryCompressedMethod;
         private $entryPathExtract;
 
-        const COMPRESSED_METHOD_STORED = 'stored';
+        const COMPRESSED_METHOD_STORED   = 'stored';
         const COMPRESSED_METHOD_DEFLATED = 'deflated';
+        const SEPARATOR_ZIP_ENTRY        = '/';
 
         public function __construct($path, $pathExtract = null)
         {

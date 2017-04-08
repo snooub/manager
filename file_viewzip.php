@@ -5,8 +5,11 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\Zip\ZipFileRead;
 
-    define('LOADED', 1);
+    define('LOADED',             1);
+    define('PARAMETER_ZIP_PATH', 'directory_zip');
+
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
@@ -45,10 +48,63 @@
     $appAlert->setID(ALERT_FILE_VIEWZIP);
     require_once('incfiles' . SP . 'header.php');
 
+    $zipDirectoryOrigin = null;
+    $zipDirectory       = null;
+    $zipFileRead        = new ZipFileRead(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()));
+    $zipArrayFolders    = [];
+    $zipArrayFiles      = [];
+
+    if (isset($_GET[PARAMETER_ZIP_PATH]) && empty($_GET[PARAMETER_ZIP_PATH]) == false) {
+        $zipDirectoryOrigin = AppDirectory::rawDecode($_GET[PARAMETER_ZIP_PATH]);
+        $zipDirectory       = $zipDirectory . ZipFileRead::SEPARATOR_ZIP_ENTRY;
+    }
+
+    if ($zipFileRead->open()) {
+        while ($zipFileRead->readNextEntry()) {
+            $zipEntryName = $zipFileRead->readEntryName();
+
+            if (strpos($zipEntryName, ZipFileRead::SEPARATOR_ZIP_ENTRY) === false && $zipDirectory == null) {
+                $zipArrayFiles[$zipEntryName] = [
+                    'entry_path'   => $zipEntryName,
+                    'entry_name'   => $zipEntryName,
+                    'entry_is_dir' => false,
+                    'entry_size'   => $zipFileRead->readEntryFileSize()
+                ];
+            } else if (preg_match('#(' . $zipDirectory . '(.+?))(/|$)+#', $zipEntryName, $entryMatches)) {
+                if ($entryMatches[3] == ZipFileRead::SEPARATOR_ZIP_ENTRY && isset($zipArrayFolders[$entryMatches[2]]) == false) {
+                    $zipArrayFolders[$entryMatches[2]] = [
+                        'entry_path'   => $entryMatches[1],
+                        'entry_name'   => $entryMatches[2],
+                        'entry_is_dir' => true,
+                        'entry_size'   => 0
+                    ];
+                } else if ($entryMatches[3] != ZipFileRead::SEPARATOR_ZIP_ENTRY && $zipFileRead->isEntryCompressedMethodDeflated()) {
+                    $zipArrayFolders[$entryMatches[2]] = [
+                        'entry_path'   => $entryMatches[1],
+                        'entry_name'   => $entryMatches[2],
+                        'entry_is_dir' => false,
+                        'entry_size'   => $zipFileRead->readEntryFileSize()
+                    ];
+                }
+            }
+        }
+
+        bug($zipArrayFolders);
+        bug($zipArrayFiles);
+    } else {
+
+    }
 ?>
 
     <?php $appAlert->display(); ?>
     <?php $appLocationPath->display(); ?>
+
+    <ul class="file-list-home">
+        <li class="empty">
+            <span class="icomoon icon-folder-o"></span>
+            <span><?php echo lng('home.directory_empty'); ?></span>
+        </li>
+    </ul>
 
     <ul class="menu-action">
         <li>
