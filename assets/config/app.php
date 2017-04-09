@@ -2,7 +2,7 @@
 
     return [
         'server' => [
-            'document_root' => dirname(dirname(__DIR__)),
+            'document_root' => dirname(dirname(dirname(__DIR__))),
         ],
 
         'app' => [
@@ -20,10 +20,10 @@
             ],
 
             'path' => [
-                'root'       => dirname(__DIR__),
+                'root'       => dirname(dirname(__DIR__)),
                 'librarys'   => '${app.path.root}${SP}librarys',
-                'error'      => '${app.path.root}${SP}error',
-                'resource'   => '${app.path.root}${SP}resource',
+                'resource'   => '${app.path.root}${SP}assets',
+                'error'      => '${app.path.resource}${SP}error',
                 'theme'      => '${app.path.resource}${SP}theme',
                 'icon'       => '${app.path.resource}${SP}icon',
                 'javascript' => '${app.path.resource}${SP}javascript',

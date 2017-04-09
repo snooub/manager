@@ -11,11 +11,11 @@
 
     require_once(ROOT . 'librarys' . SP . 'Boot.php');
 
-    $boot         = new Librarys\Boot(require_once(ROOT . 'config' . SP . 'app.php'));
+    $boot         = new Librarys\Boot(require_once(ROOT . 'assets' . SP . 'config' . SP . 'app.php'));
     $appChecker   = new Librarys\App\AppChecker   ($boot);
-    $appConfig    = new Librarys\App\AppConfig    ($boot, ROOT . 'config' . SP . 'manager.php');
-    $appUser      = new Librarys\App\AppUser      ($boot, ROOT . 'config' . SP . 'user.php');
-    $appAlert     = new Librarys\App\AppAlert     ($boot, ROOT . 'define' . SP . 'alert.php');
+    $appConfig    = new Librarys\App\AppConfig    ($boot, ROOT . 'assets' . SP . 'config' . SP . 'manager.php');
+    $appUser      = new Librarys\App\AppUser      ($boot, ROOT . 'assets' . SP . 'config' . SP . 'user.php');
+    $appAlert     = new Librarys\App\AppAlert     ($boot, ROOT . 'assets' . SP . 'define' . SP . 'alert.php');
     $appDirectory = new Librarys\App\AppDirectory ($boot);
 
     if ($appChecker->execute()->isAccept() == false) {

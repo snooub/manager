@@ -28,7 +28,9 @@ a:focus p {
 input[type=text],
 input[type=number],
 input[type=password],
-input[type=file] + label {
+input[type=file] + label,
+
+textarea {
     color: #c0c0c0;
     background-color: transparent;
 
@@ -51,7 +53,9 @@ input[type=file] + label {
 
 input[type=text],
 input[type=number],
-input[type=password] {
+input[type=password],
+
+textarea {
     font-size: 14px;
 }
 
@@ -70,7 +74,10 @@ input[type=number]:focus,
 input[type=password]:hover,
 input[type=password]:focus,
 input[type=file] + label:hover,
-input[type=file] + label:focus {
+input[type=file] + label:focus,
+
+textarea:hover,
+textarea:focus {
     color: #505050;
     border-bottom-color: #a0a0a0;
 }
@@ -80,7 +87,10 @@ input[type=text].danger:focus,
 input[type=number].danger:hover,
 input[type=number].danger:focus,
 input[type=password].danger:hover,
-input[type=password].danger:focus {
+input[type=password].danger:focus,
+
+textarea.danger:hover,
+textarea:danger:focus {
     border-bottom-color: #ef5350;
 }
 
@@ -89,7 +99,10 @@ input[type=text].success:focus,
 input[type=number].success:hover,
 input[type=number].success:focus,
 input[type=password].success:hover,
-input[type=password].success:focus {
+input[type=password].success:focus,
+
+textarea.success:hover,
+textarea.success:focus {
     border-bottom-color: #66bb6a;
 }
 
@@ -98,7 +111,10 @@ input[type=text].info:focus,
 input[type=number].info:hover,
 input[type=number].info:focus,
 input[type=password].info:hover,
-input[type=password].info:focus {
+input[type=password].info:focus,
+
+textarea.info:hover,
+textarea.info:focus {
     border-bottom-color: #42a5f5;
 }
 
@@ -107,7 +123,10 @@ input[type=text].warning:focus,
 input[type=number].warning:hover,
 input[type=number].warning:focus,
 input[type=password].warning:hover,
-input[type=password].warning:focus {
+input[type=password].warning:focus,
+
+textarea.warning:hover,
+textarea.warning:focus {
     border-bottom-color: #ffa726;
 }
 
@@ -582,6 +601,8 @@ div.form-action form > ul {
 
 div.form-action form > ul > li.input,
 div.form-action form > ul > li.chmod,
+div.form-action form > ul > li.textarea,
+div.form-action form > ul > li.paging,
 div.form-action form > ul > li.radio-choose {
     overflow:hidden;
     text-overflow:ellipsis;
@@ -591,6 +612,7 @@ div.form-action form > ul > li.radio-choose {
 div.form-action form > ul > li.input,
 div.form-action form > ul > li.input-file,
 div.form-action form > ul > li.input-chmod,
+div.form-action form > ul > li.textarea,
 div.form-action form > ul > li.accept {
     margin-left: 15px;
     margin-right: 15px;
@@ -598,19 +620,28 @@ div.form-action form > ul > li.accept {
     padding-bottom: 20px;
 }
 
+div.form-action form > ul > li.paging {
+    margin: 0;
+    padding: 0;
+}
+
 div.form-action form > ul > li.input span,
-div.form-action form > ul > li.input input {
+div.form-action form > ul > li.input input,
+div.form-action form > ul > li.textarea span,
+div.form-action form > ul > li.textarea textarea {
     display: block;
 }
 
-div.form-action form > ul > li.input input {
+div.form-action form > ul > li.input input,
+div.form-action form > ul > li.textarea textarea {
     outline: 0;
     margin-top: 5px;
     padding: 10px;
     width: 100%;
 }
 
-div.form-action form > ul > li.input span {
+div.form-action form > ul > li.input span,
+div.form-action form > ul > li.textarea span {
     color: #00897b;
     font-size: 14px;
     font-weight: normal;
@@ -706,6 +737,16 @@ div.form-action form > ul > li.radio-choose > span:first-child {
     font-size: 14px;
     font-weight: normal;
     margin-bottom:10px;
+}
+
+div.form-action form > ul > li.paging ul.paging {
+    -webkit-box-shadow: none !important;
+       -moz-box-shadow: none !important;
+        -ms-box-shadow: none !important;
+         -o-box-shadow: none !important;
+            box-shadow: none !important;
+
+    margin-bottom: 0;
 }
 
 div.form-action form > ul > li.accept span {
