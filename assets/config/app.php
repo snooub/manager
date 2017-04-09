@@ -102,6 +102,11 @@
                 'file'    => '${app.http.theme}/default/file.css',
                 'mysql'   => '${app.http.theme}/default/mysql.css',
                 'icomoon' => '${app.http.theme}/default/style.css'
+            ],
+
+            'icon' => [
+                'favicon_ico' => '${app.http.theme}/default/icon/icon.ico',
+                'favicon_png' => '${app.http.theme}/default/icon/icon.png'
             ]
         ]
     ];
