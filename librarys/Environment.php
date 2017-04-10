@@ -32,13 +32,6 @@
             $this->cache('app.autoload.prefix_namespace', 'Librarys');
             $this->cache('app.autoload.prefix_class_mime', '.php');
 
-            $this->cache('app.session.init',            false);
-            $this->cache('app.session.name',            session_name());
-            $this->cache('app.session.cookie_lifetime', ini_get('session.cookie_lifetime'));
-            $this->cache('app.session.cookie_path',     ini_get('session.cookie_path'));
-            $this->cache('app.session.cache_limitter',  session_cache_limiter());
-            $this->cache('app.session.cache_expire',    session_cache_expire());
-
             $this->cache('app.path.root',       dirname(__DIR__));
             $this->cache('app.path.librarys',   env('app.path.root') . SP . 'librarys');
             $this->cache('app.path.error',      env('app.path.root') . SP . 'error');
@@ -76,6 +69,13 @@
             $this->cache('app.http.theme',      separator(env('app.http.resource') . SP . substr(env('app.path.theme'),      $lengthResource), '/'));
             $this->cache('app.http.icon',       separator(env('app.http.resource') . SP . substr(env('app.path.icon'),       $lengthResource), '/'));
             $this->cache('app.http.javascript', separator(env('app.http.resource') . SP . substr(env('app.path.javascript'), $lengthResource), '/'));
+
+            $this->cache('app.session.init',            false);
+            $this->cache('app.session.name',            session_name());
+            $this->cache('app.session.cookie_lifetime', ini_get('session.cookie_lifetime'));
+            $this->cache('app.session.cookie_path',     ini_get('session.cookie_path'));
+            $this->cache('app.session.cache_limitter',  session_cache_limiter());
+            $this->cache('app.session.cache_expire',    session_cache_expire());
 
             $this->cache('app.classes.global',    env('app.autoload.prefix_namespace') . '\Classes\ClassesGlobals');
             $this->cache('app.classes.not_found', env('app.autoload.prefix_namespace') . '\Classes\ClassesHttpNotFound');
