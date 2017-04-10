@@ -57,7 +57,13 @@
             if ($this->isAccept == false)
                 return;
 
-            $current  = new FileInfo(realpath('.'));
+            $current = null;
+
+            if (defined('ROOT'))
+                $current = new FileInfo(realpath(ROOT));
+            else
+                $current  = new FileInfo(realpath('.'));
+
             $path     = $current->getFilePath();
             $pathRoot = FileInfo::validate(env('SERVER.DOCUMENT_ROOT'));
             $isRoot   = stripos($pathRoot, $path) === 0;

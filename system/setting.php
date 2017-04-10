@@ -1,15 +1,62 @@
 <?php
 
     define('LOADED', 1);
+    define('SETTING', 1);
     define('ROOT',   '..' . DIRECTORY_SEPARATOR);
+
     require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
 
-    $title = null;
+    $title = lng('system.setting.title_page');
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 ?>
+
+    <div class="form-action">
+        <div class="title">
+            <span><?php echo lng('system.setting.title_page'); ?></span>
+        </div>
+        <form action="setting.php" method="post">
+            <ul>
+                <li class="input">
+                    <span><?php echo lng('system.setting.form.input.paging_file_home_list'); ?></span>
+                    <input type="text" name="paging_file_home_list" value="<?php echo $appConfig->get('paging.file_home_list'); ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_home_list'); ?>"/>
+                </li>
+                <li class="input">
+                    <span><?php echo lng('system.setting.form.input.paging_file_edit_text'); ?></span>
+                    <input type="text" name="paging_file_edit_text" value="<?php echo $appConfig->get('paging.file_edit_text'); ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text'); ?>"/>
+                </li>
+                <li class="input">
+                    <span><?php echo lng('system.setting.form.input.paging_file_edit_text_line'); ?></span>
+                    <input type="text" name="paging_file_edit_text_line" value="<?php echo $appConfig->get('paging.file_edit_text_line'); ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text_line'); ?>"/>
+                </li>
+                <li class="button">
+                    <button type="submit" name="save">
+                        <span><?php echo lng('system.setting.form.button.save'); ?></span>
+                    </button>
+                    <a href="<?php echo env('app.http.host'); ?>">
+                        <span><?php echo lng('system.setting.form.button.cancel'); ?></span>
+                    </a>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+    <ul class="menu-action">
+        <li>
+            <a href="<?php echo env('app.http.host'); ?>/user/setting.php">
+                <span class="icomoon icon-config"></span>
+                <span><?php echo lng('system.setting.menu_action.setting_profile'); ?></span>
+            </a>
+        </li>
+        <li class="hidden">
+            <a href="<?php echo env('app.http.host'); ?>/user/manager.php">
+                <span class="icomoon icon-user"></span>
+                <span><?php echo lng('system.setting.menu_action.manager_user'); ?></span>
+            </a>
+        </li>
+    </ul>
 
 <?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>
 <?php

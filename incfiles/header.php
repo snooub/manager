@@ -50,16 +50,13 @@
                                 <span class="icomoon icon-mysql"></span>
                             </a>
                         </li>
-                        <li>
-                            <a href="<?php echo env('app.http.host'); ?>/user/profile.php">
-                                <span class="icomoon icon-user"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo env('app.http.host'); ?>/system/setting.php">
-                                <span class="icomoon icon-config"></span>
-                            </a>
-                        </li>
+                        <?php if (defined('SETTING') == false) { ?>
+                            <li>
+                                <a href="<?php echo env('app.http.host'); ?>/system/setting.php">
+                                    <span class="icomoon icon-config"></span>
+                                </a>
+                            </li>
+                        <?php } ?>
                         <li class="about">
                             <a href="<?php echo env('app.http.host'); ?>/about.php">
                                 <span class="icomoon icon-about"></span>
