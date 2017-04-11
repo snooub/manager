@@ -57,10 +57,12 @@
                 $this->cache('app.directory_absolute', $appDirectoryAbsolute);
             }
 
+            $this->cache('app.directory_absolute_http', separator(env('app.directory_absolute'), '/'));
+
             if (env('app.directory_absolute') == null || env('app.directory_absolute') == '')
                 $this->cache('app.http.host', env('server.http_host'));
             else
-                $this->cache('app.http.host', separator(env('server.http_host') . '/' . env('app.directory_absolute'), '/'));
+                $this->cache('app.http.host', separator(env('server.http_host') . '/' . env('app.directory_absolute_http'), '/'));
 
             $lengthRoot     = strlen(env('app.path.root')) + 1;
             $lengthResource = strlen(env('app.path.resource')) + 1;
@@ -110,7 +112,7 @@
             if (env('app.directory_absolute') == '')
                 $this->cache('app.cfsr.path_cookie', '/');
             else
-                $this->cache('app.cfsr.path_cookie', env('app.directory_absolute'));
+                $this->cache('app.cfsr.path_cookie', env('app.directory_absolute_http'));
 
             $this->cache('app.cfsr.validate_post', true);
             $this->cache('app.cfsr.validate_get',  true);

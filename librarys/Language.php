@@ -173,6 +173,8 @@
                 } else if (is_file($path . SP . $value . $mime)) {
                     $path .= SP . $value . $mime;
                     $key  .= '.' . $value;
+
+                    break;
                 }
             }
 
