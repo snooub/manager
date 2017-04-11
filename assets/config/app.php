@@ -68,7 +68,7 @@
                 'use_token'   => true,
                 'key_name'    => '_cfsr_token',
                 'time_live'   => 60000,
-                'path_cookie' => '/${app.directory_absolute}/',
+                'path_cookie' => '/${app.directory_absolute_http}/',
 
                 'validate_post' => true,
                 'validate_get'  => true
