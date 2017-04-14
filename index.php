@@ -101,7 +101,7 @@
 
     $bufferBack = null;
 
-    if (preg_replace('|[a-zA-Z]+:|', '', str_replace('\\', SP, $appDirectory->getDirectory())) != SP) {
+    if (preg_replace('|[a-zA-Z]+:|', '', FileInfo::validate($appDirectory->getDirectory())) != SP) {
         $backPath      = strrchr($appDirectory->getDirectory(), SP);
         $backDirectory = $backPath;
 

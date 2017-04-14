@@ -7,16 +7,32 @@
         define('SP', DIRECTORY_SEPARATOR);
 
     if (defined('ROOT') == false)
-        define('ROOT', '');
+        define('ROOT', '.');
 
-    require_once(ROOT . 'librarys' . SP . 'Boot.php');
+    $directory = realpath(ROOT);
 
-    $boot         = new Librarys\Boot(require_once(ROOT . 'assets' . SP . 'config' . SP . 'app.php'));
+    require_once(
+        $directory . SP .
+        'librarys' . SP .
+        'Boot.php'
+    );
+
+    $boot = new Librarys\Boot(
+        require_once(
+            $directory . SP .
+            'assets'   . SP .
+            'config'   . SP .
+            'app.php'
+        )
+    );
+
     $appChecker   = new Librarys\App\AppChecker   ($boot);
-    $appConfig    = new Librarys\App\AppConfig    ($boot, ROOT . 'assets' . SP . 'config' . SP . 'manager.php');
-    $appUser      = new Librarys\App\AppUser      ($boot, ROOT . 'assets' . SP . 'config' . SP . 'user.php');
-    $appAlert     = new Librarys\App\AppAlert     ($boot, ROOT . 'assets' . SP . 'define' . SP . 'alert.php');
+    $appUser      = new Librarys\App\AppUser      ($boot, env('resource.config.user'));
+    $appConfig    = new Librarys\App\AppConfig    ($boot, env('resource.config.manager'));
+    $appAlert     = new Librarys\App\AppAlert     ($boot, env('resource.define.alert'));
     $appDirectory = new Librarys\App\AppDirectory ($boot);
+
+    unset($directory);
 
     if ($appChecker->execute()->isAccept() == false) {
         if ($appChecker->isInstallDirectory() == false)
@@ -31,8 +47,9 @@
         exit(0);
     }
 
-    $appConfig->execute();
     $appUser->execute();
+    $appConfig->execute($appUser);
+    $appConfig->requireEnvProtected(env('resource.config.manager_disabled'));
 
     if ($boot->getCFSRToken()->validatePost() !== true) {
         trigger_error('CFSR Token không hợp lệ');

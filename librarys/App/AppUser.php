@@ -12,6 +12,7 @@
         private $db;
 
         private $id;
+        private $user;
         private $token;
 
         private $isLogin;
@@ -41,13 +42,25 @@
                 $id    = intval($_SESSION[env('app.login.session_login_name')]);
                 $token = addslashes($_SESSION[env('app.login.session_token_name')]);
 
-                if (isset($this->db[$id]))
+                if (isset($this->db[$id])) {
+                    $this->user    = $this->db[$id];
                     $this->isLogin = true;
-                else
+                } else {
                     $this->isLogin = false;
+                }
             } else {
                 $this->isLogin = false;
             }
+        }
+
+        public function get($key)
+        {
+            if ($this->isLogin() && is_array($this->user)) {
+                if (array_key_exists($key, $this->user))
+                    return $this->user[$key];
+            }
+
+            return null;
         }
 
         public function getID()

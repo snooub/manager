@@ -31,6 +31,7 @@
             'not_unzip_file_to_directory_app' => 'Bạn không thể giải nén tập tin zip vào thư mục của ứng dụng',
             'unzip_file_failed'               => 'Giải nén tập tin <strong>{$filename}</strong> thất bại, lỗi: <strong>{$error}</strong>',
             'unzip_file_success'              => 'Giải nén tập tin <strong>{$filename}</strong> thành công',
+            'file_zip_has_file_skip'          => 'Tập tin zip có chứa một số mục đã tồn tại đã bỏ qua những mục đó',
             'file_zip_has_file_app'           => 'Tập tin zip có chứa tập tin có thể chép đến thư mục của ứng dụng nên nó đã bị bỏ qua'
         ]
     ];

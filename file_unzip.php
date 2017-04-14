@@ -7,7 +7,6 @@
     use Librarys\App\AppParameter;
     use Librarys\App\AppFileUnzip;
     use Librarys\Zip\PclZip;
-    use Librarys\Zip\ZipFileRead;
 
     define('LOADED',               1);
     define('EXISTS_FUNC_OVERRIDE', 1);
@@ -86,23 +85,44 @@
         } else if (FileInfo::permissionDenyPath($forms['path'])) {
             $appAlert->danger(lng('file_unzip.alert.not_unzip_file_to_directory_app'));
         } else {
-            $zipFileRead            = new ZipFileRead(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), FileInfo::validate($forms['path']));
+        	$pclZip = new PclZip(FileInfo::validate($appDirectory->getDirectoryAndName()));
             $isHasFileAppPermission = false;
+            $isHasFileSkip          = false;
 
-            $callbackPreExtract = function(&$fileName, &$filePath, $isDirectory, $pathExtract) {
-                global $forms, $isHasFileAppPermission;
+            function callbackPreExtract($event, $header) {
+                global $forms,
+                	   $appDirectory,
+                	   $isHasFileAppPermission,
+                	   $isHasFileSkip;
 
-                if (FileInfo::permissionDenyPath($pathExtract))
+                $filePath = FileInfo::validate($appDirectory->getDirectory() . SP . $header['stored_filename']);
+
+                if (FileInfo::permissionDenyPath($filePath)) {
                     $isHasFileAppPermission = true;
-                else if ($forms['exists_func'] !== EXISTS_FUNC_SKIP)
-                    return true;
+                } else if ($forms['exists_func'] !== EXISTS_FUNC_SKIP) {
+                    return 1;
+                } else if ($forms['exists_func'] === EXISTS_FUNC_SKIP) {
+                	$isHasFileSkip = true;
 
-                return false;
+                	if ($header['folder'] == true && is_dir($filePath))
+                		return 0;
+                	else if ($header['folder'] == false && is_file($filePath))
+                		return 0;
+                	else
+                		$isHasFileSkip = false;
+
+                	return 1;
+                }
+
+                return 0;
             };
 
-            if ($zipFileRead->open() && $zipFileRead->extract($callbackPreExtract)) {
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate($forms['path']), PCLZIP_CB_PRE_EXTRACT, 'callbackPreExtract') != false) {
                 if ($isHasFileAppPermission)
                     $appAlert->warning(lng('file_unzip.alert.file_zip_has_file_app'), ALERT_INDEX);
+
+                if ($isHasFileSkip)
+                    $appAlert->info(lng('file_unzip.alert.file_zip_has_file_skip'), ALERT_INDEX);
 
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
                 $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::validate($forms['path']), true);
@@ -110,7 +130,7 @@
 
                 $appAlert->success(lng('file_unzip.alert.unzip_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
             } else {
-                $appAlert->danger(lng('file_unzip.alert.unzip_file_failed', 'filename', $appDirectory->getName()));
+                $appAlert->danger(lng('file_unzip.alert.unzip_file_failed', 'filename', $appDirectory->getName(), 'error', $pclZip->errorinfo(true)));
             }
         }
     }

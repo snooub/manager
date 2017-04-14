@@ -42,9 +42,11 @@
             <input type="text" name="username" value="<?php echo stripslashes($username); ?>" placeholder="<?php echo lng('login.form.input_username_placeholder'); ?>"/>
             <input type="password" name="password" value="<?php echo stripslashes($password); ?>" placeholder="<?php echo lng('login.form.input_password_placeholder'); ?>"/>
             <div id="login-form-action">
-                <a href="forgot_password.php" id="forgot-password">
-                    <span><?php echo lng('login.form.forgot_password'); ?></span>
-                </a>
+                <?php if ($appConfig->get('login.enable_forgot_password')) { ?>
+                    <a href="forgot_password.php" id="forgot-password">
+                        <span><?php echo lng('login.form.forgot_password'); ?></span>
+                    </a>
+                <?php } ?>
                 <button type="submit" name="submit">
                     <span><?php echo lng('login.form.button_login'); ?></span>
                 </button>

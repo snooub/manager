@@ -112,6 +112,15 @@ ul.file-list-home > li span.icomoon {
     }
 }
 
+ul.file-list-home li:first-child:nth-last-child(1),
+ul.file-list-home li:first-child:nth-last-child(2),
+ul.file-list-home li:first-child:nth-last-child(3),
+ul.file-list-home li:first-child:nth-last-child(1) ~ li,
+ul.file-list-home li:first-child:nth-last-child(2) ~ li,
+ul.file-list-home li:first-child:nth-last-child(3) ~ li {
+    width: 100%;
+}
+
 ul.file-list-home > li.back,
 ul.file-list-home > li.empty,
 ul.file-list-home > li.paging {

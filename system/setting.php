@@ -1,5 +1,7 @@
 <?php
 
+	use Librarys\App\AppConfigWrite;
+
     define('LOADED', 1);
     define('SETTING', 1);
     define('ROOT',   '..' . DIRECTORY_SEPARATOR);
@@ -10,32 +12,169 @@
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
 
     $title = lng('system.setting.title_page');
+    $appAlert->setID(ALERT_SYSTEM_SETTING);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
+
+    $forms = [
+        'http_referer' => null,
+
+        'paging' => [
+            'file_home_list'      => $appConfig->get('paging.file_home_list'),
+            'file_view_zip'       => $appConfig->get('paging.file_view_zip'),
+            'file_edit_text'      => $appConfig->get('paging.file_edit_text'),
+            'file_edit_text_line' => $appConfig->get('paging.file_edit_text_line')
+        ],
+
+        'login' => [
+            'enable_forgot_password' => $appConfig->get('login.enable_forgot_password')
+        ],
+
+        'auto_redirect' => [
+            'file_rename' => $appConfig->get('auto_redirect.file_rename'),
+            'file_chmod'  => $appConfig->get('auto_redirect.file_chmod')
+        ],
+    ];
+
+    if (isset($_SERVER['HTTP_REFERER']))
+        $forms['http_referer'] = trim($_SERVER['HTTP_REFERER']);
+
+    if (isset($_POST['save'])) {
+        $forms['http_referer'] = trim($_POST['http_referer']);
+        $isFailed              = false;
+
+        foreach ($forms['paging'] AS $key => &$value) {
+            $envKey  = 'paging.' . $key;
+            $formKey = 'paging_' . $key;
+
+            if (isset($_POST[$formKey]))
+                $value = intval(addslashes($_POST[$formKey]));
+            else
+                $value = 0;
+
+            if ($appConfig->set($envKey, $value) == false) {
+                $isFailed = true;
+                $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
+
+                break;
+            }
+        }
+
+        if ($isFailed == false) {
+            if (isset($_POST['login_enable_forgot_password']))
+                $forms['login']['enable_forgot_password'] = boolval(addslashes($_POST['login_enable_forgot_password']));
+            else
+                $forms['login']['enable_forgot_password'] = false;
+
+            if ($appConfig->set('login.enable_forgot_password', $forms['login']['enable_forgot_password']) == false) {
+                $isFailed = true;
+                $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
+            }
+        }
+
+        if ($isFailed == false) {
+            foreach ($forms['auto_redirect'] AS $key => &$value) {
+                $envKey  = 'auto_redirect.' . $key;
+                $formKey = 'auto_redirect_' . $key;
+
+                if (isset($_POST[$formKey]))
+                    $value = boolval(addslashes($_POST[$formKey]));
+                else
+                    $value = false;
+
+                if ($appConfig->set($envKey, $value) == false) {
+                    $isFailed = true;
+                    $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
+
+                    break;
+                }
+            }
+        }
+
+        if ($isFailed == false) {
+            $appConfigWrite = new AppConfigWrite($appConfig);
+            $appConfigWrite->setSpacing('    ');
+
+        	if ($appConfigWrite->write())
+                $appAlert->success(lng('system.setting.alert.save_setting_success'), null, 'setting.php');
+    	   else
+                $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
+        }
+    }
+
+    if ($forms['http_referer'] == null || empty($forms['http_referer']))
+        $forms['http_referer'] = env('app.http.host');
+    else if (strpos($forms['http_referer'], $_SERVER['PHP_SELF']) !== false)
+        $forms['http_referer'] = env('app.http.host');
 ?>
+
+    <?php $appAlert->display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('system.setting.title_page'); ?></span>
         </div>
         <form action="setting.php" method="post">
+	        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="http_referer" value="<?php echo $forms['http_referer']; ?>"/>
+
             <ul>
-                <li class="input">
-                    <span><?php echo lng('system.setting.form.input.paging_file_home_list'); ?></span>
-                    <input type="text" name="paging_file_home_list" value="<?php echo $appConfig->get('paging.file_home_list'); ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_home_list'); ?>"/>
-                </li>
-                <li class="input">
-                    <span><?php echo lng('system.setting.form.input.paging_file_edit_text'); ?></span>
-                    <input type="text" name="paging_file_edit_text" value="<?php echo $appConfig->get('paging.file_edit_text'); ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text'); ?>"/>
-                </li>
-                <li class="input">
-                    <span><?php echo lng('system.setting.form.input.paging_file_edit_text_line'); ?></span>
-                    <input type="text" name="paging_file_edit_text_line" value="<?php echo $appConfig->get('paging.file_edit_text_line'); ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text_line'); ?>"/>
+                <?php if ($appConfig->isEnvEnabled('paging.file_home_list')) { ?>
+                    <li class="input">
+                        <span><?php echo lng('system.setting.form.input.paging_file_home_list'); ?></span>
+                        <input type="number" name="paging_file_home_list" value="<?php echo $forms['paging']['file_home_list']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_home_list'); ?>"/>
+                    </li>
+                <?php } ?>
+                <?php if ($appConfig->isEnvEnabled('paging.file_view_zip')) { ?>
+                    <li class="input">
+                        <span><?php echo lng('system.setting.form.input.paging_file_view_zip'); ?></span>
+                        <input type="number" name="paging_file_view_zip" value="<?php echo $forms['paging']['file_view_zip']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_view_zip'); ?>"/>
+                    </li>
+                <?php } ?>
+                <?php if ($appConfig->isEnvEnabled('paging.file_edit_text')) { ?>
+                    <li class="input">
+                        <span><?php echo lng('system.setting.form.input.paging_file_edit_text'); ?></span>
+                        <input type="number" name="paging_file_edit_text" value="<?php echo $forms['paging']['file_edit_text']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text'); ?>"/>
+                    </li>
+                <?php } ?>
+                <?php if ($appConfig->isEnvEnabled('paging_file_edit_text_line')) { ?>
+                    <li class="input">
+                        <span><?php echo lng('system.setting.form.input.paging_file_edit_text_line'); ?></span>
+                        <input type="number" name="paging_file_edit_text_line" value="<?php echo $forms['paging']['file_edit_text_line']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text_line'); ?>"/>
+                    </li>
+                <?php } ?>
+                <li class="checkbox">
+                	<ul>
+                        <?php if ($appConfig->isEnvEnabled('login.enable_forgot_password')) { ?>
+                    		<li>
+    		                	<input type="checkbox" id="login-enable-forgot-password" name="login_enable_forgot_password" value="1"<?php if ($forms['login']['enable_forgot_password'] == true) { ?> checked="checked"<?php } ?>/>
+    		                	<label for="login-enable-forgot-password">
+    		                		<span><?php echo lng('system.setting.form.input.enable_forgot_password'); ?></span>
+    		                	</label>
+    	                	</li>
+                        <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('auto_redirect.file_rename')) { ?>
+                    		<li>
+    		                	<input type="checkbox" id="auto-redirect-file-rename" name="auto_redirect_file_rename" value="1"<?php if($forms['auto_redirect']['file_rename'] == true) { ?> checked="checked"<?php } ?>/>
+    		                	<label for="auto-redirect-file-rename">
+    		                		<span><?php echo lng('system.setting.form.input.enable_auto_redirect_file_rename'); ?></span>
+    		                	</label>
+                    		</li>
+                        <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('auto_redirect.file_chmod')) { ?>
+                    		<li>
+    		                	<input type="checkbox" id="auto-redirect-file-chmod" name="auto_redirect_file_chmod" value="1"<?php if($forms['auto_redirect']['file_chmod'] == true) { ?> checked="checked"<?php } ?>/>
+            		        	<label for="auto-redirect-file-chmod">
+                    				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_file_chmod'); ?></span>
+                    			</label>
+                    		</li>
+                        <?php } ?>
+                	</ul>
                 </li>
                 <li class="button">
                     <button type="submit" name="save">
                         <span><?php echo lng('system.setting.form.button.save'); ?></span>
                     </button>
-                    <a href="<?php echo env('app.http.host'); ?>">
+                    <a href="<?php echo $forms['http_referer']; ?>">
                         <span><?php echo lng('system.setting.form.button.cancel'); ?></span>
                     </a>
                 </li>
@@ -43,7 +182,19 @@
         </form>
     </div>
 
+    <ul class="alert">
+    	<li class="info">
+    		<span><?php echo lng('system.setting.alert.tips'); ?></span>
+    	</li>
+    </ul>
+
     <ul class="menu-action">
+        <li>
+            <a href="<?php echo env('app.http.host'); ?>/system/setting_theme.php">
+                <span class="icomoon icon-theme"></span>
+                <span><?php echo lng('system.setting.menu_action.setting_theme'); ?></span>
+            </a>
+        </li>
         <li>
             <a href="<?php echo env('app.http.host'); ?>/user/setting.php">
                 <span class="icomoon icon-config"></span>

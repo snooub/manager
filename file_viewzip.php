@@ -5,10 +5,12 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
-    use Librarys\Zip\ZipFileRead;
+    use Librarys\App\AppPaging;
+    use Librarys\Zip\PclZip;
 
     define('LOADED',             1);
     define('PARAMETER_ZIP_PATH', 'directory_zip');
+    define('PARAMETER_ZIP_PAGE', 'page_zip');
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
@@ -48,88 +50,152 @@
     $appAlert->setID(ALERT_FILE_VIEWZIP);
     require_once('incfiles' . SP . 'header.php');
 
-    $zipDirectoryOrigin = null;
-    $zipDirectory       = null;
-    $zipFileRead        = new ZipFileRead(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()));
-    $zipArrayEntrys     = null;
-    $zipCountArrayEntry = 0;
+
+    $pclZip = new PclZip(FileInfo::validate($appDirectory->getDirectoryAndName()));
+    $pclZipListContent = $pclZip->listContent();
+    $pclZipSeparator   = '/';
+
+    $pclZipDirectoryOrigin = null;
+    $pclZipDirectory       = null;
+    $pclZipArrayEntrys     = null;
+    $pclZipCountArrayEntry = 0;
 
     if (isset($_GET[PARAMETER_ZIP_PATH]) && empty($_GET[PARAMETER_ZIP_PATH]) == false) {
-        $zipDirectoryOrigin = separator(FileInfo::validate(AppDirectory::rawDecode($_GET[PARAMETER_ZIP_PATH])), ZipFileRead::SEPARATOR_ZIP_ENTRY);
-        $zipDirectory       = separator($zipDirectoryOrigin . ZipFileRead::SEPARATOR_ZIP_ENTRY,   ZipFileRead::SEPARATOR_ZIP_ENTRY);
+        $pclZipDirectoryOrigin = separator(FileInfo::validate(AppDirectory::rawDecode($_GET[PARAMETER_ZIP_PATH])), $pclZipSeparator);
+        $pclZipDirectory       = separator($pclZipDirectoryOrigin . $pclZipSeparator, $pclZipSeparator);
     }
 
-    if ($zipFileRead->open()) {
-        $zipArrayFolders = [];
-        $zipArrayFiles   = [];
+    if ($pclZipListContent !== false && is_array($pclZipListContent)) {
+        $pclZipArrayFolders = [];
+        $pclZipArrayFiles   = [];
 
-        while ($zipFileRead->readNextEntry()) {
-            $zipEntryName = $zipFileRead->readEntryName();
+        foreach ($pclZipListContent AS $pclZipEntry) {
+            $pclZipFileName = $pclZipEntry['filename'];
+            $pclZipFileSize = $pclZipEntry['size'];
 
-            if (strpos($zipEntryName, ZipFileRead::SEPARATOR_ZIP_ENTRY) === false && $zipDirectory == null) {
-                $zipArrayFiles[$zipEntryName] = [
-                    'entry_path'   => $zipEntryName,
-                    'entry_name'   => $zipEntryName,
+            if (strpos($pclZipFileName, $pclZipSeparator) === false && $pclZipDirectory != null) {
+                $pclZipArrayFiles[$pclZipFileName] = [
+                    'entry_path'   => $pclZipFileName,
+                    'entry_name'   => $pclZipFileName,
                     'entry_is_dir' => false,
-                    'entry_size'   => $zipFileRead->readEntryFileSize()
+                    'entry_size'   => $pclZipFileSize
                 ];
-            } else if (preg_match('#(' . $zipDirectory . '(.+?))(' . ZipFileRead::SEPARATOR_ZIP_ENTRY . '|$)+#', $zipEntryName, $entryMatches)) {
-                if ($entryMatches[3] == ZipFileRead::SEPARATOR_ZIP_ENTRY && isset($zipArrayFolders[$entryMatches[2]]) == false) {
-                    $zipArrayFolders[$entryMatches[2]] = [
+            } else if (preg_match('#(' . $pclZipDirectory . '(.+?))(' . $pclZipSeparator . '|$)+#', $pclZipFileName, $entryMatches)) {
+                if ($entryMatches[3] == $pclZipSeparator && isset($pclZipArrayFolders[$entryMatches[2]]) == false) {
+                    $pclZipArrayFolders[$entryMatches[2]] = [
                         'entry_path'   => $entryMatches[1],
                         'entry_name'   => $entryMatches[2],
                         'entry_is_dir' => true,
                         'entry_size'   => 0
                     ];
-                } else if ($entryMatches[3] != ZipFileRead::SEPARATOR_ZIP_ENTRY && $zipFileRead->isEntryCompressedMethodDeflated()) {
-                    $zipArrayFiles[$entryMatches[2]] = [
+                } else if ($entryMatches[3] != $pclZipSeparator && $pclZipEntry['folder'] == false) {
+                    $pclZipArrayFiles[$entryMatches[2]] = [
                         'entry_path'   => $entryMatches[1],
                         'entry_name'   => $entryMatches[2],
                         'entry_is_dir' => false,
-                        'entry_size'   => $zipFileRead->readEntryFileSize()
+                        'entry_size'   => $pclZipFileSize
                     ];
                 }
             }
-
-            $zipFileRead->closeEntry();
         }
 
-        $zipFileRead->close();
+        $pclZipArrayEntrys      = array();
+        $pclZipCountArrayFolder = count($pclZipArrayFolders);
+        $pclZipCountArrayFile   = count($pclZipArrayFiles);
 
-        $zipArrayEntrys      = array();
-        $zipCountArrayFolder = count($zipArrayFolders);
-        $zipCountArrayFile   = count($zipArrayFiles);
+        if ($pclZipCountArrayFolder > 0) {
+            ksort($pclZipArrayFolders);
 
-        if ($zipCountArrayFolder > 0) {
-            ksort($zipArrayFolders);
-
-            foreach ($zipArrayFolders AS $entry)
-                $zipArrayEntrys[] = $entry;
+            foreach ($pclZipArrayFolders AS $entry)
+                $pclZipArrayEntrys[] = $entry;
         }
 
-        if ($zipCountArrayFile > 0) {
-            ksort($zipArrayFiles);
+        if ($pclZipCountArrayFile > 0) {
+            ksort($pclZipArrayFiles);
 
-            foreach ($zipArrayFiles AS $entry)
-                $zipArrayEntrys[] = $entry;
+            foreach ($pclZipArrayFiles AS $entry)
+                $pclZipArrayEntrys[] = $entry;
         }
 
-        array_splice($zipArrayFolders, 0, $zipCountArrayFolder);
-        array_splice($zipArrayFiles,   0, $zipCountArrayFile);
+        array_splice($pclZipArrayFolders, 0, $pclZipCountArrayFolder);
+        array_splice($pclZipArrayFiles,   0, $pclZipCountArrayFile);
 
-        $zipCountArrayEntry = count($zipArrayEntrys);
+        $pclZipCountArrayEntry = count($pclZipArrayEntrys);
     } else {
-        $zipArrayEntrys     = null;
-        $zipCountArrayEntry = 0;
+        $pclZipArrayEntrys     = null;
+        $pclZipCountArrayEntry = 0;
     }
 
-    if ($zipDirectoryOrigin != null) {
-        $zipLocationPath = explode(ZipFileRead::SEPARATOR_ZIP_ENTRY, $zipDirectoryOrigin);
+    if ($pclZipDirectoryOrigin != null) {
+        $pclZipLocationPath = explode($pclZipSeparator, $pclZipDirectoryOrigin);
         $appLocationPath->addEntry($appDirectory->getName(), null);
 
-        if (is_array($zipLocationPath) && count($zipLocationPath) > 0)
-            foreach ($zipLocationPath AS $zipLocation)
-                $appLocationPath->addEntry($zipLocation, null);
+        if (is_array($pclZipLocationPath) && count($pclZipLocationPath) > 0)
+            foreach ($pclZipLocationPath AS $pclZipLocation)
+                $appLocationPath->addEntry($pclZipLocation, null);
+    }
+
+    $pclzipPage = [
+        'total'      => 0,
+        'current'    => 0,
+        'begin_loop' => 0,
+        'end_loop'   => 0,
+        'max'        => $appConfig->get('paging.file_view_zip')
+    ];
+
+    if (isset($_GET[PARAMETER_ZIP_PAGE]) && empty($_GET[PARAMETER_ZIP_PAGE]) == false)
+        $pclzipPage['current'] = intval(addslashes($_GET[PARAMETER_ZIP_PAGE]));
+
+    if ($pclzipPage['current'] <= 0)
+        $pclzipPage['current'] = 1;
+
+    if ($pclZipCountArrayEntry > 0 && $pclzipPage['max'] > 0) {
+        $pclzipPage['total']      = ceil($pclZipCountArrayEntry / $pclzipPage['max']);
+        $pclzipPage['begin_loop'] = ($pclzipPage['current'] * $pclzipPage['max']) - $pclzipPage['max'];
+        $pclzipPage['end_loop']   = 0;
+
+        if ($pclzipPage['begin_loop'] + $pclzipPage['max'] <= $pclZipCountArrayEntry)
+            $pclzipPage['end_loop'] =  $pclzipPage['begin_loop'] + $pclzipPage['max'];
+        else
+            $pclzipPage['end_loop'] = $pclZipCountArrayEntry;
+    } else {
+        $pclzipPage['total'] = 1;
+    }
+
+    $appParameter->add(PARAMETER_ZIP_PATH, $pclZipDirectoryOrigin, $pclZipDirectoryOrigin != null);
+    $appParameter->toString(true);
+
+    $appPaging = new AppPaging(
+        'file_viewzip.php' . $appParameter->toString(),
+        'file_viewzip.php' . $appParameter->toString() . '&' . PARAMETER_ZIP_PAGE . '='
+    );
+
+    $appParameter->remove(PARAMETER_ZIP_PATH);
+    $appParameter->toString(true);
+
+    $bufferBack = null;
+
+    if ($pclZipDirectoryOrigin != null && preg_replace('|[a-zA-Z]+:|', '', separator($pclZipDirectoryOrigin, $pclZipSeparator)) != $pclZipSeparator) {
+        $backPath      = strrchr($pclZipDirectoryOrigin, $pclZipSeparator);
+        $backDirectory = $backPath;
+
+        if ($backPath !== false) {
+            $backPath = substr($pclZipDirectoryOrigin, 0, strlen($pclZipDirectoryOrigin) - strlen($backPath));
+            $backPath = 'file_viewzip.php' . $appParameter->toString() . '&' . PARAMETER_ZIP_PATH . '=' . AppDirectory::rawEncode($backPath);
+
+            if (strpos($backDirectory, $pclZipSeparator) !== false)
+                $backDirectory = str_replace($pclZipSeparator, null, $backDirectory);
+        } else {
+            $backPath      = 'file_viewzip.php' . $appParameter->toString();
+            $backDirectory = $pclZipDirectoryOrigin;
+        }
+
+        $bufferBack .= '<li class="back">';
+            $bufferBack .= '<a href="' . $backPath . '">';
+                $bufferBack .= '<span class="icomoon icon-folder-open"></span>';
+                $bufferBack .= '<strong>' . $backDirectory . '</strong>';
+            $bufferBack .= '</a>';
+        $bufferBack .= '</li>';
     }
 ?>
 
@@ -137,26 +203,30 @@
     <?php $appLocationPath->display(); ?>
 
     <ul class="file-list-home">
-        <?php if ($zipArrayEntrys == null || $zipCountArrayEntry <= 0) { ?>
+        <?php if ($pclZipArrayEntrys == null || $pclZipCountArrayEntry <= 0) { ?>
             <li class="empty">
                 <span class="icomoon icon-folder-o"></span>
                 <span><?php echo lng('home.directory_empty'); ?></span>
             </li>
         <?php } else { ?>
-            <?php foreach ($zipArrayEntrys AS $zipEntry) { ?>
-                <?php if ($zipEntry['entry_is_dir']) { ?>
+            <?php echo $bufferBack; ?>
+
+            <?php for ($i = $pclzipPage['begin_loop']; $i < $pclzipPage['end_loop']; ++$i) { ?>
+                <?php $pclZipEntry = $pclZipArrayEntrys[$i]; ?>
+
+                <?php if ($pclZipEntry['entry_is_dir']) { ?>
                     <li class="type-directory">
                         <div class="icon">
                             <a href="#">
                                 <span class="icomoon icon-folder"></span>
                             </a>
                         </div>
-                        <a href="file_viewzip.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ZIP_PATH; ?>=<?php echo AppDirectory::rawEncode($zipEntry['entry_path']); ?>" class="file-name">
-                            <span><?php echo $zipEntry['entry_name']; ?></span>
+                        <a href="file_viewzip.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ZIP_PATH; ?>=<?php echo AppDirectory::rawEncode($pclZipEntry['entry_path']); ?>" class="file-name">
+                            <span><?php echo $pclZipEntry['entry_name']; ?></span>
                         </a>
                     </li>
                 <?php } else { ?>
-                    <?php $info = new FileInfo($zipEntry['entry_path'], false); ?>
+                    <?php $info = new FileInfo($pclZipEntry['entry_path'], false); ?>
                     <?php $mime = new FileMime($info); ?>
                     <?php $icon = null; ?>
 
@@ -186,13 +256,18 @@
                             <span class="icomoon <?php echo $icon; ?>"></span>
                         </div>
                         <a href="" class="file-name">
-                            <span><?php echo $zipEntry['entry_name']; ?></span>
+                            <span><?php echo $pclZipEntry['entry_name']; ?></span>
                         </a>
                         <div class="chmod-size">
-                            <span class="size"><?php echo FileInfo::sizeToString($zipEntry['entry_size']); ?></span>
+                            <span class="size"><?php echo FileInfo::sizeToString($pclZipEntry['entry_size']); ?></span>
                         </div>
                     </li>
                 <?php } ?>
+            <?php } ?>
+            <?php if ($pclzipPage['total'] > 1 && $pclzipPage['max'] > 0) { ?>
+                <li class="paging">
+                    <?php echo $appPaging->display($pclzipPage['current'], $pclzipPage['total']); ?>
+                </li>
             <?php } ?>
         <?php } ?>
     </ul>

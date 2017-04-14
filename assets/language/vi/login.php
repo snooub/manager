@@ -19,8 +19,8 @@
             'login_already'                  => 'Bạn hiện đang ở trạng thái đăng nhập',
             'not_login'                      => 'Bạn chưa đăng nhập',
 
-            'exit_session_failed'  => 'Đăng xuất phiên thất bại',
-            'exit_session_success' => 'Đăng xuất phiên thành công'
+            'exit_session_failed'  => 'Đăng xuất thất bại',
+            'exit_session_success' => 'Đăng xuất thành công'
         ]
     ];
 

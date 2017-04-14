@@ -6,6 +6,12 @@
         ],
 
         'app' => [
+            'about' => [
+                'name'    => 'Manager',
+                'version' => '3.5',
+                'author'  => 'IzeroCs'
+            ],
+
             'autoload' => [
                 'prefix_namespace' => 'Librarys',
                 'prefix_class_mime' => '.php'
@@ -28,7 +34,10 @@
                 'icon'       => '${app.path.resource}${SP}icon',
                 'javascript' => '${app.path.resource}${SP}javascript',
                 'template'   => '${app.path.resource}${SP}template',
-                'lang'       => '${app.path.resource}${SP}language'
+                'lang'       => '${app.path.resource}${SP}language',
+                'user'       => '${app.path.resource}${SP}user',
+                'config'     => '${app.path.resource}${SP}config',
+                'define'     => '${app.path.resource}${SP}define'
             ],
 
             'http' => [
@@ -91,6 +100,16 @@
         ],
 
         'resource' => [
+            'config' => [
+                'manager'          => '${app.path.config}${SP}manager.php',
+                'manager_disabled' => '${app.path.config}${SP}manager_disabled.php',
+                'user'             => '${app.path.config}${SP}user.php'
+            ],
+
+            'define' => [
+                'alert' => '${app.path.define}${SP}alert.php'
+            ],
+
             'javascript' => [
                 'custom_input_file' => '${app.http.javascript}/custom_input_file.js',
                 'chmod_input'       => '${app.http.javascript}/chmod_input.js'
@@ -98,6 +117,7 @@
 
             'theme' => [
                 'app'     => '${app.http.theme}/default/theme.css',
+                'about'   => '${app.http.theme}/default/about.css',
                 'login'   => '${app.http.theme}/default/login.css',
                 'file'    => '${app.http.theme}/default/file.css',
                 'mysql'   => '${app.http.theme}/default/mysql.css',
