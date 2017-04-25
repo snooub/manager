@@ -21,6 +21,10 @@
 
     <?php echo $appAlert->display(); ?>
 
+    <div class="mysql-query-string">
+        <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
+    </div>
+
     <ul class="list-database">
         <?php if ($mysqlNums <= 0) { ?>
             <li class="empty">
@@ -29,9 +33,12 @@
             </li>
         <?php } else { ?>
             <?php $mysqlAssoc = null; ?>
+            <?php $indexAssoc = 0; ?>
 
             <?php while (($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery))) { ?>
-                <li class="type-database">
+                <?php $indexAssoc++; ?>
+
+                <li class="type-database<?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0) { ?> entry-odd<?php } ?>">
                     <div class="icon">
                         <span class="icomoon icon-mysql"></span>
                     </div>
@@ -44,6 +51,12 @@
     </ul>
 
     <ul class="menu-action">
+        <li>
+            <a href="create_database.php">
+                <span class="icomoon icon-plus"></span>
+                <span><?php echo lng('mysql.list_database.menu_action.create_database'); ?></span>
+            </a>
+        </li>
         <li>
             <a href="disconnect.php">
                 <span class="icomoon icon-cord"></span>

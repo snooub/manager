@@ -112,26 +112,8 @@ ul.file-list-home > li span.icomoon {
     }
 }
 
-ul.file-list-home > li:first-child:nth-last-child(1),
-ul.file-list-home > li:first-child:nth-last-child(2),
-ul.file-list-home > li:first-child:nth-last-child(3),
-ul.file-list-home > li:first-child:nth-last-child(1) ~ li.entry,
-ul.file-list-home > li:first-child:nth-last-child(2) ~ li.entry,
-ul.file-list-home > li:first-child:nth-last-child(3) ~ li.entry,
-ul.file-list-home > li.entry:nth-of-type(odd) + li.entry:nth-last-of-type(1),
-ul.file-list-home > li.entry:nth-of-type(odd) + li.entry:nth-last-of-type(2) {
+ul.file-list-home > li.entry-odd {
     width: 100%;
-}
-
-ul.file-list-home > li:first-child:nth-last-child(1) div.chmod-size,
-ul.file-list-home > li:first-child:nth-last-child(2) div.chmod-size,
-ul.file-list-home > li:first-child:nth-last-child(3) div.chmod-size,
-ul.file-list-home > li:first-child:nth-last-child(1) ~ li.entry div.chmod-size,
-ul.file-list-home > li:first-child:nth-last-child(2) ~ li.entry div.chmod-size,
-ul.file-list-home > li:first-child:nth-last-child(3) ~ li.entry div.chmod-size,
-ul.file-list-home > li.entry:nth-of-type(odd) + li.entry:nth-last-of-type(1) div.chmod-size,
-ul.file-list-home > li.entry:nth-of-type(odd) + li.entry:nth-last-of-type(2) div.chmod-size {
-    right: 50%;
 }
 
 ul.file-list-home > li.back,
@@ -214,6 +196,11 @@ ul.file-list-home > li.type-file div.chmod-size {
     top: 0;
     right: 0;
     padding-right: 10px;
+}
+
+ul.file-list-home > li.entry-odd a.chmod-permission,
+ul.file-list-home > li.entry-odd div.chmod-size {
+    right: 50%;
 }
 
 ul.file-list-home > li.type-directory a.chmod-permission span,

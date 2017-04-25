@@ -22,6 +22,10 @@
 
     <?php echo $appAlert->display(); ?>
 
+    <div class="mysql-query-string">
+        <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
+    </div>
+
     <ul class="list-database">
         <li class="back">
             <span class="icomoon icon-mysql"></span>
@@ -33,13 +37,16 @@
         <?php if ($mysqlNums <= 0) { ?>
             <li class="empty">
                 <span class="icomoon icon-mysql"></span>
-                <span><?php echo lng('mysql.list_table.empty_list_table'); ?></span>
+                <span><?php echo lng('mysql.list_table.alert.empty_list_table'); ?></span>
             </li>
         <?php } else { ?>
             <?php $mysqlAssoc = null; ?>
+            <?php $indexAssoc = 0; ?>
 
             <?php while (($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery))) { ?>
-                <li class="type-table">
+                <?php $indexAssoc++; ?>
+
+                <li class="type-table <?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0)  { ?> entry-odd<?php } ?>">
                     <div class="icon">
                         <span class="icomoon icon-table"></span>
                     </div>

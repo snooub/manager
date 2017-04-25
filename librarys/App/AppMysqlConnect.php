@@ -9,6 +9,7 @@
     {
 
         private $isDatabaseNameCustom;
+        private $mysqlQueryStringCurrent;
 
         public function __construct(Boot $boot)
         {
@@ -23,6 +24,16 @@
         public function isDatabaseNameCustom()
         {
             return $this->isDatabaseNameCustom;
+        }
+
+        public function query($sql)
+        {
+            return parent::query($this->mysqlQueryStringCurrent = $sql);
+        }
+
+        public function getMysqlQueryExecStringCurrent()
+        {
+            return $this->getHost() . '@' . $this->getUsername() . ' > ' . $this->mysqlQueryStringCurrent;
         }
 
     }

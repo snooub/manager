@@ -105,7 +105,6 @@
                     <span><?php echo lng('create.form.input.name'); ?></span>
                     <input type="text" name="name" value="<?php echo $forms['name']; ?>" class="none" placeholder="<?php echo lng('create.form.placeholder.input_name'); ?>"/>
                 </li>
-                </li>
                 <li class="radio-choose">
                     <ul class="radio-choose-tab">
                         <li>

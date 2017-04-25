@@ -77,6 +77,7 @@
             $handlerList[] = [ 'name' => $entry, 'is_directory' => false ];
     }
 
+    $handlerIsOdd = false;
     $handlerCount = count($handlerList);
     $handlerPage  = array(
         'current'  => $appDirectory->getPage(),
@@ -97,6 +98,11 @@
 
         if ($handlerPage['end'] > $handlerCount)
             $handlerPage['end'] = $handlerCount;
+
+        if (($handlerPage['end'] - $handlerPage['begin']) % 2 !== 0)
+            $handlerIsOdd = true;
+    } else if ($handlerCount % 2 !== 0) {
+        $handlerIsOdd = true;
     }
 
     $bufferBack = null;
@@ -272,7 +278,7 @@
                 <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
 
                 <?php if ($entry['is_directory']) { ?>
-                    <li class="type-directory entry">
+                    <li class="type-directory <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
                         <div class="icon">
                             <a href="file_info.php<?php echo $urlParameter; ?>">
                                 <span class="icomoon icon-folder"></span>
@@ -328,7 +334,7 @@
                         }
                     ?>
 
-                    <li class="type-file entry">
+                    <li class="type-file <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
                         <div class="icon">
                             <?php if ($isEdit) { ?><a href="<?php echo $editHref; ?>"><?php } ?>
                                 <span class="icomoon <?php echo $icon; ?>"></span>
@@ -347,7 +353,7 @@
                 <?php } ?>
             <?php } ?>
         <?php } else { ?>
-            <li class="empty entry">
+            <li class="empty entry-odd">
                 <span class="icomoon icon-folder-o"></span>
                 <span><?php echo lng('home.directory_empty'); ?></span>
             </li>
