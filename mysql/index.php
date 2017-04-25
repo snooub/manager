@@ -3,10 +3,12 @@
     use Librarys\App\AppPaging;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\AppMysqlConfigWrite;
 
-    define('LOADED', 1);
-    define('ROOT',   '..' . DIRECTORY_SEPARATOR);
-    require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
+    define('LOADED',     1);
+    define('MYSQL_HOME', 1);
+
+    require_once('global.php');
 
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
@@ -17,11 +19,69 @@
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $forms = [
-        'host'     => null,
-        'username' => null,
-        'password' => null,
-        'name'     => null
+        'mysql_host'     => $appMysqlConfig->get('mysql_host'),
+        'mysql_username' => $appMysqlConfig->get('mysql_username'),
+        'mysql_password' => $appMysqlConfig->get('mysql_password'),
+        'mysql_name'     => $appMysqlConfig->get('mysql_name'),
+        'mysql_port'     => $appMysqlConfig->get('mysql_port'),
+        'mysql_encoding' => $appMysqlConfig->get('mysql_encoding')
     ];
+
+    if (isset($_POST['connect'])) {
+        $forms['mysql_host']     = addslashes($_POST['mysql_host']);
+        $forms['mysql_username'] = addslashes($_POST['mysql_username']);
+        $forms['mysql_password'] = addslashes($_POST['mysql_password']);
+        $forms['mysql_name']     = addslashes($_POST['mysql_name']);
+
+        if (empty($forms['mysql_host'])) {
+            $appAlert->danger(lng('mysql.home.alert.not_input_mysql_host'));
+        } else if (empty($forms['mysql_username'])) {
+            $appAlert->danger(lng('mysql.home.alert.not_input_mysql_username'));
+        } else {
+            $appMysqlConnect->setHost    ($forms['mysql_host']);
+            $appMysqlConnect->setUsername($forms['mysql_username']);
+            $appMysqlConnect->setPassword($forms['mysql_password']);
+            $appMysqlConnect->setName    ($forms['mysql_name']);
+            $appMysqlConnect->setPort    ($forms['mysql_port']);
+            $appMysqlConnect->setEncoding($forms['mysql_encoding']);
+
+            $isFailed = false;
+
+            foreach ($forms AS $envKey => $envValue) {
+                if ($appMysqlConfig->set($envKey, $envValue) == false) {
+                    $isFailed = true;
+                    $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
+
+                    break;
+                }
+            }
+
+            if ($isFailed == false) {
+                $appMysqlConfigWrite = new AppMysqlConfigWrite($appMysqlConfig);
+                $appMysqlConfigWrite->setSpacing('    ');
+
+                if ($appMysqlConfigWrite->write()) {
+                    if ($appMysqlConnect->openConnect(false)) {
+                        $appMysqlConfig->set('mysql_is_connect', true);
+
+                        if ($appMysqlConfigWrite->write() == false)
+                            $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
+                        else if (empty($forms['mysql_name']))
+                            $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+                        else
+                            $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
+                    } else {
+                        $appAlert->danger(lng('mysql.home.alert.mysql_connect_failed', 'error', $appMysqlConnect->errorConnect()));
+                    }
+                } else {
+                    $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
+                }
+            }
+        }
+
+        foreach ($forms AS $key => $value)
+            $forms[$key] = stripslashes($value);
+    }
 ?>
 
     <?php echo $appAlert->display(); ?>
@@ -30,28 +90,28 @@
         <div class="title">
             <span><?php echo lng('mysql.home.title_page'); ?></span>
         </div>
-        <form action="mysql.php" method="post">
+        <form action="index.php" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul>
                 <li class="input">
                     <span><?php echo lng('mysql.home.form.input.host'); ?></span>
-                    <input type="text" name="name" value="<?php echo $forms['host']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_host'); ?>"/>
+                    <input type="text" name="mysql_host" value="<?php echo $forms['mysql_host']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_host'); ?>"/>
                 </li>
                 <li class="input">
                     <span><?php echo lng('mysql.home.form.input.username'); ?></span>
-                    <input type="text" name="name" value="<?php echo $forms['username']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_username'); ?>"/>
+                    <input type="text" name="mysql_username" value="<?php echo $forms['mysql_username']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_username'); ?>"/>
                 </li>
                 <li class="input">
                     <span><?php echo lng('mysql.home.form.input.password'); ?></span>
-                    <input type="text" name="name" value="<?php echo $forms['password']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_password'); ?>"/>
+                    <input type="text" name="mysql_password" value="<?php echo $forms['mysql_password']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_password'); ?>"/>
                 </li>
                 <li class="input">
                     <span><?php echo lng('mysql.home.form.input.name'); ?></span>
-                    <input type="text" name="name" value="<?php echo $forms['name']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_name'); ?>"/>
+                    <input type="text" name="mysql_name" value="<?php echo $forms['mysql_name']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_name'); ?>"/>
                 </li>
                 <li class="button">
-                    <button type="submit" name="rename">
+                    <button type="submit" name="connect">
                         <span><?php echo lng('mysql.home.form.button.connect'); ?></span>
                     </button>
                     <a href="<?php echo env('app.http.host'); ?>">
@@ -62,106 +122,8 @@
         </form>
     </div>
 
+    <ul class="alert">
+        <li class="info"><span><?php echo lng('mysql.home.alert.tips'); ?></span></li>
+    </ul>
+
 <?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>
-
-<?php
-
-/*define('ACCESS', true);
-
-    include_once 'function.php';
-
-    if (IS_LOGIN) {
-        $title = 'Kết nối database';
-
-        include_once 'header.php';
-
-        $host = 'localhost';
-        $username = 'root';
-        $password = null;
-        $name = null;
-        $notice = null;
-        $auto = false;
-        $go = false;
-
-        if (is_file(PATH_DATABASE)) {
-            include PATH_DATABASE;
-
-            if (isDatabaseVariable($databases)) {
-                $host =$databases['db_host'];
-                $username = $databases['db_username'];
-                $password = $databases['db_password'];
-                $name = $databases['db_name'];
-                $auto = $databases['is_auto'];
-
-                if ($auto && !isset($_POST['submit'])) {
-                    if (!@mysql_connect($host, $username, $password))
-                        $notice = '<div class="notice_failure">Không thể kết nối tới database</div>';
-                    else if (!empty($name) && !@mysql_select_db($name))
-                        $notice = '<div class="notice_failure">Không thể chọn database</div>';
-                    else
-                        $go = true;
-                }
-            } else if (!isset($_POST['submit'])) {
-                if (@is_file(REALPATH . '/' . PATH_DATABASE))
-                    @unlink(REALPATH . '/' . PATH_DATABASE);
-
-                $notice = '<div class="notice_failure">Cấu hình database bị lỗi</div>';
-            }
-        }
-
-        if (isset($_POST['submit'])) {
-            $host = addslashes($_POST['host']);
-            $username = addslashes($_POST['username']);
-            $password = addslashes($_POST['password']);
-            $name = addslashes($_POST['name']);
-            $auto = isset($_POST['is_auto']) && intval($_POST['is_auto']) == 1;
-
-            if (empty($host) || empty($username)) {
-                $notice = '<div class="notice_failure">Chưa nhập đầy đủ thông tin</div>';
-            } else if (!@mysql_connect($host, $username, $password)) {
-                $notice = '<div class="notice_failure">Không thể kết nối tới database</div>';
-            } else if (!empty($name) && !@mysql_select_db($name)) {
-                $notice = '<div class="notice_failure">Không thể chọn database</div>';
-            } else {
-                if (createDatabaseConfig($host, $username, $password, $name, $auto))
-                    $go = true;
-                else
-                    $notice = '<div class="notice_failure">Lưu cấu hình database thất bại</div>';
-            }
-        }
-
-        if ($go) {
-            if (empty($name) || $name == null)
-                goURL('database_lists.php');
-            else
-                goURL('database_tables.php');
-        }
-
-        echo '<div class="title">' . $title . '</div>';
-        echo $notice;
-        echo '<div class="list">
-            <form action="database.php" method="post">
-                <span class="bull">&bull;</span>Host:<br/>
-                <input type="text" name="host" value="' . stripslashes($host) . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Tài khoản database:<br/>
-                <input type="text" name="username" value="' . stripslashes($username) . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Mật khẩu database:<br/>
-                <input type="name" name="password" value="' . stripslashes($password) . '" size="18" autocomplete="off"/><br/>
-                <span class="bull">&bull;</span>Tên database:<br/>
-                <input type="text" name="name" value="' . stripslashes($name) . '" size="18"/><br/>
-                <input type="checkbox" name="is_auto" value="1"' . ($auto ? ' checked="checked"' : null) . '/>Tự động kết nối<br/>
-                <input type="submit" name="submit" value="Kết nối"/>
-            </form>
-        </div>
-        <div class="tips"><img src="icon/tips.png"/> Tên database để trống nếu bạn muốn kết nối vào danh sách database. Nếu bạn không có toàn quyền với mysql hãy nhập tên database</div>
-        <div class="title">Chức năng</div>
-        <ul class="list">
-            <li><img src="icon/list.png"/> <a href="index.php">Quản lý tập tin</a></li>
-        </ul>';
-
-        include_once 'footer.php';
-    } else {
-        goURL('login.php');
-    }*/
-
-?>

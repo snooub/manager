@@ -111,15 +111,25 @@
                 </li>
                 <li class="input-chmod">
                     <ul id="input-chmod-checkbox">
-                        <li><span><?php echo lng('file_chmod.form.input.chmod_label_system'); ?></span></li>
-                        <li><span><?php echo lng('file_chmod.form.input.chmod_label_group'); ?></span></li>
-                        <li><span><?php echo lng('file_chmod.form.input.chmod_label_user'); ?></span></li>
+                        <li>
+                        	<span class="icomoon icon-config"></span>
+							<span><?php echo lng('file_chmod.form.input.chmod_label_system'); ?></span>
+						</li>
+                        <li>
+							<span class="icomoon icon-users"></span>
+							<span><?php echo lng('file_chmod.form.input.chmod_label_group'); ?></span>
+						</li>
+                        <li>
+                        	<span class="icomoon icon-user"></span>
+							<span><?php echo lng('file_chmod.form.input.chmod_label_user'); ?></span>
+						</li>
 
                         <?php $group = [ "system", "group", "user" ]; ?>
                         <?php for ($i = 0; $i < 3; ++$i) { ?>
                             <li>
                                 <input type="checkbox" name="chmod_read_<?php echo $group[$i]; ?>" value="4" id="chmod-read-<?php echo $group[$i]; ?>"/>
                                 <label for="chmod-read-<?php echo $group[$i]; ?>">
+                                	<span class="icomoon icon-view"></span>
                                     <span><?php echo lng('file_chmod.form.input.chmod_value_read'); ?></span>
                                 </label>
                             </li>
@@ -128,6 +138,7 @@
                             <li>
                                 <input type="checkbox" name="chmod_write_<?php echo $group[$i]; ?>" value="2" id="chmod-write-<?php echo $group[$i]; ?>"/>
                                 <label for="chmod-write-<?php echo $group[$i]; ?>">
+                                	<span class="icomoon icon-pencil"></span>
                                     <span><?php echo lng('file_chmod.form.input.chmod_value_write'); ?></span>
                                 </label>
                             </li>
@@ -136,6 +147,7 @@
                             <li>
                                 <input type="checkbox" name="chmod_execute_<?php echo $group[$i]; ?>" value="1" id="chmod-execute-<?php echo $group[$i]; ?>"/>
                                 <label for="chmod-execute-<?php echo $group[$i]; ?>">
+                                	<span class="icomoon icon-terminal"></span>
                                     <span><?php echo lng('file_chmod.form.input.chmod_value_execute'); ?></span>
                                 </label>
                             </li>

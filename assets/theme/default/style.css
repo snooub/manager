@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?mfwgpw');
-  src:  url('fonts/icomoon.eot?mfwgpw#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?mfwgpw') format('truetype'),
-    url('fonts/icomoon.woff?mfwgpw') format('woff'),
-    url('fonts/icomoon.svg?mfwgpw#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?6a6ldw');
+  src:  url('fonts/icomoon.eot?6a6ldw#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?6a6ldw') format('truetype'),
+    url('fonts/icomoon.woff?6a6ldw') format('woff'),
+    url('fonts/icomoon.svg?6a6ldw#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-cord:before {
+  content: "\e91f";
+}
 .icon-theme:before {
   content: "\e91e";
 }
@@ -53,6 +56,21 @@
 }
 .icon-mysql:before {
   content: "\e903";
+}
+.icon-pencil:before {
+  content: "\e920";
+}
+.icon-users:before {
+  content: "\e972";
+}
+.icon-spinner:before {
+  content: "\e980";
+}
+.icon-view:before {
+  content: "\e9ce";
+}
+.icon-terminal:before {
+  content: "\ea81";
 }
 .icon-search:before {
   content: "\e912";

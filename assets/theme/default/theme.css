@@ -65,6 +65,9 @@ input[type=file] {
 
 input[type=file] + label {
     display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 input[type=text]:hover,
@@ -135,8 +138,8 @@ input[type=checkbox] {
 }
 
 input[type=checkbox] + label::before {
-	color: #909090;
-	content: " ";
+	color: #a0a0a0;
+    content: "\2713";
 	background-color: #e5e5e5;
 	display: inline-block;
 	font-size: 15px;
@@ -151,7 +154,6 @@ input[type=checkbox] + label::before {
 
 input[type=checkbox]:checked + label::before {
 	color: #00a99b;
-	content: "\2713";
 }
 
 input[type=checkbox]:disabled + label::before {
@@ -725,6 +727,16 @@ div.form-action form > ul > li.input-chmod input[type=checkbox] {
     display: none;
 }
 
+div.form-action form > ul > li.input-chmod input[type=checkbox] + label::after,
+div.form-action form > ul > li.input-chmod input[type=checkbox] + label::before {
+	content: " ";
+	background-color: transparent;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	line-heiht: auto;
+}
+
 div.form-action form > ul > li.input-chmod ul li span {
     line-height: 40px;
     font-size: 14px;
@@ -738,6 +750,9 @@ div.form-action form > ul > li.input-chmod ul li:nth-child(3) {
     font-weight: bold;
     padding-left: 10px;
     padding-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 div.form-action form > ul > li.input-chmod input[type=checkbox] + label {
@@ -753,6 +768,15 @@ div.form-action form > ul > li.input-chmod input[type=checkbox] + label span {
     color: #e0e0e0;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+div.form-action form > ul > li.input-chmod input[type=checkbox] + label span.icomoon + span {
+	margin-left: 2px;
+}
+
+div.form-action form > ul > li.input-chmod input[type=checkbox] + label span.icomoon {
+	margin-left: 0;
+	margin-right: 2px;
 }
 
 div.form-action form > ul > li.input-chmod input[type=checkbox] + label:hover span {

@@ -77,6 +77,11 @@
                 $buffer = '<ul class="alert">';
 
                 foreach ($array AS $index => $alert) {
+                    if (is_object($alert['message']))
+                        $alert['message'] = 'Object';
+                    else if (is_array($alert['message']))
+                        $alert['message'] = 'Array';
+
                     $buffer .= '<li class="' . $alert['type'] . '">';
                     $buffer .= '<span>' . $alert['message'] . '</span>';
                     $buffer .= '</li>';

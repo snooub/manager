@@ -6,12 +6,6 @@
         ],
 
         'app' => [
-            'about' => [
-                'name'    => 'Manager',
-                'version' => '3.5',
-                'author'  => 'IzeroCs'
-            ],
-
             'autoload' => [
                 'prefix_namespace' => 'Librarys',
                 'prefix_class_mime' => '.php'
@@ -101,9 +95,11 @@
 
         'resource' => [
             'config' => [
+                'about'            => '${app.path.config}${SP}about.php',
                 'manager'          => '${app.path.config}${SP}manager.php',
                 'manager_disabled' => '${app.path.config}${SP}manager_disabled.php',
-                'user'             => '${app.path.config}${SP}user.php'
+                'user'             => '${app.path.config}${SP}user.php',
+                'mysql'            => '${app.path.config}${SP}mysql.php'
             ],
 
             'define' => [
@@ -128,6 +124,12 @@
                 'favicon_ico' => '${app.http.theme}/default/icon/icon.ico',
                 'favicon_png' => '${app.http.theme}/default/icon/icon.png'
             ]
+        ],
+
+        'config_file_name' => [
+        	'about'   => 'about.php',
+            'manager' => 'manager.php',
+            'mysql'   => 'mysql.php'
         ]
     ];
 

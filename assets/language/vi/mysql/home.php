@@ -22,6 +22,23 @@
                 'input_password' => 'Nhập mật khẩu',
                 'input_name'     => 'Nhập tên cơ sở dữ liệu'
             ]
+        ],
+
+        'alert' => [
+            'tips' => 'Để trống <strong>tên cơ sở dữ liệu</strong> để quản lý toàn bộ cơ sở dữ liệu',
+
+            'not_input_mysql_host'     => 'Chưa nhập đường dẫn máy chủ',
+            'not_input_mysql_username' => 'Chưa nhập tên người dùng',
+
+            'mysql_connect_failed'     => 'Kết nối cơ sở dữ liệu thất bại: <strong>{$error}</strong>',
+            'mysql_connect_success'    => 'Kết nối cơ sở dữ liệu thành công',
+            'mysql_is_already_connect' => 'Bạn đang ở trạng thái kết nối cơ sở dữ liệu',
+
+            'mysql_write_config_failed' => 'Viết cấu hình cơ sở dữ liệu thất bại'
+        ],
+
+        'menu_action' => [
+            'disconnect' => 'Ngắt kết nối'
         ]
     ];
 

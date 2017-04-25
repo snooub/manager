@@ -96,7 +96,7 @@
                     if ($isMkdir) {
                         $this->pathConfig = FileInfo::validate($this->pathConfig . SP . $this->fileConfigName);
 
-                        if (is_file($this->pathConfig) == false)
+                        if (is_file($this->pathConfig))
                             return $this->parse();
                     }
                 }

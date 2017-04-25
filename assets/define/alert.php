@@ -21,6 +21,8 @@
     define('ALERT_FILE_DELETE',    'alert_file_delete');
     define('ALERT_FILE_CHMOD',     'alert_file_chmod');
 
-    define('ALERT_MYSQL_HOME', 'alert_mysql_home');
+    define('ALERT_MYSQL_HOME',          'alert_mysql_home');
+    define('ALERT_MYSQL_LIST_DATABASE', 'alert_mysql_list_database');
+    define('ALERT_MYSQL_LIST_TABLE',    'alert_mysql_list_table');
 
 ?>

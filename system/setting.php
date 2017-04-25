@@ -2,9 +2,9 @@
 
 	use Librarys\App\AppConfigWrite;
 
-    define('LOADED', 1);
+    define('LOADED',  1);
     define('SETTING', 1);
-    define('ROOT',   '..' . DIRECTORY_SEPARATOR);
+    define('ROOT',    '..' . DIRECTORY_SEPARATOR);
 
     require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
@@ -95,8 +95,8 @@
             $appConfigWrite->setSpacing('    ');
 
         	if ($appConfigWrite->write())
-                $appAlert->success(lng('system.setting.alert.save_setting_success'), null, 'setting.php');
-    	   else
+                $appAlert->success(lng('system.setting.alert.save_setting_success'));
+    	    else
                 $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
         }
     }

@@ -9,7 +9,7 @@
         ],
 
         'auto_redirect' => [
-            'file_rename' => false,
+            'file_rename' => true,
             'file_chmod' => true,
         ],
 

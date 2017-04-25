@@ -46,9 +46,21 @@
                     </li>
                     <?php if ($appUser->isLogin()) { ?>
                         <li>
-                            <a href="<?php echo env('app.http.host'); ?>/mysql/index.php">
+                           <?php $url = env('app.http.host') . '/mysql'; ?>
+
+                           <?php if (defined('MYSQL_REQUIRE') && $appMysqlConnect->isConnect()) { ?>
+                               <?php if ($appMysqlConfig->get('mysql_name', null) == null) { ?>
+                            	    <?php $url .= '/list_database.php'; ?>
+                            	<?php } else { ?>
+                            	    <?php $url .= '/list_table.php'; ?>
+                            	<?php } ?>
+                           <?php } ?>
+
+                            <a href="<?php echo $url; ?>">
                                 <span class="icomoon icon-mysql"></span>
                             </a>
+
+                            <?php unset($url); ?>
                         </li>
                         <?php if (defined('SETTING') == false) { ?>
                             <li>

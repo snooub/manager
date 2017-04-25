@@ -23,35 +23,34 @@
 		{
 			$this->boot   = $boot;
 			$this->query  = array();
-
-			$this->openConnect();
-			$this->registerShutdown();
 		}
 
-		protected function openConnect()
+		public function openConnect($useEnv = true)
 		{
 			if ($this->isResource($this->resource))
 				return;
 
-			$this->host     = env('mysql.host');
-			$this->username = env('mysql.username');
-			$this->password = env('mysql.password');
-			$this->name     = env('mysql.nane');
-			$this->port     = env('mysql.port');
-            $this->prefix   = env('mysql.prefix');
-            $this->encoding = env('mysql.encoding');
+            if ($useEnv) {
+    			$this->host     = env('mysql.host');
+    			$this->username = env('mysql.username');
+    			$this->password = env('mysql.password');
+    			$this->name     = env('mysql.nane');
+    			$this->port     = env('mysql.port');
+                $this->prefix   = env('mysql.prefix');
+                $this->encoding = env('mysql.encoding');
 
-			if (env('mysql.auto_local', false) && $this->boot->isRunLocal()) {
-				$this->host     = env('mysql.local.host');
-				$this->username = env('mysql.local.username');
-				$this->password = env('mysql.local.password');
-				$this->name     = env('mysql.local.name');
-				$this->port     = env('mysql.local.port');
-                $this->prefix   = env('mysql.local.prefix');
-                $this->encoding = env('mysql.local.encoding');
-			}
+    			if (env('mysql.auto_local', false) && $this->boot->isRunLocal()) {
+    				$this->host     = env('mysql.local.host');
+    				$this->username = env('mysql.local.username');
+    				$this->password = env('mysql.local.password');
+    				$this->name     = env('mysql.local.name');
+    				$this->port     = env('mysql.local.port');
+                    $this->prefix   = env('mysql.local.prefix');
+                    $this->encoding = env('mysql.local.encoding');
+    			}
+            }
 
-			$this->resource = mysqli_connect(
+			$this->resource = @mysqli_connect(
 				$this->host,
 				$this->username,
 				$this->password,
@@ -60,10 +59,14 @@
 			);
 
             if ($this->isResource($this->resource))
-                mysqli_set_charset($this->resource, $this->encoding);
+                @mysqli_set_charset($this->resource, $this->encoding);
+
+            $this->registerShutdown();
+
+            return $this->isResource($this->resource);
 		}
 
-		protected function freeConnect()
+		public function freeConnect()
 		{
 			if (is_array($this->query)) {
 				foreach ($this->query AS $result) {
@@ -75,7 +78,7 @@
 			}
 		}
 
-		protected function disConnected()
+		public function disConnected()
 		{
 			if ($this->isResource($this->resource))
 				mysqli_close($this->resource);
@@ -94,9 +97,24 @@
 			return is_resource($resource) || is_object($resource);
 		}
 
+		public function isConnect()
+		{
+		    return $this->isResource($this->resource);
+		}
+
+        public function setHost($host)
+        {
+            $this->host = $host;
+        }
+
         public function getHost()
         {
             return $this->host;
+        }
+
+        public function setUsername($username)
+        {
+            $this->username = $username;
         }
 
         public function getUsername()
@@ -104,9 +122,19 @@
             return $this->username;
         }
 
+        public function setPassword($password)
+        {
+            $this->password = $password;
+        }
+
         public function getPassword()
         {
             return $this->password;
+        }
+
+        public function setName($name)
+        {
+            $this->name = $name;
         }
 
         public function getName()
@@ -114,14 +142,29 @@
             return $this->name;
         }
 
+        public function setPort($port)
+        {
+            $this->port = $port;
+        }
+
         public function getPort()
         {
             return $this->port;
         }
 
+        public function setPrefix($prefix)
+        {
+            $this->prefix = $prefix;
+        }
+
         public function getPrefix()
         {
             return $this->prefix;
+        }
+
+        public function setEncoding($encoding)
+        {
+            $this->encoding = $encoding;
         }
 
         public function getEncoding()
@@ -147,6 +190,11 @@
                 return mysqli_error($this->resource);
 
             return null;
+        }
+
+        public function errorConnect()
+        {
+            return mysqli_connect_error();
         }
 
 		public function fetchAssoc($sql)
