@@ -95,7 +95,7 @@
             $appConfigWrite->setSpacing('    ');
 
         	if ($appConfigWrite->write())
-                $appAlert->success(lng('system.setting.alert.save_setting_success'));
+                $appAlert->success(lng('system.setting.alert.save_setting_success'), null, 'setting.php');
     	    else
                 $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
         }
