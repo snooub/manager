@@ -1,7 +1,8 @@
 <?php
 
-    define('ROOT',          '..' . DIRECTORY_SEPARATOR);
-    define('MYSQL_REQUIRE', 1);
+    define('MYSQL_REQUIRE',       1);
+    define('PARAMETER_TABLE_URL', 'table');
+    define('ROOT',                '..' . DIRECTORY_SEPARATOR);
 
     require_once(
         realpath(ROOT) .
@@ -18,12 +19,22 @@
         $appMysqlConnect->setHost    ($appMysqlConfig->get('mysql_host'));
         $appMysqlConnect->setUsername($appMysqlConfig->get('mysql_username'));
         $appMysqlConnect->setPassword($appMysqlConfig->get('mysql_password'));
-        $appMysqlConnect->setName    ($appMysqlConfig->get('mysql_name'));
+
+        if (isset($_GET[PARAMETER_TABLE_URL]) && empty($_GET[PARAMETER_TABLE_URL]) == false) {
+            $appMysqlConnect->setName(trim(addslashes(Librarys\App\AppDirectory::rawDecode($_GET[PARAMETER_TABLE_URL]))));
+            $appMysqlConnect->setDatabaseNameCustom(true);
+        } else {
+            $appMysqlConnect->setName($appMysqlConfig->get('mysql_name'));
+            $appMysqlConnect->setDatabaseNameCustom(false);
+        }
+
         $appMysqlConnect->setPort    ($appMysqlConfig->get('mysql_port'));
         $appMysqlConnect->setEncoding($appMysqlConfig->get('mysql_encoding'));
 
         if ($appMysqlConnect->openConnect(false) == false) {
-			if (defined('MYSQL_HOME') && strtolower($_SERVER['REQUEST_METHOD']) == 'get')
+            if ($appMysqlConnect->isDatabaseNameCustom())
+                $appAlert->danger(lng('mysql.home.alert.mysql_connect_database_name_failed', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, env('app.http.host') . '/mysql/list_database.php');
+			else if (defined('MYSQL_HOME') && strtolower($_SERVER['REQUEST_METHOD']) == 'get')
                 $appAlert->danger(lng('mysql.home.alert.mysql_connect_failed', 'error', $appMysqlConnect->errorConnect()), ALERT_MYSQL_HOME);
             else if (defined('MYSQL_HOME') == false)
                 $appAlert->danger(lng('mysql.home.alert.mysql_connect_failed', 'error', $appMysqlConnect->errorConnect()), ALERT_MYSQL_HOME, env('app.http.host') . '/mysql');

@@ -1,0 +1,171 @@
+ul.list-database,
+ul.list-database li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+ul.list-database {
+    background-color: #ffffff;
+
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+
+    margin: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+ul.list-database > li {
+    border-bottom: 1px solid #efefef;
+
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+         -o-box-sizing: border-box;
+            box-sizing: border-box;
+
+    float: left;
+    width: 50%;
+    height: 45px;
+    position: relative;
+    padding-left: 12px;
+    padding-right: 12px;
+    text-align: left;
+}
+
+ul.list-database > li:last-child {
+    border: 0;
+}
+
+ul.list-database > li > a {
+    line-height: 45px;
+}
+
+ul.list-database > li span.icomoon {
+    vertical-align: middle;
+}
+
+ul.list-database > li a:hover,
+ul.list-database > li a:hover span,
+ul.list-database > li a:hover strong {
+    color: #909090;
+}
+
+ul.list-database > li span.icomoon {
+    font-size: 20px;
+    margin-right: 5px;
+    line-height: 45px;
+}
+
+@media all and (max-width: 780px) {
+    ul.list-database > li {
+        width: 100%;
+    }
+}
+
+ul.list-database li:first-child:nth-last-child(1),
+ul.list-database li:first-child:nth-last-child(2),
+ul.list-database li:first-child:nth-last-child(3),
+ul.list-database li:first-child:nth-last-child(1) ~ li,
+ul.list-database li:first-child:nth-last-child(2) ~ li,
+ul.list-database li:first-child:nth-last-child(3) ~ li {
+    width: 100%;
+}
+
+ul.list-database > li.back,
+ul.list-database > li.empty,
+ul.list-database > li.paging {
+    margin: 0;
+    width: 100%;
+}
+
+ul.list-database > li.type-database span.icomoon,
+ul.list-database > li.back span.icomoon,
+ul.list-database > li.empty span.icomoon {
+    margin-right: 5px;
+}
+
+ul.list-database > li.empty span {
+    color: #ef5350;
+    line-height: 45px;
+    vertical-align: middle;
+}
+
+ul.list-database > li.paging {
+    float: left;
+    padding-left: 0;
+    padding-right: 0;
+    text-overflow: initial;
+}
+
+ul.list-database > li.paging ul.paging {
+    -webkit-box-shadow: none !important;
+       -moz-box-shadow: none !important;
+        -ms-box-shadow: none !important;
+         -o-box-shadow: none !important;
+            box-shadow: none !important;
+}
+
+ul.list-database > li.type-database,
+ul.list-database > li.type-table,
+ul.list-database > li.empty {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+ul.list-database > li.type-database {
+    font-weight: bold;
+}
+
+ul.list-database > li.type-database div.icon,
+ul.list-database > li.type-table div.icon {
+    display: inline-block;
+    float: left;
+    height: 45px;
+}
+
+ul.list-database > li.back span.icomoon,
+ul.list-database > li.empty span.icomoon,
+ul.list-database > li.type-database span.icomoon,
+ul.list-database > li.type-table span.icomoon {
+    color: #78909c;
+    font-size: 22px;
+}
+
+ul.list-database > li.type-table {
+    color: #606060;
+}
+
+ul.list-database > li.type-table span.icomoon {
+    margin-right: 10px;
+}
+
+ul.list-database > li.type-database a.name,
+ul.list-database > li.type-table a.name {
+    display: inline-block;
+    max-width: 60%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+ul.list-database > li div.info {
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+
+ul.list-database > li div.info span {
+    color: #d0d0d0;
+    line-height: 45px;
+}
+
+ul.list-database > li div.info a:hover span {
+    color: #a0a0a0;
+}

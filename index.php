@@ -272,7 +272,7 @@
                 <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
 
                 <?php if ($entry['is_directory']) { ?>
-                    <li class="type-directory">
+                    <li class="type-directory entry">
                         <div class="icon">
                             <a href="file_info.php<?php echo $urlParameter; ?>">
                                 <span class="icomoon icon-folder"></span>
@@ -328,7 +328,7 @@
                         }
                     ?>
 
-                    <li class="type-file">
+                    <li class="type-file entry">
                         <div class="icon">
                             <?php if ($isEdit) { ?><a href="<?php echo $editHref; ?>"><?php } ?>
                                 <span class="icomoon <?php echo $icon; ?>"></span>
@@ -347,7 +347,7 @@
                 <?php } ?>
             <?php } ?>
         <?php } else { ?>
-            <li class="empty">
+            <li class="empty entry">
                 <span class="icomoon icon-folder-o"></span>
                 <span><?php echo lng('home.directory_empty'); ?></span>
             </li>

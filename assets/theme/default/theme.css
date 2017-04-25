@@ -335,6 +335,46 @@ div#header a:hover span#logo {
     color: #e0e0e0;
 }
 
+@-webkit-keyframes headerNavSpinner {
+    0% { -webkit-transform: rotate(0deg); }
+
+    100% { -webkit-transform: rotate(1000deg); }
+}
+
+@-moz-keyframes headerNavSpinner {
+    0% { -moz-transform: rotate(0deg); }
+
+    100% { -moz-transform: rotate(1000deg); }
+}
+
+@-ms-keyframes headerNavSpinner {
+    0% { -ms-transform: rotate(0deg); }
+
+    100% { -ms-transform: rotate(1000deg); }
+}
+
+@-o-keyframes headerNavSpinner {
+    0% { -o-transform: rotate(0deg); }
+
+    100% { -o-transform: rotate(1000deg); }
+}
+
+@keyframes headerNavSpinner {
+    0% { transform: rotate(0deg); }
+
+    100% { transform: rotate(1000deg); }
+}
+
+div#header span.icon-spinner {
+    -webkit-animation: headerNavSpinner 3s infinite ease-in-out alternate;
+       -moz-animation: headerNavSpinner 3s infinite ease-in-out alternate;
+        -ms-animation: headerNavSpinner 3s infinite ease-in-out alternate;
+         -o-animation: headerNavSpinner 3s infinite ease-in-out alternate;
+            animation: headerNavSpinner 3s infinite ease-in-out alternate;
+
+    display: inline-block;
+}
+
 div#header ul#action,
 div#header ul#action li {
     display: inline-block;
@@ -559,7 +599,7 @@ ul.paging li {
 }
 
 ul.paging {
-    background-color: #ffffff;
+    background-color: transparent;
     display: block;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
@@ -578,6 +618,7 @@ ul.paging li {
     line-height: 45px;
     padding-left: 3px;
     padding-right: 3px;
+    width: auto !important;
 }
 
 ul.paging li.current strong {

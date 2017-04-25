@@ -79,7 +79,7 @@ ul.file-list-home > li {
     position: relative;
     padding-left: 12px;
     padding-right: 12px;
-    text-align: left;;
+    text-align: left;
 }
 
 ul.file-list-home > li:last-child {
@@ -112,13 +112,26 @@ ul.file-list-home > li span.icomoon {
     }
 }
 
-ul.file-list-home li:first-child:nth-last-child(1),
-ul.file-list-home li:first-child:nth-last-child(2),
-ul.file-list-home li:first-child:nth-last-child(3),
-ul.file-list-home li:first-child:nth-last-child(1) ~ li,
-ul.file-list-home li:first-child:nth-last-child(2) ~ li,
-ul.file-list-home li:first-child:nth-last-child(3) ~ li {
+ul.file-list-home > li:first-child:nth-last-child(1),
+ul.file-list-home > li:first-child:nth-last-child(2),
+ul.file-list-home > li:first-child:nth-last-child(3),
+ul.file-list-home > li:first-child:nth-last-child(1) ~ li.entry,
+ul.file-list-home > li:first-child:nth-last-child(2) ~ li.entry,
+ul.file-list-home > li:first-child:nth-last-child(3) ~ li.entry,
+ul.file-list-home > li.entry:nth-of-type(odd) + li.entry:nth-last-of-type(1),
+ul.file-list-home > li.entry:nth-of-type(odd) + li.entry:nth-last-of-type(2) {
     width: 100%;
+}
+
+ul.file-list-home > li:first-child:nth-last-child(1) div.chmod-size,
+ul.file-list-home > li:first-child:nth-last-child(2) div.chmod-size,
+ul.file-list-home > li:first-child:nth-last-child(3) div.chmod-size,
+ul.file-list-home > li:first-child:nth-last-child(1) ~ li.entry div.chmod-size,
+ul.file-list-home > li:first-child:nth-last-child(2) ~ li.entry div.chmod-size,
+ul.file-list-home > li:first-child:nth-last-child(3) ~ li.entry div.chmod-size,
+ul.file-list-home > li.entry:nth-of-type(odd) + li.entry:nth-last-of-type(1) div.chmod-size,
+ul.file-list-home > li.entry:nth-of-type(odd) + li.entry:nth-last-of-type(2) div.chmod-size {
+    right: 50%;
 }
 
 ul.file-list-home > li.back,
@@ -134,12 +147,12 @@ ul.file-list-home > li.empty span.icomoon {
 }
 
 ul.file-list-home > li.empty span {
-    color: red;
+    color: #ef5350;
     line-height: 45px;
+    vertical-align: middle;
 }
 
 ul.file-list-home > li.paging {
-    float: left;
     padding-left: 0;
     padding-right: 0;
     text-overflow: initial;
@@ -199,7 +212,8 @@ ul.file-list-home > li.type-directory a.chmod-permission,
 ul.file-list-home > li.type-file div.chmod-size {
     position: absolute;
     top: 0;
-    right: 10px;
+    right: 0;
+    padding-right: 10px;
 }
 
 ul.file-list-home > li.type-directory a.chmod-permission span,

@@ -33,8 +33,12 @@
             'mysql_connect_failed'     => 'Kết nối cơ sở dữ liệu thất bại: <strong>{$error}</strong>',
             'mysql_connect_success'    => 'Kết nối cơ sở dữ liệu thành công',
             'mysql_is_already_connect' => 'Bạn đang ở trạng thái kết nối cơ sở dữ liệu',
+            'mysql_connect_database_name_failed' => 'Kết nối cơ sở dữ liệu <strong>{$name}</strong> thất bại',
 
-            'mysql_write_config_failed' => 'Viết cấu hình cơ sở dữ liệu thất bại'
+            'mysql_write_config_failed' => 'Viết cấu hình cơ sở dữ liệu thất bại',
+
+            'disconnect_failed'  => 'Ngắt kết nối thất bại',
+            'disconnect_success' => 'Ngắt kết nối thành công'
         ],
 
         'menu_action' => [
