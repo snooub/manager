@@ -47,6 +47,12 @@ div#about ul > li > ul > li {
 	padding: 0;
 }
 
+div#about > ul {
+    border-top: 1px solid #efefef;
+    padding-top: 15px;
+    position: relative;
+}
+
 div#about ul > li.label,
 div#about ul > li.value {
 	display: inline-block;
