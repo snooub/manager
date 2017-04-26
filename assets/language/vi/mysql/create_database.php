@@ -5,7 +5,9 @@
 
         'form' => [
             'input' => [
-                'database_name' => 'Tên cơ sở dữ liệu'
+                'database_name'   => 'Tên cơ sở dữ liệu:',
+                'collection'      => 'Mã hóa - Đối chiếu:',
+                'collection_none' => 'Không có lựa chọn'
             ],
 
             'button' => [

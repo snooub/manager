@@ -1,8 +1,9 @@
 <?php
 
-    define('MYSQL_REQUIRE',       1);
-    define('PARAMETER_TABLE_URL', 'table');
-    define('ROOT',                '..' . DIRECTORY_SEPARATOR);
+    define('MYSQL_REQUIRE',          1);
+    define('PARAMETER_DATABASE_URL', 'database');
+    //define('PARAMETER_TABLE_URL',    'table');
+    define('ROOT',                   '..' . DIRECTORY_SEPARATOR);
 
     require_once(
         realpath(ROOT) .
@@ -10,8 +11,8 @@
         DIRECTORY_SEPARATOR . 'global.php'
     );
 
-    $appMysqlConfig  = new Librarys\App\AppMysqlConfig($boot, env('resource.config.mysql'));
-    $appMysqlConnect = new Librarys\App\AppMysqlConnect($boot);
+    $appMysqlConfig  = new Librarys\App\Mysql\AppMysqlConfig($boot, env('resource.config.mysql'));
+    $appMysqlConnect = new Librarys\App\Mysql\AppMysqlConnect($boot);
 
     $appMysqlConfig->execute($appUser);
 
@@ -20,8 +21,8 @@
         $appMysqlConnect->setUsername($appMysqlConfig->get('mysql_username'));
         $appMysqlConnect->setPassword($appMysqlConfig->get('mysql_password'));
 
-        if (isset($_GET[PARAMETER_TABLE_URL]) && empty($_GET[PARAMETER_TABLE_URL]) == false) {
-            $appMysqlConnect->setName(trim(addslashes(Librarys\App\AppDirectory::rawDecode($_GET[PARAMETER_TABLE_URL]))));
+        if (isset($_GET[PARAMETER_DATABASE_URL]) && empty($_GET[PARAMETER_DATABASE_URL]) == false) {
+            $appMysqlConnect->setName(trim(addslashes(Librarys\App\AppDirectory::rawDecode($_GET[PARAMETER_DATABASE_URL]))));
             $appMysqlConnect->setDatabaseNameCustom(true);
         } else {
             $appMysqlConnect->setName($appMysqlConfig->get('mysql_name'));

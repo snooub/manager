@@ -3,7 +3,7 @@
     use Librarys\App\AppPaging;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
-    use Librarys\App\AppMysqlConfigWrite;
+    use Librarys\App\Mysql\AppMysqlConfigWrite;
 
     define('LOADED',     1);
     define('MYSQL_HOME', 1);

@@ -1,6 +1,6 @@
 <?php
 
-    namespace Librarys\App;
+    namespace Librarys\App\Mysql;
 
     use Librarys\App\Base\BaseConfigWrite;
 

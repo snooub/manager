@@ -40,9 +40,11 @@
 
                 <li class="type-database<?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0) { ?> entry-odd<?php } ?>">
                     <div class="icon">
-                        <span class="icomoon icon-mysql"></span>
+                        <a href="delete_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($mysqlAssoc['Database']); ?>">
+                            <span class="icomoon icon-mysql"></span>
+                        </a>
                     </div>
-                    <a href="list_table.php?<?php echo PARAMETER_TABLE_URL; ?>=<?php echo AppDirectory::rawEncode($mysqlAssoc['Database']); ?>" class="name">
+                    <a href="list_table.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($mysqlAssoc['Database']); ?>" class="name">
                         <span><?php echo $mysqlAssoc['Database']; ?></span>
                     </a>
                 </li>

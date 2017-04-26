@@ -4,6 +4,35 @@
     {
       "icon": {
         "paths": [
+          "M512 51.2l-256 358.4h512l-256-358.4zM512 972.8l256-358.4h-512l256 358.4z"
+        ],
+        "attrs": [
+          {}
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "tags": [
+          "select-arrows"
+        ],
+        "grid": 20
+      },
+      "attrs": [
+        {}
+      ],
+      "properties": {
+        "order": 1,
+        "id": 0,
+        "prevSize": 20,
+        "code": 59683,
+        "name": "select-arrows"
+      },
+      "setIdx": 0,
+      "setId": 7,
+      "iconIdx": 0
+    },
+    {
+      "icon": {
+        "paths": [
           "M861.344 592.576l-429.92-429.92c-18.752-18.752-18.752-49.152 0-67.872 18.752-18.752 49.12-18.752 67.872 0l101.824 101.824 124.48-124.448c18.752-18.752 49.12-18.752 67.872 0 18.752 18.72 18.752 49.12 0 67.872l-124.448 124.448 90.496 90.496 124.448-124.448c18.752-18.752 49.152-18.752 67.904 0 18.72 18.752 18.72 49.12 0 67.872l-124.48 124.48 101.856 101.824c18.72 18.752 18.72 49.12 0 67.872-18.752 18.752-49.152 18.752-67.904 0zM669.024 762.272c-41.504 41.472-226.272 45.248-226.272 45.248l-226.272-226.272c0 0 3.776-184.768 45.248-226.272 41.504-41.472 158.4-158.368 158.4-158.368l407.296 407.296c-0.032-0.032-116.928 116.864-158.4 158.368zM216.48 626.496l181.024 181.024c12.512 12.512 12.512 32.736 0 45.248s-32.768 12.512-45.28 0l-180.992-181.024c-12.512-12.512-12.512-32.736 0-45.248s32.736-12.48 45.248 0zM306.976 852.768c0 0-15.2 15.232-33.952 33.952-18.752 18.752-49.12 18.752-67.872 0l-11.328-11.328-90.528 90.496-45.248-45.248 90.528-90.496-11.296-11.296c-18.752-18.752-18.752-49.152 0-67.904s35.808-32.032 35.808-32.032l133.888 133.856z"
         ],
         "attrs": [
@@ -28,7 +57,7 @@
         "code": 59679,
         "name": "cord"
       },
-      "setIdx": 0,
+      "setIdx": 1,
       "setId": 6,
       "iconIdx": 0
     },
@@ -57,7 +86,7 @@
         "code": 59678,
         "name": "theme"
       },
-      "setIdx": 1,
+      "setIdx": 2,
       "setId": 5,
       "iconIdx": 0
     },
@@ -87,7 +116,7 @@
         "prevSize": 32,
         "code": 59681
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 0
     },
@@ -117,7 +146,7 @@
         "code": 59672,
         "name": "file-binary"
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 1
     },
@@ -153,7 +182,7 @@
         "code": 59671,
         "name": "copy"
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 2
     },
@@ -189,7 +218,7 @@
         "code": 59660,
         "name": "file"
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 3
     },
@@ -220,7 +249,7 @@
         "prevSize": 32,
         "code": 59658
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 4
     },
@@ -257,7 +286,7 @@
         "prevSize": 32,
         "code": 59659
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 5
     },
@@ -288,7 +317,7 @@
         "code": 59657,
         "name": "folder-download"
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 6
     },
@@ -319,7 +348,7 @@
         "code": 59655,
         "name": "folder-upload"
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 7
     },
@@ -350,7 +379,7 @@
         "prevSize": 32,
         "code": 59656
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 8
     },
@@ -391,7 +420,7 @@
         "code": 59651,
         "name": "mysql"
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 9
     },
@@ -420,7 +449,7 @@
         "prevSize": 32,
         "code": 59680
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 10
     },
@@ -454,7 +483,7 @@
         "prevSize": 32,
         "code": 59762
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 11
     },
@@ -485,7 +514,7 @@
         "prevSize": 32,
         "code": 59776
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 12
     },
@@ -515,7 +544,7 @@
         "prevSize": 32,
         "code": 59854
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 13
     },
@@ -545,7 +574,7 @@
         "prevSize": 32,
         "code": 60033
       },
-      "setIdx": 2,
+      "setIdx": 3,
       "setId": 4,
       "iconIdx": 14
     },
@@ -576,7 +605,7 @@
         "code": 59682,
         "name": "plus"
       },
-      "setIdx": 4,
+      "setIdx": 5,
       "setId": 2,
       "iconIdx": 0
     },
@@ -606,7 +635,7 @@
         "code": 59666,
         "name": "search"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 0
     },
@@ -636,7 +665,7 @@
         "prevSize": 28,
         "code": 59665
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 1
     },
@@ -665,7 +694,7 @@
         "prevSize": 28,
         "code": 59667
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 2
     },
@@ -695,7 +724,7 @@
         "prevSize": 28,
         "code": 59668
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 3
     },
@@ -726,7 +755,7 @@
         "prevSize": 28,
         "code": 59669
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 4
     },
@@ -756,7 +785,7 @@
         "code": 59673,
         "name": "file-code"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 5
     },
@@ -787,7 +816,7 @@
         "code": 59674,
         "name": "file-video"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 6
     },
@@ -818,7 +847,7 @@
         "code": 59675,
         "name": "file-audio"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 7
     },
@@ -849,7 +878,7 @@
         "code": 59676,
         "name": "file-archive"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 8
     },
@@ -881,7 +910,7 @@
         "code": 59677,
         "name": "file-image"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 9
     },
@@ -911,7 +940,7 @@
         "code": 59717,
         "name": "file-document"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 10
     },
@@ -941,7 +970,7 @@
         "code": 59718,
         "name": "file-text"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 11
     },
@@ -971,7 +1000,7 @@
         "code": 59670,
         "name": "exit"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 12
     },
@@ -1001,7 +1030,7 @@
         "prevSize": 28,
         "code": 59661
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 13
     },
@@ -1031,7 +1060,7 @@
         "prevSize": 28,
         "code": 59662
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 14
     },
@@ -1061,7 +1090,7 @@
         "prevSize": 28,
         "code": 59663
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 15
     },
@@ -1091,7 +1120,7 @@
         "prevSize": 28,
         "code": 59664
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 16
     },
@@ -1121,7 +1150,7 @@
         "code": 59654,
         "name": "home"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 17
     },
@@ -1151,7 +1180,7 @@
         "code": 59652,
         "name": "help"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 18
     },
@@ -1181,7 +1210,7 @@
         "code": 59653,
         "name": "about"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 19
     },
@@ -1212,7 +1241,7 @@
         "code": 59650,
         "name": "config"
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 20
     },
@@ -1244,7 +1273,7 @@
         "prevSize": 28,
         "code": 59648
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 21
     },
@@ -1274,7 +1303,7 @@
         "prevSize": 28,
         "code": 59649
       },
-      "setIdx": 3,
+      "setIdx": 4,
       "setId": 3,
       "iconIdx": 22
     }

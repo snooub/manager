@@ -17,7 +17,7 @@
             <?php unset($themes); ?>
         <?php } ?>
 
-        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.icomoon'); ?>" media="all,handheld" />
+        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.icomoon'); ?>?rand=<?php echo rand(1000, 9000); ?>" media="all,handheld" />
 
         <link rel="icon" type="image/png" href="<?php echo env('resource.icon.favicon_png'); ?>"/>
         <link rel="icon" type="image/x-icon" href="<?php echo env('resource.icon.favicon_ico'); ?>"/>
