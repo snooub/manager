@@ -1,6 +1,7 @@
 <?php
 
     use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
@@ -68,6 +69,12 @@
                     if (@mkdir($forms['path']) == false) {
                         $appAlert->danger(lng('create.alert.create_directory_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
+                        if ($appConfig->get('auto_redirect.create_directory')) {
+                            $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::rawEncode($appDirectory->getDirectory() . SP . $forms['name']));
+                            $appParameter->remove(AppDirectory::PARAMETER_PAGE_URL);
+                            $appParameter->toString(true);
+                        }
+
                         $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $appParameter->toString());
                     } else {
                         $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']));
@@ -77,7 +84,26 @@
                     if (@file_put_contents($forms['path'], '#') === false) {
                         $appAlert->danger(lng('create.alert.create_file_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
-                        $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                        $urlGoto = 'index.php';
+                        $idAlert = ALERT_INDEX;
+
+                        if ($appConfig->get('auto_redirect.create_file')) {
+                            $fileInfo = new FileInfo($appDirectory->getDirectory() . SP . $forms['name']);
+                            $fileMime = new FileMime($fileInfo);
+
+                            if ($fileMime->isFormatTextEdit() && $fileMime->isFormatTextAsEdit() == false) {
+                                $urlGoto = 'file_edit_text.php';
+                                $idAlert = ALERT_FILE_EDIT_TEXT;
+                            } else {
+                                $urlGoto = 'file_info.php';
+                                $idAlert = ALERT_FILE_INFO;
+                            }
+
+                            $appParameter->set(AppDirectory::PARAMETER_NAME_URL, AppDirectory::rawEncode($forms['name']));
+                            $appParameter->toString(true);
+                        }
+
+                        $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']), $idAlert, $urlGoto . $appParameter->toString());
                     } else {
                         $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']));
                         $forms['name'] = null;

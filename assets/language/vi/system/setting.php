@@ -10,9 +10,12 @@
                 'paging_file_edit_text'      => 'Phân trang sửa văn bản:',
                 'paging_file_edit_text_line' => 'Phân trang sửa văn bản theo dòng:',
 
-                'enable_forgot_password'           => 'Bật/Tắt lấy lại mật khẩu',
-                'enable_auto_redirect_file_rename' => 'Bật/Tắt tự động chuyển hướng khi thay đổi tên tập tin, thư mục',
-                'enable_auto_redirect_file_chmod'  => 'Bật/Tắt tự động chuyển hướng khi phân quyền tập tin, thư mục'
+                'enable_forgot_password'                => 'Lấy lại mật khẩu',
+                'enable_auto_redirect_file_rename'      => 'Chuyển hướng khi thay đổi tên tập tin, thư mục',
+                'enable_auto_redirect_file_chmod'       => 'Chuyển hướng khi phân quyền tập tin, thư mục',
+                'enable_auto_redirect_create_directory' => 'Chuyển hướng khi tạo thư mục',
+                'enable_auto_redirect_create_file'      => 'Chuyển hướng khi tạo tập tin',
+                'enable_auto_redirect_create_database'  => 'Chuyển hướng khi tạo cơ sở dữ liệu'
             ],
 
             'button' => [
@@ -29,7 +32,8 @@
         ],
 
         'alert' => [
-        	'tips'                 => 'Phân trang cài <strong>0</strong> sẽ không phân trang',
+        	'tips'                 => 'Phân trang cài <strong>0</strong> sẽ không phân trang, ' .
+                                      'bật tắt chuyển hướng cho tạo thư mục, tập tin, cơ sở dữ liệu thì khi tạo những mục này thành công sẽ tự động chuyển hướng tới mục vừa được tạo',
             'save_setting_failed'  => 'Lưu cài đặt thất bại',
             'save_setting_success' => 'Lưu cài đặt thành công'
         ],

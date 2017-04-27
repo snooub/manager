@@ -106,16 +106,6 @@ ul.file-list-home > li span.icomoon {
     line-height: 45px;
 }
 
-@media all and (max-width: 780px) {
-    ul.file-list-home > li {
-        width: 100%;
-    }
-}
-
-ul.file-list-home > li.entry-odd {
-    width: 100%;
-}
-
 ul.file-list-home > li.back,
 ul.file-list-home > li.empty,
 ul.file-list-home > li.paging {
@@ -198,9 +188,22 @@ ul.file-list-home > li.type-file div.chmod-size {
     padding-right: 10px;
 }
 
-ul.file-list-home > li.entry-odd a.chmod-permission,
-ul.file-list-home > li.entry-odd div.chmod-size {
-    right: 50%;
+@media all and (max-width: 780px) {
+    ul.file-list-home > li {
+        width: 100%;
+    }
+
+
+    ul.file-list-home > li.entry-odd {
+        width: 100%;
+    }
+}
+
+@media all and (min-width: 780px) {
+    ul.file-list-home > li.entry-odd a.chmod-permission,
+    ul.file-list-home > li.entry-odd div.chmod-size {
+        right: 50%;
+    }
 }
 
 ul.file-list-home > li.type-directory a.chmod-permission span,

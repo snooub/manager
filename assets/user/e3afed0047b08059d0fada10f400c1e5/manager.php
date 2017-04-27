@@ -11,6 +11,9 @@
         'auto_redirect' => [
             'file_rename' => true,
             'file_chmod' => true,
+            'create_directory' => true,
+            'create_file' => true,
+            'create_database' => true,
         ],
 
     ];

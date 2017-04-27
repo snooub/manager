@@ -34,6 +34,9 @@
 			$this->filePath = separator($filePath, SP);
 			$this->fileExt  = FileInfo::extFile($this->getFileName());
 
+            if (empty($this->fileExt))
+                $this->fileExt = null;
+
             if ($receiverMime)
     			$this->fileMime = FileMime::get($this);
 		}

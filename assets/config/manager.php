@@ -3,7 +3,12 @@
     return [
         'auto_redirect' => [
             'file_chmod'  => true,
-            'file_rename' => true
+            'file_rename' => true,
+
+            'create_directory' => true,
+            'create_file'      => true,
+
+            'create_database' => true
         ],
 
         'login' => [

@@ -244,7 +244,7 @@
 
         const COLLECTION_NONE    = 'none';
         const COLLECTION_SPLIT   = '-@-';
-        const COLLECTION_DEFAULT = 'utf8_unicode_ci';
+        const COLLECTION_DEFAULT = 'utf8' . self::COLLECTION_SPLIT . 'utf8_unicode_ci';
 
         public static function display($lngCollectionNone = null, $defaultCollection = null, $isPrint = true)
         {
@@ -271,26 +271,27 @@
                 $buffer .= '>';
                 $buffer .= '</option>';
 
-                foreach (self::$array AS $label => $type) {
-                    $buffer .= '<optgroup label="' . $label . '">';
+                foreach (self::$array AS $charset => $collection) {
+                    $buffer .= '<optgroup label="' . $charset . '">';
 
-                    foreach ($type AS $value) {
-                        $buffer .= '<option value="' . $value . '"';
+                    foreach ($collection AS $collate) {
+                        $collectionCurrent = $charset . self::COLLECTION_SPLIT . $collate;
+                        $buffer           .= '<option value="' . $collectionCurrent . '"';
 
                         if (
                                ($defaultCollection != null &&
-                                $defaultCollection == $value) ||
+                                $defaultCollection == $collectionCurrent) ||
 
                                ($defaultCollection       == null &&
                                 self::COLLECTION_DEFAULT != null &&
-                                self::COLLECTION_DEFAULT == $value)
+                                self::COLLECTION_DEFAULT == $collectionCurrent)
                             )
                         {
                             $buffer .= ' selected="selected"';
                         }
 
                         $buffer .= '>';
-                        $buffer .= $value;
+                        $buffer .= $collate;
                         $buffer .= '</option>';
                     }
 
@@ -302,6 +303,18 @@
                 return $buffer;
 
             echo $buffer;
+        }
+
+        public static function isValidate($collection, &$character = null, &$collate = null)
+        {
+            if (preg_match('/^(.+?)' . self::COLLECTION_SPLIT . '(.+?)$/is', $collection, $matches)) {
+                $character = $matches[1];
+                $collate   = $matches[2];
+
+                return true;
+            }
+
+            return false;
         }
 
     }

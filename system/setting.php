@@ -31,7 +31,11 @@
 
         'auto_redirect' => [
             'file_rename' => $appConfig->get('auto_redirect.file_rename'),
-            'file_chmod'  => $appConfig->get('auto_redirect.file_chmod')
+            'file_chmod'  => $appConfig->get('auto_redirect.file_chmod'),
+
+            'create_directory' => $appConfig->get('auto_redirect.create_directory'),
+            'create_file'      => $appConfig->get('auto_redirect.create_file'),
+            'create_database'  => $appConfig->get('auto_redirect.create_database')
         ],
     ];
 
@@ -165,6 +169,30 @@
     		                	<input type="checkbox" id="auto-redirect-file-chmod" name="auto_redirect_file_chmod" value="1"<?php if($forms['auto_redirect']['file_chmod'] == true) { ?> checked="checked"<?php } ?>/>
             		        	<label for="auto-redirect-file-chmod">
                     				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_file_chmod'); ?></span>
+                    			</label>
+                    		</li>
+                        <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('auto_redirect.create_directory')) { ?>
+                    		<li>
+    		                	<input type="checkbox" id="auto-redirect-create-directory" name="auto_redirect_create_directory" value="1"<?php if($forms['auto_redirect']['create_directory'] == true) { ?> checked="checked"<?php } ?>/>
+            		        	<label for="auto-redirect-create-directory">
+                    				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_create_directory'); ?></span>
+                    			</label>
+                    		</li>
+                        <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('auto_redirect.create_file')) { ?>
+                    		<li>
+    		                	<input type="checkbox" id="auto-redirect-create-file" name="auto_redirect_create_file" value="1"<?php if($forms['auto_redirect']['create_file'] == true) { ?> checked="checked"<?php } ?>/>
+            		        	<label for="auto-redirect-create-file">
+                    				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_create_file'); ?></span>
+                    			</label>
+                    		</li>
+                        <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('auto_redirect.create_database')) { ?>
+                    		<li>
+    		                	<input type="checkbox" id="auto-redirect-create-database" name="auto_redirect_create_database" value="1"<?php if($forms['auto_redirect']['create_database'] == true) { ?> checked="checked"<?php } ?>/>
+            		        	<label for="auto-redirect-create-database">
+                    				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_create_database'); ?></span>
                     			</label>
                     		</li>
                         <?php } ?>

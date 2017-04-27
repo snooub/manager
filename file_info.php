@@ -98,7 +98,11 @@
                     <?php if ($isDirectory) { ?>
                         <span><?php echo lng('file_info.format_directory'); ?></span>
                     <?php } else { ?>
-                        <span><?php echo $fileInfo->getFileExt(); ?></span>
+                        <?php if ($fileInfo->getFileExt() == null) { ?>
+                            <span><?php echo lng('file_info.format_unknown'); ?></span>
+                        <?php } else { ?>
+                            <span><?php echo $fileInfo->getFileExt(); ?></span>
+                        <?php } ?>
                     <?php } ?>
                 </li>
                 <li>

@@ -15,17 +15,42 @@
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $forms = [
-        'name' => null
+        'name'       => null,
+        'collection' => AppMysqlCollection::COLLECTION_DEFAULT
     ];
 
     if (isset($_POST['create'])) {
-        $forms['name'] = addslashes($_POST['name']);
+        $forms['name']       = addslashes($_POST['name']);
+        $forms['collection'] = addslashes($_POST['collection']);
 
         if (empty($forms['name'])) {
             $appAlert->danger(lng('mysql.create_database.alert.not_input_database_name'));
+        } else if ($appMysqlConnect->isDatabaseNameExists($forms['name'], null, true)) {
+            $appAlert->danger(lng('mysql.create_database.alert.database_name_is_exists'));
+        } else if ($forms['collection'] == AppMysqlCollection::COLLECTION_NONE && $appMysqlConnect->query('CREATE DATABASE `' . $forms['name'] . '`') == false) {
+            $appAlert->danger(lng('mysql.create_database.alert.create_database_failed_error', 'error', $appMysqlConnect->error()));
+        } else if ($forms['collection'] != AppMysqlCollection::COLLECTION_NONE) {
+            if (AppMysqlCollection::isValidate($forms['collection'], $charset, $collate) == false) {
+                $appAlert->danger(lng('mysql.create_database.alert.collection_not_validate'));
+            } else if ($appMysqlConnect->query('CREATE DATABASE `' . $forms['name'] . '` CHARACTER SET ' . $charset . ' COLLATE ' . $collate) == false) {
+                $appAlert->danger(lng('mysql.create_database.alert.create_database_failed_error', 'error', $appMysqlConnect->error()));
+            } else {
+                $idAlert = ALERT_MYSQL_LIST_DATABASE;
+                $urlGoto = 'list_database.php';
+
+                if ($appConfig->get('auto_redirect.create_database')) {
+                    $idAlert = ALERT_MYSQL_LIST_TABLE;
+                    $urlGoto = 'list_table.php?' . PARAMETER_DATABASE_URL . '=' . AppDirectory::rawEncode($forms['name']);
+                }
+
+                $appAlert->success(lng('mysql.create_database.alert.create_database_success', 'name', $forms['name']), $idAlert, $urlGoto);
+            }
+        } else {
+            $appAlert->danger(lng('mysql.create_database.alert.create_database_failed'));
         }
 
         $forms['name'] = stripslashes($forms['name']);
+        $forms['collection'] = stripslashes($forms['collection']);
     }
 ?>
 
@@ -41,13 +66,13 @@
             <ul>
                 <li class="input">
                     <span><?php echo lng('mysql.create_database.form.input.database_name'); ?></span>
-                    <input type="text" name="name" value="" class="none" placeholder="<?php echo lng('mysql.create_database.form.placeholder.input_database_name'); ?>"/>
+                    <input type="text" name="name" value="<?php echo $forms['name']; ?>" class="none" placeholder="<?php echo lng('mysql.create_database.form.placeholder.input_database_name'); ?>"/>
                 </li>
                 <li class="select">
                     <span><?php echo lng('mysql.create_database.form.input.collection'); ?></span>
                     <div class="icomoon icon-select-arrows select">
                         <select name="collection">
-                            <?php AppMysqlCollection::display(lng('mysql.create_database.form.input.collection_none'), null); ?>
+                            <?php AppMysqlCollection::display(lng('mysql.create_database.form.input.collection_none'), $forms['collection']); ?>
                         </select>
                     </div>
                 </li>

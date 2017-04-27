@@ -14,6 +14,7 @@
         'value_image_size_split' => 'x',
 
         'format_directory' => 'Thư mục',
+        'format_unknown'   => 'Không rõ',
 
         'menu_action' => [
             'info'           => 'Thông tin',

@@ -107,7 +107,7 @@
                     $columnNameIgone = strtolower($columnNameIgone);
             }
 
-            $query = $this->query('SHOW COLUMNS FROM `' . $table . '`');
+            $query = $this->query('SHOW COLUMNS FROM `' . addslashes($table) . '`');
 
             if ($this->isResource($query)) {
                 while ($assoc = $this->fetchAssoc($query)) {

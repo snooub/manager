@@ -62,6 +62,10 @@ select {
     font-size: 14px;
 }
 
+textarea {
+    height: auto;
+}
+
 select {
     background-image: none;
 
