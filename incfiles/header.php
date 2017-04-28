@@ -45,23 +45,32 @@
                         </a>
                     </li>
                     <?php if ($appUser->isLogin()) { ?>
-                        <li>
-                           <?php $url = env('app.http.host') . '/mysql'; ?>
+                        <?php $url    = env('app.http.host') . '/mysql'; ?>
+                        <?php $isShow = true; ?>
 
-                           <?php if (defined('MYSQL_REQUIRE') && $appMysqlConnect->isConnect()) { ?>
-                               <?php if ($appMysqlConfig->get('mysql_name', null) == null) { ?>
-                            	    <?php $url .= '/list_database.php'; ?>
-                            	<?php } else { ?>
-                            	    <?php $url .= '/list_table.php'; ?>
-                            	<?php } ?>
-                           <?php } ?>
+                        <?php if ($appMysqlConfig->get('mysql_is_connect', false)) { ?>
+                           <?php if ($appMysqlConfig->get('mysql_name', null) == null) { ?>
+                                <?php $url   .= '/list_database.php'; ?>
+                                <?php $isShow = defined('MYSQL_LIST_DATABASE') == false; ?>
+                            <?php } else { ?>
+                                <?php $url   .= '/list_table.php'; ?>
+                                <?php $isShow = defined('MYSQL_LIST_TABLE') == false; ?>
+                            <?php } ?>
+                        <?php } else if (defined('MYSQL_REQUIRE')) { ?>
+                            <?php $isShow = false; ?>
+                        <?php } ?>
 
-                            <a href="<?php echo $url; ?>">
-                                <span class="icomoon icon-mysql"></span>
-                            </a>
+                        <?php if ($isShow) { ?>
+                            <li>
+                                <a href="<?php echo $url; ?>">
+                                    <span class="icomoon icon-mysql"></span>
+                                </a>
 
-                            <?php unset($url); ?>
-                        </li>
+                            </li>
+                        <?php } ?>
+                        <?php unset($url); ?>
+                        <?php unset($isShow); ?>
+
                         <?php if (defined('SETTING') == false) { ?>
                             <li>
                                 <a href="<?php echo env('app.http.host'); ?>/system/setting.php">

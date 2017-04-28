@@ -48,6 +48,18 @@
 
     <ul class="menu-action">
         <li>
+            <a href="info_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo $appMysqlConnect->getName(); ?>">
+                <span class="icomoon icon-about"></span>
+                <span><?php echo lng('mysql.list_database.menu_action.info_database'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="rename_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo $appMysqlConnect->getName(); ?>">
+                <span class="icomoon icon-edit"></span>
+                <span><?php echo lng('mysql.list_database.menu_action.rename_database'); ?></span>
+            </a>
+        </li>
+        <li>
             <a href="create_database.php">
                 <span class="icomoon icon-plus"></span>
                 <span><?php echo lng('mysql.list_database.menu_action.create_database'); ?></span>

@@ -26,6 +26,7 @@
     define('ALERT_MYSQL_LIST_TABLE',      'alert_mysql_list_table');
     define('ALERT_MYSQL_CREATE_DATABASE', 'alert_mysql_create_database');
     define('ALERT_MYSQL_DELETE_DATABASE', 'alert_mysql_delete_database');
+    define('ALERT_MYSQL_INFO_DATABASE',   'alert_mysql_info_database');
     define('ALERT_MYSQL_CREATE_TABLE',    'alert_mysql_create_table');
 
 ?>

@@ -142,4 +142,12 @@
         exit(0);
     }
 
+    function stripcslashesResursive(&$value)
+    {
+        if (is_array($value) == false)
+            $value = stripslashes($value);
+        else
+            array_walk_recursive($value, __FUNCTION__);
+    }
+
 ?>

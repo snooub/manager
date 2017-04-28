@@ -11,10 +11,8 @@
         DIRECTORY_SEPARATOR . 'global.php'
     );
 
-    $appMysqlConfig  = new Librarys\App\Mysql\AppMysqlConfig($boot, env('resource.config.mysql'));
-    $appMysqlConnect = new Librarys\App\Mysql\AppMysqlConnect($boot);
 
-    $appMysqlConfig->execute($appUser);
+    $appMysqlConnect = new Librarys\App\Mysql\AppMysqlConnect($boot);
 
     if ($appMysqlConfig->get('mysql_is_connect', false) == true) {
         $appMysqlConnect->setHost    ($appMysqlConfig->get('mysql_host'));
@@ -22,9 +20,15 @@
         $appMysqlConnect->setPassword($appMysqlConfig->get('mysql_password'));
 
         if (isset($_GET[PARAMETER_DATABASE_URL]) && empty($_GET[PARAMETER_DATABASE_URL]) == false) {
-            $appMysqlConnect->setName(trim(addslashes(Librarys\App\AppDirectory::rawDecode($_GET[PARAMETER_DATABASE_URL]))));
-            $appMysqlConnect->setDatabaseNameCustom(true);
-        } else {
+            if ($appMysqlConfig->get('mysql_name') == null) {
+                $appMysqlConnect->setName(trim(addslashes(Librarys\App\AppDirectory::rawDecode($_GET[PARAMETER_DATABASE_URL]))));
+                $appMysqlConnect->setDatabaseNameCustom(true);
+            } else {
+                $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConfig->get('mysql_name')), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
+            }
+        }
+
+        if ($appMysqlConfig->get('mysql_name') != null) {
             $appMysqlConnect->setName($appMysqlConfig->get('mysql_name'));
             $appMysqlConnect->setDatabaseNameCustom(false);
         }

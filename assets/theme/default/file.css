@@ -192,14 +192,13 @@ ul.file-list-home > li.type-file div.chmod-size {
     ul.file-list-home > li {
         width: 100%;
     }
-
-
-    ul.file-list-home > li.entry-odd {
-        width: 100%;
-    }
 }
 
 @media all and (min-width: 780px) {
+    ul.file-list-home > li.entry-odd {
+        width: 100%;
+    }
+
     ul.file-list-home > li.entry-odd a.chmod-permission,
     ul.file-list-home > li.entry-odd div.chmod-size {
         right: 50%;

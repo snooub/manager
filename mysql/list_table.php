@@ -3,7 +3,9 @@
     use Librarys\App\AppDirectory;
     use Librarys\File\FileInfo;
 
-    define('LOADED', 1);
+    define('LOADED',           1);
+    define('MYSQL_LIST_TABLE', 1);
+
     require_once('global.php');
 
     if ($appUser->isLogin() == false)
@@ -27,12 +29,14 @@
     </div>
 
     <ul class="list-database">
-        <li class="back">
-            <span class="icomoon icon-mysql"></span>
-            <a href="list_database.php">
-                <strong><?php echo $appMysqlConnect->getName(); ?></strong>
-            </a>
-        </li>
+        <?php if ($appMysqlConnect->isDatabaseNameCustom()) { ?>
+            <li class="back">
+                <span class="icomoon icon-mysql"></span>
+                <a href="list_database.php">
+                    <strong><?php echo $appMysqlConnect->getName(); ?></strong>
+                </a>
+            </li>
+        <?php } ?>
 
         <?php if ($mysqlNums <= 0) { ?>
             <li class="empty">
@@ -46,7 +50,7 @@
             <?php while (($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery))) { ?>
                 <?php $indexAssoc++; ?>
 
-                <li class="type-table <?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0)  { ?> entry-odd<?php } ?>">
+                <li class="type-table<?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0)  { ?> entry-odd<?php } ?>">
                     <div class="icon">
                         <span class="icomoon icon-table"></span>
                     </div>

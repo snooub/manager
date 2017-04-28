@@ -19,6 +19,9 @@
         private $prefix;
         private $encoding;
 
+        const DATABASE_INFOMATION = 'information_schema';
+        const DATABASE_MYSQL      = 'mysql';
+
 		public function __construct(Boot $boot)
 		{
 			$this->boot   = $boot;
@@ -241,6 +244,21 @@
 		{
 			return mysqli_insert_id($this->resource);
 		}
+
+        public function getCharset()
+        {
+            return mysqli_get_charset($this->resource);
+        }
+
+        public function getCharacterSetName()
+        {
+            return mysqli_character_set_name($this->resource);
+        }
+
+        public function getCollation()
+        {
+            return $this->getCharset()->collation;
+        }
 
 	}
 

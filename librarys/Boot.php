@@ -29,8 +29,7 @@
 
         public function __construct(array $config)
         {
-            $_SERVER = filter_var_array($_SERVER, FILTER_SANITIZE_STRING);
-            $_GET    = filter_var_array($_GET,    FILTER_SANITIZE_STRING);
+            $this->fixMagicQuotesGpc();
 
             $this->environment = new Environment($config);
             $this->language    = new Language($this);
@@ -53,6 +52,19 @@
 
             if (env('app.firewall.enable', false))
                 $this->firewall->execute();
+        }
+
+        public function fixMagicQuotesGpc()
+        {
+            $_SERVER = filter_var_array($_SERVER, FILTER_SANITIZE_STRING);
+            $_GET    = filter_var_array($_GET,    FILTER_SANITIZE_STRING);
+
+            if (get_magic_quotes_gpc()) {
+                stripcslashesResursive($_GET);
+                stripcslashesResursive($_POST);
+                stripcslashesResursive($_REQUEST);
+                stripcslashesResursive($_COOKIE);
+            }
         }
 
         public function sessionInit()

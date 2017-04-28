@@ -16,7 +16,7 @@
 
     $forms = [
         'name'       => null,
-        'collection' => AppMysqlCollection::COLLECTION_DEFAULT
+        'collection' => null
     ];
 
     if (isset($_POST['create'])) {
@@ -72,7 +72,7 @@
                     <span><?php echo lng('mysql.create_database.form.input.collection'); ?></span>
                     <div class="icomoon icon-select-arrows select">
                         <select name="collection">
-                            <?php AppMysqlCollection::display(lng('mysql.create_database.form.input.collection_none'), $forms['collection']); ?>
+                            <?php AppMysqlCollection::display($appMysqlConnect, lng('mysql.create_database.form.input.collection_none'), $forms['collection']); ?>
                         </select>
                     </div>
                 </li>

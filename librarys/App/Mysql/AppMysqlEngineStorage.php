@@ -2,10 +2,12 @@
 
     namespace Librarys\App\Mysql;
 
+    use Librarys\App\Mysql\AppMysqlConnect;
+
     final class AppMysqlEngineStorage
     {
 
-        private static $array = [
+/*        private static $array = [
             'InnoDB',
             'MyISAM',
             'MEMORY',
@@ -15,13 +17,23 @@
             'CSV',
             'BLACKHOLE',
             'FEDERATD'
-        ];
+        ];*/
+        public static $array;
 
         const ENGINE_STORAGE_NONE    = 'none';
         const ENGINE_STORAGE_DEFAULT = 'MyISAM';
 
-        public static function display($nameRadioCheck, $lngEngineStorageNone = null $defaultEngineStorage = null, $isPrint = true)
+        public static function display(AppMysqlConnect $appMysqlConnect, $nameRadioCheck, $lngEngineStorageNone = null $defaultEngineStorage = null, $isPrint = true)
         {
+            if ($appMysqlConnect == null)
+                return;
+
+            $query = $appMysqlConnect->query('SELECT * FROM `information_schema`.`ENGINES`');
+
+            if ($appMysqlConnect->isResource($query)) {
+
+            }
+
             $buffer = null;
 
             if (is_array(self::$array) == false || count(self::$array) <= 0) {

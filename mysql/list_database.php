@@ -2,11 +2,15 @@
 
     use Librarys\App\AppDirectory;
 
-    define('LOADED', 1);
+    define('LOADED',              1);
+    define('MYSQL_LIST_DATABASE', 1);
+
     require_once('global.php');
 
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
+    else if ($appMysqlConfig->get('mysql_name') != null)
+        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
 
     $title  = lng('mysql.list_database.title_page');
     $themes = [ env('resource.theme.mysql') ];
@@ -40,7 +44,7 @@
 
                 <li class="type-database<?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0) { ?> entry-odd<?php } ?>">
                     <div class="icon">
-                        <a href="delete_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($mysqlAssoc['Database']); ?>">
+                        <a href="info_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($mysqlAssoc['Database']); ?>">
                             <span class="icomoon icon-mysql"></span>
                         </a>
                     </div>

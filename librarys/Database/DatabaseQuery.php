@@ -133,8 +133,18 @@
 
 		public function setTable($table)
 		{
-			$this->table  = $this->database->getPrefix();
-			$this->table .= $table;
+            if (($index = strpos($table, '.')) !== false) {
+                $begin = substr($table, 0, $index);
+                $end   = substr($table, $index + 1);
+
+                $this->table = $begin;
+                $this->table .= '`.`';
+                $this->table .= $this->database->getPrefix();
+                $this->table .= $end;
+            } else {
+                $this->table  = $this->database->getPrefix();
+    			$this->table .= $table;
+            }
 		}
 
 		public function getTable()
@@ -253,6 +263,8 @@
 			$sql = $this->command;
 
 			if ($this->command == self::COMMAND_SELECT) {
+                $sql .= ' ';
+
 				if (count($this->select) <= 0) {
 					$sql .= '*';
 				} else {

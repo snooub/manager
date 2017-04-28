@@ -26,11 +26,12 @@
         )
     );
 
-    $appChecker   = new Librarys\App\AppChecker   ($boot);
-    $appUser      = new Librarys\App\AppUser      ($boot, env('resource.config.user'));
-    $appConfig    = new Librarys\App\AppConfig    ($boot, env('resource.config.manager'));
-    $appAlert     = new Librarys\App\AppAlert     ($boot, env('resource.define.alert'));
-    $appDirectory = new Librarys\App\AppDirectory ($boot);
+    $appChecker      = new Librarys\App\AppChecker   ($boot);
+    $appUser         = new Librarys\App\AppUser      ($boot, env('resource.config.user'));
+    $appConfig       = new Librarys\App\AppConfig    ($boot, env('resource.config.manager'));
+    $appAlert        = new Librarys\App\AppAlert     ($boot, env('resource.define.alert'));
+    $appDirectory    = new Librarys\App\AppDirectory ($boot);
+    $appMysqlConfig  = new Librarys\App\Mysql\AppMysqlConfig($boot, env('resource.config.mysql'));
 
     unset($directory);
 
@@ -57,5 +58,6 @@
     }
 
     $appDirectory->execute();
+    $appMysqlConfig->execute($appUser);
 
 ?>

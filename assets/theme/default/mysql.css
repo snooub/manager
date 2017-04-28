@@ -193,3 +193,93 @@ ul.list-database > li div.info span {
 ul.list-database > li div.info a:hover span {
     color: #a0a0a0;
 }
+
+ul.mysql-info,
+ul.mysql-info > li,
+ul.mysql-info > li > ul,
+ul.mysql-info > li > ul li {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.mysql-info {
+    background-color: #ffffff;
+    margin-bottom: 15px;
+
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+
+    width: 100%;
+    text-align: left;
+}
+
+ul.mysql-info > li.title {
+    padding: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+ul.mysql-info > li.title > span {
+    color: #505050;
+    font-weight: normal;
+    font-size: 17px;
+}
+
+ul.mysql-info > li.label,
+ul.mysql-info > li.value {
+    display: inline-block;
+}
+
+ul.mysql-info > li li {
+    height: 30px;
+}
+
+ul.mysql-info > li li > span {
+    line-height: 30px;
+}
+
+ul.mysql-info > li.label li {
+    padding-left: 10px;
+}
+
+ul.mysql-info > li.label span {
+    color: #00897b;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+ul.mysql-info > li.value,
+ul.mysql-info > li.value span {
+    color: #707070;
+}
+
+ul.mysql-info > li.value {
+    max-width: 70%;
+}
+
+@media all and (max-width: 480px) {
+    ul.mysql-info > li.value {
+        max-width: 40%;
+    }
+}
+
+@media all and (max-width: 720px) {
+    ul.mysql-info > li.value {
+        max-width: 60%;
+    }
+}
+
+ul.mysql-info > li.label li,
+ul.mysql-info > li.value li {
+    padding-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
