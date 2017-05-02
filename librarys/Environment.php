@@ -29,6 +29,8 @@
             $this->cache('server.request_scheme', env('SERVER.REQUEST_SCHEME', 'http'));
             $this->cache('server.http_host',      env('server.request_scheme', 'http') . '://' . env('SERVER.HTTP_HOST', '/'));
 
+            $this->cache('app.date.timezone', 'Asia/Ho_Chi_Minh');
+
             $this->cache('app.autoload.prefix_namespace', 'Librarys');
             $this->cache('app.autoload.prefix_class_mime', '.php');
 

@@ -50,7 +50,7 @@
 
         public function add($message, $type = self::DANGER, $id = null, $urlGoto = null)
         {
-        	$this->boot->sessionInit();
+        	$this->boot->sessionInitializing();
 
             if ($id == null) {
                 if ($this->id == null)

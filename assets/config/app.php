@@ -6,6 +6,10 @@
         ],
 
         'app' => [
+            'date' => [
+                'timezone' => 'Asia/Ho_Chi_Minh'
+            ],
+
             'autoload' => [
                 'prefix_namespace' => 'Librarys',
                 'prefix_class_mime' => '.php'

@@ -44,8 +44,10 @@
             $this->language->execute();
             $this->autoload->execute();
 
+            $this->dateInitializing();
+
             if (env('app.session.init', false) == true)
-                $this->sessionInit();
+                $this->sessionInitializing();
 
             $this->firewall = new FirewallProcess($this);
             $this->cfsr     = new CFSRToken();
@@ -67,7 +69,7 @@
             }
         }
 
-        public function sessionInit()
+        public function sessionInitializing()
         {
             $sessionStart = false;
 
@@ -88,6 +90,11 @@
 
                 session_start();
             }
+        }
+
+        public function dateInitializing()
+        {
+            @date_default_timezone_set(env('app.date.timezone', 'Asia/Ho_Chi_Minh'));
         }
 
         public function obBufferStart()
