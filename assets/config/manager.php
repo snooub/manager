@@ -11,6 +11,10 @@
             'create_database' => true
         ],
 
+        'enable_disable' => [
+            'button_save_on_javascript' => true,
+        ],
+
         'login' => [
             'enable_forgot_password' => false
         ],

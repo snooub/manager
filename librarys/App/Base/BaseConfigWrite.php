@@ -2,6 +2,8 @@
 
     namespace Librarys\App\Base;
 
+    use Librarys\File\FileInfo;
+
     abstract class BaseConfigWrite
     {
 
@@ -82,7 +84,7 @@
                 if ($this->pathConfig == null)
                     return false;
 
-                if (@file_put_contents($this->pathConfig, $this->buffer) !== false)
+                if (FileInfo::fileWriteContents($this->pathConfig, $this->buffer))
                     return true;
             }
 

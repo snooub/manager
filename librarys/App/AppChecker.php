@@ -118,8 +118,8 @@
                     if ($validate == false && strcmp($root, $current) === 0) {
                         $validate = true;
                     } else if ($validate) {
-                        if (is_dir($current)) {
-                            if (is_readable($current)) {
+                        if (FileInfo::isTypeDirectory($current)) {
+                            if (FileInfo::isReadable($current)) {
                                 $validate = true;
                                 $found    = true;
                                 $write    = true;
@@ -300,10 +300,10 @@
             if (is_array($configs) == false)
                 return false;
 
-            if (is_file($file)) {
+            if (FileInfo::isTypeFile($file)) {
                 $configFound = true;
 
-                if (is_readable($file)) {
+                if (FileInfo::isReadable($file)) {
                     $content = @file_get_contents($file);
                     $matches = null;
 

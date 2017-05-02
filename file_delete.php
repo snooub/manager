@@ -91,7 +91,7 @@
                     <?php } ?>
                 </li>
                 <li class="button">
-                    <button type="submit" name="delete">
+                    <button type="submit" name="delete" id="button-save-on-javascript">
                         <span><?php echo lng('file_delete.form.button.delete'); ?></span>
                     </button>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">

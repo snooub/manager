@@ -8,12 +8,48 @@
     final class AppMysqlConnect extends DatabaseConnect
     {
 
+        private $tableCurrent;
+        private $columnCurrent;
+
         private $isDatabaseNameCustom;
         private $mysqlQueryStringCurrent;
 
         public function __construct(Boot $boot)
         {
             parent::__construct($boot);
+        }
+
+        public function setTableCurrent($table)
+        {
+            $this->tableCurrent = $table;
+        }
+
+        public function getTableCurrent()
+        {
+            return $this->tableCurrent;
+        }
+
+        public function checkTableCurrent()
+        {
+            if ($this->tableCurrent != null && $this->isConnect() && $this->isTableNameExists($this->tableCurrent))
+                return true;
+
+            return false;
+        }
+
+        public function setColumnCurrent($column)
+        {
+            $this->columnCurrent = $column;
+        }
+
+        public function getColumnCurrent()
+        {
+            return $this->column;
+        }
+
+        public function checkColumnCurrent()
+        {
+
         }
 
         public function setDatabaseNameCustom($isDatabaseNameCustom)

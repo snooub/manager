@@ -1,6 +1,8 @@
 <?php
 
   namespace Librarys\Zip;
+
+  use Librarys\File\FileInfo;
 // --------------------------------------------------------------------------------
 // PhpConcept Library - Zip Module 2.8.2
 // --------------------------------------------------------------------------------
@@ -1109,7 +1111,7 @@
     $v_prop['status'] = 'not_exist';
 
     // ----- Look if file exists
-    if (@is_file($this->zipname))
+    if (FileInfo::isTypeFile($this->zipname))
     {
       // ----- Open the zip file
       if (($this->zip_fd = @fopen($this->zipname, 'rb')) == 0)
@@ -1181,7 +1183,7 @@
 
       // ----- Check that $p_archive is a valid zip file
       // TBC : Should also check the archive format
-      if (!is_file($p_archive)) {
+      if (!FileInfo::isTypeFile($p_archive)) {
         // ----- Error log
         PclZip::privErrorLog(PCLZIP_ERR_MISSING_FILE, "No file with filename '".$p_archive."'");
         $v_result = PCLZIP_ERR_MISSING_FILE;
@@ -1382,14 +1384,14 @@
     $this->privErrorReset();
 
     // ----- Look if the file exits
-    if (!is_file($this->zipname)) {
+    if (!FileInfo::isTypeFile($this->zipname)) {
       // ----- Error log
       PclZip::privErrorLog(PCLZIP_ERR_MISSING_FILE, "Missing archive file '".$this->zipname."'");
       return(false);
     }
 
     // ----- Check that the file is readeable
-    if (!is_readable($this->zipname)) {
+    if (!FileInfo::isReadable($this->zipname)) {
       // ----- Error log
       PclZip::privErrorLog(PCLZIP_ERR_READ_OPEN_FAIL, "Unable to read archive '".$this->zipname."'");
       return(false);
@@ -2015,14 +2017,14 @@
       $v_descr['filename'] = PclZipUtilPathReduction($v_descr['filename']);
 
       // ----- Look for real file or folder
-      if (file_exists($v_descr['filename'])) {
-        if (@is_file($v_descr['filename'])) {
+      if (FileInfo::fileExists($v_descr['filename'])) {
+        if (@FileInfo::isTypeFile($v_descr['filename'])) {
           $v_descr['type'] = 'file';
         }
-        else if (@is_dir($v_descr['filename'])) {
+        else if (FileInfo::isTypeDirectory($v_descr['filename'])) {
           $v_descr['type'] = 'folder';
         }
-        else if (@is_link($v_descr['filename'])) {
+        else if (FileInfo::isLink($v_descr['filename'])) {
           // skip
           continue;
         }
@@ -2163,7 +2165,7 @@
     $v_list_detail = array();
 
     // ----- Look if the archive exists or is empty
-    if ((!is_file($this->zipname)) || (filesize($this->zipname) == 0))
+    if ((!FileInfo::isTypeFile($this->zipname)) || (filesize($this->zipname) == 0))
     {
 
       // ----- Do a create
@@ -2484,15 +2486,15 @@
 
       // ----- Check the filename
       if (   ($p_filedescr_list[$j]['type'] != 'virtual_file')
-          && (!file_exists($p_filedescr_list[$j]['filename']))) {
+          && (!FileInfo::fileExists($p_filedescr_list[$j]['filename']))) {
         PclZip::privErrorLog(PCLZIP_ERR_MISSING_FILE, "File '".$p_filedescr_list[$j]['filename']."' does not exist");
         return PclZip::errorCode();
       }
 
       // ----- Look if it is a file or a dir with no all path remove option
       // or a dir with all its path removed
-//      if (   (is_file($p_filedescr_list[$j]['filename']))
-//          || (   is_dir($p_filedescr_list[$j]['filename'])
+//      if (   (FileInfo::isTypeFile($p_filedescr_list[$j]['filename']))
+//          || (   FileInfo::isTypeDirectory($p_filedescr_list[$j]['filename'])
       if (   ($p_filedescr_list[$j]['type'] == 'file')
           || ($p_filedescr_list[$j]['type'] == 'virtual_file')
           || (   ($p_filedescr_list[$j]['type'] == 'folder')
@@ -3722,11 +3724,11 @@
     if ($p_entry['status'] == 'ok') {
 
     // ----- Look for specific actions while the file exist
-    if (file_exists($p_entry['filename']))
+    if (FileInfo::fileExists($p_entry['filename']))
     {
 
       // ----- Look if file is a directory
-      if (is_dir($p_entry['filename']))
+      if (FileInfo::isTypeDirectory($p_entry['filename']))
       {
 
         // ----- Change the file status
@@ -3746,7 +3748,7 @@
 		    }
       }
       // ----- Look if file is write protected
-      else if (!is_writeable($p_entry['filename']))
+      else if (!FileInfo::isWriteable($p_entry['filename']))
       {
 
         // ----- Change the file status
@@ -5002,7 +5004,7 @@
     }
 
     // ----- Check the directory availability
-    if ((is_dir($p_dir)) || ($p_dir == ""))
+    if ((FileInfo::isTypeDirectory($p_dir)) || ($p_dir == ""))
     {
       return 1;
     }
@@ -5050,7 +5052,7 @@
     $v_result=1;
 
     // ----- Look if the archive_to_add exists
-    if (!is_file($p_archive_to_add->zipname))
+    if (!FileInfo::isTypeFile($p_archive_to_add->zipname))
     {
 
       // ----- Nothing to merge, so merge is a success
@@ -5061,7 +5063,7 @@
     }
 
     // ----- Look if the archive exists
-    if (!is_file($this->zipname))
+    if (!FileInfo::isTypeFile($this->zipname))
     {
 
       // ----- Do a duplicate
@@ -5235,7 +5237,7 @@
     $v_result=1;
 
     // ----- Look if the $p_archive_filename exists
-    if (!is_file($p_archive_filename))
+    if (!FileInfo::isTypeFile($p_archive_filename))
     {
 
       // ----- Nothing to duplicate, so duplicate is a success.

@@ -59,8 +59,8 @@
         } else {
             $forms['path'] = FileInfo::validate($appDirectory->getDirectory() . SP . $forms['name']);
 
-            if (file_exists($forms['path'])) {
-                if (is_dir($forms['path']))
+            if (FileInfo::fileExists($forms['path'])) {
+                if (FileInfo::isTypeDirectory($forms['path']))
                     $appAlert->danger(lng('create.alert.name_is_exists_type_directory'));
                 else
                     $appAlert->danger(lng('create.alert.name_is_exists_type_file'));
@@ -81,7 +81,7 @@
                         $forms['name'] = null;
                     }
                 } else if ($forms['type'] === TYPE_FILE) {
-                    if (@file_put_contents($forms['path'], '#') === false) {
+                    if (FileInfo::fileWriteContents($forms['path'], '#') === false) {
                         $appAlert->danger(lng('create.alert.create_file_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
                         $urlGoto = 'index.php';
@@ -148,7 +148,7 @@
                     </ul>
                 </li>
                 <li class="button">
-                    <button type="submit" name="create">
+                    <button type="submit" name="create" id="button-save-on-javascript">
                         <span><?php echo lng('create.form.button.create'); ?></span>
                     </button>
                     <button type="submit" name="create_and_continue">

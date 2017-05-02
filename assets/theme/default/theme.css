@@ -45,7 +45,7 @@ select {
     border-bottom: 2px solid #e0e0e0;
     padding: 10px;
     width: 100%;
-    height: 40px;
+    height: 45px;
     outline: 0;
 }
 
@@ -85,7 +85,7 @@ div.select {
 div.select::before {
     color: #c0c0c0;
     font-size: 18px;
-    line-height: 40px;
+    line-height: 45px;
     position: absolute;
     top: 0;
     right: 10px;
@@ -796,10 +796,20 @@ div.form-action form > ul > li.select select {
 
 div.form-action form > ul > li.input span,
 div.form-action form > ul > li.textarea span,
-div.form-action form > ul > li.select span {
+div.form-action form > ul > li.select span,
+div.form-action form > ul > li.checkbox > span:first-child {
     color: #00897b;
     font-size: 14px;
     font-weight: normal;
+}
+
+div.form-action form > ul > li.checkbox > span:first-child {
+    display: block;
+    margin-bottom: 15px;
+}
+
+div.form-action form > ul > li.checkbox > span:first-child + ul {
+    margin-left: 15px;
 }
 
 div.form-action form > ul > li.input-chmod {
@@ -947,7 +957,9 @@ div.form-action form > ul > li.accept strong {
     color: #e53935;
 }
 
-div.form-action form > ul > li.button {
+div.form-action form > ul > li.button,
+div.button-action-box,
+li.button-action-box {
     margin-top: 20px;
     height: 30px;
     width: 100%;
@@ -957,7 +969,9 @@ div.form-action form > ul > li.button {
     white-space: nowrap;
 }
 
-div.form-action form > ul > li.button button {
+div.form-action form > ul > li.button button,
+div.button-action-box button,
+li.button-action-box button {
     background-color: transparent;
     display: inline-block;
     border: 0;
@@ -969,17 +983,23 @@ div.form-action form > ul > li.button button {
     padding-right: 5px;
 }
 
-div.form-action form > ul > li.button button span {
+div.form-action form > ul > li.button button span,
+div.button-action-box button span,
+li.button-action-box button span {
     color: #00897b;
     font-size: 14px;
     font-weight: normal;
 }
 
-div.form-action form > ul > li.button button:hover span {
+div.form-action form > ul > li.button button:hover span,
+div.button-action-box button:hover span,
+li.button-action-box button:hover span {
     color: #00a99b;
 }
 
-div.form-action form > ul > li.button > a {
+div.form-action form > ul > li.button > a,
+div.button-action-box > a,
+li.button-action-box > a {
     display: inline-block;
     background-color: transparent;
     height: 30px;
@@ -990,11 +1010,17 @@ div.form-action form > ul > li.button > a {
 }
 
 div.form-action form > ul > li.button button:hover,
-div.form-action form > ul > li.button > a:hover {
+div.form-action form > ul > li.button > a:hover,
+div.button-action-box button:hover,
+div.button-action-box > a:hover,
+li.button-action-box button:hover,
+li.button-action-box > a:hover {
     background-color: #f0f0f0;
 }
 
-div.form-action form > ul > li.button > a span {
+div.form-action form > ul > li.button > a span,
+div.button-action-box > a span,
+li.button-action-box > a span {
     color: #404040;
     font-weight: normal;
     font-variant: normal;
@@ -1002,6 +1028,8 @@ div.form-action form > ul > li.button > a span {
     line-height: 30px;
 }
 
-div.form-action form > ul > li.button > a:hover span {
+div.form-action form > ul > li.button > a:hover span,
+div.button-action-box > a:hover span,
+li.button-action-box > a:hover span {
     color: #00897b;
 }

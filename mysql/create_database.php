@@ -77,7 +77,7 @@
                     </div>
                 </li>
                 <li class="button">
-                    <button type="submit" name="create">
+                    <button type="submit" name="create" id="button-save-on-javascript">
                         <span><?php echo lng('mysql.create_database.form.button.create'); ?></span>
                     </button>
                     <a href="list_database.php">

@@ -80,7 +80,7 @@
             $appAlert->danger(lng('file_unzip.alert.not_input_path_unzip'));
         } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP) {
             $appAlert->danger(lng('file_unzip.alert.exists_func_not_validate'));
-        } else if (@is_dir(FileInfo::validate($forms['path'])) == false) {
+        } else if (FileInfo::isTypeDirectory(FileInfo::validate($forms['path'])) == false) {
             $appAlert->danger(lng('file_unzip.alert.path_unzip_not_exists'));
         } else if (FileInfo::permissionDenyPath($forms['path'])) {
             $appAlert->danger(lng('file_unzip.alert.not_unzip_file_to_directory_app'));
@@ -104,9 +104,9 @@
                 } else if ($forms['exists_func'] === EXISTS_FUNC_SKIP) {
                 	$isHasFileSkip = true;
 
-                	if ($header['folder'] == true && is_dir($filePath))
+                	if ($header['folder'] == true && FileInfo::isTypeDirectory($filePath))
                 		return 0;
-                	else if ($header['folder'] == false && is_file($filePath))
+                	else if ($header['folder'] == false && FileInfo::isTypeFile($filePath))
                 		return 0;
                 	else
                 		$isHasFileSkip = false;
@@ -143,7 +143,7 @@
     if ($appFileUnzip->isSession()) {
         $isChooseDirectoryPathFailed = true;
 
-        if (is_dir($appFileUnzip->getPath()) == false) {
+        if (FileInfo::isTypeDirectory($appFileUnzip->getPath()) == false) {
             $appAlert->danger(lng('file_unzip.alert.path_unzip_not_exists'), $idAlert);
         } else {
             $forms['path']               = $appFileUnzip->getPath();
@@ -198,7 +198,7 @@
                     </ul>
                 </li>
                 <li class="button">
-                    <button type="submit" name="unzip">
+                    <button type="submit" name="unzip" id="button-save-on-javascript">
                         <span><?php echo lng('file_unzip.form.button.unzip'); ?></span>
                     </button>
                     <button type="submit" name="browser">

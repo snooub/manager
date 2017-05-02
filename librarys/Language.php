@@ -3,6 +3,7 @@
     namespace Librarys;
 
     use Librarys\Environment;
+    use Librarys\File\FileInfo;
 
     final class Language
     {
@@ -141,8 +142,8 @@
                     $path = $container . SP . $locale . SP . $value;
 
                     // Check file in locale set of user is exists
-                    if (is_dir($path) == false) {
-                        if (is_file($path . $mime)) {
+                    if (FileInfo::isTypeDirectory($path) == false) {
+                        if (FileInfo::isTypeFile($path . $mime)) {
                             $path .= $mime;
                             $key   = $locale . '.' . $value;
 
@@ -152,8 +153,8 @@
                             $path   = $container . SP . $locale . SP . $value;
 
                             // Check file in locale default is exists
-                            if (is_dir($path) == false) {
-                                if (is_file($path . $mime) == false) {
+                            if (FileInfo::isTypeDirectory($path) == false) {
+                                if (FileInfo::isTypeFile($path . $mime) == false) {
                                     return trigger_error('File name "' . $filename . '" not found');
                                 } else {
                                     $path .= $mime;
@@ -168,9 +169,9 @@
                     } else {
                         $key = $locale . '.' . $value;
                     }
-                } else if (is_dir($path . SP . $value)) {
+                } else if (FileInfo::isTypeDirectory($path . SP . $value)) {
                     $path .= SP . $value;
-                } else if (is_file($path . SP . $value . $mime)) {
+                } else if (FileInfo::isTypeFile($path . SP . $value . $mime)) {
                     $path .= SP . $value . $mime;
                     $key  .= '.' . $value;
 
@@ -184,7 +185,7 @@
 
             if (array_key_exists($key, self::$instance->lang))
                 $array = self::$instance->lang[$key];
-            else if ($path != null && is_file($path))
+            else if ($path != null && FileInfo::isTypeFile($path))
                 self::$instance->lang[$key] = ($array = require_once($path));
             else
                 return trigger_error('File language "' . $filename . '" not found');

@@ -1,6 +1,8 @@
 <?php
 
+    use Librarys\App\AppDirectory;
     use Librarys\File\FileInfo;
+    use Librarys\Database\DatabaseConnect;
 
     define('LOADED', 1);
     require_once('global.php');
@@ -17,19 +19,20 @@
 
     // Clone in phpmyadmin
     $fetchAssoc = $appMysqlConnect->fetchAssoc(
-        'SELECT `schemata`.*,
-                COUNT(`tables`.`TABLE_SCHEMA`)  AS `SCHEMA_TABLES`,
-                SUM(`tables`.`TABLE_ROWS`)      AS `SCHEMA_TABLE_ROWS`,
-                SUM(`tables`.`DATA_LENGTH`)     AS `SCHEMA_DATA_LENGTH`,
-                SUM(`tables`.`MAX_DATA_LENGTH`) AS `SCHEMA_MAX_DATA_LENGTH`,
-                SUM(`tables`.`INDEX_LENGTH`)    AS `SCHEMA_INDEX_LENGTH`,
-                SUM(`tables`.`DATA_LENGTH` + `tables`.`INDEX_LENGTH`)
-                                                AS `SCHEMA_LENGTH`,
-                SUM(`tables`.`DATA_FREE`)       AS `SCHEMA_DATA_FREE`
-        FROM      `information_schema`.`SCHEMATA` `schemata`
-        LEFT JOIN `information_schema`.`TABLES` `tables`
-        ON        BINARY `tables`.`TABLE_SCHEMA` = BINARY `schemata`.`SCHEMA_NAME`
-        WHERE     `schemata`.`SCHEMA_NAME`="' . $appMysqlConnect->getName() . '"'
+        'SELECT `' . DatabaseConnect::TABLE_SCHEMATA_INFORMATION . '`.*, ' .
+                'COUNT(`tables`.`TABLE_SCHEMA`)  AS `SCHEMA_TABLES`, ' .
+                'SUM(`tables`.`TABLE_ROWS`)      AS `SCHEMA_TABLE_ROWS`, ' .
+                'SUM(`tables`.`DATA_LENGTH`)     AS `SCHEMA_DATA_LENGTH`, ' .
+                'SUM(`tables`.`MAX_DATA_LENGTH`) AS `SCHEMA_MAX_DATA_LENGTH`, ' .
+                'SUM(`tables`.`INDEX_LENGTH`)    AS `SCHEMA_INDEX_LENGTH`, ' .
+                'SUM(`tables`.`DATA_LENGTH` + `tables`.`INDEX_LENGTH`) ' .
+                                                'AS `SCHEMA_LENGTH`, ' .
+                'SUM(`tables`.`DATA_FREE`)       AS `SCHEMA_DATA_FREE` ' .
+
+        'FROM      `' . DatabaseConnect::DATABASE_INFORMATION . '`.`SCHEMATA` `schemata` ' .
+        'LEFT JOIN `' . DatabaseConnect::DATABASE_INFORMATION . '`.`TABLES` `tables` ' .
+        'ON        `tables`.`TABLE_SCHEMA` = `schemata`.`SCHEMA_NAME` ' .
+        'WHERE     `schemata`.`SCHEMA_NAME`="' . $appMysqlConnect->getName() . '"'
     );
 
     $fetchAssoc['SCHEMA_TABLES']       = intval($fetchAssoc['SCHEMA_TABLES']);
@@ -37,6 +40,54 @@
     $fetchAssoc['SCHEMA_DATA_LENGTH']  = intval($fetchAssoc['SCHEMA_DATA_LENGTH']);
     $fetchAssoc['SCHEMA_INDEX_LENGTH'] = intval($fetchAssoc['SCHEMA_INDEX_LENGTH']);
     $fetchAssoc['SCHEMA_LENGTH']       = intval($fetchAssoc['SCHEMA_LENGTH']);
+
+    $keys = [
+        'SCHEMA_TABLES' => [
+            'default' => 0,
+            'func'    => 'intval'
+        ],
+
+        'SCHEMA_TABLE_ROWS' => [
+            'default' => 0,
+            'func'    => 'intval'
+        ],
+
+        'SCHEMA_DATA_LENGTH' => [
+            'default' => 0,
+            'func'    => 'intval'
+        ],
+
+        'SCHEMA_INDEX_LENGTH' => [
+            'default' => 0,
+            'func'    => 'intval'
+        ],
+
+        'SCHEMA_LENGTH' => [
+            'default' => 0,
+            'func'    => 'intval'
+        ]
+    ];
+
+    foreach ($keys AS $key => $options) {
+        if (isset($fetchAssoc[$key]) == false) {
+            if ($options == null)
+                $fetchAssoc[$key] = null;
+            else
+                $fetchAssoc[$key] = $options['default'];
+        }
+
+        if ($options != null)
+            $fetchAssoc[$key] = $options['func']($fetchAssoc[$key]);
+    }
+
+    $urlBack = 'list_database.php';
+
+    if (isset($_GET[PARAMETER_IS_REFERER_LIST_TABLE]) && empty($_GET[PARAMETER_IS_REFERER_LIST_TABLE]) == false) {
+        if (intval($_GET[PARAMETER_IS_REFERER_LIST_TABLE]) === 1) {
+            $urlBack  = 'list_table.php?';
+            $urlBack .= PARAMETER_DATABASE_URL . '=' . AppDirectory::rawEncode($appMysqlConnect->getName());
+        }
+    }
 ?>
 
     <?php echo $appAlert->display(); ?>
@@ -66,6 +117,11 @@
                 <li><span><?php echo FileInfo::sizeToString($fetchAssoc['SCHEMA_INDEX_LENGTH']); ?></span></li>
                 <li><span><?php echo FileInfo::sizeToString($fetchAssoc['SCHEMA_LENGTH']); ?></span></li>
             </ul>
+        </li>
+        <li class="button-action-box">
+            <a href="<?php echo $urlBack; ?>">
+                <span><?php echo lng('mysql.info_database.button.cancel'); ?></span>
+            </a>
         </li>
     </ul>
 

@@ -19,8 +19,10 @@
         private $prefix;
         private $encoding;
 
-        const DATABASE_INFOMATION = 'information_schema';
+        const DATABASE_INFORMATION = 'information_schema';
         const DATABASE_MYSQL      = 'mysql';
+
+        const TABLE_SCHEMATA_INFORMATION = 'schemata';
 
 		public function __construct(Boot $boot)
 		{

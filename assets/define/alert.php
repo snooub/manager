@@ -24,9 +24,11 @@
     define('ALERT_MYSQL_HOME',            'alert_mysql_home');
     define('ALERT_MYSQL_LIST_DATABASE',   'alert_mysql_list_database');
     define('ALERT_MYSQL_LIST_TABLE',      'alert_mysql_list_table');
+    define('ALERT_MYSQL_LIST_COLUMN',     'alert_mysql_list_column');
     define('ALERT_MYSQL_CREATE_DATABASE', 'alert_mysql_create_database');
     define('ALERT_MYSQL_DELETE_DATABASE', 'alert_mysql_delete_database');
     define('ALERT_MYSQL_INFO_DATABASE',   'alert_mysql_info_database');
+    define('ALERT_MYSQL_INFO_TABLE',      'alert_mysql_info_table');
     define('ALERT_MYSQL_CREATE_TABLE',    'alert_mysql_create_table');
 
 ?>

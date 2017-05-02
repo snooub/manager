@@ -3,6 +3,7 @@
     namespace Librarys\App;
 
     use Librarys\Boot;
+    use Librarys\File\FileInfo;
 
     final class AppAlert
     {
@@ -23,7 +24,7 @@
         {
             $this->boot = $boot;
 
-            if (is_file($alertDefine))
+            if (FileInfo::isTypeFile($alertDefine))
                 require_once($alertDefine);
         }
 

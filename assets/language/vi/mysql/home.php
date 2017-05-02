@@ -38,7 +38,12 @@
             'mysql_write_config_failed' => 'Viết cấu hình cơ sở dữ liệu thất bại',
 
             'disconnect_failed'  => 'Ngắt kết nối thất bại',
-            'disconnect_success' => 'Ngắt kết nối thành công'
+            'disconnect_success' => 'Ngắt kết nối thành công',
+
+            'mysql_database_not_exists'      => 'Cơ sở dữ liệu không tồn tại',
+            'mysql_database_name_not_exists' => 'Cơ sở dữ liệu <strong>{$name}</strong> không tồn tại',
+            'mysql_table_not_exists'         => 'Bảng không tồn tại trong cơ sở dữ liệu <strong>{$database}</strong>',
+            'mysql_table_name_not_exists'    => 'Bảng <strong>{$table}</strong> không tồn tại trong cơ sở dữ liệu <strong>{$database}</strong>'
         ],
 
         'menu_action' => [

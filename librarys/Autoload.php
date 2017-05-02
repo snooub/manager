@@ -2,6 +2,13 @@
 
     namespace Librarys;
 
+    if (defined('SP') == false)
+        define('SP', DIRECTORY_SEPARATOR);
+
+    require_once('File' . SP . 'FileInfo.php');
+
+    use Librarys\File\FileInfo;
+
     final class Autoload
     {
 
@@ -64,7 +71,7 @@
 
             $absolute = $path . env('app.autoload.prefix_class_mime');
 
-            if (is_file(env('app.path.librarys') . SP . $absolute))
+            if (FileInfo::isTypeFile(env('app.path.librarys') . SP . $absolute))
                 return env('app.path.librarys') . SP . $absolute;
 
             return false;

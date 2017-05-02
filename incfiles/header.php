@@ -22,12 +22,16 @@
         <link rel="icon" type="image/png" href="<?php echo env('resource.icon.favicon_png'); ?>"/>
         <link rel="icon" type="image/x-icon" href="<?php echo env('resource.icon.favicon_ico'); ?>"/>
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo env('resource.icon.favicon_ico'); ?>"/>
+        <script type="text/javascript" src="<?php echo env('resource.javascript.on_load'); ?>"></script>
 
         <?php if (isset($scripts) && is_array($scripts)) { ?>
             <?php foreach ($scripts AS $entry) { ?>
                 <script type="text/javascript" src="<?php echo $entry; ?>?rand=<?php echo rand(1000, 9000); ?>"></script>
             <?php } ?>
             <?php unset($scripts); ?>
+        <?php } ?>
+        <?php if ($appConfig->get('enable_disable.button_save_on_javascript') == true) { ?>
+            <script type="text/javascript" src="<?php echo env('resource.javascript.button_save_on_javascript'); ?>"></script>
         <?php } ?>
     </head>
     <body>

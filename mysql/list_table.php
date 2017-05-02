@@ -3,8 +3,9 @@
     use Librarys\App\AppDirectory;
     use Librarys\File\FileInfo;
 
-    define('LOADED',           1);
-    define('MYSQL_LIST_TABLE', 1);
+    define('LOADED',               1);
+    define('MYSQL_LIST_TABLE',     1);
+    define('DATABASE_CHECK_MYSQL', 1);
 
     require_once('global.php');
 
@@ -31,7 +32,9 @@
     <ul class="list-database">
         <?php if ($appMysqlConnect->isDatabaseNameCustom()) { ?>
             <li class="back">
-                <span class="icomoon icon-mysql"></span>
+                <a href="info_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>&<?php echo PARAMETER_IS_REFERER_LIST_TABLE; ?>=1">
+                    <span class="icomoon icon-mysql"></span>
+                </a>
                 <a href="list_database.php">
                     <strong><?php echo $appMysqlConnect->getName(); ?></strong>
                 </a>
@@ -48,19 +51,23 @@
             <?php $indexAssoc = 0; ?>
 
             <?php while (($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery))) { ?>
+                <?php $urlParameterTable  = '?' . PARAMETER_DATABASE_URL . '=' . AppDirectory::rawEncode($appMysqlConnect->getName()); ?>
+                <?php $urlParameterTable .= '&' . PARAMETER_TABLE_URL    . '=' . AppDirectory::rawEncode($mysqlAssoc['Name']); ?>
                 <?php $indexAssoc++; ?>
 
                 <li class="type-table<?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0)  { ?> entry-odd<?php } ?>">
                     <div class="icon">
-                        <span class="icomoon icon-table"></span>
+                        <a href="info_table.php<?php echo $urlParameterTable; ?>">
+                            <span class="icomoon icon-table"></span>
+                        </a>
                     </div>
-                    <a href="#" class="name">
+                    <a href="list_column.php<?php echo $urlParameterTable; ?>" class="name">
                         <span><?php echo $mysqlAssoc['Name']; ?></span>
                     </a>
                     <div class="info">
                         <span><?php echo FileInfo::sizeToString($mysqlAssoc['Index_length']); ?></span><span>,</span>
-                        <?php if ($mysqlAssoc['Rows'] === 0) { ?>
-                            <?php $mysqlAssoc['Rows'] = $appMysqlConnect->numRows('SHOW COLUMNS FORM `' . addslashes($mysqlAssoc['Name']) . '`'); ?>
+                        <?php if ($mysqlAssoc['Rows'] <= 0) { ?>
+                            <?php $mysqlAssoc['Rows'] = $appMysqlConnect->numRows('SHOW COLUMNS FROM `' . addslashes($mysqlAssoc['Name']) . '`'); ?>
                         <?php } ?>
 
                         <span><?php echo $mysqlAssoc['Rows']; ?> <?php echo lng('mysql.list_table.column_count'); ?></span>

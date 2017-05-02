@@ -89,7 +89,7 @@
                 $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
             else
                 $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'));
-        } else if (@is_dir(FileInfo::validate($forms['path'])) == false) {
+        } else if (FileInfo::isTypeDirectory(FileInfo::validate($forms['path'])) == false) {
             $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'));
         } else if (FileInfo::permissionDenyPath($forms['path'])) {
             $appAlert->danger(lng('file_copy.alert.not_copy_file_to_directory_app'));
@@ -153,7 +153,7 @@
             if (isset($_SERVER['HTTP_REFERER']) && strpos(strtolower($_SERVER['HTTP_REFERER']), 'index.php') !== false)
                 $idAlert = ALERT_INDEX;
 
-            if (is_dir($appFileCopy->getPath()) == false) {
+            if (FileInfo::isTypeDirectory($appFileCopy->getPath()) == false) {
                 $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'), $idAlert);
             } else if ($appFileCopyPathSrc == $appFileCopyPathDest) {
                 if ($idAlert !== ALERT_INDEX) {
@@ -248,7 +248,7 @@
                     </ul>
                 </li>
                 <li class="button">
-                    <button type="submit" name="copy">
+                    <button type="submit" name="copy" id="button-save-on-javascript">
                         <span><?php echo lng('file_copy.form.button.copy'); ?></span>
                     </button>
                     <button type="submit" name="browser">

@@ -77,9 +77,9 @@
                 $sessionStart = session_id() !== '';
 
             if ($sessionStart == false) {
-                session_name(env('app.session.name',                         session_name()));
-                session_cache_limiter(env('app.session.cache_limiter',       session_cache_limiter()));
-                session_cache_expire(env('app.session.cache_expire',         session_cache_expire()));
+                session_name         (env('app.session.name',          session_name()));
+                session_cache_limiter(env('app.session.cache_limiter', session_cache_limiter()));
+                session_cache_expire (env('app.session.cache_expire',  session_cache_expire()));
 
                 session_set_cookie_params(
                     env('app.session.cookie_lifetime', ini_get('session.cookie_lifetime')),
@@ -105,7 +105,7 @@
                     env('error.handler')  .
                     env('error.mime');
 
-            /*if (is_file($path)) {
+            /*if (FileInfo::isTypeFile($path)) {
                 if ($title == null)
                     $title = $label;
 

@@ -78,7 +78,7 @@
     $edits['page']['end_loop']   = 0;
 
     if ($edits['path'] != null)
-        $edits['content'] = @file_get_contents($edits['path']);
+        $edits['content'] = FileInfo::fileReadContents($edits['path']);
 
     if (isset($_POST['save'])) {
         if ($edits['page']['max'] > 0) {
@@ -118,7 +118,7 @@
             $edits['content'] = str_replace("\r",   "\n", $edits['content']);
         }
 
-        if (@file_put_contents($edits['path'], $edits['content']) !== false)
+        if (FileInfo::fileWriteContents($edits['path'], $edits['content']) !== false)
             $appAlert->success(lng('file_edit_text.alert.save_text_success'));
         else
             $appAlert->danger(lng('file_edit_text.alert.save_text_failed'));
@@ -169,7 +169,7 @@
             <?php } ?>
         </div>
         <?php $appParameter->add(PARAMETER_PAGE_EDIT, $edits['page']['current'], $edits['page']['current'] > 1); ?>
-        <form action="file_edit_text.php<?php echo $appParameter->toString(true); ?>" method="post">
+        <form action="file_edit_text.php<?php echo $appParameter->toString(true); ?>" method="post" id="form-file-edit-javascript">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul>
@@ -183,7 +183,7 @@
                     </li>
                 <?php } ?>
                 <li class="button">
-                    <button type="submit" name="save">
+                    <button type="submit" name="save" id="button-save-on-javascript">
                         <span><?php echo lng('file_edit_text.form.button.save'); ?></span>
                     </button>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">

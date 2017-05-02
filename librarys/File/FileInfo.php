@@ -16,23 +16,23 @@
 
 		public function isFile()
 		{
-			return is_file($this->filePath);
+			return self::isTypeFile($this->filePath);
 		}
 
 		public function isDirectory()
 		{
-			return is_dir($this->filePath);
+			return self::isTypeDirectory($this->filePath);
 		}
 
 		public function readFile()
 		{
-			readfile($this->filePath);
+			return @readfile($this->filePath);
 		}
 
 		public function setFilePath($filePath, $receiverMime = true)
 		{
 			$this->filePath = separator($filePath, SP);
-			$this->fileExt  = FileInfo::extFile($this->getFileName());
+			$this->fileExt  = self::extFile($this->getFileName());
 
             if (empty($this->fileExt))
                 $this->fileExt = null;
@@ -66,7 +66,7 @@
 
         public function getFileSize()
         {
-            return filesize($this->filePath);
+            return self::fileSize($this->filePath);
         }
 
         public static function isNameError($name)
@@ -132,7 +132,7 @@
 
                     if (self::permissionDenyPath($path)) {
                         $isHasFileAppPermission = true;
-                    } else if (is_file($path)) {
+                    } else if (self::isTypeFile($path)) {
                         $file = $parent . SP . $entry;
 
                         if (id_file($file))
@@ -147,10 +147,10 @@
 
                         if ($move)
                             self::unlink($path);
-                    } else if (is_dir($path)) {
+                    } else if (self::isTypeDirectory($path)) {
                         $file = $parent . SP . $entry;
 
-                        if (is_dir($file))
+                        if (self::isTypeDirectory($file))
                             $file = $callbackIsFileExists($parent, $entry, true);
 
                         // If file is null skip file
@@ -165,18 +165,18 @@
                 }
 
                 return true;
-            } else if (is_file($old)) {
+            } else if (self::isTypeFile($old)) {
                 if (self::permissionDenyPath($old) || self::permissionDenyPath($new)) {
                     $isHasFileAppPermission = true;
                 } else {
-                    if (is_file($new)) {
+                    if (self::isTypeFile($new)) {
                         $separatorLastIndex = strrpos($new, SP);
 
                         if ($separatorLastIndex === false)
                             return false;
 
-                        $directory          = substr($new, 0, $separatorLastIndex);
-                        $filename           = substr($new, $separatorLastIndex + 1);
+                        $directory = substr($new, 0, $separatorLastIndex);
+                        $filename  = substr($new, $separatorLastIndex + 1);
 
                         $new = $callbackIsFileExists($directory, $filename, false);
                     }
@@ -192,7 +192,7 @@
                 }
 
                 return true;
-            } else if (is_dir($old)) {
+            } else if (self::isTypeDirectory($old)) {
                 if (self::permissionDenyPath($old) || self::permissionDenyPath($new)) {
                     $isHasFileAppPermission = true;
                 } else {
@@ -200,10 +200,10 @@
 
                     if ($handle !== false) {
                         if (($parent && $old != SP) || $parent == false) {
-                            if (is_file($new))
+                            if (self::isTypeFile($new))
                                 return false;
 
-                            if (is_dir($new) == false) {
+                            if (self::isTypeDirectory($new) == false) {
                                 $separatorLastIndex = strrpos($new, SP);
 
                                 if ($separatorLastIndex === false)
@@ -217,7 +217,7 @@
                             if ($new == null)
                                 return true;
 
-                            if (is_dir($new) == false && @mkdir($new) == false)
+                            if (self::isTypeDirectory($new) == false && @mkdir($new) == false)
                                 return false;
                         }
 
@@ -226,8 +226,8 @@
                                 $source = $old . SP . $entry;
                                 $dest   = $new . SP . $entry;
 
-                                if (is_file($source)) {
-                                    if (is_file($dest))
+                                if (self::isTypeFile($source)) {
+                                    if (self::isTypeFile($dest))
                                         $dest = $callbackIsFileExists($new, $entry, false);
 
                                     if ($dest == null)
@@ -238,8 +238,8 @@
 
                                     if ($move)
                                         self::unlink($source);
-                                } else if (is_dir($source)) {
-                                    if (is_dir($dest))
+                                } else if (self::isTypeDirectory($source)) {
+                                    if (self::isTypeDirectory($dest))
                                         $dest = $callbackIsFileExists($new, $entry, true);
 
                                     if ($dest == null)
@@ -378,14 +378,14 @@
                 foreach ($path AS $entry) {
                     $filename = $directory . DS . $entry;
 
-                    if (is_readable($filename)) {
+                    if (self::isReadable($filename)) {
                         return false;
                     } else if (self::permissionDenyPath($filename)) {
                         $isHasFileAppPermission = true;
-                    } else if (is_file($filename)) {
+                    } else if (self::isTypeFile($filename)) {
                         if (self::unlink($filename) == false)
                             return false;
-                    } else if (is_dir($filename)) {
+                    } else if (self::isTypeDirectory($filename)) {
                         if (self::rrmdir($filename, null, $isHasFileAppPermission) == false)
                             return false;
                     } else {
@@ -394,7 +394,7 @@
                 }
 
                 return true;
-            } else if (is_readable($path) && is_file($path)) {
+            } else if (self::isReadable($path) && self::isTypeFile($path)) {
                 return self::unlink($path);
             } else {
                 $handle = @scandir($path);
@@ -406,15 +406,15 @@
                         if ($entry != '.' && $entry != '..') {
                             $filename = $path . SP . $entry;
 
-                            if (is_readable($filename) == false) {
+                            if (self::isReadable($filename) == false) {
                                 return false;
                             } else if (self::permissionDenyPath($filename)) {
                                 $isHasFileAppPermission        = true;
                                 $directoryCurrentHasPermission = true;
-                            } else if (is_file($filename)) {
+                            } else if (self::isTypeFile($filename)) {
                                 if (self::unlink($filename) == false)
                                     return false;
-                            } else if (is_dir($filename)) {
+                            } else if (self::isTypeDirectory($filename)) {
                                 if (self::rrmdir($filename, null, $isHasFileAppPermission) == false)
                                     return false;
                             } else {
@@ -496,10 +496,10 @@
             if (class_exists('PclZip') == false)
                 @include_once('pclzip.php');
 
-            if (@is_dir($file))
+            if (self::isTypeDirectory($file))
                 return false;
 
-            if (@is_file($file) && $override == false)
+            if (self::isTypeFile($file) && $override == false)
                 self::unlink($file);
 
             $object = new PclZip($file);
@@ -528,7 +528,7 @@
 
         public static function fileExists($path)
         {
-            return file_exists($path);
+            return @file_exists($path);
         }
 
         /**
@@ -582,6 +582,107 @@
             }
 
             return $perms;
+        }
+
+        public static function fileSize($path)
+        {
+            return @filesize($path);
+        }
+
+        public static function scanDirectory($directory)
+        {
+            return @scandir($directory);
+        }
+
+        public static function isTypeFile($path)
+        {
+            return @is_file($path);
+        }
+
+        public static function isTypeDirectory($path)
+        {
+            return @is_dir($path);
+        }
+
+        public static function isLink($path)
+        {
+            return @is_link($path);
+        }
+
+        public static function isReadable($path)
+        {
+            return @is_readable($path);
+        }
+
+        public static function isWriteable($path)
+        {
+            return @is_writeable($path);
+        }
+
+        public static function isExecutable($path)
+        {
+            return @is_executable($path);
+        }
+
+        public static function fileOpen($path, $mode)
+        {
+            return @fopen($path, $mode);
+        }
+
+        public static function fileClose($handle)
+        {
+            return @fclose($handle);
+        }
+
+        public static function fileRead($handle, $length)
+        {
+            return @fread($handle, $length);
+        }
+
+        public static function fileWrite($handle, $string, $length = null)
+        {
+            if ($string == null)
+                $string = '';
+
+            if ($length == null)
+                $length = strlen($string);
+
+            return @fwrite($handle, $string, $length);
+        }
+
+        public static function fileFlush($handle)
+        {
+            return @fflush($handle);
+        }
+
+        public static function fileReadContents($path)
+        {
+            if (($handle = self::fileOpen($path, 'r')) !== false) {
+                if (($data = self::fileRead($handle, self::fileSize($path))) !== false) {
+                    self::fileClose($handle);
+                    return $data;
+                }
+
+                self::fileClose($handle);
+            }
+
+            return false;
+        }
+
+        public static function fileWriteContents($path, $buffer)
+        {
+            if (($handle = self::fileOpen($path, 'w+')) !== false) {
+                if (self::fileWrite($handle, $buffer) !== false) {
+                    self::fileFlush($handle);
+                    self::fileClose($handle);
+
+                    return true;
+                }
+
+                self::fileClose($handle);
+            }
+
+            return false;
         }
 
 	}

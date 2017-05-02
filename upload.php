@@ -72,8 +72,8 @@
                         $appAlert->danger(lng('upload.alert.file_error_max_size', 'filemame', $file['name']));
                     } else {
                         $path        = FileInfo::validate($appDirectory->getDirectory() . SP . $file['name']);
-                        $isDirectory = is_dir($path);
-                        $isFile      = is_file($path);
+                        $isDirectory = FileInfo::isTypeDirectory($path);
+                        $isFile      = FileInfo::isTypeFile($path);
 
                         if ($isDirectory && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
                             $appAlert->danger(lng('upload.alert.path_file_error_is_directory', 'filename', $file['name']));
@@ -170,10 +170,10 @@
                 </li>
 
                 <li class="button">
-                    <button type="button" onclick="javasctipt:onAddMoreInputFile('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');">
+                    <button type="button" onclick="javasctipt:CustomInputFile.onAddMoreInputFile('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');">
                         <span><?php echo lng('upload.form.button.more'); ?></span>
                     </button>
-                    <button type="submit" name="upload">
+                    <button type="submit" name="upload" id="button-save-on-javascript">
                         <span><?php echo lng('upload.form.button.upload'); ?></span>
                     </button>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">

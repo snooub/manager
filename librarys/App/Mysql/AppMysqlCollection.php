@@ -26,7 +26,7 @@
             if ($appMysqlConnect == null)
                 return;
 
-            $query = new DatabaseQuery($appMysqlConnect, DatabaseQuery::COMMAND_SELECT, DatabaseConnect::DATABASE_INFOMATION . '.' . self::COLLECTION_TABLE);
+            $query = new DatabaseQuery($appMysqlConnect, DatabaseQuery::COMMAND_SELECT, DatabaseConnect::DATABASE_INFORMATION . '.' . self::COLLECTION_TABLE);
 
             if ($query->query()) {
                 self::$array = array();

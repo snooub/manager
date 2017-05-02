@@ -155,7 +155,7 @@
                     </ul>
                 </li>
                 <li class="button">
-                    <button type="submit" name="chmod">
+                    <button type="submit" name="chmod" id="button-save-on-javascript">
                         <span><?php echo lng('file_chmod.form.button.chmod'); ?></span>
                     </button>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">

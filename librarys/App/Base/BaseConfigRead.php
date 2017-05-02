@@ -86,17 +86,17 @@
 
                 $this->pathConfig = FileInfo::validate($directory . SP . md5($username));
 
-                if (is_dir($directory) == false)
+                if (FileInfo::isTypeDirectory($directory) == false)
                     $isMkdir = @mkdir($directory);
 
                 if ($isMkdir) {
-                    if (is_dir($this->pathConfig) == false)
+                    if (FileInfo::isTypeDirectory($this->pathConfig) == false)
                         $isMkdir = @mkdir($this->pathConfig);
 
                     if ($isMkdir) {
                         $this->pathConfig = FileInfo::validate($this->pathConfig . SP . $this->fileConfigName);
 
-                        if (is_file($this->pathConfig))
+                        if (FileInfo::isTypeFile($this->pathConfig))
                             return $this->parse();
                     }
                 }
@@ -112,15 +112,15 @@
             $path = $this->pathConfig;
 
             if ($parseSystem == false) {
-                if (is_null($path) || is_file($path) == false)
+                if (is_null($path) || FileInfo::isTypeFile($path) == false)
                     $path = $this->pathConfigSystem;
 
-                if (is_file($path) == false)
+                if (FileInfo::isTypeFile($path) == false)
                     return;
             } else {
                 $path = $this->pathConfigSystem;
 
-                if (is_null($path) && is_file($path) == false)
+                if (is_null($path) && FileInfo::isTypeFile($path) == false)
                     return;
             }
 
@@ -128,6 +128,12 @@
                 $this->configSystemArray = require($path);
             else
                 $this->configArray = require($path);
+
+            if (is_array($this->configSystemArray) == false)
+                $this->configSystemArray = array();
+
+            if (is_array($this->configArray) == false)
+                $this->configArray = array();
         }
 
         public function set($name, $value)
@@ -254,7 +260,7 @@
 
         public function requireEnvProtected($path)
         {
-            if (is_file($path) == false)
+            if (FileInfo::isTypeFile($path) == false)
                 return false;
 
             $envProtecteds = require($path);

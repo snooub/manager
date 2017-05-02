@@ -10,12 +10,16 @@
                 'paging_file_edit_text'      => 'Phân trang sửa văn bản:',
                 'paging_file_edit_text_line' => 'Phân trang sửa văn bản theo dòng:',
 
-                'enable_forgot_password'                => 'Lấy lại mật khẩu',
-                'enable_auto_redirect_file_rename'      => 'Chuyển hướng khi thay đổi tên tập tin, thư mục',
-                'enable_auto_redirect_file_chmod'       => 'Chuyển hướng khi phân quyền tập tin, thư mục',
-                'enable_auto_redirect_create_directory' => 'Chuyển hướng khi tạo thư mục',
-                'enable_auto_redirect_create_file'      => 'Chuyển hướng khi tạo tập tin',
-                'enable_auto_redirect_create_database'  => 'Chuyển hướng khi tạo cơ sở dữ liệu'
+                'enable_disable_label'                     => 'Bật/Tắt',
+                'enable_forgot_password'                   => 'Lấy lại mật khẩu',
+                'enable_disable_button_save_on_javascript' => 'Phím Ctrl + S để lưu lại',
+
+                'auto_redirect_label'                   => 'Chuyển hướng',
+                'enable_auto_redirect_file_rename'      => 'Khi thay đổi tên tập tin, thư mục',
+                'enable_auto_redirect_file_chmod'       => 'Khi phân quyền tập tin, thư mục',
+                'enable_auto_redirect_create_directory' => 'Khi tạo thư mục',
+                'enable_auto_redirect_create_file'      => 'Khi tạo tập tin',
+                'enable_auto_redirect_create_database'  => 'Khi tạo cơ sở dữ liệu'
             ],
 
             'button' => [

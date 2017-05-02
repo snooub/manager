@@ -35,7 +35,7 @@
                     <span><?php echo lng('mysql.delete_database.form.accept_delete_database', 'name', $appMysqlConnect->getName()); ?></span>
                 </li>
                 <li class="button">
-                    <button type="submit" name="delete">
+                    <button type="submit" name="delete" id="button-save-on-javascript">
                         <span><?php echo lng('mysql.delete_database.form.button.delete'); ?></span>
                     </button>
                     <a href="list_database.php">

@@ -137,7 +137,7 @@
             if ($this->directory == null || empty($this->directory))
                 return false;
 
-            return is_dir($this->directory);
+            return FileInfo::isTypeDirectory($this->directory);
         }
 
         public function isDirectorySeparatorNameExists()
@@ -148,7 +148,7 @@
             if ($this->name == null || empty($this->name))
                 return false;
 
-            return is_dir(FileInfo::validate($this->directory . SP . $this->name));
+            return FileInfo::isTypeDirectory(FileInfo::validate($this->directory . SP . $this->name));
         }
 
         public function isFileSeparatorNameExists()
@@ -159,7 +159,7 @@
             if ($this->name == null || empty($this->name))
                 return false;
 
-            return is_file(FileInfo::validate($this->directory . SP . $this->name));
+            return FileInfo::isTypeFile(FileInfo::validate($this->directory . SP . $this->name));
         }
 
         public function isFileExistsDirectory()
@@ -167,7 +167,7 @@
             if ($this->directory == null || empty($this->directory))
                 return false;
 
-            return file_exists($this->directory);
+            return FileInfo::fileExists($this->directory);
         }
 
         public function isFileExistsDirectorySeparatorName()
@@ -178,7 +178,7 @@
             if ($this->name == null || empty($this->name))
                 return false;
 
-            return file_exists(FileInfo::validate($this->directory . SP . $this->name));
+            return FileInfo::fileExists(FileInfo::validate($this->directory . SP . $this->name));
         }
 
     }

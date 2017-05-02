@@ -3,6 +3,7 @@
 	namespace Librarys\Firewall;
 
 	use Librarys\Boot;
+    use Librarys\File\FileInfo;
 
 	final class FirewallProcess
 	{
@@ -61,18 +62,18 @@
 
 			$path = env('app.firewall.path');
 
-			if (is_dir($path) == false)
+			if (FileInfo::isTypeDirectory($path) == false)
 				trigger_error('Directory firewall not found');
 
 			$file = env('app.firewall.path') . SP . $this->ip;
 			$open = null;
 
-			if (is_file($file))
+			if (FileInfo::isTypeFile($file))
 				$open = fopen($file, 'rw+');
 			else
 				$open = fopen($file, 'w');
 
-			if (is_writable($file) == false)
+			if (FileInfo::isWriteable($file) == false)
 				return trigger_error('File "' . $file . '" not writable');
 
 			$size    = filesize($file);
@@ -125,7 +126,7 @@
                 $this->requestLock = false;
             }
 
-            if ($this->lockCount >= env('app.firewall.lock_count.htaccess') && env('app.firewall.enable_htaccess') && is_file(env('app.firewall.path_htaccess'))) {
+            if ($this->lockCount >= env('app.firewall.lock_count.htaccess') && env('app.firewall.enable_htaccess') && FileInfo::isTypeFile(env('app.firewall.path_htaccess'))) {
                 $this->error = self::ERROR_LOCK_HTACCESS;
 
                 if (($fopen = fopen(env('app.firewall.path_htaccess'), 'rw+')) != false) {

@@ -26,19 +26,19 @@
     if ($isPermissionDenyPath)
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()));
 
-    if ($isPermissionDenyPath || is_readable($appDirectory->getDirectory()) == false || is_dir($appDirectory->getDirectory()) == false) {
+    if ($isPermissionDenyPath || FileInfo::isReadable($appDirectory->getDirectory()) == false || FileInfo::isTypeDirectory($appDirectory->getDirectory()) == false) {
         $appDirectory->setDirectory(env('SERVER.DOCUMENT_ROOT'));
-        $handler = @scandir($appDirectory->getDirectory());
+        $handler = FileInfo::scanDirectory($appDirectory->getDirectory());
 
         if ($isPermissionDenyPath == false)
             $appAlert->danger(lng('home.alert.path_not_exists'));
     } else {
-        $handler = @scandir($appDirectory->getDirectory());
+        $handler = FileInfo::scanDirectory($appDirectory->getDirectory());
     }
 
     if ($handler === false || $handler == null) {
         $appDirectory->setDirectory(env('SERVER.DOCUMENT_ROOT'));
-        $handler = @scandir($appDirectory->getDirectory());
+        $handler = FileInfo::scanDirectory($appDirectory->getDirectory());
         $appAlert->danger(lng('home.alert.path_not_receiver_list'));
     }
 
@@ -55,7 +55,7 @@
         if ($entry != '.' && $entry != '..') {
             if ($entry == env('application.directory') && $appDirectory->isAccessParentPath()) {
 
-            } else if (is_dir($appDirectory->getDirectory() . SP . $entry)) {
+            } else if (FileInfo::isTypeDirectory($appDirectory->getDirectory() . SP . $entry)) {
                 $arrayFolder[] = $entry;
             } else {
                 $arrayFile[] = $entry;
@@ -145,7 +145,7 @@
     $appFileCopy = new AppFileCopy();
 
     if ($appFileCopy->isSession()) {
-        $isDirectoryCopy         = is_dir(FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName()));
+        $isDirectoryCopy         = FileInfo::isTypeDirectory(FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName()));
         $isDirectoryCurrentEqual = false;
 
         if (isset($_GET['cancel_copy_move'])) {

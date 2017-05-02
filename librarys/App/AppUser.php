@@ -3,6 +3,7 @@
     namespace Librarys\App;
 
     use Librarys\Boot;
+    use Librarys\File\FileInfo;
     use Librarys\CFSR\CFSRToken;
 
     final class AppUser
@@ -85,7 +86,7 @@
 
             if (is_array($db))
                 $this->db = $db;
-            else if (is_file($db))
+            else if (FileInfo::isTypeFile($db))
                 $this->db = require_once($db);
             else if (is_null($db) == false)
                 $this->db = json_decode($db, true);

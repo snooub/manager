@@ -29,6 +29,10 @@
             'enable_forgot_password' => $appConfig->get('login.enable_forgot_password')
         ],
 
+        'enable_disable' => [
+            'button_save_on_javascript' => $appConfig->get('enable_disable.button_save_on_javascript')
+        ],
+
         'auto_redirect' => [
             'file_rename' => $appConfig->get('auto_redirect.file_rename'),
             'file_chmod'  => $appConfig->get('auto_redirect.file_chmod'),
@@ -72,6 +76,25 @@
             if ($appConfig->set('login.enable_forgot_password', $forms['login']['enable_forgot_password']) == false) {
                 $isFailed = true;
                 $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
+            }
+        }
+
+        if ($isFailed == false) {
+            foreach ($forms['enable_disable'] AS $key => &$value) {
+                $envKey  = 'enable_disable.' . $key;
+                $formKey = 'enable_disable_' . $key;
+
+                if (isset($_POST[$formKey]))
+                    $value = boolval(addslashes($_POST[$formKey]));
+                else
+                    $value = false;
+
+                if ($appConfig->set($envKey, $value) == false) {
+                    $isFailed = true;
+                    $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
+
+                    break;
+                }
             }
         }
 
@@ -147,15 +170,29 @@
                     </li>
                 <?php } ?>
                 <li class="checkbox">
-                	<ul>
+                    <span><?php echo lng('system.setting.form.input.enable_disable_label'); ?></span>
+                    <ul>
                         <?php if ($appConfig->isEnvEnabled('login.enable_forgot_password')) { ?>
-                    		<li>
-    		                	<input type="checkbox" id="login-enable-forgot-password" name="login_enable_forgot_password" value="1"<?php if ($forms['login']['enable_forgot_password'] == true) { ?> checked="checked"<?php } ?>/>
-    		                	<label for="login-enable-forgot-password">
-    		                		<span><?php echo lng('system.setting.form.input.enable_forgot_password'); ?></span>
-    		                	</label>
-    	                	</li>
+                            <li>
+                                <input type="checkbox" id="login-enable-forgot-password" name="login_enable_forgot_password" value="1"<?php if ($forms['login']['enable_forgot_password'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="login-enable-forgot-password">
+                                    <span><?php echo lng('system.setting.form.input.enable_forgot_password'); ?></span>
+                                </label>
+                            </li>
                         <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('enable_disable.button_save_on_javascript')) { ?>
+                            <li>
+                                <input type="checkbox" id="enable-disable-button-save-on-javascript" name="enable_disable_button_save_on_javascript" value="1"<?php if ($forms['enable_disable']['button_save_on_javascript'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="enable-disable-button-save-on-javascript">
+                                    <span><?php echo lng('system.setting.form.input.enable_disable_button_save_on_javascript'); ?></span>
+                                </label>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </li>
+                <li class="checkbox">
+                    <span><?php echo lng('system.setting.form.input.auto_redirect_label'); ?></span>
+                	<ul>
                         <?php if ($appConfig->isEnvEnabled('auto_redirect.file_rename')) { ?>
                     		<li>
     		                	<input type="checkbox" id="auto-redirect-file-rename" name="auto_redirect_file_rename" value="1"<?php if($forms['auto_redirect']['file_rename'] == true) { ?> checked="checked"<?php } ?>/>
@@ -199,7 +236,7 @@
                 	</ul>
                 </li>
                 <li class="button">
-                    <button type="submit" name="save">
+                    <button type="submit" name="save" id="button-save-on-javascript">
                         <span><?php echo lng('system.setting.form.button.save'); ?></span>
                     </button>
                     <a href="<?php echo $forms['http_referer']; ?>">
@@ -238,108 +275,3 @@
     </ul>
 
 <?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>
-<?php
-
-/*define('ACCESS', true);
-
-    include_once 'function.php';
-
-    if (IS_LOGIN) {
-        $title = 'Cài đặt';
-        $ref = isset($_POST['ref']) ? $_POST['ref'] : (isset($_SERVER['HTTP_REFFRER']) ? $_SERVER['HTTP_REFERER']: null);
-        $ref = $ref != $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ? $ref : null;
-
-        include_once 'header.php';
-
-        echo '<div class="title">' . $title . '</div>';
-
-        $username = $configs['username'];
-        $passwordO = null;
-        $passwordN = null;
-        $verifyN = null;
-        $pageList = $configs['page_list'];
-        $pageFileEdit = $configs['page_file_edit'];
-        $pageFileEditLine = $configs['page_file_edit_line'];
-        $pageDatabaseListRows = $configs['page_database_list_rows'];
-
-        if (isset($_POST['submit'])) {
-            $username = addslashes($_POST['username']);
-            $passwordO = addslashes($_POST['password_o']);
-            $passwordN = addslashes($_POST['password_n']);
-            $verifyN = addslashes($_POST['verify_n']);
-            $pageList = addslashes($_POST['page_list']);
-            $pageFileEdit = addslashes($_POST['page_file_edit']);
-            $pageFileEditLine = addslashes($_POST['page_file_edit_line']);
-            $pageDatabaseListRows = addslashes($_POST['page_database_list_rows']);
-
-            if (empty($username)) {
-                echo '<div class="notice_failure">Chưa nhập tên đăng nhập</div>';
-            } else if (strlen($username) < 3) {
-                echo '<div class="notice_failure">Tên đăng nhập phải lớn hơn 3 ký tự</div>';
-            } else if (!empty($passwordO) && getPasswordEncode($passwordO) != $configs['password']) {
-                echo '<div class="notice_failure">Mật khẩu cũ không đúng</div>';
-            } else if (!empty($passwordO) && (empty($passwordN) || empty($verifyN))) {
-                echo '<div class="notice_failure">Để thay đổi mật khẩu hãy nhập đủ hai mật khẩu</div>';
-            } else if (!empty($passwordO) && $passwordN != $verifyN) {
-                echo '<div class="notice_failure">Hai mật khẩu không giống nhau</div>';
-            } else if (!empty($passwordO) && strlen($passwordN) < 5) {
-                echo '<div class="notice_failure">Mật khẩu phải lớn hơn 5 ký tự</div>';
-            } else {
-                if (createConfig($username, (!empty($passwordN) ? getPasswordEncode($passwordN) : $configs['password']), $pageList, $pageFileEdit, $pageFileEditLine, $pageDatabaseListRows, false)) {
-                    include PATH_CONFIG;
-
-                    $username = $configs['username'];
-                    $passwordO = null;
-                    $passwordN = null;
-                    $verifyN = null;
-                    $pageList = $configs['page_list'];
-                    $pageFileEdit = $configs['page_file_edit'];
-                    $pageFileEditLine = $configs['page_file_edit_line'];
-                    $pageDatabaseListRows = addslashes($_POST['page_database_list_rows']);
-
-                    echo '<div class="notice_succeed">Lưu thành công</div>';
-                } else {
-                    echo '<div class="notice_failure">Lưu thất bại</div>';
-                }
-            }
-        }
-
-        echo '<div class="list">
-            <form action="setting.php" method="post">
-                <span class="bull">&bull;</span>Tài khoản:<br/>
-                <input type="text" name="username" value="' . $username . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Mật khẩu cũ:<br/>
-                <input type="password" name="password_o" value="' . $passwordO . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Mật khẩu mới:<br/>
-                <input type="password" name="password_n" value="' . $passwordN . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Nhập lại mật khẩu mới:<br/>
-                <input type="password" name="verify_n" value="' . $verifyN . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Phân trang danh sách:<br/>
-                <input type="text" name="page_list" value="' . $pageList . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Phân trang sửa văn bản thường:<br/>
-                <input type="text" name="page_file_edit" value="' . $pageFileEdit . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Phân trang sửa văn bản theo dòng:<br/>
-                <input type="text" name="page_file_edit_line" value="' . $pageFileEditLine . '" size="18"/><br/>
-                <span class="bull">&bull;</span>Phân trang danh sách dữ liệu sql:<br/>
-                <input type="text" name="page_database_list_rows" value="' . $pageDatabaseListRows . '" size="18"/><br/>
-                <input type="hidden" name="ref" value="' . $ref . '"/>
-                <input type="submit" name="submit" value="Lưu"/>
-            </form>
-        </div>
-        <div class="tips"><img src="icon/tips.png"/> Mật khẩu để trống nếu không muốn thay đổi, các phân trang để bằng 0 nếu không muốn phân trang</div>
-        <div class="title">Chức năng</div>
-        <ul class="list">';
-
-        if ($ref != null)
-            echo '<li><img src="icon/back.png"/> <a href="' . $ref . '">Quay lại</a></li>';
-        else
-            echo '<li><img src="icon/list.png"/> <a href="index.php">Danh sách</a></li>';
-
-        echo '</ul>';
-
-        include_once 'footer.php';
-    } else {
-        goURL('login.php');
-    }*/
-
-?>
