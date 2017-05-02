@@ -29,6 +29,8 @@
 
         public function __construct(array $config)
         {
+            $this->obBufferStart();
+            $this->obBufferEnd();
             $this->fixMagicQuotesGpc();
 
             $this->environment = new Environment($config);
@@ -37,14 +39,11 @@
 
             $this->environment->execute();
 
-            $this->obBufferStart();
             $this->obErrorHandler();
-            $this->obBufferEnd();
+            $this->dateInitializing();
 
             $this->language->execute();
             $this->autoload->execute();
-
-            $this->dateInitializing();
 
             if (env('app.session.init', false) == true)
                 $this->sessionInitializing();
