@@ -17,15 +17,10 @@ var ButtonSaveOnJavascript = {
 
         window.addEventListener("keydown", function(event) {
             if (event.which) {
-                if (event.which == self.WHICH_KEY_S && event.ctrlKey && event.ctrlKey == true)
+                if (event.which === self.WHICH_KEY_S && event.ctrlKey && event.ctrlKey == true) {
                     self.isKeyS = true;
-                else if (event.which == self.WHICH_KEY_CTRL && self.isKeyCtrl == false)
-                    self.isKeyCtrl = true;
-                else if (event.which == self.WHICH_KEY_S && self.isKeyCtrl == true && self.isKeyS == false)
-                    self.isKeyS = true;
-
-                if (self.isKeyS == true) {
                     event.preventDefault();
+
                     return false;
                 }
             }
