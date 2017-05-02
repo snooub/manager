@@ -626,17 +626,17 @@
 
         public static function fileOpen($path, $mode)
         {
-            return fopen($path, $mode);
+            return @fopen($path, $mode);
         }
 
         public static function fileClose($handle)
         {
-            return fclose($handle);
+            return @fclose($handle);
         }
 
         public static function fileRead($handle, $length)
         {
-            return fread($handle, $length);
+            return @fread($handle, $length);
         }
 
         public static function fileWrite($handle, $string, $length = null)
@@ -647,12 +647,12 @@
             if ($length == null)
                 $length = strlen($string);
 
-            return fwrite($handle, $string, $length);
+            return @fwrite($handle, $string, $length) && @fwrite($handle, $string, $length);
         }
 
         public static function fileFlush($handle)
         {
-            return fflush($handle);
+            return @fflush($handle) && @fflush($handle);
         }
 
         public static function fileReadContents($path)
