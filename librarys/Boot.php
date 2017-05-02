@@ -186,6 +186,7 @@
         public function obBufferEnd()
         {
             register_shutdown_function(function() {
+                ob_flush();
                 ob_end_flush();
             });
         }

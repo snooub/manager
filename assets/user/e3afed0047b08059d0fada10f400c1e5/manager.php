@@ -2,7 +2,7 @@
 
     return [
         'paging' => [
-            'file_home_list' => 5,
+            'file_home_list' => 20,
             'file_view_zip' => 0,
             'file_edit_text' => 30,
             'file_edit_text_line' => 20,
@@ -17,7 +17,7 @@
         ],
 
         'enable_disable' => [
-            'button_save_on_javascript' => false,
+            'button_save_on_javascript' => true,
         ],
 
     ];
