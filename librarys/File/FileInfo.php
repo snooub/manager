@@ -647,17 +647,17 @@
             if ($length == null)
                 $length = strlen($string);
 
-            return @fwrite($handle, $string, $length) && @fwrite($handle, $string, $length);
+            return @fwrite($handle, $string, $length) && @fflush($handle);
         }
 
         public static function fileFlush($handle)
         {
-            return @fflush($handle) && @fflush($handle);
+            return @fflush($handle);
         }
 
         public static function fileReadContents($path)
         {
-            if (($handle = self::fileOpen($path, 'r')) !== false) {
+            if (($handle = self::fileOpen($path, 'ra')) !== false) {
                 if (($data = self::fileRead($handle, self::fileSize($path))) !== false) {
                     self::fileClose($handle);
                     return $data;
@@ -671,7 +671,7 @@
 
         public static function fileWriteContents($path, $buffer)
         {
-            if (($handle = self::fileOpen($path, 'w+')) !== false) {
+            if (($handle = self::fileOpen($path, 'wa+')) !== false) {
                 if (self::fileWrite($handle, $buffer) !== false) {
                     self::fileFlush($handle);
                     self::fileClose($handle);
