@@ -29,8 +29,8 @@
 
         public function __construct(array $config)
         {
-            $this->obBufferStart();
-            $this->obBufferEnd();
+            //$this->obBufferStart();
+            //$this->obBufferEnd();
             $this->fixMagicQuotesGpc();
 
             $this->environment = new Environment($config);
@@ -39,7 +39,7 @@
 
             $this->environment->execute();
 
-            $this->obErrorHandler();
+            //$this->obErrorHandler();
             $this->dateInitializing();
 
             $this->language->execute();
