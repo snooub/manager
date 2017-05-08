@@ -7,13 +7,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noindex, nofollow, noodp, nodir"/>
-        <meta http-equiv="Cache-Control" content="private"/>
-        <meta http-equiv="Cache-Control" content="max-age=0"/>
-        <meta http-equiv="Cache-Control" content="no-cache"/>
-        <meta http-equiv="Cache-Control" content="no-store"/>
-        <meta http-equiv="Cache-Control" content="must-revalidate"/>
+        <meta http-equiv="Cache-Control" content="private, max-age=0, no-cache, no-store, must-revalidate"/>
         <meta http-equiv="Pragma" content="no-cache"/>
-        <meta http-equiv="Expires" content="0"/>
+        <meta http-equiv="Expires" content="Thu, 01 Jan 1970 00:00:00 GMT">
         <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.app'); ?>?rand=<?php echo rand(1000, 9000); ?>" media="all,handheld" />
 
         <?php if (isset($themes) && is_array($themes)) { ?>

@@ -98,13 +98,9 @@
 
         public function obBufferStart()
         {
-            header("Cache-Control: private");
-            header("Cache-Control: max-ag=0");
-            header("Cache-Control: no-cache");
-            header("Cache-Control: no-store");
-            header("Cache-Control: must-revalidate");
+            header("Cache-Control: private, max-age=0, no-cache, no-store, must-revalidate");
             header("Pragma: no-cache");
-            header("Expires: 0");
+            header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
             ob_start();
         }
