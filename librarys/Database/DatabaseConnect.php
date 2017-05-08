@@ -3,6 +3,7 @@
 	namespace Librarys\Database;
 
 	use Librarys\Boot;
+    use Librarys\Database\Extension\DatabaseExtensionInterface;
 
 	class DatabaseConnect
 	{
@@ -11,6 +12,10 @@
 		private $resource;
 		private $query;
 
+        private $extensionDefault;
+        private $extensionRuntime;
+        private $extensionObject;
+
         private $host;
         private $username;
         private $password;
@@ -18,6 +23,7 @@
         private $port;
         private $prefix;
         private $encoding;
+        private $mysqli;
 
         const DATABASE_INFORMATION = 'information_schema';
         const DATABASE_MYSQL      = 'mysql';
@@ -29,6 +35,30 @@
 			$this->boot   = $boot;
 			$this->query  = array();
 		}
+
+        public function executeInitializing()
+        {
+            if ($this->extensionDefault == null && $this->extensionRuntime == null)
+                trigger_error('Extension Database is null');
+
+            $autoload = $this->boot->getAutoload();
+
+            if ($autoload->isFileLibrarys($this->extensionRuntime)) {
+                $this->extensionObject = new $this->extensionRuntime($this);
+
+                if ($this->extensionObject instanceof DatabaseExtensionInterface && $this->extensionObject->isSupportExtension())
+                    return;
+            }
+
+            if ($autoload->isFileLibrarys($this->extensionDefault)) {
+                $this->extensionObject = new $this->extensionDefault($this);
+
+                if ($this->extensionObject instanceof DatabaseExtensionInterface && $this->extensionObject->isSupportExtension())
+                    return;
+            }
+
+            trigger_error('Extension Database not support');
+        }
 
 		public function openConnect($useEnv = true)
 		{
@@ -55,7 +85,8 @@
     			}
             }
 
-			$this->resource = @mysqli_connect(
+
+			$this->resource = $this->extensionObject->connect(
 				$this->host,
 				$this->username,
 				$this->password,
@@ -63,8 +94,8 @@
 				$this->port
 			);
 
-            if ($this->isResource($this->resource))
-                @mysqli_set_charset($this->resource, $this->encoding);
+            if ($this->extensionObject->isResource($this->resource))
+                $this->extensionObject->setCharset($this->resource, $this->encoding);
 
             $this->registerShutdown();
 
@@ -76,7 +107,7 @@
 			if (is_array($this->query)) {
 				foreach ($this->query AS $result) {
 					if ($this->isResource($result))
-						mysqli_free_result($result);
+						$this->extensionObject->freeResult($result);
 				}
 
 				$this->query = array();
@@ -86,7 +117,7 @@
 		public function disConnected()
 		{
 			if ($this->isResource($this->resource))
-				mysqli_close($this->resource);
+				$this->extensionObject->disconnect($this->resource);
 		}
 
 		private function registerShutdown()
@@ -99,13 +130,26 @@
 
 		public function isResource($resource)
 		{
-			return is_resource($resource) || is_object($resource);
+            if ($this->extensionObject != null)
+                return $this->extensionObject->isResource($resource);
+
+            return is_resource($resource) || is_object($resource);
 		}
 
 		public function isConnect()
 		{
-		    return $this->isResource($this->resource);
+		    return $this->extensionObject->isConnect();
 		}
+
+        public function getResource()
+        {
+            return $this->resource;
+        }
+
+        public function getExtension()
+        {
+            return $this->extensionObject;
+        }
 
         public function setHost($host)
         {
@@ -177,6 +221,16 @@
             return $this->encoding;
         }
 
+        public function setDatabaseExtensionDefault($namespace)
+        {
+            $this->extensionDefault = $namespace;
+        }
+
+        public function setDatabaseExtensionRuntime($namespace)
+        {
+            $this->extensionRuntime = $namespace;
+        }
+
 		public function query($sql)
 		{
 			$query = null;
@@ -184,7 +238,7 @@
 			if ($this->isResource($sql))
 				$query = $sql;
 			else
-				$query = mysqli_query($this->resource, $sql);
+				$query = $this->extensionObject->query($sql);
 
 			return ($this->query[] = $query);
 		}
@@ -192,75 +246,45 @@
         public function error()
         {
             if ($this->isResource($this->resource))
-                return mysqli_error($this->resource);
+                return $this->extensionObject->error();
 
             return null;
         }
 
         public function errorConnect()
         {
-            return mysqli_connect_error();
+            return $this->extensionObject->errorConnect();
         }
 
 		public function fetchAssoc($sql)
 		{
-			if ($this->isResource($sql))
-				return mysqli_fetch_assoc($sql);
-			else
-				return mysqli_fetch_assoc($this->query($sql));
+			return $this->extensionObject->fetchAssoc($sql);
 		}
 
 		public function fetchRow($sql)
 		{
-			if ($this->isResource($sql))
-				return mysqli_fetch_row($sql);
-			else
-				return mysqli_fetch_row($this->query($sql));
+            return $this->extensionObject->fetchRow($sql);
 		}
 
 		public function numRows($sql)
 		{
-			if ($this->isResource($sql))
-				return mysqli_num_rows($sql);
-			else
-				return mysqli_num_rows($this->query($sql));
+            return $this->extensionObject->numRows($sql);
 		}
 
 		public function numFields($sql)
 		{
-			if ($this->isResource($sql))
-				return mysqli_num_fields($sql);
-			else
-				return mysqli_num_fields($this->query($sql));
+            return $this->extensionObject->numFields($sql);
 		}
 
-		public function dataSeek($sql)
+		public function dataSeek($sql, $rowNumber)
 		{
-			if ($this->isResource($sql))
-				return mysqli_data_seek($sql);
-			else
-				return mysqli_data_seek($this->query($sql));
+            return $this->extensionObject->dataSeek($sql, $rowNumber);
 		}
 
 		public function insertId()
 		{
-			return mysqli_insert_id($this->resource);
+            return $this->extensionObject->insertId();
 		}
-
-        public function getCharset()
-        {
-            return mysqli_get_charset($this->resource);
-        }
-
-        public function getCharacterSetName()
-        {
-            return mysqli_character_set_name($this->resource);
-        }
-
-        public function getCollation()
-        {
-            return $this->getCharset()->collation;
-        }
 
 	}
 

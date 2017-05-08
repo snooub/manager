@@ -77,6 +77,12 @@
         <?php } ?>
     </ul>
 
+    <ul class="alert">
+        <li class="info">
+            <span><?php echo lng('mysql.list_table.alert.tips', 'type', $appMysqlConnect->getExtension()->getExtensionType()); ?></span>
+        </li>
+    </ul>
+
     <ul class="menu-action">
         <li>
             <a href="disconnect.php">

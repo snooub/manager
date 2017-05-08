@@ -56,6 +56,12 @@
         <?php } ?>
     </ul>
 
+    <ul class="alert">
+        <li class="info">
+            <span><?php echo lng('mysql.list_database.alert.tips', 'type', $appMysqlConnect->getExtension()->getExtensionType()); ?></span>
+        </li>
+    </ul>
+
     <ul class="menu-action">
         <li>
             <a href="create_database.php">

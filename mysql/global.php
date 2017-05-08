@@ -17,6 +17,9 @@
     use Librarys\App\Mysql\AppMysqlConnect;
 
     $appMysqlConnect = new AppMysqlConnect($boot);
+    $appMysqlConnect->setDatabaseExtensionDefault('Librarys\Database\Extension\DatabaseExtensionMysql');
+    $appMysqlConnect->setDatabaseExtensionRuntime('Librarys\Database\Extension\DatabaseExtensionMysqli');
+    $appMysqlConnect->executeInitializing();
 
     if ($appMysqlConfig->get('mysql_is_connect', false) == true) {
         $appMysqlConnect->setHost    ($appMysqlConfig->get('mysql_host'));
