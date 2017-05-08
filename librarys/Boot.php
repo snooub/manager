@@ -98,9 +98,13 @@
 
         public function obBufferStart()
         {
-            header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
-            header("Pragma: no-cache"); // HTTP 1.0.
-            header("Expires: 0"); // Proxies.
+            header("Cache-Control: private");
+            header("Cache-Control: max-ag=0");
+            header("Cache-Control: no-cache");
+            header("Cache-Control: no-store");
+            header("Cache-Control: must-revalidate");
+            header("Pragma: no-cache");
+            header("Expires: 0");
 
             ob_start();
         }

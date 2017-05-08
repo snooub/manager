@@ -20,7 +20,8 @@
                 'name'            => 'ManagerIzeroCs',
                 'cookie_lifetime' => 86400 * 7,
                 'cookie_path'     => '/${app.directory_absolute_http}/',
-                'cache_limiter'   => 'public',
+                'cache_limiter'   => 'private',
+                'cache_expire'    => 0
             ],
 
             'path' => [
