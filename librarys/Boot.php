@@ -98,11 +98,11 @@
 
         public function obBufferStart()
         {
-            ob_start();
+            header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+            header("Pragma: no-cache"); // HTTP 1.0.
+            header("Expires: 0"); // Proxies.
 
-            header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-            header("Cache-Control: post-check=0, pre-check=0", true);
-            header("Pragma: no-cache");
+            ob_start();
         }
 
         public function obBufferHandler($label, $message, $title = null)
