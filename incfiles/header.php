@@ -10,30 +10,35 @@
         <meta http-equiv="Cache-Control" content="private, max-age=0, no-cache, no-store, must-revalidate"/>
         <meta http-equiv="Pragma" content="no-cache"/>
         <meta http-equiv="Expires" content="Thu, 01 Jan 1970 00:00:00 GMT">
-        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.app'); ?>?rand=<?php echo rand(1000, 9000); ?>" media="all,handheld" />
+        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.app'); ?>?rand=<?php echo env('dev.rand'); ?>" media="all,handheld" />
 
         <?php if (isset($themes) && is_array($themes)) { ?>
             <?php foreach ($themes AS $entry) { ?>
-                <link rel="stylesheet" type="text/css" href="<?php echo $entry; ?>?rand=<?php echo rand(1000, 9000); ?>" media="all,handheld" />
+                <link rel="stylesheet" type="text/css" href="<?php echo $entry; ?>?rand=<?php echo env('dev.rand'); ?>" media="all,handheld" />
             <?php } ?>
             <?php unset($themes); ?>
         <?php } ?>
 
-        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.icomoon'); ?>?rand=<?php echo rand(1000, 9000); ?>" media="all,handheld" />
+        <link rel="stylesheet" type="text/css" href="<?php echo env('resource.theme.icomoon'); ?>?rand=<?php echo env('dev.rand'); ?>" media="all,handheld" />
 
         <link rel="icon" type="image/png" href="<?php echo env('resource.icon.favicon_png'); ?>"/>
         <link rel="icon" type="image/x-icon" href="<?php echo env('resource.icon.favicon_ico'); ?>"/>
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo env('resource.icon.favicon_ico'); ?>"/>
-        <script type="text/javascript" src="<?php echo env('resource.javascript.on_load'); ?>?rand=<?php echo rand(1000, 9000); ?>"></script>
+        <script type="text/javascript" src="<?php echo env('resource.javascript.on_load'); ?>?rand=<?php echo env('dev.rand'); ?>"></script>
 
         <?php if (isset($scripts) && is_array($scripts)) { ?>
             <?php foreach ($scripts AS $entry) { ?>
-                <script type="text/javascript" src="<?php echo $entry; ?>?rand=<?php echo rand(1000, 9000); ?>"></script>
+                <script type="text/javascript" async src="<?php echo $entry; ?>?rand=<?php echo env('dev.rand'); ?>"></script>
             <?php } ?>
             <?php unset($scripts); ?>
         <?php } ?>
+
         <?php if ($appConfig->get('enable_disable.button_save_on_javascript') == true) { ?>
-            <script type="text/javascript" src="<?php echo env('resource.javascript.button_save_on_javascript'); ?>?rand=<?php echo rand(1000, 9000); ?>"></script>
+            <script type="text/javascript" src="<?php echo env('resource.javascript.button_save_on_javascript'); ?>?rand=<?php echo env('dev.rand'); ?>"></script>
+        <?php } ?>
+
+        <?php if ($appConfig->get('enable_disable.auto_focus_input_last') == true) { ?>
+            <script type="text/javascript" src="<?php echo env('resource.javascript.auto_focus_input_last'); ?>?rand=<?php echo env('dev.rand'); ?>"></script>
         <?php } ?>
     </head>
     <body>

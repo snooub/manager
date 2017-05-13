@@ -65,7 +65,7 @@
         }
 
         if (isset($_GET[PARAMETER_TABLE_URL]) && empty($_GET[PARAMETER_TABLE_URL]) == false) {
-            $appMysqlConnect->setTableCurrent(addslashes(AppDirectory::rawDecode($_GET[PARAMETER_TABLE_URL])));
+            $appMysqlConnect->setTableCurrent(AppDirectory::rawDecode($_GET[PARAMETER_TABLE_URL]));
 
             if ($appMysqlConnect->checkTableCurrent() == false)
                 $appAlert->danger(lng('mysql.home.alert.mysql_table_name_not_exists', 'table', $appMysqlConnect->getTableCurrent(), 'database', $appMysqlConnect->getName()), $idAlertMysql, $urlRedirectMysql);
@@ -74,7 +74,7 @@
         }
 
         if (isset($_GET[PARAMETER_COLUMN_URL]) && empty($_GET[PARAMETER_COLUMN_URL]) == false) {
-            $appMysqlConnect->setColumnCurrent(addslashes(AppDirectory::rawDecode($_GET[PARAMETER_COLUMN_URL])));
+            $appMysqlConnect->setColumnCurrent(AppDirectory::rawDecode($_GET[PARAMETER_COLUMN_URL]));
             $appMysqlConnect->checkColumnCurrent();
         }
 

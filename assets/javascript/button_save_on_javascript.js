@@ -52,4 +52,7 @@ var ButtonSaveOnJavascript = {
     }
 };
 
-OnLoad.add(ButtonSaveOnJavascript.addEventSave);
+if (typeof OnLoad !== "undefined" && OnLoad.add)
+    OnLoad.add(ButtonSaveOnJavascript.addEventSave);
+else
+    window.onload = ButtonSaveOnJavascript.addEventSave;

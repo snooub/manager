@@ -47,7 +47,8 @@
         ],
 
         'menu_action' => [
-            'disconnect' => 'Ngắt kết nối'
+            'create_table' => 'Tạo bảng',
+            'disconnect'   => 'Ngắt kết nối'
         ]
     ];
 

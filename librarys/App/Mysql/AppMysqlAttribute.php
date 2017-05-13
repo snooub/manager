@@ -18,6 +18,9 @@
         {
             $buffer = null;
 
+            if ($defaultAttributes == null)
+                $defaultAttributes = self::getDefault();
+
             if (is_array(self::$array) == false || count(self::$array) <= 0) {
                 $buffer .= '<option value="' . self::ATTRIBUTES_NONE . '">';
                 $buffer .= $lngAttributesNone;
@@ -25,17 +28,8 @@
             } else {
                 $buffer .= '<option value="' . self::ATTRIBUTES_NONE  . '"';
 
-                if (
-                        ($defaultAttributes != null &&
-                         $defaultAttributes == self::ATTRIBUTES_NONE) ||
-
-                        ($defaultAttributes       != null &&
-                         self::ATTRIBUTES_DEFAULT != null &&
-                         self::ATTRIBUTES_DEFAULT == self::ATTRIBUTES_NONE)
-                    )
-                {
+                if ($defaultAttributes != null && $defaultAttributes == self::ATTRIBUTES_NONE)
                     $buffer .= ' selected="selected"';
-                }
 
                 $buffer .= '>';
                 $buffer .= '</option>';
@@ -43,17 +37,8 @@
                 foreach (self::$array AS $key => $attr) {
                     $buffer .= '<option value="' . $key . '"';
 
-                    if (
-                            ($defaultAttributes != null &&
-                             $defaultAttributes == $key) ||
-
-                            ($defaultAttributes       != null &&
-                             self::ATTRIBUTES_DEFAULT != null &&
-                             self::ATTRIBUTES_DEFAULT == $key)
-                        )
-                    {
+                    if ($defaultAttributes != null && $defaultAttributes == $key)
                         $buffer .= ' selected="selected"';
-                    }
 
                     $buffer .= '>';
                     $buffer .= $attr;
@@ -65,6 +50,11 @@
                 return $buffer;
 
             echo $buffer;
+        }
+
+        public static function getDefault()
+        {
+            return self::ATTRIBUTES_DEFAULT;
         }
 
     }

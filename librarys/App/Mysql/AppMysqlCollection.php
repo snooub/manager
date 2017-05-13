@@ -21,10 +21,61 @@
         const ARRAY_KEY_COLLATION_NAME     = 'COLLATION_NAME';
         const ARRAY_KEY_IS_DEFAULT         = 'IS_DEFAULT';
 
-        public static function display(AppMysqlConnect $appMysqlConnect, $lngCollectionNone = null, $defaultCollection = null, $isPrint = true)
+        public static function display($lngCollectionNone = null, $defaultCollection = null, $isPrint = true)
         {
+            $buffer = null;
+            self::receiver();
+
+            if ($defaultCollection == null)
+                $defaultCollection = self::getDefault();
+
+            if (is_array(self::$array) == false || count(self::$array) <= 0) {
+                $buffer .= '<option value="' . self::COLLECTION_NONE . '">';
+                $buffer .= $lngCollectionNone;
+                $buffer .= '</option>';
+            } else {
+                $buffer .= '<option value="' . self::COLLECTION_NONE . '"';
+
+                if ($defaultCollection != null && $defaultCollection == self::COLLECTION_NONE)
+                    $buffer .= ' selected="selected"';
+
+                $buffer .= '>';
+                $buffer .= '</option>';
+
+                foreach (self::$array AS $charset => $collection) {
+                    $buffer .= '<optgroup label="' . $charset . '">';
+
+                    foreach ($collection AS $collate) {
+                        $collectionCurrent = $charset . self::COLLECTION_SPLIT . $collate[self::ARRAY_KEY_COLLATION_NAME];
+                        $buffer           .= '<option value="' . $collectionCurrent . '"';
+
+                        if ($defaultCollection != null && $defaultCollection == $collectionCurrent)
+                            $buffer .= ' selected="selected"';
+
+                        $buffer .= '>';
+                        $buffer .= $collate[self::ARRAY_KEY_COLLATION_NAME];
+                        $buffer .= '</option>';
+                    }
+
+                    $buffer .= '</optgroup>';
+                }
+            }
+
+            if ($isPrint == false)
+                return $buffer;
+
+            echo $buffer;
+        }
+
+        private static function receiver()
+        {
+            global $appMysqlConnect;
+
             if ($appMysqlConnect == null)
-                return;
+                return self::COLLECTION_CHARSET_DEFAULT;
+
+            if (is_array(self::$array))
+                return self::$default;
 
             $query = new DatabaseQuery($appMysqlConnect, DatabaseQuery::COMMAND_SELECT, DatabaseConnect::DATABASE_INFORMATION . '.' . self::COLLECTION_TABLE);
 
@@ -49,71 +100,27 @@
                                          $assoc[self::ARRAY_KEY_COLLATION_NAME];
                     }
                 }
+
+                if (self::$default == null || empty(self::$default))
+                    self::$default = self::COLLECTION_CHARSET_DEFAULT;
             }
 
-            if ($defaultCollection == null)
-                $defaultCollection = self::$default;
-
-            $buffer = null;
-
-            if (is_array(self::$array) == false || count(self::$array) <= 0) {
-                $buffer .= '<option value="' . self::COLLECTION_NONE . '">';
-                $buffer .= $lngCollectionNone;
-                $buffer .= '</option>';
-            } else {
-                $buffer .= '<option value="' . self::COLLECTION_NONE . '"';
-
-                if (
-                        ($defaultCollection != null &&
-                         $defaultCollection == self::COLLECTION_NONE) ||
-
-                        ($defaultCollection == null &&
-                         self::$default     != null &&
-                         self::$default     == self::COLLECTION_NONE)
-                    ) {
-                    $buffer .= ' selected="selected"';
-                }
-
-                $buffer .= '>';
-                $buffer .= '</option>';
-
-                foreach (self::$array AS $charset => $collection) {
-                    $buffer .= '<optgroup label="' . $charset . '">';
-
-                    foreach ($collection AS $collate) {
-                        $collectionCurrent = $charset . self::COLLECTION_SPLIT . $collate[self::ARRAY_KEY_COLLATION_NAME];
-                        $buffer           .= '<option value="' . $collectionCurrent . '"';
-
-                        if (
-                               ($defaultCollection != null &&
-                                $defaultCollection == $collectionCurrent) ||
-
-                               ($defaultCollection != null &&
-                                self::$default     != null &&
-                                self::$default     == $collectionCurrent)
-                            )
-                        {
-                            $buffer .= ' selected="selected"';
-                        }
-
-                        $buffer .= '>';
-                        $buffer .= $collate[self::ARRAY_KEY_COLLATION_NAME];
-                        $buffer .= '</option>';
-                    }
-
-                    $buffer .= '</optgroup>';
-                }
-            }
-
-            if ($isPrint == false)
-                return $buffer;
-
-            echo $buffer;
+            return self::$default;
         }
 
         public static function getDefault()
         {
-            return self::$default;
+            return self::receiver();
+        }
+
+        public static function convertCollationToCollection($collation)
+        {
+            $indexShift = strpos($collation, '_');
+
+            if ($indexShift === false)
+                return self::getDefault();
+
+            return substr($collation, 0, $indexShift). self::COLLECTION_SPLIT . $collation;
         }
 
         public static function isValidate($collection, &$character = null, &$collate = null)

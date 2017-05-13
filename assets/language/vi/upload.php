@@ -27,12 +27,12 @@
             'path_file_is_exists_and_skip'                => 'Thư mục tải lên đã tồn tại một tập tin <strong>{$filename}</strong>, đã bỏ qua tập tin này',
             'error_delete_file_exists'                    => 'lng{upload.alert.file_is_exists}, xóa thất bại để ghi đè',
             'upload_file_exists_override_is_failed'       => 'lng{upload.alert.file_is_exists}, tải lên và ghi đè thất bại',
-            'upload_file_exists_override_is_success'      => 'lng{upload.alert.file_is_exists}, tải lên và ghi đè thành công',
+            'upload_file_exists_override_is_success'      => 'lng{upload.alert.file_is_exists}, <strong>{$size}</strong> tải lên và ghi đè thành công',
             'create_new_filename_exists_rename_is_failed' => 'lng{upload.alert.file_is_exists}, tạo tên mới cho tập tin thất bại',
             'upload_file_exists_rename_is_failed'         => 'lng{upload.alert.file_is_exists}, tải lên và thay đổi tên thất bại',
-            'upload_file_exists_rename_is_success'        => 'lng{upload.alert.file_is_exists}, tải lên và thay đổi tên thành công',
+            'upload_file_exists_rename_is_success'        => 'lng{upload.alert.file_is_exists}, <strong>{$size}</strong> tải lên và thay đổi tên thành công',
             'upload_file_is_failed'                       => 'Tải lên tập tin <strong>{$filename}</strong> thất bại',
-            'upload_file_is_success'                      => 'Tải lên tập tin <strong>{$filename}</strong> thành công'
+            'upload_file_is_success'                      => 'Tải lên tập tin <strong>{$filename}</strong>, <strong>{$size}</strong> thành công'
         ]
     ];
 

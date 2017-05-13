@@ -150,4 +150,9 @@
             array_walk_recursive($value, __FUNCTION__);
     }
 
+    function generatorDevRandResource()
+    {
+        return intval($_SERVER['REQUEST_TIME']);
+    }
+
 ?>

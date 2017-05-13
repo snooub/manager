@@ -8,11 +8,13 @@
             'create_directory' => true,
             'create_file'      => true,
 
-            'create_database' => true
+            'create_database' => true,
+            'rename_database' => true
         ],
 
         'enable_disable' => [
             'button_save_on_javascript' => true,
+            'auto_focus_input_last'     => true
         ],
 
         'login' => [
@@ -23,7 +25,9 @@
             'file_edit_text'      => 30,
             'file_edit_text_line' => 20,
             'file_home_list'      => 10,
-            'file_view_zip'       => 0
+            'file_view_zip'       => 0,
+
+            'mysql_list_data' => 5
         ],
 
         'theme' => [

@@ -93,14 +93,16 @@ ul.list-database li.entry-odd {
 
 ul.list-database > li.back,
 ul.list-database > li.empty,
-ul.list-database > li.paging {
+ul.list-database > li.paging,
+ul.list-database > li.order {
     margin: 0;
     width: 100%;
 }
 
 ul.list-database > li.type-database span.icomoon,
 ul.list-database > li.back span.icomoon,
-ul.list-database > li.empty span.icomoon {
+ul.list-database > li.empty span.icomoon,
+ul.list-database > li.order span.icomoon {
     margin-right: 5px;
 }
 
@@ -128,7 +130,8 @@ ul.list-database > li.paging ul.paging {
 ul.list-database > li.type-database,
 ul.list-database > li.type-table,
 ul.list-database > li.type-column,
-ul.list-database > li.empty {
+ul.list-database > li.empty,
+ul.list-database > li.order {
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -147,6 +150,7 @@ ul.list-database > li.type-column div.icon {
 
 ul.list-database > li.back span.icomoon,
 ul.list-database > li.empty span.icomoon,
+ul.list-database > li.order span.icomoon,
 ul.list-database > li.type-database span.icomoon,
 ul.list-database > li.type-table span.icomoon,
 ul.list-database > li.type-column span.icomoon {
@@ -160,6 +164,30 @@ ul.list-database > li.type-database a:hover span.icomoon,
 ul.list-database > li.type-table a:hover span.icomoon,
 ul.list-database > li.type-column a:hover span.icomoon {
     color: #80cbc4;
+}
+
+ul.list-database > li.order {
+    text-align: center;
+}
+
+ul.list-database > li.order span {
+    font-weight: bold;
+}
+
+ul.list-database > li.order span.text {
+    font-weight: normal;
+}
+
+ul.list-database > li.order span.choose {
+    color: #00897b;
+}
+
+ul.list-database > li.order a:hover span.choose {
+    color: #00a99b;
+}
+
+ul.list-database > li.order span.current {
+    color: #707070;
 }
 
 ul.list-database > li.type-table,

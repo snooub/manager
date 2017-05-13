@@ -93,9 +93,9 @@
             <?php } ?>
         </div>
         <script type="text/javascript">
-            window.onload = function() {
-                onAddEventChmodListener("input-chmod", "input-chmod-checkbox");
-            };
+            OnLoad.add(function() {
+                ChmodInput.onAddEventChmodListener("input-chmod", "input-chmod-checkbox")
+            });
         </script>
         <form action="file_chmod.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>

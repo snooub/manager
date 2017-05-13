@@ -7,64 +7,34 @@
     final class AppMysqlEngineStorage
     {
 
-/*        private static $array = [
-            'InnoDB',
-            'MyISAM',
-            'MEMORY',
-            'MERGE',
-            'EXAMPLE',
-            'ARCHIVE',
-            'CSV',
-            'BLACKHOLE',
-            'FEDERATD'
-        ];*/
-        public static $array;
+        private static $array;
+        private static $default;
 
         const ENGINE_STORAGE_NONE    = 'none';
         const ENGINE_STORAGE_DEFAULT = 'MyISAM';
 
-        public static function display(AppMysqlConnect $appMysqlConnect, $nameRadioCheck, $lngEngineStorageNone = null $defaultEngineStorage = null, $isPrint = true)
+        public static function display($lngEngineStorageNone = null, $defaultEngineStorage = null, $isPrint = true)
         {
-            if ($appMysqlConnect == null)
-                return;
-
-            $query = $appMysqlConnect->query('SELECT * FROM `information_schema`.`ENGINES`');
-
-            if ($appMysqlConnect->isResource($query)) {
-
-            }
-
             $buffer = null;
+            self::receiver();
+
+            if ($defaultEngineStorage == null)
+                $defaultEngineStorage = self::getDefault();
 
             if (is_array(self::$array) == false || count(self::$array) <= 0) {
-                $buffer .= '<li>';
-                    $buffer .= '<input type="radio" name="' . $nameRadioCheck . '" value="' . self::ENGINE_STORAGE_NONE . '"/>';
-                    $buffer .= '<label for="' . self::ENGINE_STORAGE_NONE . '">';
-                        $buffer .= '<span>' . $lngEngineStorageNone . '</span>';
-                    $buffer .= '</label>';
-                $buffer .= '</li>';
+                $buffer .= '<option value="' . self::ENGINE_STORAGE_NONE . '">';
+                $buffer .= $lngEngineStorageNone;
+                $buffer .= '</option>';
             } else {
                 foreach (self::$array AS $engine) {
-                    $buffer .= '<li>';
-                        $buffer .= '<input type="radio" name="' . $nameRadioCheck . '" value="' . $engine . '"';
+                    $buffer .= '<option value="' . $engine . '"';
 
-                        if (
-                                ($defaultEngineStorage != null &&
-                                 $defaultEngineStorage == $engine) ||
+                        if ($defaultEngineStorage != null && $defaultEngineStorage == $engine)
+                            $buffer .= ' selected="selected"';
 
-                                ($defaultEngineStorage        != null &&
-                                 self::ENGINE_STORAGE_DEFAULT != null &&
-                                 self::ENGINE_STORAGE_DEFAULT = $engine)
-                            )
-                        {
-                            $buffer .= ' checked="checked"';
-                        }
-
-                        $buffer .= '/>';
-                        $buffer .= '<label for="' . $engine . '">';
-                            $buffer .= '<span>' . $engine . '</span>';
-                        $buffer .= '</label>';
-                    $buffer .= '</li>';
+                        $buffer .= '>';
+                        $buffer .= $engine;
+                    $buffer .= '</option>';
                 }
             }
 
@@ -74,6 +44,39 @@
             echo $buffer;
         }
 
+        private static function receiver()
+        {
+            global $appMysqlConnect;
+
+            if ($appMysqlConnect == null)
+                return self::ENGINE_STORAGE_DEFAULT;
+
+            if (is_array(self::$array))
+                return self::$default;
+
+            $query = $appMysqlConnect->query('SELECT * FROM `information_schema`.`ENGINES`');
+
+            if ($appMysqlConnect->isResource($query)) {
+                while ($assoc = $appMysqlConnect->fetchAssoc($query)) {
+                    if (strcasecmp($assoc['SUPPORT'], 'default') === 0) {
+                        self::$default = $assoc['ENGINE'];
+                        self::$array[] = $assoc['ENGINE'];
+                    } else if (strcasecmp($assoc['SUPPORT'], 'yes') === 0) {
+                        self::$array[] = $assoc['ENGINE'];
+                    }
+                }
+
+                if (self::$default == null || empty(self::$default))
+                    self::$default = self::ENGINE_STORAGE_DEFAULT;
+            }
+
+            return self::$default;
+        }
+
+        public static function getDefault()
+        {
+            return self::receiver();
+        }
     }
 
 ?>

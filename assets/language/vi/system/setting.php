@@ -10,16 +10,20 @@
                 'paging_file_edit_text'      => 'Phân trang sửa văn bản:',
                 'paging_file_edit_text_line' => 'Phân trang sửa văn bản theo dòng:',
 
+                'paging_mysql_list_data' => 'Phân trang danh sách dữ liệu mysql:',
+
                 'enable_disable_label'                     => 'Bật/Tắt',
                 'enable_forgot_password'                   => 'Lấy lại mật khẩu',
                 'enable_disable_button_save_on_javascript' => 'Phím Ctrl + S để lưu lại',
+                'enable_disable_auto_focus_input_last'     => 'Tự động focus con trỏ chuột vào khung nhập',
 
                 'auto_redirect_label'                   => 'Chuyển hướng',
                 'enable_auto_redirect_file_rename'      => 'Khi thay đổi tên tập tin, thư mục',
                 'enable_auto_redirect_file_chmod'       => 'Khi phân quyền tập tin, thư mục',
                 'enable_auto_redirect_create_directory' => 'Khi tạo thư mục',
                 'enable_auto_redirect_create_file'      => 'Khi tạo tập tin',
-                'enable_auto_redirect_create_database'  => 'Khi tạo cơ sở dữ liệu'
+                'enable_auto_redirect_create_database'  => 'Khi tạo cơ sở dữ liệu',
+                'enable_auto_redirect_rename_database'  => 'Khi đổi tên cơ sở dữ liệu'
             ],
 
             'button' => [
@@ -31,7 +35,9 @@
                 'input_paging_file_home_list'      => 'Nhập phân trang danh sách tập tin',
                 'input_paging_file_view_zip'       => 'Nhập phân trang xem tập tin zip',
                 'input_paging_file_edit_text'      => 'Nhập phân trang sửa văn bản',
-                'input_paging_file_edit_text_line' => 'Nhập phân trang sửa văn bản theo dòng'
+                'input_paging_file_edit_text_line' => 'Nhập phân trang sửa văn bản theo dòng',
+
+                'input_paging_mysql_list_data' => 'Nhập phân trang danh sách cơ sở dữ liệu mysql'
             ]
         ],
 

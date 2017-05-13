@@ -11,6 +11,8 @@
 
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
+    else if ($appMysqlConfig->get('mysql_name') != null)
+        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
 
     $title  = lng('mysql.list_table.title_page');
     $themes = [ env('resource.theme.mysql') ];
@@ -61,7 +63,7 @@
                             <span class="icomoon icon-table"></span>
                         </a>
                     </div>
-                    <a href="list_column.php<?php echo $urlParameterTable; ?>" class="name">
+                    <a href="list_data.php<?php echo $urlParameterTable; ?>" class="name">
                         <span><?php echo $mysqlAssoc['Name']; ?></span>
                     </a>
                     <div class="info">
@@ -84,6 +86,12 @@
     </ul>
 
     <ul class="menu-action">
+        <li>
+            <a href="create_table.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>">
+                <span class="icomoon icon-plus"></span>
+                <span><?php echo lng('mysql.home.menu_action.create_table'); ?></span>
+            </a>
+        </li>
         <li>
             <a href="disconnect.php">
                 <span class="icomoon icon-cord"></span>

@@ -22,7 +22,9 @@
             'file_home_list'      => $appConfig->get('paging.file_home_list'),
             'file_view_zip'       => $appConfig->get('paging.file_view_zip'),
             'file_edit_text'      => $appConfig->get('paging.file_edit_text'),
-            'file_edit_text_line' => $appConfig->get('paging.file_edit_text_line')
+            'file_edit_text_line' => $appConfig->get('paging.file_edit_text_line'),
+
+            'mysql_list_data' => $appConfig->get('paging.mysql_list_data')
         ],
 
         'login' => [
@@ -30,7 +32,8 @@
         ],
 
         'enable_disable' => [
-            'button_save_on_javascript' => $appConfig->get('enable_disable.button_save_on_javascript')
+            'button_save_on_javascript' => $appConfig->get('enable_disable.button_save_on_javascript'),
+            'auto_focus_input_last'     => $appConfig->get('enable_disable.auto_focus_input_last')
         ],
 
         'auto_redirect' => [
@@ -39,7 +42,8 @@
 
             'create_directory' => $appConfig->get('auto_redirect.create_directory'),
             'create_file'      => $appConfig->get('auto_redirect.create_file'),
-            'create_database'  => $appConfig->get('auto_redirect.create_database')
+            'create_database'  => $appConfig->get('auto_redirect.create_database'),
+            'rename_database'  => $appConfig->get('auto_redirect.rename_database')
         ],
     ];
 
@@ -169,6 +173,12 @@
                         <input type="number" name="paging_file_edit_text_line" value="<?php echo $forms['paging']['file_edit_text_line']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text_line'); ?>"/>
                     </li>
                 <?php } ?>
+                <?php if ($appConfig->isEnvEnabled('paging_mysql_list_data')) { ?>
+                    <li class="input">
+                        <span><?php echo lng('system.setting.form.input.paging_mysql_list_data'); ?></span>
+                        <input type="number" name="paging_mysql_list_data" value="<?php echo $forms['paging']['mysql_list_data']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_mysql_list_data'); ?>"/>
+                    </li>
+                <?php } ?>
                 <li class="checkbox">
                     <span><?php echo lng('system.setting.form.input.enable_disable_label'); ?></span>
                     <ul>
@@ -185,6 +195,14 @@
                                 <input type="checkbox" id="enable-disable-button-save-on-javascript" name="enable_disable_button_save_on_javascript" value="1"<?php if ($forms['enable_disable']['button_save_on_javascript'] == true) { ?> checked="checked"<?php } ?>/>
                                 <label for="enable-disable-button-save-on-javascript">
                                     <span><?php echo lng('system.setting.form.input.enable_disable_button_save_on_javascript'); ?></span>
+                                </label>
+                            </li>
+                        <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('enable_disable.auto_focus_input_last')) { ?>
+                            <li>
+                                <input type="checkbox" id="enable-disable-auto-focus-input-last" name="enable_disable_auto_focus_input_last" value="1"<?php if ($forms['enable_disable']['auto_focus_input_last'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="enable-disable-auto-focus-input-last">
+                                    <span><?php echo lng('system.setting.form.input.enable_disable_auto_focus_input_last'); ?></span>
                                 </label>
                             </li>
                         <?php } ?>
@@ -232,6 +250,14 @@
                     				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_create_database'); ?></span>
                     			</label>
                     		</li>
+                        <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('auto_redirect.rename_database')) { ?>
+                            <li>
+                                <input type="checkbox" id="auto-redirect-rename-database" name="auto_redirect_rename_database" value="1"<?php if($forms['auto_redirect']['rename_database'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="auto-redirect-rename-database">
+                                    <span><?php echo lng('system.setting.form.input.enable_auto_redirect_rename_database'); ?></span>
+                                </label>
+                            </li>
                         <?php } ?>
                 	</ul>
                 </li>

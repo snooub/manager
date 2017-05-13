@@ -74,6 +74,7 @@
                         $path        = FileInfo::validate($appDirectory->getDirectory() . SP . $file['name']);
                         $isDirectory = FileInfo::isTypeDirectory($path);
                         $isFile      = FileInfo::isTypeFile($path);
+                        $fileSizeStr = FileInfo::sizeToString($file['size']);
 
                         if ($isDirectory && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
                             $appAlert->danger(lng('upload.alert.path_file_error_is_directory', 'filename', $file['name']));
@@ -83,7 +84,7 @@
                             if (FileInfo::unlink($path)) {
 
                                 if (FileInfo::copy($file['tmp_name'], $path))
-                                    $appAlert->success(lng('upload.alert.upload_file_exists_override_is_success', 'filename', $file['name']));
+                                    $appAlert->success(lng('upload.alert.upload_file_exists_override_is_success', 'filename', $file['name'], 'size', $fileSizeStr));
                                 else
                                     $appAlert->danger(lng('upload.alert.upload_file_exists_override_is_failed', 'filename', $file['name']));
                             } else {
@@ -108,13 +109,13 @@
                             if ($fileRename == null || $pathRename == null)
                                 $appAlert->danger(lng('upload.alert.create_new_filename_exists_rename_is_failed', 'filename', $file['name']));
                             else if (FileInfo::copy($file['tmp_name'], $pathRename))
-                                $appAlert->success(lng('upload.alert.upload_file_exists_rename_is_success', 'filename', $fileRename));
+                                $appAlert->success(lng('upload.alert.upload_file_exists_rename_is_success', 'filename', $fileRename, 'size', $fileSizeStr));
                             else
                                 $appAlert->danger(lng('upload.alert.upload_file_exists_rename_is_failed', 'filename', $fileRename));
                         } else if ($isFile || FileInfo::copy($file['tmp_name'], $path) == false) {
                             $appAlert->danger(lng('upload.alert.upload_file_is_failed', 'filename', $file['name']));
                         } else {
-                            $appAlert->success(lng('upload.alert.upload_file_is_success', 'filename', $file['name']));
+                            $appAlert->success(lng('upload.alert.upload_file_is_success', 'filename', $file['name'], 'size', $fileSizeStr));
                         }
                     }
                 }

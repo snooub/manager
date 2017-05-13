@@ -267,104 +267,153 @@
     <?php echo $appAlert->display(); ?>
     <?php echo $appLocationPath->display(); ?>
 
-    <ul class="file-list-home">
-        <?php echo $bufferBack; ?>
+    <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post">
+        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-        <?php if ($handlerCount > 0) { ?>
-            <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
-                <?php $entry        = $handlerList[$i]; ?>
-                <?php $entryPath    = FileInfo::validate($appDirectory->getDirectory() . SP . $entry['name']); ?>
-                <?php $chmodPerms   = FileInfo::getChmodPermission($entryPath); ?>
-                <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
+        <ul class="file-list-home">
+            <?php echo $bufferBack; ?>
 
-                <?php if ($entry['is_directory']) { ?>
-                    <li class="type-directory <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
-                        <div class="icon">
-                            <a href="file_info.php<?php echo $urlParameter; ?>">
-                                <span class="icomoon icon-folder"></span>
+            <?php if ($handlerCount > 0) { ?>
+                <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
+                    <?php $entry        = $handlerList[$i]; ?>
+                    <?php $entryPath    = FileInfo::validate($appDirectory->getDirectory() . SP . $entry['name']); ?>
+                    <?php $chmodPerms   = FileInfo::getChmodPermission($entryPath); ?>
+                    <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
+
+                    <?php if ($entry['is_directory']) { ?>
+                        <li class="type-directory <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
+                            <div class="icon">
+                                <input type="checkbox" name="entrys[<?php echo AppDirectory::rawEncode($entry['name']); ?>]" id="folder-<?php echo AppDirectory::rawEncode($entry['name']); ?>"/>
+                                <label for="folder-<?php echo AppDirectory::rawEncode($entry['name']); ?>"></label>
+                                <a href="file_info.php<?php echo $urlParameter; ?>">
+                                    <span class="icomoon icon-folder"></span>
+                                </a>
+                            </div>
+                            <a href="index.php?<?php echo AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath); ?>" class="file-name">
+                                <span><?php echo $entry['name']; ?></span>
                             </a>
-                        </div>
-                        <a href="index.php?<?php echo AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath); ?>" class="file-name">
-                            <span><?php echo $entry['name']; ?></span>
-                        </a>
-                        <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
-                            <span><?php echo $chmodPerms; ?></span>
-                        </a>
-                    </li>
-                <?php } else { ?>
-                    <?php $info     = new FileInfo($entryPath); ?>
-                    <?php $mime     = new FileMime($info); ?>
-                    <?php $icon     = null; ?>
-                    <?php $isEdit   = false; ?>
-                    <?php $editHref = 'file_edit_text.php' . $urlParameter; ?>
-
-                    <?php
-                        if ($mime->isFormatText()) {
-                            $icon   = 'icon-file-text';
-                            $isEdit = true;
-                        } else if ($mime->isFormatCode()) {
-                            $icon   = 'icon-file-code';
-                            $isEdit = true;
-                        } else if ($mime->isFormatArchive()) {
-                            $icon   = 'icon-file-archive';
-                            $isEdit = false;
-
-                            if ($mime->isFormatArchiveZip()) {
-                                $isEdit = true;
-                                $editHref = 'file_unzip.php' . $urlParameter;
-                            }
-                        } else if ($mime->isFormatAudio()) {
-                            $icon   = 'icon-file-audio';
-                            $isEdit = false;
-                        } else if ($mime->isFormatVideo()) {
-                            $icon   = 'icon-file-video';
-                            $isEdit = false;
-                        } else if ($mime->isFormatDocument()) {
-                            $icon   = 'icon-file-document';
-                            $isEdit = false;
-                        } else if ($mime->isFormatImage()) {
-                            $icon   = 'icon-file-image';
-                            $isEdit = false;
-                        } else if ($mime->isFormatSource()) {
-                            $icon   = 'icon-file-code';
-                            $isEdit = true;
-                        } else {
-                            $icon   = 'icon-file';
-                            $isEdit = true;
-                        }
-                    ?>
-
-                    <li class="type-file <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
-                        <div class="icon">
-                            <?php if ($isEdit) { ?><a href="<?php echo $editHref; ?>"><?php } ?>
-                                <span class="icomoon <?php echo $icon; ?>"></span>
-                            <?php if ($isEdit) { ?></a><?php } ?>
-                        </div>
-                        <a href="file_info.php<?php echo $urlParameter; ?>" class="file-name">
-                            <span><?php echo $entry['name']; ?></span>
-                        </a>
-                        <div class="chmod-size">
-                            <span class="size"><?php echo FileInfo::sizeToString($info->getFileSize()); ?></span><span>,</span>
                             <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
                                 <span><?php echo $chmodPerms; ?></span>
                             </a>
-                        </div>
+                        </li>
+                    <?php } else { ?>
+                        <?php $info     = new FileInfo($entryPath); ?>
+                        <?php $mime     = new FileMime($info); ?>
+                        <?php $icon     = null; ?>
+                        <?php $isEdit   = false; ?>
+                        <?php $editHref = 'file_edit_text.php' . $urlParameter; ?>
+
+                        <?php
+                            if ($mime->isFormatText()) {
+                                $icon   = 'icon-file-text';
+                                $isEdit = true;
+                            } else if ($mime->isFormatCode()) {
+                                $icon   = 'icon-file-code';
+                                $isEdit = true;
+                            } else if ($mime->isFormatArchive()) {
+                                $icon   = 'icon-file-archive';
+                                $isEdit = false;
+
+                                if ($mime->isFormatArchiveZip()) {
+                                    $isEdit = true;
+                                    $editHref = 'file_unzip.php' . $urlParameter;
+                                }
+                            } else if ($mime->isFormatAudio()) {
+                                $icon   = 'icon-file-audio';
+                                $isEdit = false;
+                            } else if ($mime->isFormatVideo()) {
+                                $icon   = 'icon-file-video';
+                                $isEdit = false;
+                            } else if ($mime->isFormatDocument()) {
+                                $icon   = 'icon-file-document';
+                                $isEdit = false;
+                            } else if ($mime->isFormatImage()) {
+                                $icon   = 'icon-file-image';
+                                $isEdit = false;
+                            } else if ($mime->isFormatSource()) {
+                                $icon   = 'icon-file-code';
+                                $isEdit = true;
+                            } else {
+                                $icon   = 'icon-file';
+                                $isEdit = true;
+                            }
+                        ?>
+
+                        <li class="type-file <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
+                            <div class="icon">
+                                <input type="checkbox" name="entrys[<?php echo AppDirectory::rawEncode($entry['name']); ?>]" id="folder-<?php echo AppDirectory::rawEncode($entry['name']); ?>"/>
+                                <label for="folder-<?php echo AppDirectory::rawEncode($entry['name']); ?>"></label>
+
+                                <?php if ($isEdit) { ?><a href="<?php echo $editHref; ?>"><?php } ?>
+                                    <span class="icomoon <?php echo $icon; ?>"></span>
+                                <?php if ($isEdit) { ?></a><?php } ?>
+                            </div>
+                            <a href="file_info.php<?php echo $urlParameter; ?>" class="file-name">
+                                <span><?php echo $entry['name']; ?></span>
+                            </a>
+                            <div class="chmod-size">
+                                <span class="size"><?php echo FileInfo::sizeToString($info->getFileSize()); ?></span><span>,</span>
+                                <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
+                                    <span><?php echo $chmodPerms; ?></span>
+                                </a>
+                            </div>
+                        </li>
+                    <?php } ?>
+                <?php } ?>
+
+                <li class="checkbox-all">
+                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry"/>
+                    <label for="checked-all-entry">
+                        <span><?php echo lng('home.checkbox_all_entry'); ?></span>
+                    </label>
+                </li>
+
+               <?php if ($appConfig->get('paging.file_home_list') > 0 && $handlerPage['total'] > 1) { ?>
+                    <li class="paging">
+                        <?php echo $pagePaging->display($handlerPage['current'], $handlerPage['total']); ?>
                     </li>
                 <?php } ?>
+            <?php } else { ?>
+                <li class="empty entry-odd">
+                    <span class="icomoon icon-folder-o"></span>
+                    <span><?php echo lng('home.directory_empty'); ?></span>
+                </li>
             <?php } ?>
-        <?php } else { ?>
-            <li class="empty entry-odd">
-                <span class="icomoon icon-folder-o"></span>
-                <span><?php echo lng('home.directory_empty'); ?></span>
-            </li>
-        <?php } ?>
+        </ul>
 
-        <?php if ($appConfig->get('paging.file_home_list') > 0 && $handlerPage['total'] > 1) { ?>
-            <li class="paging">
-                <?php echo $pagePaging->display($handlerPage['current'], $handlerPage['total']); ?>
+        <ul class="action-multi">
+            <li>
+                <button type="submit" name="rename_multi">
+                    <span class="icomoon icon-edit"></span>
+                    <span class="label"><?php echo lng('home.action_multi.rename'); ?></span>
+                </button>
             </li>
-        <?php } ?>
-    </ul>
+            <li>
+                <button type="submit" name="copy_multi">
+                    <span class="icomoon icon-copy"></span>
+                    <span class="label"><?php echo lng('home.action_multi.copy'); ?></span>
+                </button>
+            </li>
+            <li>
+                <button type="submit" name="delete_multi">
+                    <span class="icomoon icon-trash"></span>
+                    <span class="label"><?php echo lng('home.action_multi.delete'); ?></span>
+                </button>
+            </li>
+            <li>
+                <button type="submit" name="zip_multi">
+                    <span class="icomoon icon-archive"></span>
+                    <span class="label"><?php echo lng('home.action_multi.zip'); ?></span>
+                </button>
+            </li>
+            <li>
+                <button type="submit" name="chmod_multi">
+                    <span class="icomoon icon-key"></span>
+                    <span class="label"><?php echo lng('home.action_multi.chmod'); ?></span>
+                </button>
+            </li>
+        </ul>
+    </form>
 
     <ul class="menu-action">
         <li>

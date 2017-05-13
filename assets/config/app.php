@@ -6,6 +6,11 @@
         ],
 
         'app' => [
+            'dev' => [
+                'enable' => true,
+                'rand'   => 'generatorDevRandResource'
+            ],
+
             'date' => [
                 'timezone' => 'Asia/Ho_Chi_Minh'
             ],
@@ -115,7 +120,8 @@
                 'on_load'                   => '${app.http.javascript}/on_load.js',
                 'custom_input_file'         => '${app.http.javascript}/custom_input_file.js',
                 'chmod_input'               => '${app.http.javascript}/chmod_input.js',
-                'button_save_on_javascript' => '${app.http.javascript}/button_save_on_javascript.js'
+                'button_save_on_javascript' => '${app.http.javascript}/button_save_on_javascript.js',
+                'auto_focus_input_last'     => '${app.http.javascript}/auto_focus_input_last.js'
             ],
 
             'theme' => [

@@ -4,7 +4,7 @@
 
     use Librarys\Boot;
 
-	final class DatabaseQuery
+	class DatabaseQuery
 	{
 
 		private $database;
@@ -19,10 +19,10 @@
 		private $order;
 		private $limit;
 
-		const COMMAND_SELECT          = 'SELECT';
-		const COMMAND_UPDATE          = 'UPDATE';
-		const COMMAND_DELETE          = 'DELETE';
-		const COMMAND_INSERT_INTO     = 'INSERT INTO';
+		const COMMAND_SELECT      = 'SELECT';
+		const COMMAND_UPDATE      = 'UPDATE';
+		const COMMAND_DELETE      = 'DELETE';
+		const COMMAND_INSERT_INTO = 'INSERT INTO';
 
 		const FUNCTION_AVG    = 'AVG';
 		const FUNCTION_COUNT  = 'COUNT';

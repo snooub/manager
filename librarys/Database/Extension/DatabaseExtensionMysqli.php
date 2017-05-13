@@ -113,7 +113,7 @@
 
         public function error()
         {
-            return @mysqli_error();
+            return @mysqli_error($this->getDatabaseConnect()->getResource());
         }
 
         public function getExtensionType()

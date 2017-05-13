@@ -121,6 +121,11 @@
 
         public function error()
         {
+            $resource = $this->getDatabaseConnect()->getResource();
+
+            if ($this->isResource($resource))
+                return @mysql_error($resource);
+
             return @mysql_error();
         }
 

@@ -29,6 +29,9 @@
             $this->cache('server.request_scheme', env('SERVER.REQUEST_SCHEME', 'http'));
             $this->cache('server.http_host',      env('server.request_scheme', 'http') . '://' . env('SERVER.HTTP_HOST', '/'));
 
+            $this->cache('dev.enable', false);
+            $this->cache('dev.rand',   intval($_SERVER['REQUEST_TIME']));
+
             $this->cache('app.date.timezone', 'Asia/Ho_Chi_Minh');
 
             $this->cache('app.autoload.prefix_namespace', 'Librarys');
@@ -124,6 +127,17 @@
             $this->cache('error.handler',   'handler');
             $this->cache('error.not_found', 'not_found');
             $this->cache('error.firewall',  'firewall');
+
+            if (env('dev.enable')) {
+                $rand = env('dev.rand');
+
+                if (is_numeric($rand) == false && $rand !== 0)
+                    $this->cache('dev.rand', intval($_SERVER['REQUEST_TIME']));
+                else
+                    $this->cache('dev.rand', $rand());
+            } else {
+                $this->cache('dev.rand', 0);
+            }
         }
 
         public static function env($name, $default = null)

@@ -1,11 +1,11 @@
 <?php
 
     use Librarys\App\AppDirectory;
+    use Librarys\App\AppParameter;
     use Librarys\File\FileInfo;
     use Librarys\Database\DatabaseConnect;
 
     define('LOADED',               1);
-    define('MYSQL_LIST_COLUMN',    1);
     define('DATABASE_CHECK_MYSQL', 1);
     define('TABLE_CHECK_MYSQL',    1);
 
@@ -13,16 +13,22 @@
 
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
+    else if ($appMysqlConfig->get('mysql_name') != null)
+        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
 
     $title  = lng('mysql.info_table.title_page');
     $themes = [ env('resource.theme.mysql') ];
     $appAlert->setID(ALERT_MYSQL_INFO_TABLE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
+    $appParameter = new AppParameter();
+    $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
+    $appParameter->add(PARAMETER_TABLE_URL,    AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()));
+
     $fetchAssoc = $appMysqlConnect->fetchAssoc(
         'SELECT * ' .
         'FROM `' . DatabaseConnect::DATABASE_INFORMATION . '`.`TABLES` ' .
-        'WHERE `TABLE_SCHEMA` IN ("' . $appMysqlConnect->getName() . '") ' .
+        'WHERE `TABLE_SCHEMA` IN ("' . addslashes($appMysqlConnect->getName()) . '") ' .
         'AND `TABLE_NAME`="' . addslashes($appMysqlConnect->getTableCurrent()) . '"'
     );
 
@@ -165,11 +171,66 @@
                 </div>
             </li>
         <?php } ?>
-        <li class="button-action-box">
-            <a href="<?php echo $urlBack; ?>">
-                <span><?php echo lng('mysql.info_table.button.cancel'); ?></span>
+    </ul>
+
+    <ul class="menu-action">
+        <li>
+            <a href="create_column.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-plus"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.create_column'); ?></span>
             </a>
         </li>
+        <li>
+            <a href="create_data.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-plus"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.create_data'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="truncate_data.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-trash"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.truncate_data'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="rename_table.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-trash"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.rename_table'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="delete_table.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-trash"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.delete_table'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="list_data.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-storage"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.list_data'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="list_column.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-column"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.list_column'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="list_table.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-table"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.list_table'); ?></span>
+            </a>
+        </li>
+
+        <?php if ($appMysqlConnect->isDatabaseNameCustom()) { ?>
+            <li>
+                <a href="list_database.php">
+                    <span class="icomoon icon-mysql"></span>
+                    <span><?php echo lng('mysql.list_table.menu_action.list_database'); ?></span>
+                </a>
+            </li>
+        <?php } ?>
     </ul>
 
 <?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>

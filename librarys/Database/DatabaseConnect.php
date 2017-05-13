@@ -26,7 +26,7 @@
         private $mysqli;
 
         const DATABASE_INFORMATION = 'information_schema';
-        const DATABASE_MYSQL      = 'mysql';
+        const DATABASE_MYSQL       = 'mysql';
 
         const TABLE_SCHEMATA_INFORMATION = 'schemata';
 

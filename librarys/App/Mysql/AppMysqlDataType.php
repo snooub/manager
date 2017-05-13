@@ -68,6 +68,9 @@
         {
             $buffer = null;
 
+            if ($defaultDataType == null)
+                $defaultDataType = self::getDefault();
+
             if (is_array(self::$array) == false || count(self::$array) <= 0) {
                 $buffer .= '<option value="' . self::DATA_TYPE_NONE . '">';
                 $buffer .= $lngDataTypeNone;
@@ -79,17 +82,8 @@
                     foreach ($type AS $value) {
                         $buffer .= '<option value="' . $value . '"';
 
-                        if (
-                               ($defaultDataType != null &&
-                                $defaultDataType == $value) ||
-
-                               ($defaultDataType        == null &&
-                                self::DATA_TYPE_DEFAULT != null &&
-                                self::DATA_TYPE_DEFAULT == $value)
-                            )
-                        {
+                        if ($defaultDataType != null && $defaultDataType == $value)
                             $buffer .= ' selected="selected"';
-                        }
 
                         $buffer .= '>';
                         $buffer .= $value;
@@ -127,6 +121,12 @@
 
             return in_array(strtoupper($type), self::$array['Numeric']);
         }
+
+        public static function getDefault()
+        {
+            return self::DATA_TYPE_DEFAULT;
+        }
+
     }
 
 ?>

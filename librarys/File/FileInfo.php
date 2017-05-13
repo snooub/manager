@@ -584,9 +584,12 @@
             return $perms;
         }
 
-        public static function fileSize($path)
+        public static function fileSize($path, $convertToString = false)
         {
-            return @filesize($path);
+            if ($convertToString == false)
+                return @filesize($path);
+
+            return self::sizeToString(@filesize($path));
         }
 
         public static function scanDirectory($directory)

@@ -9,11 +9,7 @@
         'label_tables'    => 'Số bảng:',
         'label_rows'      => 'Số hàng:',
         'label_indexes'   => 'Số chỉ mục:',
-        'label_total'     => 'Tất cả:',
-
-        'button' => [
-            'cancel' => 'Quay lại'
-        ]
+        'label_total'     => 'Tất cả:'
     ];
 
 ?>

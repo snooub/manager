@@ -164,6 +164,33 @@
 
             return false;
         }
+
+        public function isLengthDataValidate($length)
+        {
+            if (empty($length) == false && preg_match('#\\b[0-9]+\\b#', $length) != false)
+                return true;
+
+            return false;
+        }
+
+        public function getColumnKey($table)
+        {
+            $table = addslashes($table);
+            $query = $this->query('SHOW INDEXES FROM `' . $table . '` WHERE `Key_name`="PRIMARY"');
+            $key   = null;
+
+            if ($this->numRows($query) > 0) {
+                $key = $this->fetchAssoc($query);
+                $key = $key['Column_name'];
+            } else {
+                $query = $this->query('SHOW COLUMNS FROM `' . $table . '`');
+                $key   = $this->fetchAssoc($query);
+                $key   = $key['Field'];
+            }
+
+            return $key;
+        }
+
     }
 
 ?>

@@ -21,11 +21,7 @@
         'label_index_length'   => 'Chỉ mục:',
         'label_total_length'   => 'Tất cả:',
 
-        'label_comment'        => 'Chú thích',
-
-        'button' => [
-            'cancel' => 'Quay lại'
-        ]
+        'label_comment'        => 'Chú thích'
     ];
 
 ?>

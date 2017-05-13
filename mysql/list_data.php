@@ -5,9 +5,15 @@
     use Librarys\File\FileInfo;
 
     define('LOADED',               1);
-    define('MYSQL_LIST_COLUMN',    1);
+    define('MYSQL_LIST_DATA',      1);
     define('DATABASE_CHECK_MYSQL', 1);
     define('TABLE_CHECK_MYSQL',    1);
+
+    define('PARAMETER_PAGE_DATA_URL',  'page_data');
+    define('PARAMETER_ORDER_DATA_URL', 'order_data');
+
+    define('ORDER_DATA_DESC', 'desc');
+    define('ORDER_DATA_ASC',  'asc');
 
     require_once('global.php');
 
@@ -20,14 +26,70 @@
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
     $appParameter->add(PARAMETER_TABLE_URL,    AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()));
 
-    $title  = lng('mysql.list_column.title_page');
+    $mysqlBy      = addslashes($appMysqlConnect->getColumnKey($appMysqlConnect->getTableCurrent()));
+    $mysqlStr     = null;
+    $mysqlEmptyBy = empty($mysqlBy);
+    $mysqlTable   = addslashes($appMysqlConnect->getTableCurrent());
+    $mysqlNums  = 0;
+
+    if ($mysqlEmptyBy == false)
+        $mysqlNums = $appMysqlConnect->numRows('SELECT * FROM `' . $mysqlTable . '`');
+
+    if ($mysqlNums <= 0 && isset($_SERVER['HTTP_REFERER']) && stripos( $_SERVER['HTTP_REFERER'], 'list_table.php') !== false)
+        gotoURL('list_column.php' . $appParameter->toString());
+    else if ($mysqlNums <= 0)
+        $appAlert->warning(lng('mysql.list_data.alert.data_is_empty_not_view'), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
+
+    $title  = lng('mysql.list_data.title_page');
     $themes = [ env('resource.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_LIST_COLUMN);
+    $appAlert->setID(ALERT_MYSQL_LIST_DATA);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
-    $mysqlStr   = 'SHOW COLUMNS FROM `' . addslashes($appMysqlConnect->getTableCurrent()) . '`';
+    $orders = [
+        'key'   => ORDER_DATA_DESC,
+        'query' => strtoupper(ORDER_DATA_DESC)
+    ];
+
+    $pagings = [
+        'current'     => 0,
+        'total'       => 0,
+        'begin_query' => 0,
+        'end_query'   => 0,
+        'max'         => $appConfig->get('paging.mysql_list_data', 0)
+    ];
+
+    if (isset($_GET[PARAMETER_ORDER_DATA_URL]) && empty($_GET[PARAMETER_ORDER_DATA_URL]) == false) {
+        $orders['key'] = trim(addslashes($_GET[PARAMETER_ORDER_DATA_URL]));
+
+        if ($orders['key'] != ORDER_DATA_DESC && $orders['key'] != ORDER_DATA_ASC)
+            $orders['key'] = ORDER_DATA_DESC;
+
+        $orders['query'] = strtoupper($orders['key']);
+    }
+
+    if (isset($_GET[PARAMETER_PAGE_DATA_URL]) && empty($_GET[PARAMETER_PAGE_DATA_URL]) == false)
+        $pagings['current'] = intval(addslashes($_GET[PARAMETER_PAGE_DATA_URL]));
+
+    if ($pagings['current'] <= 0)
+        $pagings['current'] = 1;
+
+    if ($pagings['max'] > 0) {
+        $pagings['begin_query'] = ($pagings['current']     * $pagings['max']) - $pagings['max'];
+        $pagings['end_query']   = ($pagings['begin_query'] + $pagings['max']);
+    }
+
+    if ($pagings['max'] > 0 && $mysqlEmptyBy == false) {
+        $mysqlStr = 'SELECT * ' .
+                    'FROM `' .     $mysqlTable . '` ' .
+                    'ORDER BY `' . $mysqlBy . '` ' . $orders['query'] . ' ' .
+                    'LIMIT ' . $pagings['begin_query'] . ', ' . $pagings['end_query'];
+    } else if ($mysqlEmptyBy == false) {
+        $mysqlStr = 'SELECT * ' .
+                    'FROM `' . $mysqlTable . '` ' .
+                    'ORDER BY `' . $mysqlBy . '` ' . $orders['query'];
+    }
+
     $mysqlQuery = $appMysqlConnect->query($mysqlStr);
-    $mysqlNums  = $appMysqlConnect->numRows($mysqlQuery);
 ?>
 
     <?php echo $appAlert->display(); ?>
@@ -48,16 +110,32 @@
         <?php if ($mysqlNums <= 0) { ?>
             <li class="empty">
                 <span class="icomoon icon-column"></span>
-                <span><?php echo lng('mysql.list_column.alert.empty_list_column'); ?></span>
+                <span><?php echo lng('mysql.list_data.alert.empty_list_data'); ?></span>
             </li>
         <?php } else { ?>
+            <li class="order">
+                <?php if ($orders['key'] == ORDER_DATA_ASC) { ?>
+                    <span class="current"><?php echo strtoupper(ORDER_DATA_ASC); ?></span>
+                    <span class="text">|</span>
+                    <a href="list_data.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ORDER_DATA_URL; ?>=<?php echo ORDER_DATA_DESC; ?>">
+                        <span class="choose"><?php echo strtoupper(ORDER_DATA_DESC); ?></span>
+                    </a>
+                <?php } else { ?>
+                    <a href="list_data.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ORDER_DATA_URL; ?>=<?php echo ORDER_DATA_ASC; ?>">
+                        <span class="choose"><?php echo strtoupper(ORDER_DATA_ASC); ?></span>
+                    </a>
+                    <span class="text">|</span>
+                    <span class="current"><?php echo strtoupper(ORDER_DATA_DESC); ?></span>
+                <?php } ?>
+            </li>
+
             <?php while ($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery)) { ?>
                 <li class="type-column">
                     <a href="#">
                         <span class="icomoon icon-column"></span>
                     </a>
                     <a href="#">
-                        <span><?php echo $mysqlAssoc['Field']; ?></span>
+                        <span><?php echo $mysqlAssoc[$mysqlBy]; ?></span>
                     </a>
                 </li>
             <?php } ?>
@@ -102,9 +180,9 @@
             </a>
         </li>
         <li>
-            <a href="list_data.php<?php echo $appParameter->toString(); ?>">
-                <span class="icomoon icon-storage"></span>
-                <span><?php echo lng('mysql.list_table.menu_action.list_data'); ?></span>
+            <a href="list_column.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-column"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.list_column'); ?></span>
             </a>
         </li>
         <li>

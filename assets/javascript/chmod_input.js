@@ -1,196 +1,199 @@
-var inputChmod             = null;
-var inputChmodCheckbox     = null;
-var listInputChmodCheckbox = null;
+//var inputChmod             = null;
+//var inputChmodCheckbox     = null;
+//var listInputChmodCheckbox = null;
 
-function onAddEventChmodListener(idInputChmod, idInputChmodCheckbox)
-{
-    inputChmod             = document.getElementById(idInputChmod);
-    inputChmodCheckbox     = document.getElementById(idInputChmodCheckbox);
-    listInputChmodCheckbox = [];
+var ChmodInput = {
+    inputChmod:             null,
+    inputChmodCheckbox:     null,
+    listInputChmodCheckbox: null,
 
-    if (typeof inputChmod === "undefined" || typeof inputChmodCheckbox === "undefined")
-        return;
+    onAddEventChmodListener: function(idInputChmod, idInputChmodCheckbox) {
+        ChmodInput.inputChmod             = document.getElementById(idInputChmod);
+        ChmodInput.inputChmodCheckbox     = document.getElementById(idInputChmodCheckbox);
+        ChmodInput.listInputChmodCheckbox = [];
 
-    inputChmod.addEventListener("input", function(env) {
-        var chmod = calculatorChmodInput();
+        if (typeof ChmodInput.inputChmod === "undefined" || typeof ChmodInput.inputChmodCheckbox === "undefined")
+            return;
 
-        if (typeof chmod !== "undefined")
-            onCheckboxSetChecked(chmod.system, chmod.group, chmod.user);
-    });
+        ChmodInput.inputChmod.addEventListener("input", function(env) {
+            var chmod = ChmodInput.calculatorChmodInput();
 
-    var inputChmodCheckboxElement = inputChmodCheckbox.getElementsByTagName("input");
+            if (typeof chmod !== "undefined")
+                ChmodInput.onCheckboxSetChecked(chmod.system, chmod.group, chmod.user);
+        });
 
-    if (inputChmodCheckboxElement.length) {
-        for (var i = 0; i < inputChmodCheckboxElement.length; ++i) {
-            var entry = inputChmodCheckboxElement[i];
+        var inputChmodCheckboxElement = ChmodInput.inputChmodCheckbox.getElementsByTagName("input");
 
-            if (entry.type && entry.type == "checkbox") {
-                entry.addEventListener("click", function(env) {
-                    var chmod = calculatorChmodChecked();
+        if (inputChmodCheckboxElement.length) {
+            for (var i = 0; i < inputChmodCheckboxElement.length; ++i) {
+                var entry = inputChmodCheckboxElement[i];
 
-                    if (typeof chmod !== "undefined")
-                        inputChmod.value = chmod;
+                if (entry.type && entry.type == "checkbox") {
+                    entry.addEventListener("click", function(env) {
+                        var chmod = ChmodInput.calculatorChmodChecked();
 
-                    chmod = calculatorChmodInput();
+                        if (typeof chmod !== "undefined")
+                            ChmodInput.inputChmod.value = chmod;
 
-                    if (typeof chmod !== "undefined")
-                        onCheckboxSetChecked(chmod.system, chmod.group, chmod.user);
-                });
+                        chmod = ChmodInput.calculatorChmodInput();
 
-                listInputChmodCheckbox.push(entry);
+                        if (typeof chmod !== "undefined")
+                            ChmodInput.onCheckboxSetChecked(chmod.system, chmod.group, chmod.user);
+                    });
+
+                    ChmodInput.listInputChmodCheckbox.push(entry);
+                }
             }
+
+            var chmod = ChmodInput.calculatorChmodInput();
+
+            if (typeof chmod !== "undefined")
+                ChmodInput.onCheckboxSetChecked(chmod.system, chmod.group, chmod.user);
         }
+    },
 
-        var chmod = calculatorChmodInput();
+    calculatorChmodInput: function() {
+        var array = {
+            system: 0,
+            group:  0,
+            user:   0
+        };
 
-        if (typeof chmod !== "undefined")
-            onCheckboxSetChecked(chmod.system, chmod.group, chmod.user);
-    }
-}
+        if (typeof ChmodInput.inputChmod === "undefined")
+            return array;
 
-function calculatorChmodInput()
-{
-    var array = {
-        system: 0,
-        group:  0,
-        user:   0
-    };
+        var value  = ChmodInput.inputChmod.value;
 
-    if (typeof inputChmod === "undefined")
+        if (value == null || value.length <= 0)
+            value = "";
+
+        if (value.length < 1)
+            value +="000";
+        else if (value.length < 2)
+            value += "00";
+        else if (value.length < 3)
+            value += "0";
+
+        var length = value.length;
+
+        if (length >= 3)
+            array.system = parseInt(value.charAt(length - 3));
+
+        if (length >= 2)
+            array.group = parseInt(value.charAt(length - 2));
+
+        if (length >= 1)
+            array.user = parseInt(value.charAt(length - 1));
+
+        if (array.system < 0 || array.system > 7)
+            array.system = 0;
+
+        if (array.group < 0 || array.group > 7)
+            array.group = 0;
+
+        if (array.user < 0 || array.user > 7)
+            array.user = 0;
+
         return array;
+    },
 
-    var value  = inputChmod.value;
+    calculatorChmodChecked: function() {
+        if (typeof ChmodInput.listInputChmodCheckbox === "undefined")
+            return;
 
-    if (value == null || value.length <= 0)
-        value = "";
+        var system = 0;
+        var group  = 0;
+        var user   = 0;
 
-    if (value.length < 1)
-        value +="000";
-    else if (value.length < 2)
-        value += "00";
-    else if (value.length < 3)
-        value += "0";
+        for (var i = 0; i < ChmodInput.listInputChmodCheckbox.length; ++i) {
+            var checkbox = ChmodInput.listInputChmodCheckbox[i];
 
-    var length = value.length;
+            if (checkbox.checked == true && checkbox.name && checkbox.name.search) {
+                var name = checkbox.name;
 
-    if (length >= 3)
-        array.system = parseInt(value.charAt(length - 3));
+                if (name.search("system") != -1) {
+                    if (name.search("read") != -1)
+                        system += 4;
+                    else if (name.search("write") != -1)
+                        system += 2;
+                    else if (name.search("execute") != -1)
+                        system += 1;
+                } else if (name.search("group") != -1) {
+                    if (name.search("read") != -1)
+                        group += 4;
+                    else if (name.search("write") != -1)
+                        group += 2;
+                    else if (name.search("execute") != -1)
+                        group += 1;
+                } else if (name.search("user") != -1) {
+                    if (name.search("read") != -1)
+                        user += 4;
+                    else if (name.search("write") != -1)
+                        user += 2;
+                    else if (name.search("execute") != -1)
+                        user += 1;
+                }
+            }
+        }
 
-    if (length >= 2)
-        array.group = parseInt(value.charAt(length - 2));
+        if (system.toString)
+            system = system.toString();
+        else
+            system = "0";
 
-    if (length >= 1)
-        array.user = parseInt(value.charAt(length - 1));
+        if (group.toString)
+            group = group.toString();
+        else
+            group = "0";
 
-    if (array.system < 0 || array.system > 7)
-        array.system = 0;
+        if (user.toString)
+            user = user.toString();
+        else
+            user = "0";
 
-    if (array.group < 0 || array.group > 7)
-        array.group = 0;
+        return system + group + user;
+    },
 
-    if (array.user < 0 || array.user > 7)
-        array.user = 0;
+    onCheckboxSetChecked: function(system, group, user) {
+        if (typeof ChmodInput.listInputChmodCheckbox === "undefined")
+            return;
 
-    return array;
-}
+        for (var i = 0; i < ChmodInput.listInputChmodCheckbox.length; ++i) {
+            var checkbox = ChmodInput.listInputChmodCheckbox[i];
 
-function calculatorChmodChecked()
-{
-    if (typeof listInputChmodCheckbox === "undefined")
-        return;
+            if (checkbox.name && checkbox.name.search) {
+                var name = checkbox.name;
 
-    var system = 0;
-    var group  = 0;
-    var user   = 0;
-
-    for (var i = 0; i < listInputChmodCheckbox.length; ++i) {
-        var checkbox = listInputChmodCheckbox[i];
-
-        if (checkbox.checked == true && checkbox.name && checkbox.name.search) {
-            var name = checkbox.name;
-
-            if (name.search("system") != -1) {
-                if (name.search("read") != -1)
-                    system += 4;
-                else if (name.search("write") != -1)
-                    system += 2;
-                else if (name.search("execute") != -1)
-                    system += 1;
-            } else if (name.search("group") != -1) {
-                if (name.search("read") != -1)
-                    group += 4;
-                else if (name.search("write") != -1)
-                    group += 2;
-                else if (name.search("execute") != -1)
-                    group += 1;
-            } else if (name.search("user") != -1) {
-                if (name.search("read") != -1)
-                    user += 4;
-                else if (name.search("write") != -1)
-                    user += 2;
-                else if (name.search("execute") != -1)
-                    user += 1;
+                if (name.search("system") != -1) {
+                    if (name.search("read") != -1)
+                        checkbox.checked = (system & 4) != 0;
+                    else if (name.search("write") != -1)
+                        checkbox.checked = (system & 2) != 0;
+                    else if (name.search("execute") != -1)
+                        checkbox.checked = (system & 1) != 0;
+                    else
+                        checkbox.checked = false;
+                } else if (name.search("group") != -1) {
+                    if (name.search("read") != -1)
+                        checkbox.checked = (group & 4) != 0;
+                    else if (name.search("write") != -1)
+                        checkbox.checked = (group & 2) != 0;
+                    else if (name.search("execute") != -1)
+                        checkbox.checked = (group & 1) != 0;
+                    else
+                        checkbox.checked = false;
+                } else if (name.search("user") != -1) {
+                    if (name.search("read") != -1)
+                        checkbox.checked = (user & 4) != 0;
+                    else if (name.search("write") != -1)
+                        checkbox.checked = (user & 2) != 0;
+                    else if (name.search("execute") != -1)
+                        checkbox.checked = (user & 1) != 0;
+                    else
+                        checkbox.checked = false;
+                }
             }
         }
     }
 
-    if (system.toString)
-        system = system.toString();
-    else
-        system = "0";
-
-    if (group.toString)
-        group = group.toString();
-    else
-        group = "0";
-
-    if (user.toString)
-        user = user.toString();
-    else
-        user = "0";
-
-    return system + group + user;
-}
-
-function onCheckboxSetChecked(system, group, user)
-{
-    if (typeof listInputChmodCheckbox === "undefined")
-        return;
-
-    for (var i = 0; i < listInputChmodCheckbox.length; ++i) {
-        var checkbox = listInputChmodCheckbox[i];
-
-        if (checkbox.name && checkbox.name.search) {
-            var name = checkbox.name;
-
-            if (name.search("system") != -1) {
-                if (name.search("read") != -1)
-                    checkbox.checked = (system & 4) != 0;
-                else if (name.search("write") != -1)
-                    checkbox.checked = (system & 2) != 0;
-                else if (name.search("execute") != -1)
-                    checkbox.checked = (system & 1) != 0;
-                else
-                    checkbox.checked = false;
-            } else if (name.search("group") != -1) {
-                if (name.search("read") != -1)
-                    checkbox.checked = (group & 4) != 0;
-                else if (name.search("write") != -1)
-                    checkbox.checked = (group & 2) != 0;
-                else if (name.search("execute") != -1)
-                    checkbox.checked = (group & 1) != 0;
-                else
-                    checkbox.checked = false;
-            } else if (name.search("user") != -1) {
-                if (name.search("read") != -1)
-                    checkbox.checked = (user & 4) != 0;
-                else if (name.search("write") != -1)
-                    checkbox.checked = (user & 2) != 0;
-                else if (name.search("execute") != -1)
-                    checkbox.checked = (user & 1) != 0;
-                else
-                    checkbox.checked = false;
-            }
-        }
-    }
-}
+};

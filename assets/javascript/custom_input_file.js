@@ -165,4 +165,7 @@ var CustomInputFile = {
     }
 };
 
-onLoad.add(CustomInputFile.onAddEventChangeInputFile);
+if (typeof OnLoad !== "undefined" && OnLoad.add)
+    OnLoad.add(CustomInputFile.onAddEventChangeInputFile);
+else
+    window.onload = CustomInputFile.onAddEventChangeInputFile;

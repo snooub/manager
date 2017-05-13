@@ -32,7 +32,7 @@
         'FROM      `' . DatabaseConnect::DATABASE_INFORMATION . '`.`SCHEMATA` `schemata` ' .
         'LEFT JOIN `' . DatabaseConnect::DATABASE_INFORMATION . '`.`TABLES` `tables` ' .
         'ON        `tables`.`TABLE_SCHEMA` = `schemata`.`SCHEMA_NAME` ' .
-        'WHERE     `schemata`.`SCHEMA_NAME`="' . $appMysqlConnect->getName() . '"'
+        'WHERE     `schemata`.`SCHEMA_NAME`="' . addslashes($appMysqlConnect->getName()) . '"'
     );
 
     $fetchAssoc['SCHEMA_TABLES']       = intval($fetchAssoc['SCHEMA_TABLES']);
@@ -118,30 +118,31 @@
                 <li><span><?php echo FileInfo::sizeToString($fetchAssoc['SCHEMA_LENGTH']); ?></span></li>
             </ul>
         </li>
-        <li class="button-action-box">
-            <a href="<?php echo $urlBack; ?>">
-                <span><?php echo lng('mysql.info_database.button.cancel'); ?></span>
-            </a>
-        </li>
     </ul>
 
     <ul class="menu-action">
         <li>
-            <a href="delete_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo $appMysqlConnect->getName(); ?>">
-                <span class="icomoon icon-trash"></span>
-                <span><?php echo lng('mysql.list_database.menu_action.delete_database'); ?></span>
+            <a href="create_database.php">
+                <span class="icomoon icon-plus"></span>
+                <span><?php echo lng('mysql.list_database.menu_action.create_database'); ?></span>
             </a>
         </li>
         <li>
-            <a href="rename_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo $appMysqlConnect->getName(); ?>">
+            <a href="rename_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>">
                 <span class="icomoon icon-edit"></span>
                 <span><?php echo lng('mysql.list_database.menu_action.rename_database'); ?></span>
             </a>
         </li>
         <li>
-            <a href="create_database.php">
-                <span class="icomoon icon-plus"></span>
-                <span><?php echo lng('mysql.list_database.menu_action.create_database'); ?></span>
+            <a href="delete_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>">
+                <span class="icomoon icon-trash"></span>
+                <span><?php echo lng('mysql.list_database.menu_action.delete_database'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="list_database.php">
+                <span class="icomoon icon-mysql"></span>
+                <span><?php echo lng('mysql.list_table.menu_action.list_database'); ?></span>
             </a>
         </li>
         <li>

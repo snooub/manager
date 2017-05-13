@@ -104,7 +104,7 @@
                 </li>
                 <li class="input">
                     <span><?php echo lng('mysql.home.form.input.password'); ?></span>
-                    <input type="text" name="mysql_password" value="<?php echo $forms['mysql_password']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_password'); ?>"/>
+                    <input type="password" name="mysql_password" value="<?php echo $forms['mysql_password']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_password'); ?>" auto_complete="off"/>
                 </li>
                 <li class="input">
                     <span><?php echo lng('mysql.home.form.input.name'); ?></span>

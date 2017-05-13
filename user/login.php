@@ -39,7 +39,7 @@
     <div id="login">
         <form action="login.php" method="post" id="login-form">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
-            <input type="text" name="username" value="<?php echo stripslashes($username); ?>" placeholder="<?php echo lng('login.form.input_username_placeholder'); ?>"/>
+            <input type="text" name="username" value="<?php echo stripslashes($username); ?>" placeholder="<?php echo lng('login.form.input_username_placeholder'); ?>" autofocus="autofocus"/>
             <input type="password" name="password" value="<?php echo stripslashes($password); ?>" placeholder="<?php echo lng('login.form.input_password_placeholder'); ?>"/>
             <div id="login-form-action">
                 <?php if ($appConfig->get('login.enable_forgot_password')) { ?>
