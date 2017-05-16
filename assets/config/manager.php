@@ -13,8 +13,9 @@
         ],
 
         'enable_disable' => [
-            'button_save_on_javascript' => true,
-            'auto_focus_input_last'     => true
+            'button_save_on_javascript'      => true,
+            'auto_focus_input_last'          => true,
+            'count_checkbox_file_javascript' => true
         ],
 
         'login' => [

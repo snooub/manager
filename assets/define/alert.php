@@ -20,6 +20,7 @@
     define('ALERT_FILE_COPY',      'alert_file_copy');
     define('ALERT_FILE_DELETE',    'alert_file_delete');
     define('ALERT_FILE_CHMOD',     'alert_file_chmod');
+    define('ALERT_FILE_ACTION',    'alert_file_action');
 
     define('ALERT_MYSQL_HOME',            'alert_mysql_home');
     define('ALERT_MYSQL_LIST_DATABASE',   'alert_mysql_list_database');

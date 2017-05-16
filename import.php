@@ -85,7 +85,7 @@
                 </li>
 
                 <li class="button">
-                    <button type="button" onclick="javasctipt:onAddMoreInputFile('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');" id="button-save-on-javascript">
+                    <button type="button" onclick="javascript:onAddMoreInputFile('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');" id="button-save-on-javascript">
                         <span><?php echo lng('import.form.button.more'); ?></span>
                     </button>
                     <button type="submit" name="upload">

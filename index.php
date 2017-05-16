@@ -15,9 +15,11 @@
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
 
-    $title  = lng('home.title_page_root');
-    $themes = [ env('resource.theme.file') ];
+    $title   = lng('home.title_page_root');
+    $themes  = [ env('resource.theme.file') ];
+    $scripts = [ env('resource.javascript.checkbox_checkall') ];
     $appAlert->setID(ALERT_INDEX);
+
     require_once('incfiles' . SP . 'header.php');
 
     $handler              = null;
@@ -267,7 +269,7 @@
     <?php echo $appAlert->display(); ?>
     <?php echo $appLocationPath->display(); ?>
 
-    <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post">
+    <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-file-home">
         <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
         <ul class="file-list-home">
@@ -283,8 +285,15 @@
                     <?php if ($entry['is_directory']) { ?>
                         <li class="type-directory <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
                             <div class="icon">
-                                <input type="checkbox" name="entrys[<?php echo AppDirectory::rawEncode($entry['name']); ?>]" id="folder-<?php echo AppDirectory::rawEncode($entry['name']); ?>"/>
-                                <label for="folder-<?php echo AppDirectory::rawEncode($entry['name']); ?>"></label>
+                                <?php $id = 'folder-' . AppDirectory::rawEncode($entry['name']); ?>
+
+                                <input
+                                        type="checkbox"
+                                        name="entrys[<?php echo AppDirectory::rawEncode($entry['name']); ?>]"
+                                        id="<?php echo $id; ?>"
+                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-file-home', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
+
+                                <label for="<?php echo $id; ?>"></label>
                                 <a href="file_info.php<?php echo $urlParameter; ?>">
                                     <span class="icomoon icon-folder"></span>
                                 </a>
@@ -341,8 +350,15 @@
 
                         <li class="type-file <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
                             <div class="icon">
-                                <input type="checkbox" name="entrys[<?php echo AppDirectory::rawEncode($entry['name']); ?>]" id="folder-<?php echo AppDirectory::rawEncode($entry['name']); ?>"/>
-                                <label for="folder-<?php echo AppDirectory::rawEncode($entry['name']); ?>"></label>
+                                <?php $id = 'file-' . AppDirectory::rawEncode($entry['name']); ?>
+
+                                <input
+                                        type="checkbox"
+                                        name="entrys[<?php echo AppDirectory::rawEncode($entry['name']); ?>]"
+                                        id="<?php echo $id; ?>"
+                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-file-home', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
+
+                                <label for="<?php echo $id; ?>"></label>
 
                                 <?php if ($isEdit) { ?><a href="<?php echo $editHref; ?>"><?php } ?>
                                     <span class="icomoon <?php echo $icon; ?>"></span>
@@ -362,9 +378,12 @@
                 <?php } ?>
 
                 <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry"/>
+                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll('form-list-file-home', 'checked-all-entry', 'checkall-count');"/>
                     <label for="checked-all-entry">
                         <span><?php echo lng('home.checkbox_all_entry'); ?></span>
+                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?>
+                            <span id="checkall-count"></span>
+                        <?php } ?>
                     </label>
                 </li>
 
@@ -381,38 +400,40 @@
             <?php } ?>
         </ul>
 
-        <ul class="action-multi">
-            <li>
-                <button type="submit" name="rename_multi">
-                    <span class="icomoon icon-edit"></span>
-                    <span class="label"><?php echo lng('home.action_multi.rename'); ?></span>
-                </button>
-            </li>
-            <li>
-                <button type="submit" name="copy_multi">
-                    <span class="icomoon icon-copy"></span>
-                    <span class="label"><?php echo lng('home.action_multi.copy'); ?></span>
-                </button>
-            </li>
-            <li>
-                <button type="submit" name="delete_multi">
-                    <span class="icomoon icon-trash"></span>
-                    <span class="label"><?php echo lng('home.action_multi.delete'); ?></span>
-                </button>
-            </li>
-            <li>
-                <button type="submit" name="zip_multi">
-                    <span class="icomoon icon-archive"></span>
-                    <span class="label"><?php echo lng('home.action_multi.zip'); ?></span>
-                </button>
-            </li>
-            <li>
-                <button type="submit" name="chmod_multi">
-                    <span class="icomoon icon-key"></span>
-                    <span class="label"><?php echo lng('home.action_multi.chmod'); ?></span>
-                </button>
-            </li>
-        </ul>
+        <?php if ($handlerCount > 0) { ?>
+            <ul class="action-multi">
+                <li>
+                    <button type="submit" name="rename_multi">
+                        <span class="icomoon icon-edit"></span>
+                        <span class="label"><?php echo lng('home.action_multi.rename'); ?></span>
+                    </button>
+                </li>
+                <li>
+                    <button type="submit" name="copy_multi">
+                        <span class="icomoon icon-copy"></span>
+                        <span class="label"><?php echo lng('home.action_multi.copy'); ?></span>
+                    </button>
+                </li>
+                <li>
+                    <button type="submit" name="delete_multi">
+                        <span class="icomoon icon-trash"></span>
+                        <span class="label"><?php echo lng('home.action_multi.delete'); ?></span>
+                    </button>
+                </li>
+                <li>
+                    <button type="submit" name="zip_multi">
+                        <span class="icomoon icon-archive"></span>
+                        <span class="label"><?php echo lng('home.action_multi.zip'); ?></span>
+                    </button>
+                </li>
+                <li>
+                    <button type="submit" name="chmod_multi">
+                        <span class="icomoon icon-key"></span>
+                        <span class="label"><?php echo lng('home.action_multi.chmod'); ?></span>
+                    </button>
+                </li>
+            </ul>
+        <?php } ?>
     </form>
 
     <ul class="menu-action">
