@@ -275,8 +275,41 @@
                 }
             }
         }
-    } else if (isset($_POST['delete_button'])) {
 
+        $forms['copy']['path_copy'] = addslashes($forms['copy']['path_copy']);
+    } else if (isset($_POST['delete_button'])) {
+        $isFailed               = false;
+        $isHasFileAppPermission = false;
+
+        foreach ($listEntrys AS $entryFilename) {
+            $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+            $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
+
+            if (FileInfo::permissionDenyPath($entryPath)) {
+                $isHasFileAppPermission = true;
+            } else if ($entryIsTypeDirectory) {
+                if (FileInfo::rrmdir($entryPath, null, $isHasFileAppPermission) == false) {
+                    $isFailed = true;
+                    $appAlert->danger(lng('file_action.alert.delete.delete_directory_failed', 'name', $entryFilename));
+                }
+            } else if (FileInfo::unlink($entryPath) == false) {
+                $isFailed = true;
+                $appAlert->danger(lng('file_action.alert.delete.delete_file_failed', 'name', $entryFilename));
+            }
+        }
+
+        if ($isFailed == false) {
+            if ($isHasFileAppPermission)
+                $appAlert->warning(lng('file_action.alert.delete.not_delete_file_app'), ALERT_INDEX);
+
+            $appAlert->success(lng('file_action.alert.delete.delete_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+        } else {
+            if ($isHasFileAppPermission)
+                $appAlert->warning(lng('file_action.alert.delete.not_delete_file_app'));
+
+            if ($countEntrys > 1)
+                $appAlert->success(lng('file_action.alert.delete.delete_success'));
+        }
     } else if (isset($_POST['zip_button'])) {
 
     } else if (isset($_POST['chmod_button'])) {

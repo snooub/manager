@@ -111,6 +111,13 @@
                 'copy_file_failed'                 => 'Sao chép tập tin <strong>{$name}</strong> thất bại',
                 'copy_success'                     => 'Sao chép nhiều mục thành công',
                 'copy_some_items_success'          => 'Sao chép một số mục thành công'
+            ],
+
+            'delete' => [
+                'not_delete_file_app'     => 'Một số mục có chứa thư mục hoặc tập tin của ứng dụng không thể xóa hoàn toàn được',
+                'delete_directory_failed' => 'Xóa thư mục <strong>{$name}</strong> thất bại',
+                'delete_file_failed'      => 'Xóa tập tin <strong>{$name}</strong> thất bại',
+                'delete_success'          => 'Xóa nhiều mục thành công'
             ]
         ]
     ];
