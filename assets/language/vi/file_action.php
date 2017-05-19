@@ -75,8 +75,9 @@
         ],
 
         'alert' => [
-            'not_file_select'     => 'Chưa có mục nào được chọn',
-            'action_not_validate' => 'Hành động không hợp lệ',
+            'not_file_select'         => 'Chưa có mục nào được chọn',
+            'action_not_validate'     => 'Hành động không hợp lệ',
+            'no_item_selected_exists' => 'Không có mục nào được chọn tồn tại',
 
             'rename' => [
                 'nothing_changes'                         => 'Không có gì thay đổi',
@@ -98,13 +99,18 @@
             ],
 
             'copy' => [
-                'not_input_path_copy'             => 'Chưa nhập đường dẫn sao chép',
-                'action_not_validate'             => 'Hành động không hợp lệ',
-                'exists_func_not_validate'        => 'Hành động khi thư mục hoặc tập tin tồn tại không hợp lệ',
-                'path_copy_is_equal_path_current' => 'Đường dẫn sao chép phải khác đường dẫn hiện tại',
-                'path_move_is_equal_path_current' => 'Đường dẫn di chuyển phải khác đường dẫn hiện tại',
-                'path_copy_not_exists'            => 'Đường dẫn sao chép không tồn tại',
-                'not_copy_file_to_directory_app'  => 'Bạn không thể sao chép vào thư mục của ứng dụng',
+                'not_input_path_copy'              => 'Chưa nhập đường dẫn sao chép',
+                'mode_not_validate'                => 'Hành động không hợp lệ',
+                'exists_func_not_validate'         => 'Hành động khi thư mục hoặc tập tin tồn tại không hợp lệ',
+                'path_copy_is_equal_path_current'  => 'Đường dẫn sao chép phải khác đường dẫn hiện tại',
+                'path_move_is_equal_path_current'  => 'Đường dẫn di chuyển phải khác đường dẫn hiện tại',
+                'path_copy_not_exists'             => 'Đường dẫn sao chép không tồn tại',
+                'not_copy_file_to_directory_app'   => 'Bạn không thể sao chép vào thư mục của ứng dụng',
+                'has_file_app_not_permission_copy' => 'Thư mục chứa một số mục của ứng dụng, đã bỏ qua các mục này',
+                'copy_directory_failed'            => 'Sao chép thư mục <strong>{$name}</strong> thất bại',
+                'copy_file_failed'                 => 'Sao chép tập tin <strong>{$name}</strong> thất bại',
+                'copy_success'                     => 'Sao chép nhiều mục thành công',
+                'copy_some_items_success'          => 'Sao chép một số mục thành công'
             ]
         ]
     ];

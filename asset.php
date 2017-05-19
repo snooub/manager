@@ -90,6 +90,6 @@
         @ob_end_clean();
         @ob_start();
 
-        echo $contents;
+        echo ($contents);
     }
 ?>

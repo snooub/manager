@@ -199,11 +199,80 @@
 
         if (empty($forms['copy']['path_copy'])) {
             $appAlert->danger(lng('file_action.alert.copy.not_input_path_copy'));
+        } else if ($forms['copy']['mode'] !== FILE_ACTION_COPY_MULTI_MODE_COPY && $forms['copy']['mode'] !== FILE_ACTION_COPY_MULTI_MODE_MOVE) {
+            $appAlert->danger(lng('file_action.alert.copy.mode_not_validate'));
+        } else if ($forms['copy']['exists_func'] !== FILE_ACTION_COPY_MULTI_EXISTS_FUNC_OVERRIDE &&
+                   $forms['copy']['exists_func'] !== FILE_ACTION_COPY_MULTI_EXISTS_FUNC_SKIP     &&
+                   $forms['copy']['exists_func'] !== FILE_ACTION_COPY_MULTI_EXISTS_FUNC_RENAME)
+        {
+            $appAlert->danger(lng('file_action.alert.copy.exists_func_not_validate'));
         } else {
             $forms['copy']['path_copy'] = FileInfo::validate($forms['copy']['path_copy']);
 
             if ($forms['copy']['path_copy'] == $appDirectory->getDirectory()) {
-                //$appAlert->danger(lng('file_action.alert.copy.'))
+                if ($forms['copy']['mode'] === FILE_ACTION_COPY_MULTI_MODE_COPY)
+                    $appAlert->danger(lng('file_action.alert.copy.path_copy_is_equal_path_current'));
+                else
+                    $appAlert->danger(lng('file_action.alert.copy.path_move_is_equal_path_current'));
+            } else if (FileInfo::permissionDenyPath($forms['copy']['path_copy'])) {
+                $appAlert->danger(lng('file_action.alert.copy.not_copy_file_to_directory_app'));
+            } else {
+                $isHasFileAppPermission = false;
+
+                $callbackFileExists = function($directory, $filename, $isDirectory) {
+                    global $forms;
+
+                    if ($forms['copy']['exists_func'] === FILE_ACTION_COPY_MULTI_EXISTS_FUNC_SKIP) {
+                        return null;
+                    } else if ($forms['copy']['exists_func'] === FILE_ACTION_COPY_MULTI_EXISTS_FUNC_RENAME) {
+                        $fileRename = null;
+                        $pathRename = null;
+
+                        if (FileInfo::fileExists(FileInfo::validate($directory . SP . $filename))) {
+                            while (true) {
+                                $fileRename = rand(10000, 99999) . '_' . $filename;
+                                $pathRename = FileInfo::validate($directory . SP . $fileRename);
+
+                                if (FileInfo::fileExists($pathRename) == false)
+                                    break;
+                            }
+
+                            return $pathRename;
+                        }
+                    }
+
+                    return $directory . SP . $filename;
+                };
+
+                $isFailed = false;
+
+                foreach ($listEntrys AS $entryFilename) {
+                    $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+                    $entryPathCopy        = FileInfo::validate($forms['copy']['path_copy']   . SP . $entryFilename);
+                    $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
+
+                    if (FileInfo::copy($entryPath, $entryPathCopy, true, $forms['copy']['mode'] === FILE_ACTION_COPY_MULTI_MODE_MOVE, $isHasFileAppPermission, $callbackFileExists) == false) {
+                        if ($entryIsTypeDirectory)
+                            $appAlert->danger(lng('file_action.alert.copy.copy_directory_failed', 'name', $entryFilename));
+                        else
+                            $appAlert->danger(lng('file_action.alert.copy.copy_file_failed', 'name', $entryFilename));
+
+                        $isFailed = true;
+                    }
+                }
+
+                if ($isFailed == false) {
+                    if ($isHasFileAppPermission)
+                        $appAlert->warning(lng('file_action.alert.copy.has_file_app_not_permission_copy'), ALERT_INDEX);
+
+                    $appAlert->success(lng('file_action.alert.copy.copy_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                } else {
+                    if ($isHasFileAppPermission)
+                        $appAlert->warning(lng('file_action.alert.copy.has_file_app_not_permission_copy'));
+
+                    if ($countEntrys > 1)
+                        $appAlert->success(lng('file_action.alert.copy.copy_some_items_success'));
+                }
             }
         }
     } else if (isset($_POST['delete_button'])) {
@@ -231,7 +300,8 @@
             </div>
 
             <ul class="file-list no-box-shadow">
-                <?php $indexLoop = 0; ?>
+                <?php $indexLoop      = 0; ?>
+                <?php $countLoopEntry = 0; ?>
 
                 <?php foreach ($listEntrys AS $entryFilename) { ?>
                     <?php $entryPath = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename); ?>
@@ -260,7 +330,9 @@
                                 <span><?php echo $entryFilename; ?></span>
                             </a>
                         </li>
-                    <?php } else { ?>
+
+                        <?php $countLoopEntry++; ?>
+                    <?php } else if (FileInfo::isTypeFile($entryPath)) { ?>
                         <li class="type-file <?php if ($isOddEntrys && $indexLoop + 1 === $countEntrys) { ?> entry-odd<?php } ?>">
                             <div class="icon">
                                 <?php $id = 'file-' . AppDirectory::rawEncode($entryFilename); ?>
@@ -280,9 +352,15 @@
                                 <span><?php echo $entryFilename; ?></span>
                             </a>
                         </li>
+
+                        <?php $countLoopEntry++; ?>
                     <?php } ?>
 
                     <?php $indexLoop++; ?>
+                <?php } ?>
+
+                <?php if ($countLoopEntry <= 0) { ?>
+                    <?php $appAlert->danger(lng('file_action.alert.no_item_selected_exists'), ALERT_INDEX, 'index.php' . $appParameter->toString()); ?>
                 <?php } ?>
 
                 <li class="checkbox-all">

@@ -107,16 +107,17 @@
                     $fileRename = null;
                     $pathRename = null;
 
-                    while (true) {
-                        $fileRename = rand(10000, 99999) . '_' . $filename;
-                        $pathRename = FileInfo::validate($directory . SP . $fileRename);
+                    if (FileInfo::fileExists(FileInfo::validate($directory . SP . $filename))) {
+                        while (true) {
+                            $fileRename = rand(10000, 99999) . '_' . $filename;
+                            $pathRename = FileInfo::validate($directory . SP . $fileRename);
 
-                        if (FileInfo::fileExists($pathRename) == false) {
-                            break;
+                            if (FileInfo::fileExists($pathRename) == false)
+                                break;
                         }
-                    }
 
-                    return $pathRename;
+                        return $pathRename;
+                    }
                 }
 
                 return $directory . SP . $filename;

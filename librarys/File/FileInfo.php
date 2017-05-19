@@ -184,7 +184,7 @@
                     if ($new == null)
                         return true;
 
-                    if (copy($old, $new) == false)
+                    if (@copy($old, $new) == false)
                         return false;
 
                     if ($move)
@@ -203,7 +203,7 @@
                             if (self::isTypeFile($new))
                                 return false;
 
-                            if (self::isTypeDirectory($new) == false) {
+                            if (self::isTypeDirectory($new)) {
                                 $separatorLastIndex = strrpos($new, SP);
 
                                 if ($separatorLastIndex === false)
@@ -239,13 +239,13 @@
                                     if ($move)
                                         self::unlink($source);
                                 } else if (self::isTypeDirectory($source)) {
-                                    if (self::isTypeDirectory($dest))
-                                        $dest = $callbackIsFileExists($new, $entry, true);
+                                     if (self::isTypeDirectory($dest))
+                                         $dest = $callbackIsFileExists($new, $entry, true);
 
                                     if ($dest == null)
                                         return true;
 
-                                    if (self::copy($source, $dest, false, $move, $isHasFileAppPermission) == false)
+                                    if (self::copy($source, $dest, false, $move, $isHasFileAppPermission, $callbackIsFileExists) == false)
                                         return false;
                                 } else {
                                     return false;
