@@ -164,6 +164,10 @@ ul.file-list > li.checkbox-all {
     padding-right: 20px;
 }
 
+ul.file-list > li.checkbox-all input[type=checkbox] + label span {
+    padding-left: 10px;
+}
+
 ul.file-list > li.type-directory {
     font-weight: bold;
 }

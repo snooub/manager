@@ -32,7 +32,7 @@
         ],
 
         'theme' => [
-            'name' => ''
+            'directory' => 'default'
         ]
 
     ];

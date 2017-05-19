@@ -228,8 +228,9 @@ input[type=radio].radio-entry-list {
 
 input[type=checkbox] + label.not-content {
     background-color: transparent;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
 }
 
 input[type=checkbox] + label::before,

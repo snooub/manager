@@ -7,8 +7,12 @@
 
         'app' => [
             'dev' => [
-                'enable' => true,
-                'rand'   => 'generatorDevRandResource'
+                'enable'       => true,
+                'compress_css' => true,
+                'compress_js'  => true,
+                'cache_css'    => 86400,
+                'cache_js'     => 86400,
+                'rand'         => 'generatorDevRandResource',
             ],
 
             'date' => [
@@ -41,7 +45,8 @@
                 'lang'       => '${app.path.resource}${SP}language',
                 'user'       => '${app.path.resource}${SP}user',
                 'config'     => '${app.path.resource}${SP}config',
-                'define'     => '${app.path.resource}${SP}define'
+                'define'     => '${app.path.resource}${SP}define',
+                'cache'      => '${app.path.resource}${SP}cache'
             ],
 
             'http' => [
@@ -126,6 +131,10 @@
             ],
 
             'theme' => [
+                'path' => [
+                        'default' => '${app.http.theme}/default'
+                ],
+
                 'app'     => '${app.http.theme}/default/theme.css',
                 'about'   => '${app.http.theme}/default/about.css',
                 'login'   => '${app.http.theme}/default/login.css',

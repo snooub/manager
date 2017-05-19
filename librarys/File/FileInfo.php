@@ -688,6 +688,11 @@
             return false;
         }
 
+        public static function fileMTime($path)
+        {
+            return @filemtime($path);
+        }
+
 	}
 
 ?>
