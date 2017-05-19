@@ -54,7 +54,7 @@
         <form action="import.php<?php echo $appParameter->toString(); ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <?php for ($i = 0; $i < $forms['urls_count']; ++$i) { ?>
                     <li class="input"<?php if ($i === $forms['urls_count'] - 1) { ?> id="template-input-url"<?php } ?> name="url_<?php echo $i; ?>">
                         <input type="text" name="urls[]"/>

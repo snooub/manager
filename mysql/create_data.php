@@ -85,7 +85,7 @@
         <form action="create_data.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <?php foreach ($listFields AS $fieldKey => $fieldAssoc) { ?>
                     <?php if (preg_match('/^([a-zA-Z0-9\-_]+)(\(+|\s+|\\b)/', $fieldAssoc['Type'], $matches) && AppMysqlDataType::isHasLength($matches[1]) == false) { ?>
                         <li class="textarea">

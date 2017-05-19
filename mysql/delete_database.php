@@ -30,7 +30,7 @@
         <form action="delete_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="accept">
                     <span><?php echo lng('mysql.delete_database.form.accept_delete_database', 'name', $appMysqlConnect->getName()); ?></span>
                 </li>

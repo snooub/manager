@@ -202,7 +202,7 @@
     <?php $appAlert->display(); ?>
     <?php $appLocationPath->display(); ?>
 
-    <ul class="file-list-home">
+    <ul class="file-list">
         <?php if ($pclZipArrayEntrys == null || $pclZipCountArrayEntry <= 0) { ?>
             <li class="empty">
                 <span class="icomoon icon-folder-o"></span>

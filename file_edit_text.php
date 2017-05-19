@@ -172,7 +172,7 @@
         <form action="file_edit_text.php<?php echo $appParameter->toString(true); ?>" method="post" id="form-file-edit-javascript">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="textarea">
                     <span><?php echo lng('file_edit_text.form.input.content_file'); ?></span>
                     <textarea name="content" rows="20"><?php echo htmlspecialchars($edits['content']); ?></textarea>

@@ -5,9 +5,11 @@
 
     require_once(__DIR__ . SP . 'Environment.php');
     require_once(__DIR__ . SP . 'Language.php');
+    require_once(__DIR__ . SP . 'File' . SP . 'FileInfo.php');
 
     use Librarys\Environment;
     use Librarys\Language;
+    use Librarys\File\FileInfo;
 
     function env($name, $default = null, $renew = false)
     {
@@ -153,6 +155,81 @@
     function generatorDevRandResource()
     {
         return intval($_SERVER['REQUEST_TIME']);
+    }
+
+    function requireDefine($filename)
+    {
+        if ($filename == null)
+            return;
+
+        $path  = env('app.path.define') . SP;
+        $path .= $filename . '.php';
+
+        if (FileInfo::isTypeFile($path))
+            require_once($path);
+    }
+
+    function countStringArray($array, $search, $isLowerCase = false)
+    {
+        $count = 0;
+
+        if ($array != null && is_array($array)) {
+            foreach ($array AS $entry) {
+                if ($isLowerCase)
+                    $entry = strtolower($entry);
+
+                if ($entry == $search)
+                    ++$count;
+            }
+        }
+
+        return $count;
+    }
+
+    function isInArray($array, $search, $isLowerCase)
+    {
+        if ($array == null || !is_array($array))
+            return false;
+
+        foreach ($array AS $entry) {
+            if ($isLowerCase)
+                $entry = strtolower($entry);
+
+            if ($entry == $search)
+                return true;
+        }
+
+        return false;
+    }
+
+    function addslashesArray($array)
+    {
+        if (is_array($array) == false)
+            return $array;
+
+        foreach ($array AS &$value) {
+            if (is_array($value))
+                $value = addslashesArray($value);
+            else
+                $value = addslashes($value);
+        }
+
+        return $array;
+    }
+
+    function stripslashesArray($array)
+    {
+        if (is_array($array) == false)
+            return $array;
+
+        foreach ($array AS &$value) {
+            if (is_array($value))
+                $value = stripslashesArray($value);
+            else
+                $value = stripslashes($value);
+        }
+
+        return $array;
     }
 
 ?>

@@ -93,7 +93,7 @@
         <form action="index.php" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="input">
                     <span><?php echo lng('mysql.home.form.input.host'); ?></span>
                     <input type="text" name="mysql_host" value="<?php echo $forms['mysql_host']; ?>" placeholder="<?php echo lng('mysql.home.form.placeholder.input_host'); ?>"/>

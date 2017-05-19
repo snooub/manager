@@ -82,7 +82,7 @@
         <form action="file_delete.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="accept">
                     <?php if ($isDirectory) { ?>
                         <span><?php echo lng('file_delete.form.accept_delete_directory', 'filename', $appDirectory->getName()); ?></span>

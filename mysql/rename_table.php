@@ -103,7 +103,7 @@
         <form action="rename_table.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="input">
                     <span><?php echo lng('mysql.rename_table.form.input.table_name'); ?></span>
                     <input type="text" name="name" value="<?php echo $forms['name']; ?>" class="none" placeholder="<?php echo lng('mysql.create_table.form.placeholder.input_table_name'); ?>"/>

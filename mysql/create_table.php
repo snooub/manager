@@ -155,7 +155,7 @@
         <form action="create_table.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="input">
                     <span><?php echo lng('mysql.create_table.form.input.table_name'); ?></span>
                     <input type="text" name="table_name" value="<?php echo $forms['table_name']; ?>" class="none" placeholder="<?php echo lng('mysql.create_table.form.placeholder.input_table_name'); ?>"/>

@@ -149,7 +149,7 @@
 	        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
             <input type="hidden" name="http_referer" value="<?php echo $forms['http_referer']; ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <?php if ($appConfig->isEnvEnabled('paging.file_home_list')) { ?>
                     <li class="input">
                         <span><?php echo lng('system.setting.form.input.paging_file_home_list'); ?></span>

@@ -173,7 +173,7 @@
         <form action="create_column.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="input">
                     <span><?php echo lng('mysql.create_column.form.input.column_name'); ?></span>
                     <input type="text" name="column_name" value="<?php echo $forms['column_name']; ?>" class="none" placeholder="<?php echo lng('mysql.create_column.form.placeholder.input_column_name'); ?>"/>

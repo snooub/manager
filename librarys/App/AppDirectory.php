@@ -77,9 +77,37 @@
             return rawurlencode($url);
         }
 
+        public static function rawEncodes($array)
+        {
+            if (is_array($array) == false)
+                return $array;
+
+            foreach ($array AS $value) {
+                if (is_array($value))
+                    self::rawEncodes($value);
+                else
+                    self::rawEncode($value);
+            }
+        }
+
         public static function rawDecode($url)
         {
             return rawurldecode($url);
+        }
+
+        public static function rawDecodes($array)
+        {
+            if (is_array($array) == false)
+                return $array;
+
+            foreach ($array AS &$value) {
+                if (is_array($value))
+                    $value = self::rawDecodes($value);
+                else
+                    $value = self::rawDecode($value);
+            }
+
+            return $array;
         }
 
         public function setDirectory($directory)

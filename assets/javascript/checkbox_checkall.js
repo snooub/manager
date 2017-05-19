@@ -1,5 +1,9 @@
 var CheckboxCheckAll = {
-    onCheckAll: function(idForm, idCheckboxAll, idElementTextCount) {
+    onInitPutCountCheckedItem: function(idForm, idCheckboxAll, idElementTextCount) {
+        CheckboxCheckAll.onCheckAll(idForm, idCheckboxAll, idElementTextCount, true)
+    },
+
+    onCheckAll: function(idForm, idCheckboxAll, idElementTextCount, isNotSetChecked) {
         var form     = document.getElementById(idForm);
         var checkall = document.getElementById(idCheckboxAll);
 
@@ -20,7 +24,9 @@ var CheckboxCheckAll = {
             var element = form.elements[i];
 
             if (element.type && element.type === "checkbox" && element !== checkall) {
-                element.checked = checked;
+                if (typeof isNotSetChecked === "undefined" || isNotSetChecked === false)
+                    element.checked = checked;
+
                 count++;
             }
         }

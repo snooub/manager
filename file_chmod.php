@@ -92,7 +92,7 @@
                 <span><?php echo lng('file_chmod.title_page_file'); ?>: <?php echo $appDirectory->getName(); ?></span>
             <?php } ?>
         </div>
-        <script type="text/javascript">
+        <script type="text/javascript" async>
             OnLoad.add(function() {
                 ChmodInput.onAddEventChmodListener("input-chmod", "input-chmod-checkbox")
             });
@@ -100,7 +100,7 @@
         <form action="file_chmod.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="input">
                     <?php if ($isDirectory) { ?>
                         <span><?php echo lng('file_chmod.form.input.chmod_directory'); ?></span>

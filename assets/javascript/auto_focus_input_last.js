@@ -48,15 +48,23 @@ var AutoFocusInputLast = {
 
                 AutoFocusInputLast.cleanAutoFocusElement();
                 AutoFocusInputLast.putAutoFocusElementName(hastagValue, true);
+            } else if (AutoFocusInputLast.elements.length && AutoFocusInputLast.elements.length > 0) {
+                AutoFocusInputLast.cleanAutoFocusElement();
+                AutoFocusInputLast.putAutoFocusElement(AutoFocusInputLast.elements[0]);
             }
         }
     },
 
     addHastagToForm: function(element) {
         if (element.form && typeof element.form !== "undefined") {
-            var actionForm   = element.form.action;
+            var actionForm   = null;
             var hrefLocation = window.location.href;
             var nameElement  = element.name;
+
+            if (element.form.getAttribute)
+                actionForm = element.form.getAttribute("action");
+            else if (element.form.getAttributeNode)
+                actionForm = element.form.getAttributeNode("action");
 
             if (actionForm !== null && actionForm.length > 0) {
                 var hastagIndexAction = actionForm.lastIndexOf("#");
@@ -77,7 +85,6 @@ var AutoFocusInputLast = {
 
             element.form.action  = actionForm + "#" + nameElement;
             window.location.href = actionForm + "#" + nameElement;
-
 
             AutoFocusInputLast.cleanAutoFocusElement();
             AutoFocusInputLast.putAutoFocusElement(element);
@@ -113,8 +120,6 @@ var AutoFocusInputLast = {
 
             if (scrollTop > elementOffsetTop)
                 scrollTopElement.scrollTop = elementOffsetTop;
-
-            console.log(elementOffsetTop);
         }
     },
 

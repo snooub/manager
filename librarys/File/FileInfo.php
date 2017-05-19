@@ -69,9 +69,9 @@
             return self::fileSize($this->filePath);
         }
 
-        public static function isNameError($name)
+        public static function isNameValidate($name)
         {
-            return strpos($name, '\\') !== false || strpos($name, '/') !== false;
+            return strpos($name, '\\') === false && strpos($name, '/') === false;
         }
 
 		public static function extFile($file)

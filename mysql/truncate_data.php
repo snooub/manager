@@ -41,7 +41,7 @@
         <form action="truncate_data.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="accept">
                     <span><?php echo lng('mysql.truncate_data.form.accept_truncate_data', 'name', $appMysqlConnect->getTableCurrent()); ?></span>
                 </li>

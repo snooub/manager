@@ -53,7 +53,7 @@
                 $appAlert->danger(lng('file_rename.alert.not_input_name_directory'));
             else
                 $appAlert->danger(lng('file_rename.alert.not_input_name_file'));
-        } else if (FileInfo::isNameError($forms['name'])) {
+        } else if (FileInfo::isNameValidate($forms['name']) == false) {
             if ($isDirectory)
                 $appAlert->danger(lng('file_rename.alert.name_directory_not_validate'));
             else
@@ -109,7 +109,7 @@
         <form action="file_rename.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="input">
                     <?php if ($isDirectory) { ?>
                         <span><?php echo lng('file_rename.form.input.name_directory'); ?></span>

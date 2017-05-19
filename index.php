@@ -11,6 +11,7 @@
 
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
+    requireDefine('file_action');
 
     if ($appUser->isLogin() == false)
         $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
@@ -55,13 +56,12 @@
 
     foreach ($handler AS $entry) {
         if ($entry != '.' && $entry != '..') {
-            if ($entry == env('application.directory') && $appDirectory->isAccessParentPath()) {
-
-            } else if (FileInfo::isTypeDirectory($appDirectory->getDirectory() . SP . $entry)) {
+            if ($entry == env('application.directory') && $appDirectory->isAccessParentPath())
+                ;
+            else if (FileInfo::isTypeDirectory($appDirectory->getDirectory() . SP . $entry))
                 $arrayFolder[] = $entry;
-            } else {
+            else
                 $arrayFile[] = $entry;
-            }
         }
     }
 
@@ -272,7 +272,7 @@
     <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-file-home">
         <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-        <ul class="file-list-home">
+        <ul class="file-list">
             <?php echo $bufferBack; ?>
 
             <?php if ($handlerCount > 0) { ?>
@@ -289,11 +289,12 @@
 
                                 <input
                                         type="checkbox"
-                                        name="entrys[<?php echo AppDirectory::rawEncode($entry['name']); ?>]"
+                                        name="entrys[]"
                                         id="<?php echo $id; ?>"
+                                        value="<?php echo AppDirectory::rawEncode($entry['name']); ?>"
                                         <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-file-home', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
 
-                                <label for="<?php echo $id; ?>"></label>
+                                <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <a href="file_info.php<?php echo $urlParameter; ?>">
                                     <span class="icomoon icon-folder"></span>
                                 </a>
@@ -354,11 +355,12 @@
 
                                 <input
                                         type="checkbox"
-                                        name="entrys[<?php echo AppDirectory::rawEncode($entry['name']); ?>]"
+                                        name="entrys[]"
                                         id="<?php echo $id; ?>"
+                                        value="<?php echo AppDirectory::rawEncode($entry['name']); ?>"
                                         <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-file-home', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
 
-                                <label for="<?php echo $id; ?>"></label>
+                                <label for="<?php echo $id; ?>" class="not-content"></label>
 
                                 <?php if ($isEdit) { ?><a href="<?php echo $editHref; ?>"><?php } ?>
                                     <span class="icomoon <?php echo $icon; ?>"></span>
@@ -403,31 +405,31 @@
         <?php if ($handlerCount > 0) { ?>
             <ul class="action-multi">
                 <li>
-                    <button type="submit" name="rename_multi">
+                    <button type="submit" name="action" value="<?php echo FILE_ACTION_RENAME_MULTI; ?>">
                         <span class="icomoon icon-edit"></span>
                         <span class="label"><?php echo lng('home.action_multi.rename'); ?></span>
                     </button>
                 </li>
                 <li>
-                    <button type="submit" name="copy_multi">
+                    <button type="submit" name="action" value="<?php echo FILE_ACTION_COPY_MULTI; ?>">
                         <span class="icomoon icon-copy"></span>
                         <span class="label"><?php echo lng('home.action_multi.copy'); ?></span>
                     </button>
                 </li>
                 <li>
-                    <button type="submit" name="delete_multi">
+                    <button type="submit" name="action" value="<?php echo FILE_ACTION_DELETE_MULTI; ?>">
                         <span class="icomoon icon-trash"></span>
                         <span class="label"><?php echo lng('home.action_multi.delete'); ?></span>
                     </button>
                 </li>
                 <li>
-                    <button type="submit" name="zip_multi">
+                    <button type="submit" name="action" value="<?php echo FILE_ACTION_ZIP_MULTI; ?>">
                         <span class="icomoon icon-archive"></span>
                         <span class="label"><?php echo lng('home.action_multi.zip'); ?></span>
                     </button>
                 </li>
                 <li>
-                    <button type="submit" name="chmod_multi">
+                    <button type="submit" name="action" value="<?php echo FILE_ACTION_CHMOD_MULTI; ?>">
                         <span class="icomoon icon-key"></span>
                         <span class="label"><?php echo lng('home.action_multi.chmod'); ?></span>
                     </button>

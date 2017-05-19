@@ -51,7 +51,7 @@
                 $appAlert->danger(lng('create.alert.not_choose_type'));
         } else if ($forms['type'] != null && $forms['type'] !== TYPE_FOLDER && $forms['type'] !== TYPE_FILE) {
             $appAlert->danger(lng('create.alert.not_choose_type'));
-        } else if (FileInfo::isNameError($forms['name']) == true) {
+        } else if (FileInfo::isNameValidate($forms['name']) == false) {
             if ($forms['type'] === TYPE_FOLDER)
                 $appAlert->danger(lng('create.alert.name_not_validate_type_directory'));
             else if ($forms['type'] === TYPE_FILE)
@@ -126,7 +126,7 @@
         <form action="create.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="input">
                     <span><?php echo lng('create.form.input.name'); ?></span>
                     <input type="text" name="name" value="<?php echo $forms['name']; ?>" class="none" placeholder="<?php echo lng('create.form.placeholder.input_name'); ?>"/>

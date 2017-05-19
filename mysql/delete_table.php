@@ -45,7 +45,7 @@
         <form action="delete_table.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="accept">
                     <span><?php echo lng('mysql.delete_table.form.accept_delete_table', 'name', $appMysqlConnect->getTableCurrent()); ?></span>
                 </li>

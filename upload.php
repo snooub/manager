@@ -137,7 +137,7 @@
         <form action="upload.php<?php echo $appParameter->toString(); ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <?php for ($i = 0; $i < $forms['files_count']; ++$i) { ?>
                     <li class="input-file"<?php if ($i === $forms['files_count'] - 1) { ?> id="template-input-file"<?php } ?> name="file_<?php echo $i; ?>">
                         <input type="file" name="files[]" id="file_<?php echo $i; ?>"/>

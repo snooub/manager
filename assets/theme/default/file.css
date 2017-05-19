@@ -41,8 +41,8 @@ ul.location-path li a:focus span {
     font-weight: bold;
 }
 
-ul.file-list-home,
-ul.file-list-home > li {
+ul.file-list,
+ul.file-list > li {
     display: inline-block;
     list-style: none;
     margin: 0;
@@ -50,7 +50,7 @@ ul.file-list-home > li {
     width: 100%;
 }
 
-ul.file-list-home {
+ul.file-list {
     background-color: #ffffff;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
@@ -64,7 +64,15 @@ ul.file-list-home {
     text-align: center;
 }
 
-ul.file-list-home > li {
+ul.file-list.no-box-shadow {
+    -webkit-box-shadow: none !important;
+       -moz-box-shadow: none !important;
+        -ms-box-shadow: none !important;
+         -o-box-shadow: none !important;
+            box-shadow: none !important;
+}
+
+ul.file-list > li {
     border-bottom: 1px solid #efefef;
 
     -webkit-box-sizing: border-box;
@@ -82,61 +90,65 @@ ul.file-list-home > li {
     text-align: left;
 }
 
-ul.file-list-home > li:last-child {
+ul.file-list > li:last-child {
     border: 0;
 }
 
-ul.file-list-home > li > a {
+ul.file-list > li > a {
     line-height: 45px;
 }
 
-ul.file-list-home > li span.icomoon {
+ul.file-list > li span.icomoon {
     vertical-align: middle;
 }
 
-ul.file-list-home > li a:hover,
-ul.file-list-home > li a:hover span,
-ul.file-list-home > li a:hover strong {
+ul.file-list > li a:hover,
+ul.file-list > li a:hover span,
+ul.file-list > li a:hover strong {
     color: #909090;
 }
 
-ul.file-list-home > li span.icomoon {
+ul.file-list > li.type-directory a:hover span.icomoon {
+    color: #ffd300;
+}
+
+ul.file-list > li span.icomoon {
     font-size: 20px;
     margin-right: 5px;
     line-height: 45px;
 }
 
-ul.file-list-home > li.back,
-ul.file-list-home > li.empty,
-ul.file-list-home > li.paging,
-ul.file-list-home > li.checkbox-all {
+ul.file-list > li.back,
+ul.file-list > li.empty,
+ul.file-list > li.paging,
+ul.file-list > li.checkbox-all {
     margin: 0;
     width: 100%;
 }
 
-ul.file-list-home > li.checkbox-all label span {
+ul.file-list > li.checkbox-all label span {
     line-height: 45px;
     margin-left: 0;
 }
 
-ul.file-list-home > li.back span.icomoon,
-ul.file-list-home > li.empty span.icomoon {
+ul.file-list > li.back span.icomoon,
+ul.file-list > li.empty span.icomoon {
     margin-right: 5px;
 }
 
-ul.file-list-home > li.empty span {
+ul.file-list > li.empty span {
     color: #ef5350;
     line-height: 45px;
     vertical-align: middle;
 }
 
-ul.file-list-home > li.paging {
+ul.file-list > li.paging {
     padding-left: 0;
     padding-right: 0;
     text-overflow: initial;
 }
 
-ul.file-list-home > li.paging ul.paging {
+ul.file-list > li.paging ul.paging {
     -webkit-box-shadow: none !important;
        -moz-box-shadow: none !important;
         -ms-box-shadow: none !important;
@@ -144,42 +156,42 @@ ul.file-list-home > li.paging ul.paging {
             box-shadow: none !important;
 }
 
-ul.file-list-home > li.type-directory,
-ul.file-list-home > li.type-file,
-ul.file-list-home > li.empty,
-ul.file-list-home > li.checkbox-all {
+ul.file-list > li.type-directory,
+ul.file-list > li.type-file,
+ul.file-list > li.empty,
+ul.file-list > li.checkbox-all {
     padding-left: 20px;
     padding-right: 20px;
 }
 
-ul.file-list-home > li.type-directory {
+ul.file-list > li.type-directory {
     font-weight: bold;
 }
 
-ul.file-list-home > li.type-directory div.icon,
-ul.file-list-home > li.type-file div.icon {
+ul.file-list > li.type-directory div.icon,
+ul.file-list > li.type-file div.icon {
     display: inline-block;
     float: left;
     height: 45px;
 }
 
-ul.file-list-home > li.back span.icomoon,
-ul.file-list-home > li.empty span.icomoon,
-ul.file-list-home > li.type-directory span.icomoon {
+ul.file-list > li.back span.icomoon,
+ul.file-list > li.empty span.icomoon,
+ul.file-list > li.type-directory span.icomoon {
     color: #ffb300;
     font-size: 25px;
 }
 
-ul.file-list-home > li.type-file {
+ul.file-list > li.type-file {
     color: #606060;
 }
 
-ul.file-list-home > li.type-file span.icomoon {
+ul.file-list > li.type-file span.icomoon {
     margin-right: 10px;
 }
 
-ul.file-list-home > li.type-directory a.file-name,
-ul.file-list-home > li.type-file a.file-name {
+ul.file-list > li.type-directory a.file-name,
+ul.file-list > li.type-file a.file-name {
     display: inline-block;
     max-width: 55%;
     overflow: hidden;
@@ -187,8 +199,8 @@ ul.file-list-home > li.type-file a.file-name {
     text-overflow: ellipsis;
 }
 
-ul.file-list-home > li.type-directory a.chmod-permission,
-ul.file-list-home > li.type-file div.chmod-size {
+ul.file-list > li.type-directory a.chmod-permission,
+ul.file-list > li.type-file div.chmod-size {
     position: absolute;
     top: 0;
     right: 0;
@@ -196,30 +208,30 @@ ul.file-list-home > li.type-file div.chmod-size {
 }
 
 @media all and (max-width: 780px) {
-    ul.file-list-home > li {
+    ul.file-list > li {
         width: 100%;
     }
 }
 
 @media all and (min-width: 780px) {
-    ul.file-list-home > li.entry-odd {
+    ul.file-list > li.entry-odd {
         width: 100%;
     }
 
-    ul.file-list-home > li.entry-odd a.chmod-permission,
-    ul.file-list-home > li.entry-odd div.chmod-size {
+    ul.file-list > li.entry-odd a.chmod-permission,
+    ul.file-list > li.entry-odd div.chmod-size {
         right: 50%;
     }
 }
 
-ul.file-list-home > li.type-directory a.chmod-permission span,
-ul.file-list-home > li.type-file div.chmod-size span {
+ul.file-list > li.type-directory a.chmod-permission span,
+ul.file-list > li.type-file div.chmod-size span {
     color: #d0d0d0;
     line-height: 45px;
 }
 
-ul.file-list-home > li.type-directory a.chmod-permission:hover span,
-ul.file-list-home > li.type-file div.chmod-size a:hover span {
+ul.file-list > li.type-directory a.chmod-permission:hover span,
+ul.file-list > li.type-file div.chmod-size a:hover span {
     color: #a0a0a0;
 }
 
@@ -277,6 +289,11 @@ ul.action-multi li button:focus,
 ul.action-multi li button:hover span,
 ul.action-multi li button:focus span {
     color: #707070;
+}
+
+ul.action-multi li:first-child:nth-last-child(4),
+ul.action-multi li:first-child:nth-last-child(4) ~ li {
+    width: 25%;
 }
 
 ul.action-multi li:first-child:nth-last-child(5),

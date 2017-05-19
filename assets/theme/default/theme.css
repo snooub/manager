@@ -226,6 +226,12 @@ input[type=radio].radio-entry-list {
 	display: none;
 }
 
+input[type=checkbox] + label.not-content {
+    background-color: transparent;
+    width: 20px;
+    height: 20px;
+}
+
 input[type=checkbox] + label::before,
 input[type=radio].radio-entry-list + label::before {
 	color: #a0a0a0;
@@ -806,115 +812,115 @@ div.form-action > div.title span {
     font-size: 17px;
 }
 
-div.form-action form > ul,
-div.form-action form > ul > li {
+div.form-action ul.form-element,
+div.form-action ul.form-element > li {
     display: block;
     list-style: none;
     margin:  0;
     padding: 0;
 }
 
-div.form-action form > ul {
+div.form-action ul.form-element {
     display: block;
     position: relative;
     width: 100%;
     padding-bottom: 15px;
 }
 
-div.form-action form > ul > li.indentation {
+div.form-action ul.form-element > li.indentation {
     border: 0;
     display: block;
     margin: 0;
 }
 
-div.form-action form > ul > li.indentation ~ li {
+div.form-action ul.form-element > li.indentation ~ li {
     margin-left: 30px;
 }
 
-div.form-action form > ul > li.input,
-div.form-action form > ul > li.chmod,
-div.form-action form > ul > li.textarea,
-div.form-action form > ul > li.paging,
-div.form-action form > ul > li.radio,
-div.form-action form > ul > li.radio-choose,
-div.form-action form > ul > li.checkbox,
-div.form-action form > ul > li.select {
+div.form-action ul.form-element > li.input,
+div.form-action ul.form-element > li.chmod,
+div.form-action ul.form-element > li.textarea,
+div.form-action ul.form-element > li.paging,
+div.form-action ul.form-element > li.radio,
+div.form-action ul.form-element > li.radio-choose,
+div.form-action ul.form-element > li.checkbox,
+div.form-action ul.form-element > li.select {
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
 }
 
-div.form-action form > ul > li.input,
-div.form-action form > ul > li.input-file,
-div.form-action form > ul > li.input-chmod,
-div.form-action form > ul > li.textarea,
-div.form-action form > ul > li.accept,
-div.form-action form > ul > li.checkbox,
-div.form-action form > ul > li.select,
-div.form-action form > ul > li.radio {
+div.form-action ul.form-element > li.input,
+div.form-action ul.form-element > li.input-file,
+div.form-action ul.form-element > li.input-chmod,
+div.form-action ul.form-element > li.textarea,
+div.form-action ul.form-element > li.accept,
+div.form-action ul.form-element > li.checkbox,
+div.form-action ul.form-element > li.select,
+div.form-action ul.form-element > li.radio {
     margin-left: 15px;
     margin-right: 15px;
     padding-top: 10px;
     padding-bottom: 20px;
 }
 
-div.form-action form > ul > li.paging {
+div.form-action ul.form-element > li.paging {
     margin: 0;
     padding: 0;
 }
 
-div.form-action form > ul > li.input span,
-div.form-action form > ul > li.input input,
-div.form-action form > ul > li.textarea span,
-div.form-action form > ul > li.textarea textarea,
-div.form-action form > ul > li.select select {
+div.form-action ul.form-element > li.input span,
+div.form-action ul.form-element > li.input input,
+div.form-action ul.form-element > li.textarea span,
+div.form-action ul.form-element > li.textarea textarea,
+div.form-action ul.form-element > li.select select {
     display: block;
 }
 
-div.form-action form > ul > li.input input,
-div.form-action form > ul > li.textarea textarea,
-div.form-action form > ul > li.select select {
+div.form-action ul.form-element > li.input input,
+div.form-action ul.form-element > li.textarea textarea,
+div.form-action ul.form-element > li.select select {
     outline: 0;
     margin-top: 5px;
     padding: 10px;
     width: 100%;
 }
 
-div.form-action form > ul > li.input span,
-div.form-action form > ul > li.textarea span,
-div.form-action form > ul > li.select span,
-div.form-action form > ul > li.checkbox > span:first-child,
-div.form-action form > ul > li.radio > span:first-child {
+div.form-action ul.form-element > li.input span,
+div.form-action ul.form-element > li.textarea span,
+div.form-action ul.form-element > li.select span,
+div.form-action ul.form-element > li.checkbox > span:first-child,
+div.form-action ul.form-element > li.radio > span:first-child {
     color: #00897b;
     font-size: 14px;
     font-weight: normal;
 }
 
-div.form-action form > ul > li.checkbox > span:first-child,
-div.form-action form > ul > li.radio > span:first-child {
+div.form-action ul.form-element > li.checkbox > span:first-child,
+div.form-action ul.form-element > li.radio > span:first-child {
     display: block;
     margin-bottom: 15px;
 }
 
-div.form-action form > ul > li.checkbox > span:first-child + ul,
-div.form-action form > ul > li.radio > span:first-child + ul {
+div.form-action ul.form-element > li.checkbox > span:first-child + ul,
+div.form-action ul.form-element > li.radio > span:first-child + ul {
     margin-left: 15px;
 }
 
-div.form-action form > ul > li.input-chmod {
+div.form-action ul.form-element > li.input-chmod {
     height: 155px;
     overflow: hidden;
 }
 
-div.form-action form > ul > li.input-chmod ul,
-div.form-action form > ul > li.input-chmod ul li {
+div.form-action ul.form-element > li.input-chmod ul,
+div.form-action ul.form-element > li.input-chmod ul li {
     display: block;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-div.form-action form > ul > li.input-chmod ul li {
+div.form-action ul.form-element > li.input-chmod ul li {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
         -ms-box-sizing: border-box;
@@ -928,12 +934,12 @@ div.form-action form > ul > li.input-chmod ul li {
     padding: 0;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox] {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] {
     display: none;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox] + label::after,
-div.form-action form > ul > li.input-chmod input[type=checkbox] + label::before {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label::after,
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label::before {
 	content: " ";
 	background-color: transparent;
 	border: 0;
@@ -942,14 +948,14 @@ div.form-action form > ul > li.input-chmod input[type=checkbox] + label::before 
 	line-heiht: auto;
 }
 
-div.form-action form > ul > li.input-chmod ul li span {
+div.form-action ul.form-element > li.input-chmod ul li span {
     line-height: 40px;
     font-size: 14px;
 }
 
-div.form-action form > ul > li.input-chmod ul li:nth-child(1),
-div.form-action form > ul > li.input-chmod ul li:nth-child(2),
-div.form-action form > ul > li.input-chmod ul li:nth-child(3) {
+div.form-action ul.form-element > li.input-chmod ul li:nth-child(1),
+div.form-action ul.form-element > li.input-chmod ul li:nth-child(2),
+div.form-action ul.form-element > li.input-chmod ul li:nth-child(3) {
     color: #ffffff;
     background-color: #00897b;
     font-weight: bold;
@@ -960,7 +966,7 @@ div.form-action form > ul > li.input-chmod ul li:nth-child(3) {
     white-space: nowrap;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox] + label {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label {
     cursor: pointer;
     display: block;
     background-color: #f8f8f8;
@@ -969,45 +975,45 @@ div.form-action form > ul > li.input-chmod input[type=checkbox] + label {
     white-space: nowrap;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox] + label span {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label span {
     color: #e0e0e0;
     margin-left: 10px;
     margin-right: 10px;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox] + label span.icomoon + span {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label span.icomoon + span {
 	margin-left: 2px;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox] + label span.icomoon {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label span.icomoon {
 	margin-left: 0;
 	margin-right: 2px;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox] + label:hover span {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label:hover span {
     color: #c0c0c0;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox]:checked + label {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox]:checked + label {
     background-color: #e0e0e0;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox]:checked + label span {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox]:checked + label span {
     color: #505050;
 }
 
-div.form-action form > ul > li.input-chmod input[type=checkbox]:checked + label:hover {
+div.form-action ul.form-element > li.input-chmod input[type=checkbox]:checked + label:hover {
     background-color: #eaeaea;
 }
 
-div.form-action form > ul > li.radio-choose {
+div.form-action ul.form-element > li.radio-choose {
     margin-top: 10px;
     margin-bottom: 25px;
     padding-left: 15px;
     padding-right: 15px;
 }
 
-div.form-action form > ul > li.radio-choose > span:first-child {
+div.form-action ul.form-element > li.radio-choose > span:first-child {
     color: #00897b;
     display:block;
     font-size: 14px;
@@ -1015,7 +1021,7 @@ div.form-action form > ul > li.radio-choose > span:first-child {
     margin-bottom:10px;
 }
 
-div.form-action form > ul > li.paging ul.paging {
+div.form-action ul.form-element > li.paging ul.paging {
     -webkit-box-shadow: none !important;
        -moz-box-shadow: none !important;
         -ms-box-shadow: none !important;
@@ -1025,31 +1031,31 @@ div.form-action form > ul > li.paging ul.paging {
     margin-bottom: 0;
 }
 
-div.form-action form > ul > li.checkbox ul,
-div.form-action form > ul > li.radio ul,
-div.form-action form > ul > li.checkbox ul li,
-div.form-action form > ul > li.radio ul li {
+div.form-action ul.form-element > li.checkbox ul,
+div.form-action ul.form-element > li.radio ul,
+div.form-action ul.form-element > li.checkbox ul li,
+div.form-action ul.form-element > li.radio ul li {
 	display: block;
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-div.form-action form > ul > li.checkbox ul li,
-div.form-action form > ul > li.radio ul li {
+div.form-action ul.form-element > li.checkbox ul li,
+div.form-action ul.form-element > li.radio ul li {
 	padding-top: 4px;
 	padding-bottom: 4px;
 }
 
-div.form-action form > ul > li.accept span {
+div.form-action ul.form-element > li.accept span {
     color: #505050;
 }
 
-div.form-action form > ul > li.accept strong {
+div.form-action ul.form-element > li.accept strong {
     color: #e53935;
 }
 
-div.form-action form > ul > li.button,
+div.form-action ul.form-element > li.button,
 div.button-action-box,
 li.button-action-box {
     margin: 0 !important;
@@ -1062,7 +1068,7 @@ li.button-action-box {
     white-space: nowrap;
 }
 
-div.form-action form > ul > li.button button,
+div.form-action ul.form-element > li.button button,
 div.button-action-box button,
 li.button-action-box button {
     background-color: transparent;
@@ -1076,7 +1082,7 @@ li.button-action-box button {
     padding-right: 5px;
 }
 
-div.form-action form > ul > li.button button span,
+div.form-action ul.form-element > li.button button span,
 div.button-action-box button span,
 li.button-action-box button span {
     color: #00897b;
@@ -1084,13 +1090,13 @@ li.button-action-box button span {
     font-weight: normal;
 }
 
-div.form-action form > ul > li.button button:hover span,
+div.form-action ul.form-element > li.button button:hover span,
 div.button-action-box button:hover span,
 li.button-action-box button:hover span {
     color: #00a99b;
 }
 
-div.form-action form > ul > li.button > a,
+div.form-action ul.form-element > li.button > a,
 div.button-action-box > a,
 li.button-action-box > a {
     display: inline-block;
@@ -1102,8 +1108,8 @@ li.button-action-box > a {
     text-decoration: none;
 }
 
-div.form-action form > ul > li.button button:hover,
-div.form-action form > ul > li.button > a:hover,
+div.form-action ul.form-element > li.button button:hover,
+div.form-action ul.form-element > li.button > a:hover,
 div.button-action-box button:hover,
 div.button-action-box > a:hover,
 li.button-action-box button:hover,
@@ -1111,7 +1117,7 @@ li.button-action-box > a:hover {
     background-color: #f0f0f0;
 }
 
-div.form-action form > ul > li.button > a span,
+div.form-action ul.form-element > li.button > a span,
 div.button-action-box > a span,
 li.button-action-box > a span {
     color: #404040;
@@ -1121,7 +1127,7 @@ li.button-action-box > a span {
     line-height: 30px;
 }
 
-div.form-action form > ul > li.button > a:hover span,
+div.form-action ul.form-element > li.button > a:hover span,
 div.button-action-box > a:hover span,
 li.button-action-box > a:hover span {
     color: #00897b;

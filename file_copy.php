@@ -203,7 +203,7 @@
         <form action="file_copy.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
-            <ul>
+            <ul class="form-element">
                 <li class="input">
                     <span><?php echo lng('file_copy.form.input.path_copy'); ?></span>
                     <input type="text" name="path" value="<?php echo $forms['path']; ?>" placeholder="<?php echo lng('file_copy.form.placeholder.input_path_copy'); ?>"/>
