@@ -93,6 +93,18 @@
             </a>
         </li>
         <li>
+            <a href="backup_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>">
+                <span class="icomoon icon-backup"></span>
+                <span><?php echo lng('mysql.home.menu_action.backup_database'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="restore_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>">
+                <span class="icomoon icon-restore"></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_database'); ?></span>
+            </a>
+        </li>
+        <li>
             <a href="disconnect.php">
                 <span class="icomoon icon-cord"></span>
                 <span><?php echo lng('mysql.home.menu_action.disconnect'); ?></span>

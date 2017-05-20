@@ -39,6 +39,14 @@ ul.list-database {
     text-align: center;
 }
 
+ul.list-database.no-box-shadow {
+    -webkit-box-shadow: none !important;
+       -moz-box-shadow: none !important;
+        -ms-box-shadow: none !important;
+         -o-box-shadow: none !important;
+            box-shadow: none !important;
+}
+
 ul.list-database > li {
     border-bottom: 1px solid #efefef;
 
@@ -94,9 +102,15 @@ ul.list-database li.entry-odd {
 ul.list-database > li.back,
 ul.list-database > li.empty,
 ul.list-database > li.paging,
-ul.list-database > li.order {
+ul.list-database > li.order,
+ul.list-database > li.checkbox-all {
     margin: 0;
     width: 100%;
+}
+
+ul.list-database > li.checkbox-all label span {
+    line-height: 45px;
+    margin-left: 0;
 }
 
 ul.list-database > li.type-database span.icomoon,
@@ -131,9 +145,14 @@ ul.list-database > li.type-database,
 ul.list-database > li.type-table,
 ul.list-database > li.type-column,
 ul.list-database > li.empty,
-ul.list-database > li.order {
+ul.list-database > li.order,
+ul.list-database > li.checkbox-all {
     padding-left: 20px;
     padding-right: 20px;
+}
+
+ul.list-database > li.checkbox-all input[type=checkbox] + label span {
+    padding-left: 10px;
 }
 
 ul.list-database > li.type-database {

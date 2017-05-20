@@ -46,7 +46,8 @@
                 'user'       => '${app.path.resource}${SP}user',
                 'config'     => '${app.path.resource}${SP}config',
                 'define'     => '${app.path.resource}${SP}define',
-                'cache'      => '${app.path.resource}${SP}cache'
+                'cache'      => '${app.path.resource}${SP}cache',
+                'backup'     => '${app.path.resource}${SP}backup'
             ],
 
             'http' => [

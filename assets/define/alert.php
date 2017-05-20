@@ -22,22 +22,24 @@
     define('ALERT_FILE_CHMOD',     'alert_file_chmod');
     define('ALERT_FILE_ACTION',    'alert_file_action');
 
-    define('ALERT_MYSQL_HOME',            'alert_mysql_home');
-    define('ALERT_MYSQL_LIST_DATABASE',   'alert_mysql_list_database');
-    define('ALERT_MYSQL_LIST_TABLE',      'alert_mysql_list_table');
-    define('ALERT_MYSQL_LIST_COLUMN',     'alert_mysql_list_column');
-    define('ALERT_MYSQL_LIST_DATA',       'alert_mysql_list_data');
-    define('ALERT_MYSQL_CREATE_DATABASE', 'alert_mysql_create_database');
-    define('ALERT_MYSQL_DELETE_DATABASE', 'alert_mysql_delete_database');
-    define('ALERT_MYSQL_RENAME_DATABASE', 'alert_mysql_rename_database');
-    define('ALERT_MYSQL_INFO_DATABASE',   'alert_mysql_info_database');
-    define('ALERT_MYSQL_INFO_TABLE',      'alert_mysql_info_table');
-    define('ALERT_MYSQL_CREATE_TABLE',    'alert_mysql_create_table');
-    define('ALERT_MYSQL_DELETE_TABLE',    'alert_mysql_delete_table');
-    define('ALERT_MYSQL_RENAME_TABLE',    'alert_mysql_rename_table');
-    define('ALERT_MYSQL_CREATE_COLUMN',   'alert_mysql_create_column');
-    define('ALERT_MYSQL_DELETE_COLUMN',   'alert_mysql_delete_column');
-    define('ALERT_MYSQL_CREATE_DATA',     'alert_mysql_create_data');
-    define('ALERT_MYSQL_TRUNCATE_DATA',   'alert_mysql_truncate_data');
+    define('ALERT_MYSQL_HOME',             'alert_mysql_home');
+    define('ALERT_MYSQL_LIST_DATABASE',    'alert_mysql_list_database');
+    define('ALERT_MYSQL_LIST_TABLE',       'alert_mysql_list_table');
+    define('ALERT_MYSQL_LIST_COLUMN',      'alert_mysql_list_column');
+    define('ALERT_MYSQL_LIST_DATA',        'alert_mysql_list_data');
+    define('ALERT_MYSQL_CREATE_DATABASE',  'alert_mysql_create_database');
+    define('ALERT_MYSQL_DELETE_DATABASE',  'alert_mysql_delete_database');
+    define('ALERT_MYSQL_RENAME_DATABASE',  'alert_mysql_rename_database');
+    define('ALERT_MYSQL_INFO_DATABASE',    'alert_mysql_info_database');
+    define('ALERT_MYSQL_BACKUP_DATABASE',  'alert_mysql_backup_database');
+    define('ALERT_MYSQL_RESTORE_DATABASE', 'alert_mysql_restore_database');
+    define('ALERT_MYSQL_INFO_TABLE',       'alert_mysql_info_table');
+    define('ALERT_MYSQL_CREATE_TABLE',     'alert_mysql_create_table');
+    define('ALERT_MYSQL_DELETE_TABLE',     'alert_mysql_delete_table');
+    define('ALERT_MYSQL_RENAME_TABLE',     'alert_mysql_rename_table');
+    define('ALERT_MYSQL_CREATE_COLUMN',    'alert_mysql_create_column');
+    define('ALERT_MYSQL_DELETE_COLUMN',    'alert_mysql_delete_column');
+    define('ALERT_MYSQL_CREATE_DATA',      'alert_mysql_create_data');
+    define('ALERT_MYSQL_TRUNCATE_DATA',    'alert_mysql_truncate_data');
 
 ?>

@@ -12,11 +12,12 @@
 
                 'paging_mysql_list_data' => 'Phân trang danh sách dữ liệu mysql:',
 
-                'enable_disable_label'                          => 'Bật/Tắt',
-                'enable_forgot_password'                        => 'Lấy lại mật khẩu',
-                'enable_disable_button_save_on_javascript'      => 'Phím Ctrl + S để lưu lại',
-                'enable_disable_auto_focus_input_last'          => 'Tự động focus con trỏ chuột vào khung nhập',
-                'enable_disable_count_checkbox_file_javascript' => 'Hiện số mục được checked trong danh sách tập tin',
+                'enable_disable_label'                           => 'Bật/Tắt',
+                'enable_forgot_password'                         => 'Lấy lại mật khẩu',
+                'enable_disable_button_save_on_javascript'       => 'Phím Ctrl + S để lưu lại',
+                'enable_disable_auto_focus_input_last'           => 'Tự động focus con trỏ chuột vào khung nhập',
+                'enable_disable_count_checkbox_file_javascript'  => 'Hiện số mục được checked trong danh sách tập tin',
+                'enable_disable_count_checkbox_mysql_javascript' => 'Hiện số mục được checked trong danh sách cơ sở dữ liệu',
 
                 'auto_redirect_label'                   => 'Chuyển hướng',
                 'enable_auto_redirect_file_rename'      => 'Khi thay đổi tên tập tin, thư mục',

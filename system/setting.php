@@ -32,9 +32,10 @@
         ],
 
         'enable_disable' => [
-            'button_save_on_javascript'      => $appConfig->get('enable_disable.button_save_on_javascript'),
-            'auto_focus_input_last'          => $appConfig->get('enable_disable.auto_focus_input_last'),
-            'count_checkbox_file_javascript' => $appConfig->get('enable_disable.count_checkbox_file_javascript')
+            'button_save_on_javascript'       => $appConfig->get('enable_disable.button_save_on_javascript'),
+            'auto_focus_input_last'           => $appConfig->get('enable_disable.auto_focus_input_last'),
+            'count_checkbox_file_javascript'  => $appConfig->get('enable_disable.count_checkbox_file_javascript'),
+            'count_checkbox_mysql_javascript' => $appConfig->get('enable_disable.count_checkbox_mysql_javascript')
         ],
 
         'auto_redirect' => [
@@ -212,6 +213,14 @@
                                 <input type="checkbox" id="enable-disable-count-checkbox-file-javascript" name="enable_disable_count_checkbox_file_javascript" value="1"<?php if ($forms['enable_disable']['count_checkbox_file_javascript'] == true) { ?> checked="checked"<?php } ?>/>
                                 <label for="enable-disable-count-checkbox-file-javascript">
                                     <span><?php echo lng('system.setting.form.input.enable_disable_count_checkbox_file_javascript'); ?></span>
+                                </label>
+                            </li>
+                        <?php } ?>
+                        <?php if ($appConfig->isEnvEnabled('enable_disable.count_checkbox_mysql_javascript')) { ?>
+                            <li>
+                                <input type="checkbox" id="enable-disable-count-checkbox-mysql-javascript" name="enable_disable_count_checkbox_mysql_javascript" value="1"<?php if ($forms['enable_disable']['count_checkbox_mysql_javascript'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="enable-disable-count-checkbox-mysql-javascript">
+                                    <span><?php echo lng('system.setting.form.input.enable_disable_count_checkbox_mysql_javascript'); ?></span>
                                 </label>
                             </li>
                         <?php } ?>
