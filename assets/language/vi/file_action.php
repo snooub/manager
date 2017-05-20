@@ -34,7 +34,10 @@
 
                 'zip' => [
                     'label_path_create_zip'         => 'Đường dẫn tạo tập tin zip:',
-                    'label_name_zip'                => 'Tên tập tin zip:'
+                    'label_name_zip'                => 'Tên tập tin zip:',
+                    'label_more_options'            => 'Tùy chọn',
+                    'label_override_zip'            => 'Ghi đè zip',
+                    'label_delete_source'           => 'Xóa nguồn'
                 ],
 
                 'chmod' => [
@@ -118,6 +121,19 @@
                 'delete_directory_failed' => 'Xóa thư mục <strong>{$name}</strong> thất bại',
                 'delete_file_failed'      => 'Xóa tập tin <strong>{$name}</strong> thất bại',
                 'delete_success'          => 'Xóa nhiều mục thành công'
+            ],
+
+            'zip' => [
+                'not_input_path_create_zip'              => 'Chưa nhập đường dẫn tạo tập tin zip',
+                'not_input_name_zip'                     => 'Chưa nhập tên tập tin zip',
+                'not_create_zip_to_path_app'             => 'Bạn không thể tạo tập tin zip ở thư mục ứng dụng',
+                'name_zip_not_validate'                  => 'Tên tập tin zip không hợp lệ',
+                'path_create_zip_is_delete_source'       => 'Đường dẫn tạo tin zip <strong>{$path}</strong> sẽ bị xóa sau khi tạo xong',
+                'path_file_zip_is_exists'                => 'Đường dẫn tập tin zip <strong>{$path}</strong> đã tồn tại, hãy chọn ghi đè tập tin zip',
+                'path_file_zip_is_exists_type_directory' => 'Đường dẫn tập tin zip <strong>{$path}</strong> đã tồn tại là một thư mục không thể ghi đè',
+                'delete_file_zip_old_failed'             => 'Xóa tập tin zip để ghi đè thất bại',
+                'has_file_app_not_permission_zip'        => 'Một số mục chứa thư mục hoặc tập tin của ứng dụng không thể nén lại',
+                'zip_success'                            => 'Nén zip nhiều mục thành công'
             ]
         ]
     ];

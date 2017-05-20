@@ -2,6 +2,8 @@
 
 	namespace Librarys\File;
 
+    use Librarys\Zip\PclZip;
+
 	final class FileInfo
 	{
 
@@ -375,12 +377,11 @@
         public static function rrmdir($path, $directory = null, & $isHasFileAppPermission = false)
         {
             if (is_array($path)) {
-                foreach ($path AS $entry) {
-                    $filename = $directory . DS . $entry;
 
-                    if (self::isReadable($filename)) {
-                        return false;
-                    } else if (self::permissionDenyPath($filename)) {
+                foreach ($path AS $entry) {
+                    $filename = $directory . SP . $entry;
+
+                    if (self::permissionDenyPath($filename)) {
                         $isHasFileAppPermission = true;
                     } else if (self::isTypeFile($filename)) {
                         if (self::unlink($filename) == false)
@@ -406,9 +407,7 @@
                         if ($entry != '.' && $entry != '..') {
                             $filename = $path . SP . $entry;
 
-                            if (self::isReadable($filename) == false) {
-                                return false;
-                            } else if (self::permissionDenyPath($filename)) {
+                            if (self::permissionDenyPath($filename)) {
                                 $isHasFileAppPermission        = true;
                                 $directoryCurrentHasPermission = true;
                             } else if (self::isTypeFile($filename)) {
@@ -479,51 +478,6 @@
                 $path = preg_replace('#(.+?)' . $SP . '$#', '$1', $path);
 
             return $path;
-        }
-
-        /**
-         *
-         * @param $directory = Path directory container entrys, not set @param $path
-         * @param $path = Path entry, not set @param $directory and @param $entrys
-         * @param $entrys = Array list file name in directory, not set @param $path
-         * @param $file = Path file zip
-         * @param $delete = Is delete source
-         * @param $override = Is not delete file zip of it exists and override content
-         * @return boolean
-         */
-        public static function zip($directory, $path, $entrys, $file, $delete = false, $override = false)
-        {
-            if (class_exists('PclZip') == false)
-                @include_once('pclzip.php');
-
-            if (self::isTypeDirectory($file))
-                return false;
-
-            if (self::isTypeFile($file) && $override == false)
-                self::unlink($file);
-
-            $object = new PclZip($file);
-
-            if (is_array($entrys)) {
-                foreach ($entrys AS $name) {
-                    if ($object->add($directory . SP . $name, PCLZIP_OPT_REMOVE_PATH, $directory) == false)
-                        return false;
-                }
-
-                if ($delete)
-                    self::rrmdir($entrys, $directory);
-
-                return true;
-            } else {
-                if ($object->add($path, PCLZIP_OPT_REMOVE_PATH, $path)) {
-                    if ($delete)
-                        self::rrmdir($path);
-
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public static function fileExists($path)

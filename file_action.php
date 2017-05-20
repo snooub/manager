@@ -5,6 +5,7 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\Zip\PclZip;
 
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
@@ -73,6 +74,13 @@
             'path_copy'   => $appDirectory->getDirectory(),
             'mode'        => FILE_ACTION_COPY_MULTI_MODE_COPY,
             'exists_func' => FILE_ACTION_COPY_MULTI_EXISTS_FUNC_OVERRIDE
+        ],
+
+        'zip' => [
+            'path_create_zip' => $appDirectory->getDirectory(),
+            'name_zip'        => 'archive.zip',
+            'delete_source'   => false,
+            'override_zip'    => true
         ]
     ];
 
@@ -311,7 +319,96 @@
                 $appAlert->success(lng('file_action.alert.delete.delete_success'));
         }
     } else if (isset($_POST['zip_button'])) {
+        $forms['zip']['path_create_zip'] = addslashes($_POST['path_create_zip']);
+        $forms['zip']['name_zip']        = addslashes($_POST['name_zip']);
 
+        if (isset($_POST['delete_source']))
+            $forms['zip']['delete_source'] = boolval(addslashes($_POST['delete_source']));
+
+        if (isset($_POST['override_zip']))
+            $forms['zip']['override_zip'] = boolval(addslashes($_POST['override_zip']));
+        else
+            $forms['zip']['override_zip'] = false;
+
+        if (empty($forms['zip']['path_create_zip'])) {
+            $appAlert->danger(lng('file_action.alert.zip.not_input_path_create_zip'));
+        } else if (empty($forms['zip']['name_zip'])) {
+            $appAlert->danger(lng('file_action.alert.zip.not_input_name_zip'));
+        } else if (FileInfo::isNameValidate($forms['zip']['name_zip']) == false) {
+            $appAlert->danger(lng('file_action.alert.zip.name_zip_not_validate'));
+        } else {
+            $isFailed                        = false;
+            $forms['zip']['path_create_zip'] = FileInfo::validate($forms['zip']['path_create_zip']);
+            $pathFileZip                     = FileInfo::validate($forms['zip']['path_create_zip'] . SP . $forms['zip']['name_zip']);
+
+            if (FileInfo::permissionDenyPath($forms['zip']['path_create_zip'])) {
+                $isFailed = true;
+                $appAlert->danger(lng('file_action.alert.zip.not_create_zip_to_path_app'));
+            } else if ($forms['zip']['delete_source'] == true) {
+                foreach ($listEntrys AS $entryFilename) {
+                    $entryPath = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+
+                    if (FileInfo::isTypeDirectory($entryPath) && $entryPath == $forms['zip']['path_create_zip']) {
+                        $isFailed = true;
+                        $appAlert->danger(lng('file_action.alert.zip.path_create_zip_is_delete_source', 'path', $entryPath));
+
+                        break;
+                    }
+                }
+            } else if ($forms['zip']['override_zip'] == false && FileInfo::isTypeFile($pathFileZip)) {
+                $isFailed = true;
+                $appAlert->danger(lng('file_action.alert.zip.path_file_zip_is_exists', 'path', $pathFileZip));
+            } else if (FileInfo::isTypeDirectory($pathFileZip)) {
+                $isFailed = true;
+                $appAlert->danger(lng('file_action.alert.zip.path_file_zip_is_exists_type_directory', 'path', $pathFileZip));
+            } else if ($forms['zip']['override_zip'] && FileInfo::isTypeFile($pathFileZip) && FileInfo::unlink($pathFileZip) == false) {
+                $isFailed = true;
+                $appAlert->danger(lng('file_action.alert.zip.delete_file_zip_old_failed', 'path', $pathFileZip));
+            }
+
+            if ($isFailed == false) {
+                $isHasFileAppPermission = false;
+                $pclZip                 = new PclZip($pathFileZip);
+
+                function callbackPreAdd($event, $header)
+                {
+                    if (FileInfo::permissionDenyPath(FileInfo::validate($header['filename']))) {
+                        $isHasFileAppPermission = true;
+                        return 0;
+                    }
+
+                    return 1;
+                }
+
+                foreach ($listEntrys AS $entryFilename) {
+                    $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+                    $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
+
+                    if ($pclZip->add($entryPath, PCLZIP_OPT_REMOVE_PATH, $appDirectory->getDirectory(), PCLZIP_CB_PRE_ADD, 'callbackPreAdd') == false) {
+                        $isFailed = true;
+
+                        if ($isTypeDirectory)
+                            $appAlert->danger(lng('file_action.alert.zip.zip_directory_failed', 'error', $pclZip->errorInfo(true)));
+                    }
+                }
+
+                if ($forms['zip']['delete_source'])
+                    FileInfo::rrmdir($listEntrys, $appDirectory->getDirectory(), $isHasFileAppPermission);
+
+                if ($isFailed == false) {
+                    if ($isHasFileAppPermission)
+                        $appAlert->warning(lng('file_action.alert.zip.has_file_app_not_permission_zip'), ALERT_INDEX);
+
+                    $appAlert->success(lng('file_action.alert.zip.zip_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                } else {
+                    if ($isHasFileAppPermission)
+                        $appAlert->warning(lng('file_action.alert.zip.has_file_app_not_permission_zip'));
+
+                    if ($countEntrys > 1)
+                        $appAlert->success(lng('file_action.alert.zip.zip_success'));
+                }
+            }
+        }
     } else if (isset($_POST['chmod_button'])) {
 
     }
@@ -511,11 +608,28 @@
                 <?php } else if ($nameAction == FILE_ACTION_ZIP_MULTI) { ?>
                     <li class="input">
                         <span><?php echo lng('file_action.form.input.zip.label_path_create_zip'); ?></span>
-                        <input type="text" name="path_create_zip" value="<?php echo htmlspecialchars($appDirectory->getDirectory()); ?>" placeholder="<?php echo lng('file_action.form.placeholder.zip.input_path_create_zip'); ?>"/>
+                        <input type="text" name="path_create_zip" value="<?php echo htmlspecialchars($forms['zip']['path_create_zip']); ?>" placeholder="<?php echo lng('file_action.form.placeholder.zip.input_path_create_zip'); ?>"/>
                     </li>
                     <li class="input">
                         <span><?php echo lng('file_action.form.input.zip.label_name_zip'); ?></span>
-                        <input type="text" name="name_zip" value="<?php echo htmlspecialchars($appDirectory->getDirectory()); ?>" placeholder="<?php echo lng('file_action.form.placeholder.zip.input_name_zip'); ?>"/>
+                        <input type="text" name="name_zip" value="<?php echo htmlspecialchars($forms['zip']['name_zip']); ?>" placeholder="<?php echo lng('file_action.form.placeholder.zip.input_name_zip'); ?>"/>
+                    </li>
+                    <li class="checkbox">
+                        <span><?php echo lng('file_action.form.input.zip.label_more_options'); ?></span>
+                        <ul>
+                            <li>
+                                <input type="checkbox" name="override_zip" value="1" id="override-zip"<?php if ($forms['zip']['override_zip'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="override-zip">
+                                    <span><?php echo lng('file_action.form.input.zip.label_override_zip'); ?></span>
+                                </label>
+                            </li>
+                            <li>
+                                <input type="checkbox" name="delete_source" value="1" id="delete-source"<?php if ($forms['zip']['delete_source'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="delete-source">
+                                    <span><?php echo lng('file_action.form.input.zip.label_delete_source'); ?></span>
+                                </label>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="button">
