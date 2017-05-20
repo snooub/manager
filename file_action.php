@@ -437,7 +437,7 @@
                 if ($entryIsTypeDirectory && FileInfo::chmod($entryPath, $chmodDirectory) == false) {
                     $isFailed = true;
                     $appAlert->danger(lng('file_action.alert.chmod.chmod_directory_failed', 'name', $entryFilename));
-                } else if ($isTypeDirectory == false && FileInfo::chmod($entryPath, $chmodFile) == false) {
+                } else if ($entryIsTypeDirectory == false && FileInfo::chmod($entryPath, $chmodFile) == false) {
                     $isFailed = true;
                     $appAlert->danger(lng('file_action.alert.chmod.chmod_file_failed', 'name', $entryFilename));
                 }
