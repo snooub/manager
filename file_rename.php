@@ -116,7 +116,7 @@
                     <?php } else { ?>
                         <span><?php echo lng('file_rename.form.input.name_file'); ?></span>
                     <?php } ?>
-                    <input type="text" name="name" value="<?php echo $forms['name']; ?>" placeholder="<?php if ($isDirectory) echo lng('file_rename.form.placeholder.input_name_directory'); else echo lng('file_rename.form.placeholder.input_name_file'); ?>"/>
+                    <input type="text" name="name" value="<?php echo htmlspecialchars($forms['name']); ?>" placeholder="<?php if ($isDirectory) echo lng('file_rename.form.placeholder.input_name_directory'); else echo lng('file_rename.form.placeholder.input_name_file'); ?>"/>
                 </li>
                 <li class="button">
                     <button type="submit" name="rename" id="button-save-on-javascript">
