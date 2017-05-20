@@ -81,6 +81,11 @@
             'name_zip'        => 'archive.zip',
             'delete_source'   => false,
             'override_zip'    => true
+        ],
+
+        'chmod' => [
+            'directory' => '755',
+            'file'      => '644'
         ]
     ];
 
@@ -409,8 +414,40 @@
                 }
             }
         }
-    } else if (isset($_POST['chmod_button'])) {
 
+        $forms['zip']['path_create_zip'] = stripslashes($forms['zip']['path_create_zip']);
+        $forms['zip']['name_zip']        = stripslashes($forms['zip']['name_zip']);
+    } else if (isset($_POST['chmod_button'])) {
+        $forms['chmod']['directory'] = addslashes($_POST['chmod_directory']);
+        $forms['chmod']['file']      = addslashes($_POST['chmod_file']);
+
+        if (empty($forms['chmod']['directory'])) {
+            $appAlert->danger(lng('file_action.alert.chmod.not_input_chmod_directory'));
+        } else if (empty($forms['chmod']['file'])) {
+            $appAlert->danger(lng('file_action.alert.chmod.not_input_chmod_file'));
+        } else {
+            $isFailed       = false;
+            $chmodDirectory = intval($forms['chmod']['directory'], 8);
+            $chmodFile      = intval($forms['chmod']['file'],      8);
+
+            foreach ($listEntrys AS $entryFilename) {
+                $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+                $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
+
+                if ($entryIsTypeDirectory && FileInfo::chmod($entryPath, $chmodDirectory) == false) {
+                    $isFailed = true;
+                    $appAlert->danger(lng('file_action.alert.chmod.chmod_directory_failed', 'name', $entryFilename));
+                } else if ($isTypeDirectory == false && FileInfo::chmod($entryPath, $chmodFile) == false) {
+                    $isFailed = true;
+                    $appAlert->danger(lng('file_action.alert.chmod.chmod_file_failed', 'name', $entryFilename));
+                }
+            }
+
+            if ($isFailed == false)
+                $appAlert->success(lng('file_action.alert.chmod.chmod_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+            else if ($countEntrys > 1)
+                $appAlert->success(lng('file_action.alert.chmod.chmod_success'));
+        }
     }
 
     $title   = lng('file_action.title.' . $title);
@@ -436,7 +473,9 @@
                 <?php foreach ($listEntrys AS $entryFilename) { ?>
                     <?php $entryPath = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename); ?>
 
-                    <?php if (FileInfo::isTypeDirectory($entryPath)) { ?>
+                    <?php if (FileInfo::permissionDenyPath($entryPath)) { ?>
+
+                    <?php } else if (FileInfo::isTypeDirectory($entryPath)) { ?>
                         <li class="type-directory <?php if ($isOddEntrys && $indexLoop + 1 === $countEntrys) { ?> entry-odd<?php } ?>">
                             <?php $urlEntryDirectory = AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath); ?>
 
@@ -643,11 +682,11 @@
                 <?php } else if ($nameAction == FILE_ACTION_CHMOD_MULTI) { ?>
                     <li class="input">
                         <span><?php echo lng('file_action.form.input.chmod.label_chmod_directory'); ?></span>
-                        <input type="number" name="chmod_directory" value="755" placeholder="<?php echo lng('file_action.form.placeholder.chmod.input_chmod_directory'); ?>"/>
+                        <input type="number" name="chmod_directory" value="<?php echo $forms['chmod']['directory']; ?>" placeholder="<?php echo lng('file_action.form.placeholder.chmod.input_chmod_directory'); ?>"/>
                     </li>
                     <li class="input">
                         <span><?php echo lng('file_action.form.input.chmod.label_chmod_file'); ?></span>
-                        <input type="number" name="chmod_file" value="644" placeholder="<?php echo lng('file_action.form.placeholder.chmod.input_chmod_file'); ?>"/>
+                        <input type="number" name="chmod_file" value="<?php echo $forms['chmod']['file']; ?>" placeholder="<?php echo lng('file_action.form.placeholder.chmod.input_chmod_file'); ?>"/>
                     </li>
 
                     <li class="button">

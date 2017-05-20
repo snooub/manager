@@ -134,6 +134,14 @@
                 'delete_file_zip_old_failed'             => 'Xóa tập tin zip để ghi đè thất bại',
                 'has_file_app_not_permission_zip'        => 'Một số mục chứa thư mục hoặc tập tin của ứng dụng không thể nén lại',
                 'zip_success'                            => 'Nén zip nhiều mục thành công'
+            ],
+
+            'chmod' => [
+                'not_input_chmod_directory' => 'Chưa nhập phân quyền thư mục',
+                'not_input_chmod_file'      => 'Chưa nhập phân quyền tập tin',
+                'chmod_directory_failed'    => 'Phân quyền thư mục <strong>{$name}</strong> thất bại',
+                'chmod_file_failed'         => 'Phân quyền tập tin <strong>{$name}</strong> thất bại',
+                'chmod_success'             => 'Phân quyền nhiều mục thành công'
             ]
         ]
     ];
