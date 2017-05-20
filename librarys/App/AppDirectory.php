@@ -39,7 +39,7 @@
             }
 
             if (isset($_GET[self::PARAMETER_NAME_URL]) && empty($_GET[self::PARAMETER_NAME_URL]) == false) {
-                $this->name       = addslashes($_GET[self::PARAMETER_NAME_URL]);
+                $this->name       = self::rawDecode($_GET[self::PARAMETER_NAME_URL]);
                 $this->nameEncode = self::rawEncode($this->name);
             } else {
                 $this->name = null;
@@ -92,7 +92,11 @@
 
         public static function rawDecode($url)
         {
-            return rawurldecode($url);
+            return str_replace('&#34;', '"',
+                        str_replace('&#39;', '\'',
+                            rawurldecode($url)
+                        )
+                    );
         }
 
         public static function rawDecodes($array)
