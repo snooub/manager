@@ -62,9 +62,9 @@
             return $this->isDatabaseNameCustom;
         }
 
-        public function query($sql)
+        public function query($sql, $isCache = true)
         {
-            return parent::query($this->mysqlQueryStringCurrent = $sql);
+            return parent::query($this->mysqlQueryStringCurrent = $sql, $isCache);
         }
 
         public function getMysqlQueryExecStringCurrent()

@@ -257,7 +257,8 @@
                     return $directory . SP . $filename;
                 };
 
-                $isFailed = false;
+                $isFailed     = false;
+                $countSuccess = $countEntrys;
 
                 foreach ($listEntrys AS $entryFilename) {
                     $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
@@ -271,6 +272,7 @@
                             $appAlert->danger(lng('file_action.alert.copy.copy_file_failed', 'name', $entryFilename));
 
                         $isFailed = true;
+                        $countSuccess--;
                     }
                 }
 
@@ -283,7 +285,7 @@
                     if ($isHasFileAppPermission)
                         $appAlert->warning(lng('file_action.alert.copy.has_file_app_not_permission_copy'));
 
-                    if ($countEntrys > 1)
+                    if ($countEntrys > 1 && $countSuccess > 0)
                         $appAlert->success(lng('file_action.alert.copy.copy_some_items_success'));
                 }
             }
@@ -292,6 +294,7 @@
         $forms['copy']['path_copy'] = addslashes($forms['copy']['path_copy']);
     } else if (isset($_POST['delete_button'])) {
         $isFailed               = false;
+        $countSuccess           = $countEntrys;
         $isHasFileAppPermission = false;
 
         foreach ($listEntrys AS $entryFilename) {
@@ -303,10 +306,12 @@
             } else if ($entryIsTypeDirectory) {
                 if (FileInfo::rrmdir($entryPath, null, $isHasFileAppPermission) == false) {
                     $isFailed = true;
+                    $countSuccess--;
                     $appAlert->danger(lng('file_action.alert.delete.delete_directory_failed', 'name', $entryFilename));
                 }
             } else if (FileInfo::unlink($entryPath) == false) {
                 $isFailed = true;
+                $countSuccess--;
                 $appAlert->danger(lng('file_action.alert.delete.delete_file_failed', 'name', $entryFilename));
             }
         }
@@ -320,7 +325,7 @@
             if ($isHasFileAppPermission)
                 $appAlert->warning(lng('file_action.alert.delete.not_delete_file_app'));
 
-            if ($countEntrys > 1)
+            if ($countEntrys > 1 && $countSuccess > 0)
                 $appAlert->success(lng('file_action.alert.delete.delete_success'));
         }
     } else if (isset($_POST['zip_button'])) {
@@ -385,12 +390,15 @@
                     return 1;
                 }
 
+                $countSuccess = $countEntrys;
+
                 foreach ($listEntrys AS $entryFilename) {
                     $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
                     $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
                     if ($pclZip->add($entryPath, PCLZIP_OPT_REMOVE_PATH, $appDirectory->getDirectory(), PCLZIP_CB_PRE_ADD, 'callbackPreAdd') == false) {
                         $isFailed = true;
+                        $countSuccess--;
 
                         if ($isTypeDirectory)
                             $appAlert->danger(lng('file_action.alert.zip.zip_directory_failed', 'error', $pclZip->errorInfo(true)));
@@ -409,7 +417,7 @@
                     if ($isHasFileAppPermission)
                         $appAlert->warning(lng('file_action.alert.zip.has_file_app_not_permission_zip'));
 
-                    if ($countEntrys > 1)
+                    if ($countEntrys > 1 && $countSuccess > 0)
                         $appAlert->success(lng('file_action.alert.zip.zip_success'));
                 }
             }
@@ -427,6 +435,7 @@
             $appAlert->danger(lng('file_action.alert.chmod.not_input_chmod_file'));
         } else {
             $isFailed       = false;
+            $countSuccess   = $countEntrys;
             $chmodDirectory = intval($forms['chmod']['directory'], 8);
             $chmodFile      = intval($forms['chmod']['file'],      8);
 
@@ -436,16 +445,18 @@
 
                 if ($entryIsTypeDirectory && FileInfo::chmod($entryPath, $chmodDirectory) == false) {
                     $isFailed = true;
+                    $countSuccess--;
                     $appAlert->danger(lng('file_action.alert.chmod.chmod_directory_failed', 'name', $entryFilename));
                 } else if ($entryIsTypeDirectory == false && FileInfo::chmod($entryPath, $chmodFile) == false) {
                     $isFailed = true;
+                    $countSuccess--;
                     $appAlert->danger(lng('file_action.alert.chmod.chmod_file_failed', 'name', $entryFilename));
                 }
             }
 
             if ($isFailed == false)
                 $appAlert->success(lng('file_action.alert.chmod.chmod_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
-            else if ($countEntrys > 1)
+            else if ($countEntrys > 1 && $countSuccess > 0)
                 $appAlert->success(lng('file_action.alert.chmod.chmod_success'));
         }
     }

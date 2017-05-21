@@ -27,7 +27,8 @@ var CheckboxCheckAll = {
                 if (typeof isNotSetChecked === "undefined" || isNotSetChecked === false)
                     element.checked = checked;
 
-                count++;
+                if (element.checked)
+                    count++;
             }
         }
 

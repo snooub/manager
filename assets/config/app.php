@@ -34,20 +34,21 @@
             ],
 
             'path' => [
-                'root'       => dirname(dirname(__DIR__)),
-                'librarys'   => '${app.path.root}${SP}librarys',
-                'resource'   => '${app.path.root}${SP}assets',
-                'error'      => '${app.path.resource}${SP}error',
-                'theme'      => '${app.path.resource}${SP}theme',
-                'icon'       => '${app.path.resource}${SP}icon',
-                'javascript' => '${app.path.resource}${SP}javascript',
-                'template'   => '${app.path.resource}${SP}template',
-                'lang'       => '${app.path.resource}${SP}language',
-                'user'       => '${app.path.resource}${SP}user',
-                'config'     => '${app.path.resource}${SP}config',
-                'define'     => '${app.path.resource}${SP}define',
-                'cache'      => '${app.path.resource}${SP}cache',
-                'backup'     => '${app.path.resource}${SP}backup'
+                'root'         => dirname(dirname(__DIR__)),
+                'librarys'     => '${app.path.root}${SP}librarys',
+                'resource'     => '${app.path.root}${SP}assets',
+                'error'        => '${app.path.resource}${SP}error',
+                'theme'        => '${app.path.resource}${SP}theme',
+                'icon'         => '${app.path.resource}${SP}icon',
+                'javascript'   => '${app.path.resource}${SP}javascript',
+                'template'     => '${app.path.resource}${SP}template',
+                'lang'         => '${app.path.resource}${SP}language',
+                'user'         => '${app.path.resource}${SP}user',
+                'config'       => '${app.path.resource}${SP}config',
+                'define'       => '${app.path.resource}${SP}define',
+                'cache'        => '${app.path.resource}${SP}cache',
+                'backup'       => '${app.path.resource}${SP}backup',
+                'backup_mysql' => '${app.path.backup}${SP}mysql'
             ],
 
             'http' => [

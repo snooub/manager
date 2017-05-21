@@ -4,6 +4,12 @@
         'title_page'   => 'Danh sách bảng',
         'column_count' => 'cột',
 
+        'form' => [
+            'input' => [
+                'checkbox_all_entry' => 'Chọn tất cả'
+            ]
+        ],
+
         'alert' => [
             'tips' => 'Cơ sở dữ liệu đang kết nối bằng <strong>{$type}</strong>',
 
@@ -21,6 +27,12 @@
             'list_column'   => 'Danh sách cột',
             'list_table'    => 'Danh sách bảng',
             'list_database' => 'Danh sách cơ sở dữ liệu'
+        ],
+
+        'action_multi' => [
+            'delete'   => 'Xóa',
+            'truncate' => 'Xóa sạch dữ liệu',
+            'backup'   => 'Sao lưu'
         ]
     ];
 

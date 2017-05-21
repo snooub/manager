@@ -35,6 +35,8 @@
 
         public abstract function fetchAssoc($sqlOrQuery);
 
+        public abstract function fetchArray($sqlOrQuery);
+
         public abstract function fetchRow($sqlOrQuery);
 
         public abstract function numRows($sqlOrQuery);
@@ -44,6 +46,10 @@
         public abstract function dataSeek($sqlOrQuery);
 
         public abstract function insertId();
+
+        public abstract function fieldName($sqlOrQuery, $fieldOffset);
+
+        public abstract function fieldType($sqlOrQuery, $fieldOffset);
 
         public abstract function setCharset($charset);
 

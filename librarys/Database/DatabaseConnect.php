@@ -231,7 +231,7 @@
             $this->extensionRuntime = $namespace;
         }
 
-		public function query($sql)
+		public function query($sql, $isCache = true)
 		{
 			$query = null;
 
@@ -240,7 +240,10 @@
 			else
 				$query = $this->extensionObject->query($sql);
 
-			return ($this->query[] = $query);
+            if ($isCache)
+    			return ($this->query[] = $query);
+
+            return $query;
 		}
 
         public function error()
@@ -256,9 +259,19 @@
             return $this->extensionObject->errorConnect();
         }
 
-		public function fetchAssoc($sql)
+        public function freeResult($result)
+        {
+            return $this->extensionObject->freeResult($result);
+        }
+
+        public function fetchAssoc($sql)
+        {
+            return $this->extensionObject->fetchAssoc($sql);
+        }
+
+		public function fetchArray($sql)
 		{
-			return $this->extensionObject->fetchAssoc($sql);
+			return $this->extensionObject->fetchArray($sql);
 		}
 
 		public function fetchRow($sql)
@@ -285,6 +298,16 @@
 		{
             return $this->extensionObject->insertId();
 		}
+
+        public function fieldName($sql, $fieldOffset)
+        {
+            return $this->extensionObject->fieldName($sql, $fieldOffset);
+        }
+
+        public function fieldType($sql, $fieldOffset)
+        {
+            return $this->extensionObject->fieldName($sql, $fieldOffset);
+        }
 
 	}
 

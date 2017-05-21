@@ -72,6 +72,14 @@
                 return @mysql_fetch_assoc($this->query($sqlOrQuery));
         }
 
+        public function fetchArray($sqlOrQuery)
+        {
+            if ($this->isResource($sqlOrQuery))
+                return @mysql_fetch_array($sqlOrQuery);
+            else
+                return @mysql_fetch_array($this->query($sqlOrQuery));
+        }
+
         public function fetchRow($sqlOrQuery)
         {
             if ($this->isResource($sqlOrQuery))
@@ -107,6 +115,22 @@
         public function insertId()
         {
             return @mysql_insert_id();
+        }
+
+        public function fieldName($sqlOrQuery, $fieldOffset = 0)
+        {
+            if ($this->isResource($sqlOrQuery))
+                return @mysql_field_name($sqlOrQuery, $fieldOffset);
+            else
+                return @mysql_field_name($this->query($sqlOrQuery), $fieldOffset);
+        }
+
+        public function fieldType($sqlOrQuery, $fieldOffset = 0)
+        {
+            if ($this->isResource($sqlOrQuery))
+                return @mysql_field_type($sqlOrQuery, $fieldOffset);
+            else
+                return @mysql_field_type($this->query($sqlOrQuery), $fieldOffset);
         }
 
         public function setCharset($charset)
