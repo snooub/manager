@@ -215,6 +215,11 @@ ul.file-list > li.type-file div.chmod-size {
     ul.file-list > li {
         width: 100%;
     }
+
+    ul.file-list > li.entry-odd a.chmod-permission,
+    ul.file-list > li.entry-odd div.chmod-size {
+        right: 0;
+    }
 }
 
 @media all and (min-width: 780px) {

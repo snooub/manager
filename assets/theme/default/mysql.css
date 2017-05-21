@@ -93,6 +93,10 @@ ul.list-database > li span.icomoon {
     ul.list-database > li {
         width: 100%;
     }
+
+    ul.list-database > li.entry-odd div.info {
+        right: 0;
+    }
 }
 
 ul.list-database li.entry-odd {
