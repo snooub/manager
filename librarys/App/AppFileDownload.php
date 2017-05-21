@@ -34,24 +34,29 @@
             return true;
         }
 
-        public function setFileOnPath($pathFile, $aliasName)
+        public function setFileOnPath($pathFile, $aliasName = null)
         {
             $this->fileInfo = new FileInfo($pathFile);
 
             if ($this->fileInfo->isFile() == false)
                 return false;
 
-            $this->fileSize      = $fileInfo->getFileSize();
-            $this->isDirectory   = $fileInfo->isDirectory();
+            $this->fileSize      = $this->fileInfo->getFileSize();
+            $this->isDirectory   = $this->fileInfo->isDirectory();
 
-            if ($aliasName == null)
+            if ($aliasName != null)
                 $this->fileNameAlias = $aliasName;
             else
                 $this->fileNameAlias = $this->fileInfo->getFileName();
+
+            return true;
         }
 
         public function reponseHeader()
         {
+            if ($this->fileInfo->isFile() == false)
+                return false;
+
             header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename=' . $this->fileNameAlias);
             header('Content-Length: ' . filesize($this->fileInfo->getFilePath()));
@@ -63,6 +68,9 @@
 
         public function download()
         {
+            if ($this->fileInfo->isFile() == false)
+                return false;
+
             $range = null;
 
             if(isset($_SERVER['HTTP_RANGE'])) {

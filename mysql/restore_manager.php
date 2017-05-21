@@ -2,6 +2,7 @@
 
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\AppFileDownload;
     use Librarys\File\FileInfo;
     use Librarys\Zip\PclZip;
     use Librarys\Database\DatabaseBackupRestore;
@@ -91,7 +92,16 @@
         }
 
         if ($isFailed == false) {
+            $filenameDownload = 'mysql.sql';
+            $appFileDownload  = new AppFileDownload();
 
+            if (
+                $appFileDownload->setFileOnPath($pathFile, $filenameDownload) == false ||
+                $appFileDownload->reponseHeader() == false ||
+                $appFileDownload->download() == false
+            ) {
+                $appAlert->danger(lng('mysql.restore_manager.alert.download.download_failed'));
+            }
         }
     }
 ?>
