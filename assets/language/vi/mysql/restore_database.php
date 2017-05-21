@@ -1,7 +1,7 @@
 <?php
 
     return [
-        'title_page' => 'Sao lưu cơ sở dữ liệu',
+        'title_page' => 'Khôi phục cơ sở dữ liệu',
 
         'form' => [
             'input' => [
@@ -9,13 +9,12 @@
             ],
 
             'button' => [
-                'backup' => 'Sao lưu',
                 'cancel' => 'Quay lại'
             ]
         ],
 
         'alert' => [
-            'no_table' => 'Không có bảng nào để sao lưu'
+
         ]
     ];
 

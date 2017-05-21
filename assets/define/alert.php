@@ -31,8 +31,8 @@
     define('ALERT_MYSQL_DELETE_DATABASE',  'alert_mysql_delete_database');
     define('ALERT_MYSQL_RENAME_DATABASE',  'alert_mysql_rename_database');
     define('ALERT_MYSQL_INFO_DATABASE',    'alert_mysql_info_database');
-    define('ALERT_MYSQL_BACKUP_DATABASE',  'alert_mysql_backup_database');
     define('ALERT_MYSQL_RESTORE_DATABASE', 'alert_mysql_restore_database');
+    define('ALERT_MYSQL_ACTION_TABLE',     'alert_mysql_action_table');
     define('ALERT_MYSQL_INFO_TABLE',       'alert_mysql_info_table');
     define('ALERT_MYSQL_CREATE_TABLE',     'alert_mysql_create_table');
     define('ALERT_MYSQL_DELETE_TABLE',     'alert_mysql_delete_table');

@@ -11,6 +11,8 @@
 
         'form' => [
             'input' => [
+                'checkbox_all_entry' => 'Chọn tất cả',
+
                 'delete' => [
                     'accept_message' => 'Bạn có thực sự muốn xóa những bảng đã chọn, cả dữ liệu cũng sẽ bị xóa cùng, hãy kiểm tra kỹ trước khi xóa, một khi đã xóa không thể khôi phục lại?'
                 ],

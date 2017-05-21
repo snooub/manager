@@ -3,6 +3,7 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
     use Librarys\File\FileInfo;
+    use Librarys\Database\DatabaseBackupRestore;
 
     define('LOADED',               1);
     define('MYSQL_LIST_TABLE',     1);
@@ -28,6 +29,8 @@
     $mysqlStr   = 'SHOW TABLE STATUS';
     $mysqlQuery = $appMysqlConnect->query($mysqlStr);
     $mysqlNums  = $appMysqlConnect->numRows($mysqlQuery);
+
+    $databaseBackupRestore = new DatabaseBackupRestore($appMysqlConnect);
 ?>
 
     <?php echo $appAlert->display(); ?>
@@ -145,9 +148,9 @@
             </a>
         </li>
         <li>
-            <a href="restore_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>">
+            <a href="restore_database.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-restore"></span>
-                <span><?php echo lng('mysql.home.menu_action.restore_database'); ?></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_database', 'count', $databaseBackupRestore->getRestoreDatabaseRecordCount()); ?></span>
             </a>
         </li>
         <li>

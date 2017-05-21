@@ -12,6 +12,8 @@
         private $backupFilename;
         private $isBackupCreateFile;
 
+        const MIME = 'sql';
+
         public function __construct(DatabaseConnect $databaseConnect)
         {
             $this->databaseConnect = $databaseConnect;
@@ -22,6 +24,7 @@
             $this->backupFilename = $filename;
         }
 
+        // Clone content in https://github.com/aniketan/backup-restore
         public function backupInfomation()
         {
             $this->backupBuffer .= "# MySQL database backup\n";
@@ -34,6 +37,7 @@
             return true;
         }
 
+        // Clone content in https://github.com/aniketan/backup-restore
         public function backupTable($tableName)
         {
             // Create the SQL statements
@@ -121,7 +125,7 @@
                         if ($fieldNum[$j])
                             $values[] = $row[$j];
                         else
-                            $values[] = '\'' . str_replace($search, $replace, $this->sqlLineBreak($this->sqlAddslashes($row[$j]))) . '\'';
+                            $values[] = '\'' . str_replace($search, $replace, $this->sqlAddslashes($row[$j], false, true)) . '\'';
 
                     } else {
                         $values[] = '\'\'';
@@ -156,7 +160,7 @@
 
         private function backupWrite()
         {
-            $directory = env('app.path.backup_mysql');
+            $directory = env('app.path.backup_mysql') . SP . $this->databaseConnect->getName();
 
             if (FileInfo::mkdir($directory, true) == false)
                 return false;
@@ -206,27 +210,44 @@
             }
         }
 
-        private function sqlLineBreak($string)
-        {
-            if (empty($string) == false) {
-                $string = str_replace("\r\n", "\\r\\n", $string);
-                $string = str_replace("\r",   "\\r",    $string);
-                $string = str_replace("\n",   "\\n",    $string);
-            }
-
-            return $string;
-        }
-
-        private function sqlAddslashes($string = '', $isLike = false)
+        private function sqlAddslashes($string = '', $isLike = false, $crlf = false, $phpCode = false)
         {
             if ($isLike)
                 $string = str_replace('\\', '\\\\\\\\', $string);
             else
                 $string = str_replace('\\', '\\\\', $string);
 
-            $string = str_replace('\'', '\\\'', $string);
+            if ($crlf) {
+                $string = str_replace("\r\n", "\\r\\n", $string);
+                $string = str_replace("\r",   "\\r",    $string);
+                $string = str_replace("\n",   "\\n",    $string);
+            }
+
+            if ($phpCode)
+                $string = str_replace('\'', '\\\'', $string);
+            else
+                $string = str_replace('\'', '\'\'', $string);
 
             return $string;
+        }
+
+        public function getRestoreDatabaseRecordCount()
+        {
+            $directory = env('app.path.backup_mysql') . SP . $this->databaseConnect->getName();
+            $count     = 0;
+
+            if (FileInfo::isTypeDirectory($directory)) {
+                $handle = FileInfo::scanDirectory($directory);
+
+                if ($handle !== false) {
+                    foreach ($handle AS $entry) {
+                        if ($entry != '.' && $entry != '..' && strcasecmp(FileInfo::extFile($entry), self::MIME) === 0)
+                            $count++;
+                    }
+                }
+            }
+
+            return $count;
         }
 
     }

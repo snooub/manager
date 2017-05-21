@@ -6,7 +6,6 @@
     use Librarys\Database\DatabaseBackupRestore;
 
     define('LOADED',               1);
-    define('MYSQL_LIST_TABLE',     1);
     define('DATABASE_CHECK_MYSQL', 1);
 
     require_once('global.php');
@@ -18,7 +17,7 @@
 
     $themes  = [ env('resource.theme.mysql') ];
     $scripts = [ env('resource.javascript.checkbox_checkall') ];
-    $appAlert->setID(ALERT_MYSQL_BACKUP_DATABASE);
+    $appAlert->setID(ALERT_MYSQL_ACTION_TABLE);
     requireDefine('mysql_action_table');
 
     $appParameter = new AppParameter();
@@ -65,9 +64,11 @@
 
     $forms = [
         'backup' => [
-            'filename' => 'mysql_' . $appMysqlConnect->getName() . '_' . time() . '.sql'
+            'filename' => 'mysql_' . $appMysqlConnect->getName() . '_' . time() . '.' . DatabaseBackupRestore::MIME
         ]
     ];
+
+    $databaseBackupRestore  = new DatabaseBackupRestore($appMysqlConnect);
 
     if (isset($_POST['delete_button'])) {
         $isFailed     = false;
@@ -104,7 +105,6 @@
     } else if (isset($_POST['backup_button'])) {
         $isFailed               = false;
         $countSuccess           = $countTables;
-        $databaseBackupRestore  = new DatabaseBackupRestore($appMysqlConnect);
         $databaseBackupRestore->setBackupFilename($forms['backup']['filename']);
 
         if ($databaseBackupRestore->backupInfomation() == false) {
@@ -171,7 +171,7 @@
                 <li class="checkbox-all">
                     <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll('form-list-database', 'checked-all-entry', 'checkall-count');" checked="checked"/>
                     <label for="checked-all-entry">
-                        <span><?php echo lng('mysql.backup_database.form.input.checkbox_all_entry'); ?></span>
+                        <span><?php echo lng('mysql.action_table.form.input.checkbox_all_entry'); ?></span>
                         <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
                             <span id="checkall-count"></span>
                             <script type="text/javascript" async>
@@ -269,7 +269,7 @@
         <li>
             <a href="restore_database.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-restore"></span>
-                <span><?php echo lng('mysql.home.menu_action.restore_database'); ?></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_database', 'count', $databaseBackupRestore->getRestoreDatabaseRecordCount()); ?></span>
             </a>
         </li>
         <li>

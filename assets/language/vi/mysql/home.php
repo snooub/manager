@@ -48,8 +48,7 @@
 
         'menu_action' => [
             'create_table'     => 'Tạo bảng',
-            'backup_database'  => 'Sao lưu cơ sở dữ liệu',
-            'restore_database' => 'Khôi phục cơ sở dữ liệu',
+            'restore_database' => 'Khôi phục cơ sở dữ liệu ({$count})',
             'disconnect'       => 'Ngắt kết nối'
         ]
     ];
