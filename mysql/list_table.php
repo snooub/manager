@@ -148,9 +148,9 @@
             </a>
         </li>
         <li>
-            <a href="restore_database.php<?php echo $appParameter->toString(); ?>">
+            <a href="restore_manager.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-restore"></span>
-                <span><?php echo lng('mysql.home.menu_action.restore_database', 'count', $databaseBackupRestore->getRestoreDatabaseRecordCount()); ?></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_manager', 'count', $databaseBackupRestore->getRestoreDatabaseRecordCount()); ?></span>
             </a>
         </li>
         <li>

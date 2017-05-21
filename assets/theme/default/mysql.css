@@ -120,7 +120,8 @@ ul.list-database > li.order span.icomoon {
     margin-right: 5px;
 }
 
-ul.list-database > li.empty span {
+ul.list-database > li.empty span,
+ul.list-database > li.type-backup-record span {
     color: #ef5350;
     line-height: 45px;
     vertical-align: middle;
@@ -144,6 +145,7 @@ ul.list-database > li.paging ul.paging {
 ul.list-database > li.type-database,
 ul.list-database > li.type-table,
 ul.list-database > li.type-column,
+ul.list-database > li.type-backup-record,
 ul.list-database > li.empty,
 ul.list-database > li.order,
 ul.list-database > li.checkbox-all {
@@ -161,7 +163,8 @@ ul.list-database > li.type-database {
 
 ul.list-database > li.type-database div.icon,
 ul.list-database > li.type-table div.icon,
-ul.list-database > li.type-column div.icon {
+ul.list-database > li.type-column div.icon,
+ul.list-database > li.type-backup-record div.icon {
     display: inline-block;
     float: left;
     height: 45px;
@@ -172,7 +175,8 @@ ul.list-database > li.empty span.icomoon,
 ul.list-database > li.order span.icomoon,
 ul.list-database > li.type-database span.icomoon,
 ul.list-database > li.type-table span.icomoon,
-ul.list-database > li.type-column span.icomoon {
+ul.list-database > li.type-column span.icomoon,
+ul.list-database > li.type-backup-record span.icomoon {
     color: #26a69a;
     font-size: 22px;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
@@ -181,7 +185,8 @@ ul.list-database > li.type-column span.icomoon {
 ul.list-database > li.back a:hover span.icomoon,
 ul.list-database > li.type-database a:hover span.icomoon,
 ul.list-database > li.type-table a:hover span.icomoon,
-ul.list-database > li.type-column a:hover span.icomoon {
+ul.list-database > li.type-column a:hover span.icomoon,
+ul.list-database > li.type-backup-record a:hover span.icomoon {
     color: #80cbc4;
 }
 
@@ -210,18 +215,22 @@ ul.list-database > li.order span.current {
 }
 
 ul.list-database > li.type-table,
-ul.list-database > li.type-column {
+ul.list-database > li.type-column,
+ul.list-database > li.type-backup-record,
+ul.list-database > li.type-backup-record span {
     color: #606060;
 }
 
 ul.list-database > li.type-table span.icomoon,
-ul.list-database > li.type-column span.icomoon {
+ul.list-database > li.type-column span.icomoon,
+ul.list-database > li.type-backup-record span.icomoon {
     margin-right: 10px;
 }
 
 ul.list-database > li.type-database a.name,
 ul.list-database > li.type-table a.name,
-ul.list-database > li.type-column a.name {
+ul.list-database > li.type-column a.name,
+ul.list-database > li.type-backup-record a.name {
     display: inline-block;
     max-width: 60%;
     overflow: hidden;

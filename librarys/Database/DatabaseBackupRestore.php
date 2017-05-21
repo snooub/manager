@@ -165,7 +165,7 @@
             if (FileInfo::mkdir($directory, true) == false)
                 return false;
 
-            $path   = $directory . SP . $this->backupFilename;
+            $path   = $this->getPathFileDatabaseBackup();
             $handle = null;
 
             if ($this->isBackupCreateFile == false) {
@@ -231,9 +231,22 @@
             return $string;
         }
 
+        public function getPathDirectoryDatabaseBackup()
+        {
+            return env('app.path.backup_mysql') . SP . $this->databaseConnect->getName();
+        }
+
+        public function getPathFileDatabaseBackup($filename = null)
+        {
+            if ($filename == null)
+                $filename = $this->backupFilename;
+
+            return $this->getPathDirectoryDatabaseBackup() . SP . $filename;
+        }
+
         public function getRestoreDatabaseRecordCount()
         {
-            $directory = env('app.path.backup_mysql') . SP . $this->databaseConnect->getName();
+            $directory = $this->getPathDirectoryDatabaseBackup();
             $count     = 0;
 
             if (FileInfo::isTypeDirectory($directory)) {

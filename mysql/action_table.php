@@ -64,7 +64,7 @@
 
     $forms = [
         'backup' => [
-            'filename' => 'mysql_' . $appMysqlConnect->getName() . '_' . time() . '.' . DatabaseBackupRestore::MIME
+            'filename' => 'mysql_' . $appMysqlConnect->getName() . '_' . date('d-m-Y_H-i', time()) . '.' . DatabaseBackupRestore::MIME
         ]
     ];
 
@@ -103,11 +103,18 @@
         else if ($countTables > 1 && $countSuccess > 0)
             $appAlert->success(lng('mysql.action_table.alert.truncate.truncate_success'));
     } else if (isset($_POST['backup_button'])) {
-        $isFailed               = false;
-        $countSuccess           = $countTables;
+        $isFailed                    = false;
+        $countSuccess                = $countTables;
+        $forms['backup']['filename'] = addslashes($_POST['filename']);
         $databaseBackupRestore->setBackupFilename($forms['backup']['filename']);
 
-        if ($databaseBackupRestore->backupInfomation() == false) {
+        if (empty($forms['backup']['filename'])) {
+            $appAlert->danger(lng('mysql.action_table.alert.backup.not_input_filename'));
+        } else if (FileInfo::isNameValidate($forms['backup']['filename']) == false) {
+            $appAlert->danger(lng('mysql.action_table.alert.backup.filename_not_validate'));
+        } else if (FileInfo::fileExists($databaseBackupRestore->getPathFileDatabaseBackup())) {
+            $appAlert->danger(lng('mysql.action_table.alert.backup.filename_is_exists', 'name', $forms['backup']['filename']));
+        } else if ($databaseBackupRestore->backupInfomation() == false) {
             $isFailed = true;
             $appAlert->danger(lng('mysql.action_table.alert.backup.backup_infomation_failed', 'name', $appMysqlConnect->getName(), 'error', $appMysqlConnect->error()));
         } else {
@@ -124,6 +131,8 @@
             else if ($countTables > 1 && $countSuccess > 0)
                 $appAlert->success(lng('mysql.action_table.alert.backup.backup_success', 'name', $forms['backup']['filename']));
         }
+
+        $forms['backup']['filename'] = stripslashes($forms['backup']['filename']);
     }
 ?>
 
@@ -267,9 +276,9 @@
             </a>
         </li>
         <li>
-            <a href="restore_database.php<?php echo $appParameter->toString(); ?>">
+            <a href="restore_manager.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-restore"></span>
-                <span><?php echo lng('mysql.home.menu_action.restore_database', 'count', $databaseBackupRestore->getRestoreDatabaseRecordCount()); ?></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_manager', 'count', $databaseBackupRestore->getRestoreDatabaseRecordCount()); ?></span>
             </a>
         </li>
         <li>

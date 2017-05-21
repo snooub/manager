@@ -47,9 +47,11 @@
         ],
 
         'menu_action' => [
-            'create_table'     => 'Tạo bảng',
-            'restore_database' => 'Khôi phục cơ sở dữ liệu ({$count})',
-            'disconnect'       => 'Ngắt kết nối'
+            'create_table'    => 'Tạo bảng',
+            'restore_manager' => 'Quản lý sao lưu ({$count})',
+            'list_table'      => 'Danh sách bảng',
+            'list_database'   => 'Danh sách cơ sở dữ liệu',
+            'disconnect'      => 'Ngắt kết nối'
         ]
     ];
 

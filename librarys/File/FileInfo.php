@@ -73,7 +73,7 @@
 
         public static function isNameValidate($name)
         {
-            return strpos($name, '\\') === false && strpos($name, '/') === false;
+            return strpbrk($name, '\\/:*?"<>|') == false;
         }
 
 		public static function extFile($file)
@@ -429,7 +429,7 @@
             } else if (self::isReadable($path) && self::isTypeFile($path)) {
                 return self::unlink($path);
             } else {
-                $handle = @scandir($path);
+                $handle = self::scanDirectory($path);
 
                 if ($handle !== false) {
                     $directoryCurrentHasPermission = false;
@@ -580,6 +580,11 @@
         public static function scanDirectory($directory)
         {
             return @scandir($directory);
+        }
+
+        public static function globDirectory($pattern, $flag = 0)
+        {
+            return @glob($pattern, $flag);
         }
 
         public static function isTypeFile($path)
