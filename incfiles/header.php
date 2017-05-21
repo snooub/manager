@@ -112,7 +112,7 @@
                                     '=' . env('dev.rand');
                 ?>
 
-                <script type="text/javascript" src="<?php echo $scriptUrl; ?>"></script>
+                <script type="text/javascript" src="<?php echo $scriptUrl; ?>" async></script>
 
                 <?php unset($scriptInline); ?>
                 <?php unset($scriptCount); ?>
@@ -130,7 +130,7 @@
                                         '=' . env('dev.rand');
                     ?>
 
-                    <link rel="stylesheet" type="text/css" href="<?php echo $entryUrl; ?>" media="all,handheld" />
+                    <script type="text/javascript" src="<?php echo $entryUrl; ?>" async></script>
                     <?php unset($entryUrl); ?>
                 <?php } ?>
             <?php } ?>
