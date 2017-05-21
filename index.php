@@ -263,7 +263,7 @@
 
         $appFileCopy->setPath($appDirectory->getDirectory());
         $appFileCopy->flushSession();
-    }
+    } bug(FileInfo::mkdir($appDirectory->getDirectory(), true));
 ?>
 
     <?php echo $appAlert->display(); ?>

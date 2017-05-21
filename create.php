@@ -66,7 +66,7 @@
                     $appAlert->danger(lng('create.alert.name_is_exists_type_file'));
             } else {
                 if ($forms['type'] === TYPE_FOLDER) {
-                    if (@mkdir($forms['path']) == false) {
+                    if (FileInfo::mkdir($forms['path']) == false) {
                         $appAlert->danger(lng('create.alert.create_directory_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
                         if ($appConfig->get('auto_redirect.create_directory')) {

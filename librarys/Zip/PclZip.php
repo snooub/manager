@@ -5026,7 +5026,7 @@
     }
 
     // ----- Create the directory
-    if (!@mkdir($p_dir, 0777))
+    if (!FileInfo::mkdir($p_dir, 0777))
     {
       // ----- Error log
       PclZip::privErrorLog(PCLZIP_ERR_DIR_CREATE_FAIL, "Unable to create directory '$p_dir'");

@@ -87,11 +87,11 @@
                 $this->pathConfig = FileInfo::validate($directory . SP . md5($username));
 
                 if (FileInfo::isTypeDirectory($directory) == false)
-                    $isMkdir = @mkdir($directory);
+                    $isMkdir = FileInfo::mkdir($directory);
 
                 if ($isMkdir) {
                     if (FileInfo::isTypeDirectory($this->pathConfig) == false)
-                        $isMkdir = @mkdir($this->pathConfig);
+                        $isMkdir = FileInfo::mkdir($this->pathConfig);
 
                     if ($isMkdir) {
                         $this->pathConfig = FileInfo::validate($this->pathConfig . SP . $this->fileConfigName);

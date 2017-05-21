@@ -111,6 +111,37 @@
             return false;
         }
 
+        public static function mkdir($path, $superParentCreate = false)
+        {
+            if ($superParentCreate == false)
+                return @mkdir($path);
+
+            $pathSplits  = explode(SP, $path);
+            $countSplits = count($pathSplits);
+
+            if (is_array($pathSplits) == false && $countSplits > 0)
+                return @mkdir($path);
+
+            $pathBuffer = null;
+
+            if (SP === '/')
+                $pathBuffer = SP;
+
+            for ($i = 0; $i < $countSplits; ++$i) {
+                $entry = $pathSplits[$i];
+
+                if ($i === 0)
+                    $pathBuffer .= $entry;
+                else
+                    $pathBuffer = self::validate($pathBuffer . SP . $entry);
+
+                if (self::fileExists($pathBuffer) == false && @mkdir($pathBuffer) == false)
+                    return false;
+            }
+
+            return true;
+        }
+
         /**
          * @param $old = Array list path copy | Path directory, file copy
          * @param $new = Path directory parent copy of $old = array list path | Path directory, file copy to
@@ -219,7 +250,7 @@
                             if ($new == null)
                                 return true;
 
-                            if (self::isTypeDirectory($new) == false && @mkdir($new) == false)
+                            if (self::isTypeDirectory($new) == false && self::mkdir($new) == false)
                                 return false;
                         }
 

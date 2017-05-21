@@ -156,7 +156,12 @@
 
         private function backupWrite()
         {
-            $path   = env('app.path.backup_mysql') . SP . $this->backupFilename;
+            $directory = env('app.path.backup_mysql');
+
+            if (FileInfo::mkdir($directory, true) == false)
+                return false;
+
+            $path   = $directory . SP . $this->backupFilename;
             $handle = null;
 
             if ($this->isBackupCreateFile == false) {
