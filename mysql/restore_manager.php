@@ -19,8 +19,34 @@
     $themes  = [ env('resource.theme.mysql') ];
     $scripts = [ env('resource.javascript.checkbox_checkall') ];
     $appAlert->setID(ALERT_MYSQL_RESTORE_MANAGER);
-    require_once(ROOT . 'incfiles' . SP . 'header.php');
     requireDefine('mysql_restore_manager');
+
+    $listRecords  = array();
+    $countRecords = 0;
+
+    if (isset($_POST['records']) && is_array($_POST['records'])) {
+        $listRecords  = $_POST['records'];
+        $countRecords = count($listRecords);
+    }
+
+    $listRecords = AppDirectory::rawDecodes($listRecords);
+    $nameAction  = null;
+    $isAction    = true;
+
+    if (isset($_POST['action']) && empty($_POST['action']) == false)
+        $nameAction = addslashes(trim($_POST['action']));
+
+    if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DELETE_MULTI)
+        $title = lng('mysql.restore_manager.title.delete');
+    else if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DOWNLOAD_MULTI)
+        $title = lng('mysql.restore_manager.title.download');
+    else
+        $isAction = false;
+
+    if ($isAction && $countRecords <= 0)
+        $appAlert->danger(lng('mysql.restore_manager.alert.not_record_select'));
+
+    require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
@@ -38,15 +64,27 @@
 
         $countList = count($listBackups);
     }
+
+    bug($_POST);
+    if (isset($_POST['delete_button'])) {
+
+    } else if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DOWNLOAD_MULTI || isset($_POST['download_button'])) {
+
+    }
 ?>
 
     <?php echo $appAlert->display(); ?>
 
     <form action="restore_manager.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database-backup">
+        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+
+        <?php if ($isAction) { ?>
+            <input type="hidden" name="action" value="<?php echo $nameAction; ?>"/>
+        <?php } ?>
 
         <div class="form-action">
             <div class="title">
-                <span><?php echo lng('mysql.restore_manager.title_page'); ?></span>
+                <span><?php echo $title; ?></span>
             </div>
 
             <ul class="list-database no-box-shadow">
@@ -57,29 +95,43 @@
                         <span><?php echo lng('mysql.restore_manager.empty_backup_record'); ?></span>
                     </li>
                 <?php } else { ?>
+                    <?php $countChecked = 0; ?>
+
                     <?php for ($i = 0; $i < $countList; ++$i) { ?>
                         <?php $entryFilename = $listBackups[$i]; ?>
 
                         <li class="type-backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?>">
                             <div class="icon">
                                 <?php $id = 'backup-' . $entryFilename; ?>
+                                <?php $isChecked = in_array($entryFilename, $listRecords); ?>
 
                                 <input
                                     type="checkbox"
-                                    name="tables[]"
+                                    name="records[]"
                                     id="<?php echo $id; ?>"
-                                    value="<?php echo $mysqlAssoc['Name']; ?>"
+                                    value="<?php echo $entryFilename; ?>"
+                                    <?php if ($isChecked) { ?>checked="checked"<?php } ?>
                                     <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-database-backup', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <span class="icomoon icon-backup"></span>
+
+                                <?php if ($isChecked) { ?>
+                                    <?php $countChecked++; ?>
+                                <?php } ?>
                             </div>
                             <span><?php echo $entryFilename; ?></span>
                         </li>
                     <?php } ?>
 
                     <li class="checkbox-all">
-                        <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll('form-list-database-backup', 'checked-all-entry', 'checkall-count');"/>
+                        <input
+                            type="checkbox"
+                            name="checked_all_entry"
+                            id="checked-all-entry"
+                            <?php if ($countChecked === $countList) { ?>checked="checked"<?php } ?>
+                            onclick="javascript:CheckboxCheckAll.onCheckAll('form-list-database-backup', 'checked-all-entry', 'checkall-count');"/>
+
                         <label for="checked-all-entry">
                             <span><?php echo lng('mysql.restore_manager.form.input.checkbox_all_entry'); ?></span>
                             <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
@@ -95,9 +147,35 @@
                 <?php } ?>
 
             </ul>
+
+            <ul class="form-element">
+                <?php if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DELETE_MULTI) { ?>
+                    <li class="accept">
+                        <span><?php echo lng('mysql.restore_manager.form.input.delete.accept_message'); ?></span>
+                    </li>
+
+                    <li class="button">
+                        <button type="submit" name="delete_button">
+                            <span><?php echo lng('mysql.restore_manager.form.button.delete'); ?></span>
+                        </button>
+                        <a href="restore_manager.php<?php echo $appParameter->toString(); ?>">
+                            <span><?php echo lng('mysql.restore_manager.form.button.cancel'); ?></span>
+                        </a>
+                    </li>
+                <?php } else if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DOWNLOAD_MULTI) { ?>
+                    <li class="button">
+                        <button type="submit" name="download_button">
+                            <span><?php echo lng('mysql.restore_manager.form.button.download'); ?></span>
+                        </button>
+                        <a href="restore_manager.php<?php echo $appParameter->toString(); ?>">
+                            <span><?php echo lng('mysql.restore_manager.form.button.cancel'); ?></span>
+                        </a>
+                    </li>
+                <?php } ?>
+            </ul>
         </div>
 
-        <?php if ($countList > 0) { ?>
+        <?php if ($countList > 0 && $isAction == false) { ?>
             <ul class="action-multi">
                 <li>
                     <button type="submit" name="action" value="<?php echo MYSQL_RESTORE_MANAGER_ACTION_DELETE_MULTI; ?>">
