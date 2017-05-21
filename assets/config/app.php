@@ -47,6 +47,7 @@
                 'config'       => '${app.path.resource}${SP}config',
                 'define'       => '${app.path.resource}${SP}define',
                 'cache'        => '${app.path.resource}${SP}cache',
+                'tmp'          => '${app.path.resource}${SP}tmp',
                 'backup'       => '${app.path.resource}${SP}backup',
                 'backup_mysql' => '${app.path.backup}${SP}mysql'
             ],

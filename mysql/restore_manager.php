@@ -3,6 +3,7 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
     use Librarys\File\FileInfo;
+    use Librarys\Zip\PclZip;
     use Librarys\Database\DatabaseBackupRestore;
 
     define('LOADED',               1);
@@ -69,7 +70,29 @@
     if (isset($_POST['delete_button'])) {
 
     } else if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DOWNLOAD_MULTI || isset($_POST['download_button'])) {
+        $pathDirectoryTmp = env('app.path.tmp');
 
+        if (FileInfo::mkdir($pathDirectoryTmp, true) == false)
+            $appAlert->danger(lng('mysql.restore_manager.alert.download.download_failed'));
+
+        $pathFile     = FileInfo::validate($pathDirectoryTmp . SP . md5(time()) . '.zip');
+        $pclZip       = new PclZip($pathFile);
+        $isFailed     = false;
+        $countSuccess = $countList;
+
+        foreach ($listRecords AS $recordFilename) {
+            $recordPath = FileInfo::validate($databaseBackupRestore->getPathDirectoryDatabaseBackup() . SP . $recordFilename);
+
+            if ($pclZip->add($recordPath, PCLZIP_OPT_REMOVE_PATH, $databaseBackupRestore->getPathDirectoryDatabaseBackup()) == false) {
+                $isFailed = true;
+                $countSuccess--;
+                $appAlert->danger(lng('mysql.restore_manager.alert.download.download_record_failed', 'name', $recordFilename, 'error', $pclZip->errorInfo(true)));
+            }
+        }
+
+        if ($isFailed == false) {
+
+        }
     }
 ?>
 

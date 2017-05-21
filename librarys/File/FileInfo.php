@@ -632,6 +632,16 @@
             return @fread($handle, $length);
         }
 
+        public static function fileSeek($handle, $offet, $whence = SEEK_SET)
+        {
+            return @fseek($handle, $offet, $whence);
+        }
+
+        public static function fileEndOfFile($handle)
+        {
+            return @feof($handle);
+        }
+
         public static function fileWrite($handle, $string, $length = null)
         {
             if ($string == null)

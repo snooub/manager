@@ -11,15 +11,18 @@
         private $boot;
         private $directory;
         private $name;
+        private $aliasName;
         private $directoryEncode;
         private $nameEncode;
+        private $aliasNameEncode;
         private $page;
         private $permissionDeny;
         private $accessParentPath;
 
-        const PARAMETER_DIRECTORY_URL = 'directory';
-        const PARAMETER_NAME_URL      = 'name';
-        const PARAMETER_PAGE_URL      = 'pager';
+        const PARAMETER_DIRECTORY_URL  = 'directory';
+        const PARAMETER_NAME_URL       = 'name';
+        const PARAMETER_ALIAS_NAME_URL = 'alias_name';
+        const PARAMETER_PAGE_URL       = 'pager';
 
         public function __construct(Boot $boot)
         {
@@ -43,6 +46,13 @@
                 $this->nameEncode = self::rawEncode($this->name);
             } else {
                 $this->name = null;
+            }
+
+            if (isset($_GET[self::PARAMETER_ALIAS_NAME_URL]) && empty($_GET[self::PARAMETER_ALIAS_NAME_URL]) == false) {
+                $this->aliasName       = self::rawDecode($_GET[self::PARAMETER_ALIAS_NAME_URL]);
+                $this->aliasNameEncode = self::rawEncode($this->aliasName);
+            } else {
+                $this->aliasName = null;
             }
 
             if (isset($_GET[self::PARAMETER_PAGE_URL]) && empty($_GET[self::PARAMETER_PAGE_URL]) == false)
@@ -139,6 +149,16 @@
         public function getNameEncode()
         {
             return $this->nameEncode;
+        }
+
+        public function getAliasName()
+        {
+            return $this->aliasName;
+        }
+
+        public function getAliasNameEncode()
+        {
+            return $this->aliasNameEncode;
         }
 
         public function getDirectoryAndName()

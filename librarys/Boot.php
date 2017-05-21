@@ -193,9 +193,12 @@
 
         public function obBufferEnd()
         {
+            if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
+                return;
+
             register_shutdown_function(function() {
-                ob_flush();
-                ob_end_flush();
+                @ob_flush();
+                @ob_end_flush();
             });
         }
 

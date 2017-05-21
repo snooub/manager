@@ -26,7 +26,12 @@
         ],
 
         'alert' => [
-            'not_record_select' => 'Chưa chọn bản sao lưu nào'
+            'not_record_select' => 'Chưa chọn bản sao lưu nào',
+
+            'download' => [
+                'download_failed'        => 'Tải về nhiều bản sao lưu thất bại',
+                'download_record_failed' => 'Tải về bản sao lưu <strong>{$name}</strong> thất bại: <strong>{$error}</strong>'
+            ]
         ],
 
         'action_multi' => [
