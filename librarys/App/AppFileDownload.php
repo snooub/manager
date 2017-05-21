@@ -59,7 +59,7 @@
 
             header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename=' . $this->fileNameAlias);
-            header('Content-Length: ' . filesize($this->fileInfo->getFilePath()));
+            header('Content-Length: ' . $this->fileSize);
             header('Pragma: public');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 

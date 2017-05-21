@@ -48,8 +48,6 @@
     if ($isAction && $countRecords <= 0)
         $appAlert->danger(lng('mysql.restore_manager.alert.not_record_select'));
 
-    require_once(ROOT . 'incfiles' . SP . 'header.php');
-
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
 
@@ -67,19 +65,18 @@
         $countList = count($listBackups);
     }
 
-    bug($_POST);
     if (isset($_POST['delete_button'])) {
-
+    bug($_POST);
     } else if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DOWNLOAD_MULTI || isset($_POST['download_button'])) {
         $pathDirectoryTmp = env('app.path.tmp');
 
         if (FileInfo::mkdir($pathDirectoryTmp, true) == false)
             $appAlert->danger(lng('mysql.restore_manager.alert.download.download_failed'));
 
-        $pathFile     = FileInfo::validate($pathDirectoryTmp . SP . md5(time()) . '.zip');
+        $pathFile     = FileInfo::validate($pathDirectoryTmp . SP . md5(time()));
         $pclZip       = new PclZip($pathFile);
         $isFailed     = false;
-        $countSuccess = $countList;
+        $countSuccess = $countRecords;
 
         foreach ($listRecords AS $recordFilename) {
             $recordPath = FileInfo::validate($databaseBackupRestore->getPathDirectoryDatabaseBackup() . SP . $recordFilename);
@@ -92,7 +89,13 @@
         }
 
         if ($isFailed == false) {
-            $filenameDownload = 'mysql.sql';
+            $filenameDownload = null;
+
+            if ($countRecords === 1)
+                $filenameDownload = str_replace('.' . DatabaseBackupRestore::MIME, null, $listRecords[0]) . '_compress.zip';
+            else
+                $filenameDownload = 'mysql_' . $appMysqlConnect->getName() . '_' . date('d-m-Y_H-i', time()) . '_compress.zip';
+
             $appFileDownload  = new AppFileDownload();
 
             if (
@@ -104,6 +107,8 @@
             }
         }
     }
+
+    require_once(ROOT . 'incfiles' . SP . 'header.php');
 ?>
 
     <?php echo $appAlert->display(); ?>
