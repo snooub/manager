@@ -102,7 +102,16 @@
             header("Pragma: no-cache");
             header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
-            ob_start();
+            if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
+                @ob_start('ob_gzhandler');
+            else
+                @ob_start();
+        }
+
+        public function obBufferClean()
+        {
+            @ob_clean();
+            @ob_end_clean();
         }
 
         public function obBufferHandler($label, $message, $title = null)

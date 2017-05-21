@@ -86,9 +86,8 @@
     if ($cacheLifetime > 0) {
         $contents = @ob_get_contents();
 
-        @ob_clean();
-        @ob_end_clean();
-        @ob_start();
+        $boot->obBufferClean();
+        $boot->obBufferStart();
 
         echo ($contents);
     }
