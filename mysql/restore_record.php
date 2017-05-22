@@ -24,6 +24,11 @@
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
 
+    $recordName = null;
+
+    if (isset($_GET[MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL]) && empty($_GET[MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL]) == false)
+        $recordName = AppDirectory::rawDecode($_GET[MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL]);
+
     $databaseBackupRestore = new DatabaseBackupRestore($appMysqlConnect);
 ?>
 
@@ -35,6 +40,21 @@
         </div>
         <form action="restore_record.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database-backup">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+
+            <ul class="form-element">
+                <li class="accept">
+                    <span><?php echo lng('mysql.restore_record.form.input.accept_message', 'name', $recordName); ?></span>
+                </li>
+
+                <li class="button">
+                    <button type="submit" name="restore">
+                        <span><?php echo lng('mysql.restore_record.form.button.restore'); ?></span>
+                    </button>
+                    <a href="restore_manager.php<?php echo $appParameter->toString(); ?>">
+                        <span><?php echo lng('mysql.restore_manager.form.button.cancel'); ?></span>
+                    </a>
+                </li>
+            </ul>
         </form>
     </div>
 
