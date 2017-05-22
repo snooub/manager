@@ -140,7 +140,7 @@
 
             if ($separator === '/' && $isRootPathFirst == false)
                 $pathBuffer = $separator;
-            else
+            else if ($isRootPathFirst)
                 $pathBuffer = $rootPath;
 
             for ($i = 0; $i < $countSplits; ++$i) {
@@ -148,7 +148,9 @@
 
                 if (empty($entry) == false) {
                     if ($isFirstIndexBuffer == false) {
-                        if ($isRootPathFirst == false && $separator !== '/')
+                        if ($isRootPathFirst == false && $separator === '/')
+                            $pathBuffer .= $entry;
+                        else if ($isRootPathFirst)
                             $pathBuffer .= $separator . $entry;
                         else
                             $pathBuffer .= $entry;
@@ -157,10 +159,10 @@
                     } else {
                         $pathBuffer = self::validate($pathBuffer . $separator . $entry);
                     }
-                }
 
-                if (self::fileExists($pathBuffer) == false && @mkdir($pathBuffer) == false)
-                    return false;
+                    if (self::fileExists($pathBuffer) == false && @mkdir($pathBuffer) == false)
+                        return false;
+                }
             }
 
             return true;
