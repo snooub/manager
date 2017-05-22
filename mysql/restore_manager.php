@@ -66,7 +66,23 @@
     }
 
     if (isset($_POST['delete_button'])) {
-    bug($_POST);
+        $isFailed     = false;
+        $countSuccess = $countRecords;
+
+        foreach ($listRecords AS $recordFilename) {
+            $recordPath = FileInfo::validate($databaseBackupRestore->getPathDirectoryDatabaseBackup() . SP . $recordFilename);
+
+            if (FileInfo::unlink($recordPath) == false) {
+                $isFailed = true;
+                $countSuccess--;
+                $appAlert->danger(lng('mysql.restore_manager.alert.delete.delete_record_failed', 'name', $recordFilename));
+            }
+        }
+
+        if ($isFailed == false)
+            $appAlert->success(lng('mysql.restore_manager.alert.delete.delete_success'), null, 'restore_manager.php' . $appParameter->toString());
+        else if ($countRecords > 1 && $countSuccess > 0)
+            $appAlert->success(lng('mysql.restore_manager.delete_success'));
     } else if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DOWNLOAD_MULTI || isset($_POST['download_button'])) {
         $pathDirectoryTmp = env('app.path.tmp');
 

@@ -28,6 +28,11 @@
         'alert' => [
             'not_record_select' => 'Chưa chọn bản sao lưu nào',
 
+            'delete' => [
+                'delete_record_failed' => 'Xóa bản sao lưu <strong>{$name}</strong> thất bại',
+                'delete_success'       => 'Xóa nhiều bản sao lưu thành công'
+            ],
+
             'download' => [
                 'download_failed'        => 'Tải về nhiều bản sao lưu thất bại',
                 'download_record_failed' => 'Tải về bản sao lưu <strong>{$name}</strong> thất bại: <strong>{$error}</strong>'

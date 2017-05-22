@@ -64,6 +64,11 @@
                 'locale' => 'vi'
             ],
 
+            'tmp' => [
+                'lifetime' => 180,
+                'limit'    => 20
+            ],
+
             'firewall' => [
                 'path'            => '${app.path.resource}${SP}firewall',
                 'path_htaccess'   => '${app.path.root}${SP}.htaccess',

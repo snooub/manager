@@ -60,4 +60,6 @@
     $appDirectory->execute();
     $appMysqlConfig->execute($appUser);
 
+    Librarys\App\AppTmpClean::scanAutoClean();
+
 ?>
