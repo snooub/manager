@@ -124,8 +124,7 @@ ul.list-database > li.order span.icomoon {
     margin-right: 5px;
 }
 
-ul.list-database > li.empty span,
-ul.list-database > li.type-backup-record span {
+ul.list-database > li.empty span {
     color: #ef5350;
     line-height: 45px;
     vertical-align: middle;

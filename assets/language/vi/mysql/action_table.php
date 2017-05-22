@@ -62,7 +62,7 @@
                 'backup_infomation_failed' => 'Sao lưu thông tin cơ sở dữ liệu <strong>{$name}</strong> thất bại: <strong>{$error}</strong>',
                 'backup_table_failed'      => 'Sao lưu bảng <strong>{$name}</strong> thất bại: <strong>{$error}</strong>',
                 'backup_failed'            => 'Sao lưu nhiều bảng vào tập tin <strong>{$name}</strong> thất bại',
-                'backup_success'           => 'Sao lưu nhiều bảng vào tập tin <strong>{$name}</strong> thành công'
+                'backup_success'           => 'Sao lưu nhiều bảng vào tập tin <strong>{$name}</strong> thành công, kích thước <strong>{$size}</strong>'
             ]
         ]
     ];

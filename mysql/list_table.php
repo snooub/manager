@@ -77,7 +77,7 @@
                                 name="tables[]"
                                 id="<?php echo $id; ?>"
                                 value="<?php echo $mysqlAssoc['Name']; ?>"
-                                <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-database', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
+                                <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                             <label for="<?php echo $id; ?>" class="not-content"></label>
                             <a href="info_table.php<?php echo $urlParameterTable; ?>">
@@ -99,11 +99,16 @@
                 <?php } ?>
 
                 <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll('form-list-database', 'checked-all-entry', 'checkall-count');"/>
+                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
                     <label for="checked-all-entry">
                         <span><?php echo lng('mysql.list_table.form.input.checkbox_all_entry'); ?></span>
                         <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
                             <span id="checkall-count"></span>
+                            <script type="text/javascript">
+                                OnLoad.add(function() {
+                                    CheckboxCheckAll.onInitForm('form-list-database', 'checked-all-entry', 'checkall-count');
+                                });
+                            </script>
                         <?php } ?>
                     </label>
                 </li>

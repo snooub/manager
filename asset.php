@@ -51,8 +51,10 @@
             foreach ($themeEntrys AS $themeFilename) {
                 $themeFilepath = FileInfo::validate($themePath . SP . $themeDirectory . SP . $themeFilename . '.css');
 
-                if (FileInfo::isTypeFile($themeFilepath))
+                if (FileInfo::isTypeFile($themeFilepath)) {
                     require $themeFilepath;
+                    echo "\n\n";
+                }
             }
         }
     } else if (isset($_GET[ASSET_PARAMETER_JS_URL]) && empty($_GET[ASSET_PARAMETER_JS_URL]) == false) {
@@ -74,8 +76,10 @@
             foreach ($jsEntrys AS $jsFilename) {
                 $jsFilepath = FileInfo::validate($jsPath . SP . $jsFilename . '.js');
 
-                if (FileInfo::isTypeFile($jsFilepath))
+                if (FileInfo::isTypeFile($jsFilepath)) {
                     require $jsFilepath;
+                    echo "\n\n";
+                }
             }
         }
     } else {

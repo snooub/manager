@@ -153,6 +153,7 @@
 
                     <?php for ($i = 0; $i < $countList; ++$i) { ?>
                         <?php $entryFilename = $listBackups[$i]; ?>
+                        <?php $entryFilepath = FileInfo::validate($pathDatabaseBackup . SP . $entryFilename); ?>
 
                         <li class="type-backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?>">
                             <div class="icon">
@@ -165,7 +166,7 @@
                                     id="<?php echo $id; ?>"
                                     value="<?php echo $entryFilename; ?>"
                                     <?php if ($isChecked) { ?>checked="checked"<?php } ?>
-                                    <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-database-backup', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
+                                    <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <span class="icomoon icon-backup"></span>
@@ -174,7 +175,12 @@
                                     <?php $countChecked++; ?>
                                 <?php } ?>
                             </div>
-                            <span><?php echo $entryFilename; ?></span>
+                            <a href="restore_record.php<?php $appParameter->toString(); ?>" class="name">
+                                <span><?php echo $entryFilename; ?></span>
+                            </a>
+                            <div class="info">
+                                <span><?php echo FileInfo::fileSize($entryFilepath, true); ?></span>
+                            </div>
                         </li>
                     <?php } ?>
 
@@ -184,18 +190,18 @@
                             name="checked_all_entry"
                             id="checked-all-entry"
                             <?php if ($countChecked === $countList) { ?>checked="checked"<?php } ?>
-                            onclick="javascript:CheckboxCheckAll.onCheckAll('form-list-database-backup', 'checked-all-entry', 'checkall-count');"/>
+                            onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
 
                         <label for="checked-all-entry">
                             <span><?php echo lng('mysql.restore_manager.form.input.checkbox_all_entry'); ?></span>
                             <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
                                 <span id="checkall-count"></span>
-                                <script type="text/javascript" async>
+                                 <script type="text/javascript">
                                     OnLoad.add(function() {
-                                        CheckboxCheckAll.onInitPutCountCheckedItem('form-list-database-backup', 'checked-all-entry', 'checkall-count');
+                                        CheckboxCheckAll.onInitForm('form-list-database-backup', 'checked-all-entry', 'checkall-count');
                                     });
                                 </script>
-                            <?php } ?>
+                           <?php } ?>
                         </label>
                     </li>
                 <?php } ?>

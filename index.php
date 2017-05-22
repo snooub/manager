@@ -293,7 +293,7 @@
                                         name="entrys[]"
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entry['name']); ?>"
-                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-file-home', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
+                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <a href="file_info.php<?php echo $urlParameter; ?>">
@@ -359,7 +359,7 @@
                                         name="entrys[]"
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entry['name']); ?>"
-                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-file-home', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
+                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
 
@@ -381,11 +381,16 @@
                 <?php } ?>
 
                 <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll('form-list-file-home', 'checked-all-entry', 'checkall-count');"/>
+                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
                     <label for="checked-all-entry">
                         <span><?php echo lng('home.checkbox_all_entry'); ?></span>
                         <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?>
                             <span id="checkall-count"></span>
+                            <script type="text/javascript">
+                                OnLoad.add(function() {
+                                    CheckboxCheckAll.onInitForm('form-list-file-home', 'checked-all-entry', 'checkall-count');
+                                });
+                            </script>
                         <?php } ?>
                     </label>
                 </li>

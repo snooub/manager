@@ -1,6 +1,7 @@
 var CheckboxCheckAll = {
-    form: null,
-    checkall: null,
+    form:      null,
+    checkall:  null,
+    textCount: null,
 
     countCheckedItem:  0,
     countCheckboxItem: 0,
@@ -13,46 +14,31 @@ var CheckboxCheckAll = {
         if (CheckboxCheckAll.isValidateVariable() == false)
             return;
 
-        for (var i = 0; i < form.elements.length; ++i) {
-            var element = form.elements[i];
-
-            if (element.type && element.type === "checkbox" && element !== checkall) {
-                if (element.checked)
-                    CheckboxCheckAll.countCheckedItem++;
-
-                CheckboxCheckAll.countCheckboxItem++;
-            }
-        }
-
+        CheckboxCheckAll.updateCountCheckboxStatus();
         CheckboxCheckAll.putCountCheckedItem();
+        CheckboxCheckAll.updateCheckboxAllCheckedStatus();
     },
 
     onCheckAll: function() {
         if (CheckboxCheckAll.isValidateVariable() == false)
             return;
 
-        var checked      = CheckboxCheckAll.checkall.checked == true;
-        var count        = 0;
-        var countElement = 0;
-
-        CheckboxCheckAll.countCheckedItem = 0;
+        var checked = CheckboxCheckAll.checkall.checked == true;
 
         for (var i = 0; i < CheckboxCheckAll.form.elements.length; ++i) {
             var element = CheckboxCheckAll.form.elements[i];
 
-            if (element.type && element.type === "checkbox" && element !== checkall) {
+            if (element.type && element.type === "checkbox" && element !== CheckboxCheckAll.checkall)
                 element.checked = checked;
-
-                if (element.checked)
-                    CheckboxCheckAll.countCheckedItem++;
-            }
         }
 
+        CheckboxCheckAll.updateCountCheckboxStatus();
         CheckboxCheckAll.putCountCheckedItem();
+        CheckboxCheckAll.updateCheckboxAllCheckedStatus();
     },
 
     onCheckItem: function(idCheckboxItem) {
-        var checkitem = document.getElementById(idItemCheckbox);
+        var checkitem = document.getElementById(idCheckboxItem);
 
         if (typeof checkitem === "undefined" || checkitem === null || CheckboxCheckAll.isValidateVariable() == false)
             return;
@@ -60,48 +46,48 @@ var CheckboxCheckAll = {
         if (checkitem.type && checkitem.type === "checkbox")
             checkitem.cheked = checkitem.checked == true;
 
-        var count = 0;
+        CheckboxCheckAll.updateCountCheckboxStatus();
+        CheckboxCheckAll.putCountCheckedItem();
+        CheckboxCheckAll.updateCheckboxAllCheckedStatus();
+    },
 
-        for (var i = 0; i < form.elements.length; ++i) {
-            var element = form.elements[i];
+    putCountCheckedItem: function() {
+        if (CheckboxCheckAll.isValidateVariable() == false)
+            return;
 
-            if (
-                element.type                   &&
-                element.type    === "checkbox" &&
-                element         !== checkall   &&
-                element.checked                &&
-                element.checked  == true
-            ) {
-                count++;
+        if (CheckboxCheckAll.countCheckedItem > 0)
+            CheckboxCheckAll.textCount.innerHTML = "(" + CheckboxCheckAll.countCheckedItem + ")";
+        else
+            CheckboxCheckAll.textCount.innerHTML = null;
+    },
+
+    updateCountCheckboxStatus: function() {
+        if (CheckboxCheckAll.isValidateVariable() == false)
+            return;
+
+        CheckboxCheckAll.countCheckboxItem = 0;
+        CheckboxCheckAll.countCheckedItem  = 0;
+
+        for (var i = 0; i < CheckboxCheckAll.form.elements.length; ++i) {
+            var element = CheckboxCheckAll.form.elements[i];
+
+            if (element.type && element.type === "checkbox" && element !== CheckboxCheckAll.checkall) {
+                if (element.checked)
+                    CheckboxCheckAll.countCheckedItem++;
+
+                CheckboxCheckAll.countCheckboxItem++;
             }
         }
-
-        CheckboxCheckAll.putCountCheckedItem(idElementTextCount, count);
-        CheckboxCheckAll.updateStatusCheckboxAll(idCheckboxAll, count, countAllElement);
     },
 
-    putCountCheckedItem: function(idElementTextCount, count) {
-        var elementTextCount = document.getElementById(idElementTextCount);
-
-        if (typeof elementTextCount === "undefined" || elementTextCount === null)
+    updateCheckboxAllCheckedStatus: function() {
+        if (CheckboxCheckAll.isValidateVariable() == false)
             return;
 
-        if (count > 0)
-            elementTextCount.innerHTML = "(" + count + ")";
-        else
-            elementTextCount.innerHTML = null;
-    },
-
-    updateStatusCheckboxAll: function(idCheckboxAll, count, countAllElement) {
-        var checkall = document.getElementById(idCheckboxAll);
-
-        if (typeof checkall === "undefined")
-            return;
-
-        if (count <= 0)
-            checkall.checked = false;
-        else if (typeof countAllElement === "number" && count >= countAllElement)
-            checkall.checked = true;
+        if (CheckboxCheckAll.countCheckedItem <= 0)
+            CheckboxCheckAll.checkall.checked = false;
+        else if (CheckboxCheckAll.countCheckedItem >= CheckboxCheckAll.countCheckboxItem)
+            CheckboxCheckAll.checkall.checked = true;
     },
 
     isValidateVariable: function() {

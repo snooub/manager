@@ -127,7 +127,7 @@
             }
 
             if ($isFailed == false)
-                $appAlert->success(lng('mysql.action_table.alert.backup.backup_success', 'name', $forms['backup']['filename']), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+                $appAlert->success(lng('mysql.action_table.alert.backup.backup_success', 'name', $forms['backup']['filename'], 'size', FileInfo::fileSize($databaseBackupRestore->getPathFileDatabaseBackup($forms['backup']['filename']), true)), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
             else if ($countTables > 1 && $countSuccess > 0)
                 $appAlert->success(lng('mysql.action_table.alert.backup.backup_success', 'name', $forms['backup']['filename']));
         }
@@ -165,7 +165,7 @@
                                 id="<?php echo $id; ?>"
                                 value="<?php echo $assocTable['Name']; ?>"
                                 <?php if (in_array($assocTable['Name'], $listTables)) { ?>checked="checked"<?php } ?>
-                                <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('form-list-database', 'checked-all-entry', '<?php echo $id; ?>', 'checkall-count')"<?php } ?>/>
+                                <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
                             <label for="<?php echo $id; ?>" class="not-content"></label>
                             <a href="info_table.php<?php echo $urlParameterTable; ?>">
                                 <span class="icomoon icon-table"></span>
@@ -178,14 +178,14 @@
                 <?php } ?>
 
                 <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll('form-list-database', 'checked-all-entry', 'checkall-count');" checked="checked"/>
+                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();" checked="checked"/>
                     <label for="checked-all-entry">
                         <span><?php echo lng('mysql.action_table.form.input.checkbox_all_entry'); ?></span>
                         <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
                             <span id="checkall-count"></span>
-                            <script type="text/javascript" async>
+                            <script type="text/javascript">
                                 OnLoad.add(function() {
-                                    CheckboxCheckAll.onInitPutCountCheckedItem('form-list-database', 'checked-all-entry', 'checkall-count');
+                                    CheckboxCheckAll.onInitForm('form-list-database', 'checked-all-entry', 'checkall-count');
                                 });
                             </script>
                         <?php } ?>
