@@ -116,24 +116,48 @@
             if ($superParentCreate == false)
                 return @mkdir($path);
 
-            $pathSplits  = explode(SP, $path);
+            $rootPath        = env('server.document_root');
+            $pathAbsolute    = $path;
+            $isRootPathFirst = false;
+            $separator       = SP;
+
+            if (stripos($path, $rootPath) === 0) {
+                $pathAbsolute    = substr($path, strlen($rootPath));
+                $isRootPathFirst = true;
+
+                if (strpos($pathAbsolute, $separator) === 0)
+                    $pathAbsolute = substr($pathAbsolute, 1);
+            }
+
+            $pathSplits  = explode($separator, $pathAbsolute);
             $countSplits = count($pathSplits);
 
             if (is_array($pathSplits) == false && $countSplits > 0)
                 return @mkdir($path);
 
-            $pathBuffer = null;
+            $pathBuffer         = null;
+            $isFirstIndexBuffer = false;
 
-            if (SP === '/')
-                $pathBuffer = SP;
+            if ($separator === '/' && $isRootPathFirst == false)
+                $pathBuffer = $separator;
+            else
+                $pathBuffer = $rootPath;
 
             for ($i = 0; $i < $countSplits; ++$i) {
                 $entry = $pathSplits[$i];
 
-                if ($i === 0)
-                    $pathBuffer .= $entry;
-                else
-                    $pathBuffer = self::validate($pathBuffer . SP . $entry);
+                if (empty($entry) == false) {
+                    if ($isFirstIndexBuffer == false) {
+                        if ($isRootPathFirst == false && $separator !== '/')
+                            $pathBuffer .= $separator . $entry;
+                        else
+                            $pathBuffer .= $entry;
+
+                        $isFirstIndexBuffer = true;
+                    } else {
+                        $pathBuffer = self::validate($pathBuffer . $separator . $entry);
+                    }
+                }
 
                 if (self::fileExists($pathBuffer) == false && @mkdir($pathBuffer) == false)
                     return false;

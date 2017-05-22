@@ -264,6 +264,7 @@
         $appFileCopy->setPath($appDirectory->getDirectory());
         $appFileCopy->flushSession();
     }
+
 ?>
 
     <?php echo $appAlert->display(); ?>
