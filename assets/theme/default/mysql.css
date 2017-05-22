@@ -95,7 +95,7 @@ ul.list-database > li span.icomoon {
     }
 
     ul.list-database > li.entry-odd div.info {
-        right: 0;
+        right: 0 !important;
     }
 }
 
@@ -239,6 +239,30 @@ ul.list-database > li.type-backup-record a.name {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+@media all and (max-width: 340px) {
+    ul.list-database > li.type-database a.name,
+    ul.list-database > li.type-table a.name,
+    ul.list-database > li.type-column a.name,
+    ul.list-database > li.type-backup-record a.name {
+        max-width: 45%;
+    }
+}
+
+@media all and (max-width: 300px) {
+    ul.list-database > li.type-database a.name,
+    ul.list-database > li.type-table a.name,
+    ul.list-database > li.type-column a.name,
+    ul.list-database > li.type-backup-record a.name {
+        max-width: 40%;
+    }
+}
+
+@media all and (max-width: 780px) {
+    ul.list-database > li.type-database a.name {
+        max-width: 95%;
+    }
 }
 
 ul.list-database > li div.info {

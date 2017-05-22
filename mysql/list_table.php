@@ -125,7 +125,7 @@
                 </li>
                 <li>
                     <button type="submit" name="action" value="<?php echo MYSQL_ACTION_TABLE_TRUNCATE_MULTI; ?>">
-                        <span class="icomoon icon-trash"></span>
+                        <span class="icomoon icon-storage"></span>
                         <span class="label"><?php echo lng('mysql.list_table.action_multi.truncate'); ?></span>
                     </button>
                 </li>

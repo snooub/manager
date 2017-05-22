@@ -194,13 +194,32 @@ ul.file-list > li.type-file span.icomoon {
     margin-right: 10px;
 }
 
+ul.file-list > li.back a,
 ul.file-list > li.type-directory a.file-name,
 ul.file-list > li.type-file a.file-name {
     display: inline-block;
-    max-width: 55%;
+    max-width: 60%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+ul.file-list > li.back a {
+    max-width: 95%;
+}
+
+@media all and (max-width: 340px) {
+    ul.file-list > li.type-directory a.file-name,
+    ul.file-list > li.type-file a.file-name {
+        max-width: 55%;
+    }
+}
+
+@media all and (max-width: 300px) {
+    ul.file-list > li.type-directory a.file-name,
+    ul.file-list > li.type-file a.file-name {
+        max-width: 50%;
+    }
 }
 
 ul.file-list > li.type-directory a.chmod-permission,
