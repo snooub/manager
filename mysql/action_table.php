@@ -155,7 +155,7 @@
                     <?php $urlParameterTable .= '&' . PARAMETER_TABLE_URL    . '=' . AppDirectory::rawEncode($assocTable['Name']); ?>
                     <?php $indexAssoc++; ?>
 
-                    <li class="type-table<?php if ($indexAssoc === $numsTables && ($numsTables % 2) !== 0)  { ?> entry-odd<?php } ?>">
+                    <li class="type-table<?php if ($indexAssoc === $numsTables && ($numsTables % 2) !== 0)  { ?> entry-odd<?php } ?><?php if ($numsTables === 1) { ?> entry-only-one<?php } ?>">
                         <div class="icon">
                             <?php $id = 'table-' . $assocTable['Name']; ?>
 

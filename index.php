@@ -82,11 +82,12 @@
     $handlerIsOdd = false;
     $handlerCount = count($handlerList);
     $handlerPage  = array(
-        'current'  => $appDirectory->getPage(),
-        'begin'    => 0,
-        'end'      => $handlerCount,
-        'total'    => 0,
-        'list_max' => $appConfig->get('paging.file_home_list')
+        'current'       => $appDirectory->getPage(),
+        'begin'         => 0,
+        'end'           => $handlerCount,
+        'total'         => 0,
+        'entry_on_page' => $handlerCount,
+        'list_max'      => $appConfig->get('paging.file_home_list')
     );
 
     if ($handlerCount > 0 && $handlerPage['list_max'] > 0 && $handlerCount > $handlerPage['list_max']) {
@@ -103,9 +104,12 @@
 
         if (($handlerPage['end'] - $handlerPage['begin']) % 2 !== 0)
             $handlerIsOdd = true;
-    } else if ($handlerCount % 2 !== 0) {
-        $handlerIsOdd = true;
+
+        $handlerPage['entry_on_page'] = $handlerPage['end'] - $handlerPage['begin'];
     }
+
+    if ($handlerPage['entry_on_page'] % 2 !== 0)
+        $handlerIsOdd = true;
 
     $bufferBack = null;
 
@@ -284,7 +288,7 @@
                     <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
 
                     <?php if ($entry['is_directory']) { ?>
-                        <li class="type-directory <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
+                        <li class="type-directory <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?><?php if ($handlerPage['entry_on_page'] === 1) { ?> entry-only-one<?php } ?>">
                             <div class="icon">
                                 <?php $id = 'folder-' . AppDirectory::rawEncode($entry['name']); ?>
 
@@ -395,7 +399,7 @@
                     </label>
                 </li>
 
-               <?php if ($appConfig->get('paging.file_home_list') > 0 && $handlerPage['total'] > 1) { ?>
+                <?php if ($appConfig->get('paging.file_home_list') > 0 && $handlerPage['total'] > 1) { ?>
                     <li class="paging">
                         <?php echo $pagePaging->display($handlerPage['current'], $handlerPage['total']); ?>
                     </li>

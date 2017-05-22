@@ -250,6 +250,10 @@ ul.file-list > li.type-file div.chmod-size {
     ul.file-list > li.entry-odd div.chmod-size {
         right: 50%;
     }
+
+    ul.file-list > li.entry-only-one a.file-name {
+        max-width: 30%;
+    }
 }
 
 ul.file-list > li.type-directory a.chmod-permission span,

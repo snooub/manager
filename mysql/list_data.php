@@ -2,6 +2,7 @@
 
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\AppPaging;
     use Librarys\File\FileInfo;
 
     define('LOADED',               1);
@@ -54,7 +55,8 @@
         'current'     => 0,
         'total'       => 0,
         'begin_query' => 0,
-        'end_query'   => 0,
+        'end_query'   => $mysqlNums,
+        'row_on_page' => $mysqlNums,
         'max'         => $appConfig->get('paging.mysql_list_data', 0)
     ];
 
@@ -76,7 +78,19 @@
     if ($pagings['max'] > 0) {
         $pagings['begin_query'] = ($pagings['current']     * $pagings['max']) - $pagings['max'];
         $pagings['end_query']   = ($pagings['begin_query'] + $pagings['max']);
+        $pagings['row_on_page'] = ($pagings['end_query'] - $pagings['begin_query']);
+        $pagings['end_query']   = $pagings['max'];
+        $pagings['total']       = ceil($mysqlNums / $pagings['max']);
     }
+
+    $urlBeginPaging = 'list_data.php?' . PARAMETER_DATABASE_URL   . '=' . AppDirectory::rawEncode($appMysqlConnect->getName()) .
+                                   '&' . PARAMETER_TABLE_URL      . '=' . AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()) .
+                                   '&' . PARAMETER_ORDER_DATA_URL . '=' . AppDirectory::rawEncode($orders['key']);
+
+    $pagePaging = new AppPaging(
+        $urlBeginPaging,
+        $urlBeginPaging . '&' . PARAMETER_PAGE_DATA_URL . '='
+    );
 
     if ($pagings['max'] > 0 && $mysqlEmptyBy == false) {
         $mysqlStr = 'SELECT * ' .
@@ -129,14 +143,24 @@
                 <?php } ?>
             </li>
 
+            <?php $indexAssoc = 0; ?>
+
             <?php while ($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery)) { ?>
-                <li class="type-column">
+                <?php $indexAssoc++; ?>
+
+                <li class="type-column<?php if ($indexAssoc === $pagings['row_on_page'] && ($pagings['row_on_page'] % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($pagings['row_on_page'] === 1) { ?> entry-only-one<?php } ?>">
                     <a href="#">
                         <span class="icomoon icon-column"></span>
                     </a>
                     <a href="#">
                         <span><?php echo $mysqlAssoc[$mysqlBy]; ?></span>
                     </a>
+                </li>
+            <?php } ?>
+
+            <?php if ($pagings['max'] > 0 && $pagings['total'] > 1) { ?>
+                <li class="paging">
+                    <?php echo $pagePaging->display($pagings['current'], $pagings['total']); ?>
                 </li>
             <?php } ?>
         <?php } ?>

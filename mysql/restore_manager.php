@@ -155,7 +155,7 @@
                         <?php $entryFilename = $listBackups[$i]; ?>
                         <?php $entryFilepath = FileInfo::validate($pathDatabaseBackup . SP . $entryFilename); ?>
 
-                        <li class="type-backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?>">
+                        <li class="type-backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($countList === 1) { ?> entry-only-one<?php } ?>">
                             <div class="icon">
                                 <?php $id = 'backup-' . $entryFilename; ?>
                                 <?php $isChecked = in_array($entryFilename, $listRecords); ?>

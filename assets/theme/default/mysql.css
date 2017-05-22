@@ -17,7 +17,7 @@ div.mysql-query-string span {
 }
 
 ul.list-database,
-ul.list-database li {
+ul.list-database > li {
     display: inline-block;
     list-style: none;
     margin: 0;
@@ -99,8 +99,14 @@ ul.list-database > li span.icomoon {
     }
 }
 
-ul.list-database li.entry-odd {
-    width: 100%;
+@media all and (min-width: 780px) {
+    ul.list-database li.entry-odd {
+        width: 100%;
+    }
+
+    ul.list-database > li.entry-odd div.info {
+        right: 50% !important;
+    }
 }
 
 ul.list-database > li.back,
@@ -235,7 +241,7 @@ ul.list-database > li.type-table a.name,
 ul.list-database > li.type-column a.name,
 ul.list-database > li.type-backup-record a.name {
     display: inline-block;
-    max-width: 60%;
+    max-width: 50%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -262,6 +268,12 @@ ul.list-database > li.type-backup-record a.name {
 @media all and (max-width: 780px) {
     ul.list-database > li.type-database a.name {
         max-width: 95%;
+    }
+}
+
+@media all and (min-width: 780px) {
+    ul.list-database > li.entry-only-one a.name {
+        max-width: 30%;
     }
 }
 

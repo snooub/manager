@@ -51,8 +51,12 @@
                 <span><?php echo lng('mysql.list_column.alert.empty_list_column'); ?></span>
             </li>
         <?php } else { ?>
+            <?php $indexAssoc = 0; ?>
+
             <?php while ($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery)) { ?>
-                <li class="type-column">
+                <?php $indexAssoc++; ?>
+
+                <li class="type-column<?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($mysqlNums === 1) { ?> entry-only-one<?php } ?>">
                     <a href="#">
                         <span class="icomoon icon-column"></span>
                     </a>
