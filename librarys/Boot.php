@@ -68,6 +68,11 @@
             }
         }
 
+        public function sleepFixHeaderRedirectUrl()
+        {
+            sleep(env('app.sleep_time_redirect', 2));
+        }
+
         public function sessionInitializing()
         {
             $sessionStart = false;
@@ -98,14 +103,14 @@
 
         public function obBufferStart()
         {
-            header("Cache-Control: private, max-age=0, no-cache, no-store, must-revalidate");
-            header("Pragma: no-cache");
-            header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
-
             if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
                 @ob_start('ob_gzhandler');
             else
                 @ob_start();
+
+            header("Cache-Control: private, max-age=0, no-cache, no-store, must-revalidate");
+            header("Pragma: no-cache");
+            header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
         }
 
         public function obBufferClean()

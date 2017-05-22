@@ -11,7 +11,7 @@
         $appMysqlConfigWrite->setSpacing('    ');
 
         if ($appMysqlConfigWrite->write()) {
-            sleep(2);
+            $boot->sleepFixHeaderRedirectUrl();
             $appAlert->success(lng('mysql.home.alert.disconnect_success'), ALERT_MYSQL_HOME, 'index.php');
         }
     }

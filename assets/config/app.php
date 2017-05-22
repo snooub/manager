@@ -6,6 +6,8 @@
         ],
 
         'app' => [
+            'sleep_time_redirect' => 3,
+
             'dev' => [
                 'enable'       => true,
                 'compress_css' => true,
