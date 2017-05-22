@@ -25,7 +25,7 @@
         ],
 
         'alert' => [
-            'tips' => 'Để trống <strong>tên cơ sở dữ liệu</strong> để quản lý toàn bộ cơ sở dữ liệu',
+            'tips' => 'Để trống <strong>tên cơ sở dữ liệu</strong> để quản lý toàn bộ cơ sở dữ liệu, khi kết nối và ngắt kết nối sẽ chạy sleep 2 giây do trình duyệt cache trang',
 
             'not_input_mysql_host'     => 'Chưa nhập đường dẫn máy chủ',
             'not_input_mysql_username' => 'Chưa nhập tên người dùng',

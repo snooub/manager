@@ -64,12 +64,16 @@
                     if ($appMysqlConnect->openConnect(false)) {
                         $appMysqlConfig->set('mysql_is_connect', true);
 
-                        if ($appMysqlConfigWrite->write() == false)
+                        if ($appMysqlConfigWrite->write() == false) {
                             $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
-                        else if (empty($forms['mysql_name']))
-                            $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
-                        else
-                            $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
+                        } else {
+                            sleep(2);
+
+                            if (empty($forms['mysql_name']))
+                                $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+                            else
+                                $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
+                        }
                     } else {
                         $appAlert->danger(lng('mysql.home.alert.mysql_connect_failed', 'error', $appMysqlConnect->errorConnect()));
                     }

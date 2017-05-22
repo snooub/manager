@@ -10,8 +10,10 @@
         $appMysqlConfigWrite = new Librarys\App\Mysql\AppMysqlConfigWrite($appMysqlConfig);
         $appMysqlConfigWrite->setSpacing('    ');
 
-        if ($appMysqlConfigWrite->write())
+        if ($appMysqlConfigWrite->write()) {
+            sleep(2);
             $appAlert->success(lng('mysql.home.alert.disconnect_success'), ALERT_MYSQL_HOME, 'index.php');
+        }
     }
 
     $appAlert->success(lng('mysql.home.alert.disconnect_failed'), ALERT_MYSQL_HOME, 'list_database.php');
