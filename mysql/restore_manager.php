@@ -175,7 +175,7 @@
                                     <?php $countChecked++; ?>
                                 <?php } ?>
                             </div>
-                            <a href="restore_record.php<?php $appParameter->toString(); ?>" class="name">
+                            <a href="restore_record.php<?php echo $appParameter->toString(); ?>&<?php echo MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL; ?>=<?php echo AppDirectory::rawEncode($entryFilename); ?>" class="name">
                                 <span><?php echo $entryFilename; ?></span>
                             </a>
                             <div class="info">
