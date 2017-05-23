@@ -108,9 +108,11 @@
             else
                 @ob_start();
 
-            header("Cache-Control: private, max-age=0, no-cache, no-store, must-revalidate");
-            header("Pragma: no-cache");
-            header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
+            header('Cache-Control: private, max-age=0, no-cache, no-store, must-revalidate');
+            header('Pragma: no-cache');
+            header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s ', time()) . 'GMT');
+            header('Etag: "' . md5(time()) . '"');
         }
 
         public function obBufferClean()
