@@ -50,7 +50,7 @@
 
     <div class="form-action">
         <div class="title">
-            <span><?php echo lng('mysql.restore_record.title_page'); ?></span>
+            <span><?php echo lng('mysql.restore_record.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
         <form action="restore_record.php<?php echo $appParameter->toString(); ?>&<?php echo MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL; ?>=<?php echo AppDirectory::rawEncode($recordName); ?>" method="post" id="form-list-database-backup">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
@@ -77,6 +77,12 @@
             <a href="create_table.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-plus"></span>
                 <span><?php echo lng('mysql.home.menu_action.create_table'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="restore_upload.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-upload"></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_upload'); ?></span>
             </a>
         </li>
         <li>

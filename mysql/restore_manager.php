@@ -138,7 +138,7 @@
 
         <div class="form-action">
             <div class="title">
-                <span><?php echo $title; ?></span>
+                <span><?php echo $title; ?>: <?php echo $appMysqlConnect->getName(); ?></span>
             </div>
 
             <ul class="list-database no-box-shadow">
@@ -259,6 +259,12 @@
             <a href="create_table.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-plus"></span>
                 <span><?php echo lng('mysql.home.menu_action.create_table'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="restore_upload.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-upload"></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_upload'); ?></span>
             </a>
         </li>
         <li>

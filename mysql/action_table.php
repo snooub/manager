@@ -276,6 +276,12 @@
             </a>
         </li>
         <li>
+            <a href="restore_upload.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-upload"></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_upload'); ?></span>
+            </a>
+        </li>
+        <li>
             <a href="restore_manager.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-restore"></span>
                 <span><?php echo lng('mysql.home.menu_action.restore_manager', 'count', $databaseBackupRestore->getRestoreDatabaseRecordCount()); ?></span>

@@ -33,6 +33,7 @@
     define('ALERT_MYSQL_INFO_DATABASE',    'alert_mysql_info_database');
     define('ALERT_MYSQL_RESTORE_MANAGER',  'alert_mysql_restore_manager');
     define('ALERT_MYSQL_RESTORE_RECORD',   'alert_mysql_restore_record');
+    define('ALERT_MYSQL_RESTORE_UPLOAD',   'alert_mysql_restore_upload');
     define('ALERT_MYSQL_ACTION_TABLE',     'alert_mysql_action_table');
     define('ALERT_MYSQL_INFO_TABLE',       'alert_mysql_info_table');
     define('ALERT_MYSQL_CREATE_TABLE',     'alert_mysql_create_table');

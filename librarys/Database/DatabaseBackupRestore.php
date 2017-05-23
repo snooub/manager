@@ -21,6 +21,26 @@
             $this->databaseConnect = $databaseConnect;
         }
 
+        public function autoScanClean()
+        {
+            $directory = env('app.path.backup_mysql');
+
+            if (FileInfo::isTypeDirectory($directory) == false)
+                return false;
+
+            $handle = FileInfo::scanDirectory($directory);
+
+            if ($handle === false)
+                return false;
+
+            foreach ($handle AS $filename) {
+                $extFile = FileInfo::extFile($filename);
+
+                if (strcasecmp($extFile, self::MIME) !== 0)
+                    FileInfo::unlink(FileInfo::validate($directory . SP . $filename));
+            }
+        }
+
         public function setBackupFilename($filename)
         {
             $this->backupFilename = $filename;
@@ -167,7 +187,7 @@
 
         private function backupWrite()
         {
-            $directory = env('app.path.backup_mysql') . SP . $this->databaseConnect->getName();
+            $directory = env('app.path.backup_mysql');
 
             if (FileInfo::mkdir($directory, true) == false)
                 return false;
@@ -198,14 +218,24 @@
             return false;
         }
 
-        public function restore()
+        public function restore($pathCustom = null)
         {
-            $filename = $this->restoreFilename;
+            $filename = null;
+            $filepath = null;
+
+            if ($pathCustom)
+                $filename = basename($pathCustom);
+            else
+                $filename = $this->restoreFilename;
 
             if (empty($filename) || $filename == null)
                 return false;
 
-            $filepath = FileInfo::validate($this->getPathFileDatabaseBackup($filename));
+
+            if ($pathCustom)
+                $filepath = FileInfo::validate($pathCustom);
+            else
+                $filepath = FileInfo::validate($this->getPathFileDatabaseBackup($filename));
 
             if (FileInfo::isTypeFile($filepath) == false)
                 return false;
@@ -313,6 +343,11 @@
             }
 
             return $count;
+        }
+
+        public static function isFilenameValidate($filename)
+        {
+            return strcasecmp(FileInfo::extFile($filename), self::MIME) === 0;
         }
 
     }

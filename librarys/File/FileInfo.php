@@ -76,6 +76,26 @@
             return strpbrk($name, '\\/:*?"<>|') == false;
         }
 
+        public static function fileNameFix($name)
+        {
+            if ($name == null || self::isNameValidate($name))
+                return $name;
+
+            $chars = str_split($name, 1);
+
+            if (is_array($chars) == false)
+                return $name;
+
+            $buffer = null;
+
+            foreach ($chars AS $char) {
+                if (self::isNameValidate($name))
+                    $buffer .= $name;
+            }
+
+            return $name;
+        }
+
 		public static function extFile($file)
 		{
 			if ($file instanceof FileInfo)
@@ -323,6 +343,17 @@
             }
 
             return false;
+        }
+
+        public static function copyFile($old, $new)
+        {
+            if (self::isTypeDirectory($old))
+                return false;
+
+            if (self::fileExists($new))
+                return false;
+
+            return @copy($old, $new);
         }
 
         public static function curl($url, &$info = '', $ref = '', $cookie = '', $user_agent = '', $header = '')

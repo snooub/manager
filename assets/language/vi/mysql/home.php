@@ -48,6 +48,7 @@
 
         'menu_action' => [
             'create_table'    => 'Tạo bảng',
+            'restore_upload'  => 'Tải lên bản sao lưu',
             'restore_manager' => 'Quản lý sao lưu ({$count})',
             'list_table'      => 'Danh sách bảng',
             'list_database'   => 'Danh sách cơ sở dữ liệu',

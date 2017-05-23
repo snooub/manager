@@ -10,6 +10,8 @@
     use Librarys\App\Mysql\AppMysqlEngineStorage;
     use Librarys\App\Mysql\AppMysqlFieldKey;
 
+    use Librarys\Database\DatabaseBackupRestore;
+
     define('LOADED',               1);
     define('MYSQL_LIST_TABLE',     1);
     define('DATABASE_CHECK_MYSQL', 1);
@@ -144,6 +146,7 @@
 
     }
 
+    $databaseBackupRestore = new DatabaseBackupRestore($appMysqlConnect);
 ?>
 
     <?php echo $appAlert->display(); ?>
@@ -241,6 +244,18 @@
     </div>
 
     <ul class="menu-action">
+        <li>
+            <a href="restore_upload.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-upload"></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_upload'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="restore_manager.php<?php echo $appParameter->toString(); ?>">
+                <span class="icomoon icon-restore"></span>
+                <span><?php echo lng('mysql.home.menu_action.restore_manager', 'count', $databaseBackupRestore->getRestoreDatabaseRecordCount()); ?></span>
+            </a>
+        </li>
         <li>
             <a href="disconnect.php">
                 <span class="icomoon icon-cord"></span>
