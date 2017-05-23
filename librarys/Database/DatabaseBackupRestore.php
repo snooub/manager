@@ -12,6 +12,8 @@
         private $backupFilename;
         private $isBackupCreateFile;
 
+        private $restoreFilename;
+
         const MIME = 'sql';
 
         public function __construct(DatabaseConnect $databaseConnect)
@@ -22,6 +24,11 @@
         public function setBackupFilename($filename)
         {
             $this->backupFilename = $filename;
+        }
+
+        public function setRestoreFilename($filename)
+        {
+            $this->restoreFilename = $filename;
         }
 
         // Clone content in https://github.com/aniketan/backup-restore
@@ -191,6 +198,51 @@
             return false;
         }
 
+        public function restore()
+        {
+            $filename = $this->restoreFilename;
+
+            if (empty($filename) || $filename == null)
+                return false;
+
+            $filepath = FileInfo::validate($this->getPathFileDatabaseBackup($filename));
+
+            if (FileInfo::isTypeFile($filepath) == false)
+                return false;
+
+            $lines = file($filepath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+            if ($lines === false)
+                return false;
+
+            $buffer = '';
+
+            foreach ($lines as $line) {
+                // Skipping comments
+                if (substr(ltrim($line), 0, 2) == '--' || $line[0] == '#')
+                    continue;
+
+                // Skip empty lines
+                if (($line = trim($line)) == '') {
+                    continue;
+                }
+
+                // Multiline query
+                else if($line[strlen($line) - 1] != ";") {
+                    $buffer .= $line;
+                    continue;
+                } else if ($buffer) {
+                    $line = $buffer . $line;
+                    $buffer = '';
+                }
+
+                if ($this->databaseConnect->query($line) == false)
+                    return false;
+            }
+
+            return true;
+        }
+
         private function sqlBackquote($name)
         {
             if (empty($name) == false && $name !== '*') {
@@ -233,7 +285,7 @@
 
         public function getPathDirectoryDatabaseBackup()
         {
-            return env('app.path.backup_mysql') . SP . $this->databaseConnect->getName();
+            return env('app.path.backup_mysql');
         }
 
         public function getPathFileDatabaseBackup($filename = null)

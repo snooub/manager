@@ -30,6 +30,20 @@
         $recordName = AppDirectory::rawDecode($_GET[MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL]);
 
     $databaseBackupRestore = new DatabaseBackupRestore($appMysqlConnect);
+    $pathDatabaseBackup    = $databaseBackupRestore->getPathDirectoryDatabaseBackup();
+    $pathFileRecordBackup  = $databaseBackupRestore->getPathFileDatabaseBackup($recordName);
+
+    if (FileInfo::isTypeFile($pathFileRecordBackup) == false)
+        $appAlert->danger(lng('mysql.restore_record.alert.record_file_not_exists', 'name', $recordName), ALERT_MYSQL_RESTORE_MANAGER, 'restore_manager.php' . $appParameter->toString());
+
+    if (isset($_POST['restore'])) {
+        $databaseBackupRestore->setRestoreFilename($recordName);
+
+        if ($databaseBackupRestore->restore() == false)
+            $appAlert->danger(lng('mysql.restore_record.alert.restore_record_failed', 'name', $recordName), 'error', $appMysqlConnect->error());
+        else
+            $appAlert->success(lng('mysql.restore_record.alert.restore_record_success', 'name', $recordName), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+    }
 ?>
 
     <?php echo $appAlert->display(); ?>
@@ -38,7 +52,7 @@
         <div class="title">
             <span><?php echo lng('mysql.restore_record.title_page'); ?></span>
         </div>
-        <form action="restore_record.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database-backup">
+        <form action="restore_record.php<?php echo $appParameter->toString(); ?>&<?php echo MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL; ?>=<?php echo AppDirectory::rawEncode($recordName); ?>" method="post" id="form-list-database-backup">
             <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
 
             <ul class="form-element">
