@@ -25,9 +25,20 @@
 
         public function execute()
         {
+            $requestScheme = 'http';
+
+            // If server using reverce proxy
+            if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp(trim($_SERVER['HTTP_X_FORWARDED_PROTO']), 'https') === 0) {
+                $requestScheme = 'https';
+            } else if (isset($_SERVER['HTTP_HTTPS'])) {
+                $httpHttps = trim($_SERVER['HTTP_HTTPS']);
+
+                if (strcasecmp($httpHttps, 'on') === 0 || strcasecmp($httpHttps, '1') || $httpHttps == true)
+                    $requestScheme = 'https';
+            }
             $this->cache('server.document_root',  env('SERVER.DOCUMENT_ROOT',  dirname(__DIR__)));
-            $this->cache('server.request_scheme', env('SERVER.REQUEST_SCHEME', 'http'));
-            $this->cache('server.http_host',      env('server.request_scheme', 'http') . '://' . env('SERVER.HTTP_HOST', '/'));
+            $this->cache('server.request_scheme', $requestScheme);
+            $this->cache('server.http_host',      env('server.request_scheme', $requestScheme) . '://' . env('SERVER.HTTP_HOST', '/'));
 
             $this->cache('dev.enable', false);
             $this->cache('dev.rand',   intval($_SERVER['REQUEST_TIME']));
