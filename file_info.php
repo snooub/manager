@@ -38,6 +38,8 @@
     $themes = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_FILE_INFO);
     require_once('incfiles' . SP . 'header.php');
+bug(posix_getpwuid(filegroup($fileInfo->getFilePath())));
+bug(posix_getpwuid(fileowner($fileInfo->getFilePath())));
 ?>
 
     <?php $appAlert->display(); ?>
