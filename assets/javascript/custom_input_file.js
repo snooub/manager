@@ -42,15 +42,7 @@ var CustomInputFile = {
         return true;
     },
 
-    setAttribute: function(element, name, value) {
-        var attr = CustomInputFile.getAttribute(element, name);
-
-        if (attr == null || typeof attr === "undefined")
-            return;
-
-        if (name.toLowerCase() === "name" && element.type && element.type.toLowerCase() === "file")
-            return;
-
+    setAttribute: function(element, name, value, checkExists) {
         if (element.setAttribute)
             element.setAttribute(name, value);
         else if (element.setAttributeNode)
@@ -64,15 +56,18 @@ var CustomInputFile = {
             element.removeAttributeNode(name);
     },
 
-    replaceAttributeName: function(childNodes, name, value) {
+    replaceAttributeName: function(childNodes, tag, name, value) {
         if (childNodes == null || typeof childNodes === "undefined")
             return;
 
         for (var i = 0; i < childNodes.length; ++i) {
             var child = childNodes[i];
+            var nodeName = child.nodeName.toLowerCase();
 
-            CustomInputFile.setAttribute(child, name, value);
-            CustomInputFile.replaceAttributeName(child.childNodes);
+            if (nodeName === tag) {
+                CustomInputFile.setAttribute(child, name, value);
+                CustomInputFile.replaceAttributeName(child.childNodes, tag, name, value);
+            }
         }
     },
 
@@ -106,9 +101,10 @@ var CustomInputFile = {
                 var input    = inputFileClone[i];
                 var inputNew = document.createElement("input");
 
-                inputNew.setAttribute("type", CustomInputFile.getAttribute(input, "type"));
-                inputNew.setAttribute("name", CustomInputFile.getAttribute(input, "name"));
-                inputNew.setAttribute("id",   CustomInputFile.getAttribute(input, "id"));
+                CustomInputFile.setAttribute(inputNew, "type", CustomInputFile.getAttribute(input, "type"));
+                CustomInputFile.setAttribute(inputNew, "name", CustomInputFile.getAttribute(input, "name"));
+                CustomInputFile.setAttribute(inputNew, "id",   CustomInputFile.getAttribute(input, "id"));
+
                 elementClone.replaceChild(inputNew, input);
             }
 
@@ -139,9 +135,8 @@ var CustomInputFile = {
             var valueIndexCurrent = namePrefix + (indexCurrentTemplate + 1);
 
             CustomInputFile.setAttribute(elementClone, "name", valueIndexCurrent);
-            CustomInputFile.replaceAttributeName(elementClone.childNodes, "name", valueIndexCurrent);
-            CustomInputFile.replaceAttributeName(elementClone.childNodes, "id",   valueIndexCurrent);
-            CustomInputFile.replaceAttributeName(elementClone.childNodes, "for",  valueIndexCurrent);
+            CustomInputFile.replaceAttributeName(elementClone.childNodes, "input", "id",   valueIndexCurrent);
+            CustomInputFile.replaceAttributeName(elementClone.childNodes, "label", "for",  valueIndexCurrent);
         }
 
         CustomInputFile.removeAttribute(elementTemplate, "id");

@@ -17,7 +17,7 @@
 
     $title   = lng('import.title_page');
     $themes  = [ env('resource.theme.file') ];
-    $scripts = [ env('resource.javascript.custom_input_file') ];
+    $scripts = [ env('resource.javascript.more_input_url') ];
     $appAlert->setID(ALERT_IMPORT);
     require_once('incfiles' . SP . 'header.php');
 
@@ -34,14 +34,31 @@
     $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
 
     $forms = [
-        'files'       => null,
+        'urls'        => null,
         'is_empty'    => true,
         'urls_count'  => 0,
         'exists_func' => EXISTS_FUNC_OVERRIDE
     ];
 
+    if (isset($_POST['import'])) {
+        $forms['exists_func'] = intval($_POST['exists_func']);
+
+        if (isset($_POST['urls']) == false || is_array($_POST['urls']) == false) {
+            $appAlert->danger(lng('import.alert.data_empty_or_not_validate'));
+        } else {
+            $forms['is_empty']   = true;
+            $forms['urls_count'] = count($_POST['urls']);
+
+            foreach ($_POST['urls'] AS $index => $url) {
+                if (empty($url) == false)
+                    $forms['is_empty'] = false;
+            }
+bug($_POST);
+        }
+    }
+
     if ($forms['urls_count'] <= 0)
-        $forms['urls_count']++;
+        $forms['urls_count'] = 1;
 ?>
 
     <?php $appAlert->display(); ?>
@@ -57,7 +74,7 @@
             <ul class="form-element">
                 <?php for ($i = 0; $i < $forms['urls_count']; ++$i) { ?>
                     <li class="input"<?php if ($i === $forms['urls_count'] - 1) { ?> id="template-input-url"<?php } ?> name="url_<?php echo $i; ?>">
-                        <input type="text" name="urls[]"/>
+                        <input type="text" name="urls[]" value="<?php if ($forms['urls'] != null && isset($forms['urls'][$i])) echo $forms['urls'][$i]; ?>" placeholder="<?php echo lng('import.form.placeholder.input_url'); ?>"/>
                     </li>
                 <?php } ?>
 
@@ -66,29 +83,29 @@
                         <li>
                             <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_OVERRIDE; ?>" id="exists_func_override"<?php if ($forms['exists_func'] === EXISTS_FUNC_OVERRIDE) { ?> checked="checked"<?php } ?>/>
                             <label for="exists_func_override">
-                                <span><?php echo lng('upload.form.input.exists_func_override'); ?></span>
+                                <span><?php echo lng('import.form.input.exists_func_override'); ?></span>
                             </label>
                         </li>
                         <li>
                             <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_SKIP; ?>" id="exists_func_skip"<?php if ($forms['exists_func'] === EXISTS_FUNC_SKIP) { ?> checked="checked"<?php } ?>/>
                             <label for="exists_func_skip">
-                                <span><?php echo lng('upload.form.input.exists_func_skip'); ?></span>
+                                <span><?php echo lng('import.form.input.exists_func_skip'); ?></span>
                             </label>
                         </li>
                         <li>
                             <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_RENAME; ?>" id="exists_func_rename"<?php if ($forms['exists_func'] == EXISTS_FUNC_RENAME) { ?> checked="checked"<?php } ?>/>
                             <label for="exists_func_rename">
-                                <span><?php echo lng('upload.form.input.exists_func_rename'); ?></span>
+                                <span><?php echo lng('import.form.input.exists_func_rename'); ?></span>
                             </label>
                         </li>
                     </ul>
                 </li>
 
                 <li class="button">
-                    <button type="button" onclick="javascript:onAddMoreInputFile('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');" id="button-save-on-javascript">
+                    <button type="button" onclick="javascript:MoreInputUrl.onAddMoreInputUrl('template-input-url', 'url_');">
                         <span><?php echo lng('import.form.button.more'); ?></span>
                     </button>
-                    <button type="submit" name="upload">
+                    <button type="submit" name="import" id="button-save-on-javascript">
                         <span><?php echo lng('import.form.button.import'); ?></span>
                     </button>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">
