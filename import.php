@@ -52,9 +52,13 @@
             foreach ($_POST['urls'] AS $index => $url) {
                 if (empty($url) == false)
                     $forms['is_empty'] = false;
+                else
+                    $forms['urls'][$i] = addslashes($_POST['urls'][$i]);
             }
 bug($_POST);
         }
+
+        $forms['urls'] = stripslashesArray($forms['urls']);
     }
 
     if ($forms['urls_count'] <= 0)
@@ -74,7 +78,7 @@ bug($_POST);
             <ul class="form-element">
                 <?php for ($i = 0; $i < $forms['urls_count']; ++$i) { ?>
                     <li class="input"<?php if ($i === $forms['urls_count'] - 1) { ?> id="template-input-url"<?php } ?> name="url_<?php echo $i; ?>">
-                        <input type="text" name="urls[]" value="<?php if ($forms['urls'] != null && isset($forms['urls'][$i])) echo $forms['urls'][$i]; ?>" placeholder="<?php echo lng('import.form.placeholder.input_url'); ?>"/>
+                        <input type="text" name="urls[]" value="<?php if ($forms['urls'] != null && isset($forms['urls'][$i])) echo htmlspecialchars($forms['urls'][$i]); ?>" placeholder="<?php echo lng('import.form.placeholder.input_url'); ?>"/>
                     </li>
                 <?php } ?>
 
