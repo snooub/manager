@@ -750,6 +750,16 @@
             return @filemtime($path);
         }
 
+        public static function fileOwner($path)
+        {
+            return @fileowner($path);
+        }
+
+        public static function fileGroup($path)
+        {
+            return @filegroup($path);
+        }
+
 	}
 
 ?>

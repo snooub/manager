@@ -38,8 +38,24 @@
     $themes = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_FILE_INFO);
     require_once('incfiles' . SP . 'header.php');
-bug(posix_getpwuid(filegroup($fileInfo->getFilePath())));
-bug(posix_getpwuid(fileowner($fileInfo->getFilePath())));
+
+    $chownOwner = null;
+    $chownGroup = null;
+
+    if(function_exists('posix_getpwuid')) {
+        $chownOwner = posix_getpwuid(FileInfo::fileOwner($fileInfo->getFilePath()));
+        $chownGroup = posix_getpwuid(FileInfo::fileGroup($fileInfo->getFilePath()));
+
+        if (is_array($chownOwner) && isset($chownOwner['name']))
+            $chownOwner = trim($chownOwner['name']);
+        else
+            $chownOwner = null;
+
+        if (is_array($chownGroup) && isset($chownGroup['name']))
+            $chownGroup = trim($chownGroup['name']);
+        else
+            $chownGroup = null;
+    }
 ?>
 
     <?php $appAlert->display(); ?>
@@ -88,6 +104,8 @@ bug(posix_getpwuid(fileowner($fileInfo->getFilePath())));
                     <li><span><?php echo lng('file_info.label_image_size'); ?></span></li>
                 <?php } ?>
                 <li><span><?php echo lng('file_info.label_chmod'); ?></span></li>
+                <li><span><?php echo lng('file_info.label_chown_owner'); ?></span></li>
+                <li><span><?php echo lng('file_info.label_chown_group'); ?></span></li>
                 <li><span><?php echo lng('file_info.label_time_modify'); ?></span></li>
             </ul>
         </li>
@@ -117,6 +135,20 @@ bug(posix_getpwuid(fileowner($fileInfo->getFilePath())));
                 <?php } ?>
                 <li>
                     <span><?php echo FileInfo::getChmodPermission($fileInfo->getFilePath()); ?></span>
+                </li>
+                <li>
+                    <?php if ($chownOwner == null) { ?>
+                        <span><?php echo lng('file_info.chown_unknown'); ?></span>
+                    <?php } else { ?>
+                        <span><?php echo $chownOwner; ?></span>
+                    <?php } ?>
+                </li>
+                <li>
+                    <?php if ($chownGroup == null) { ?>
+                        <span><?php echo lng('file_info.chown_unknown'); ?></span>
+                    <?php } else { ?>
+                        <span><?php echo $chownGroup; ?></span>
+                    <?php } ?>
                 </li>
                 <li>
                     <span><?php echo date('H:i - d.m.Y', filemtime($fileInfo->getFilePath())); ?></span>

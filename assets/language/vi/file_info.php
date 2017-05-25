@@ -9,12 +9,15 @@
         'label_size'        => 'Kích thước:',
         'label_image_size'  => 'Độ phân giải:',
         'label_chmod'       => 'Phân quyền:',
+        'label_chown_owner' => 'Người sở hữu:',
+        'label_chown_group' => 'Nhóm sở hữu:',
         'label_time_modify' => 'Ngày sửa:',
 
         'value_image_size_split' => 'x',
 
         'format_directory' => 'Thư mục',
         'format_unknown'   => 'Không rõ',
+        'chown_unknown'    => 'Không rõ',
 
         'menu_action' => [
             'info'           => 'Thông tin',
