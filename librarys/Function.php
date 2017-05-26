@@ -239,4 +239,18 @@
         return $array;
     }
 
+    function addPrefixHttpURL($url, $prefix = 'http://');
+    {
+        $posHttp  = stripos($url, 'http://');
+        $posHttps = stripos($url, 'https://');
+
+        if ($posHttp === 0 || $posHttps === 0)
+            return $url;
+
+        if ($prefix == null || empty($prefix))
+            $prefix = 'http://';
+
+        return $prefix . $url;
+    }
+
 ?>
