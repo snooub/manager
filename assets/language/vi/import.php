@@ -28,7 +28,7 @@
         'alert' => [
             'tips'                         => 'Để trống tên tập tin cho đường dẫn hệ thống sẽ tự động đặt tên',
             'data_empty_or_not_validate'   => 'Dữ liệu trống hoặc không hợp lệ',
-            'url_import_not_validate'      => 'Đường dẫn không hợp lệ',
+            'url_import_not_validate'      => 'Đường dẫn <strong>{$url}</strong> không hợp lệ',
             'name_url_import_not_validate' => 'Tên tập tin <strong>{$name}</strong> không hợp lệ',
             'not_input_urls'               => 'Chưa nhập đường dẫn nào'
         ]

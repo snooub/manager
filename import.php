@@ -4,6 +4,7 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\AppURLCurl;
 
     define('LOADED',               1);
     define('EXISTS_FUNC_OVERRIDE', 1);
@@ -58,7 +59,7 @@
 
                     if (isValidateURL($forms['urls'][$index]) == false) {
                         $isFailed = true;
-                        $appAlert->danger(lng('import.alert.url_import_not_validate'));
+                        $appAlert->danger(lng('import.alert.url_import_not_validate', 'url', $url));
                     }
                 }
 
@@ -73,7 +74,24 @@
             if ($forms['is_empty']) {
                 $appAlert->danger(lng('import.alert.not_input_urls'));
             } else if ($isFailed == false) {
+                for ($i = 0; $i < $forms['urls_count']; ++$i) {
+                    $url      = null;
+                    $filename = null;
 
+                    if (isset($forms['urls'][$i]))
+                        $url = $forms['urls'][$i];
+
+                    if ($url != null) {
+                        if (isset($forms['filenames'][$i]))
+                            $filename = $forms['filenames'][$i];
+
+                        if (empty($filename))
+                            $filename = baseNameURL($url);
+
+                        $curl = new AppURLCurl($url);
+                        $curl->curl();
+                    }
+                }
             }
         }
 
