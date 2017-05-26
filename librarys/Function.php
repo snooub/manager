@@ -258,4 +258,14 @@
         return $prefix . $url;
     }
 
+    function baseNameURL($url)
+    {
+        $parseURLPath = @parse_url($url, PHP_URL_PATH);
+
+        if ($parseURLPath === false)
+            return $url;
+
+        return basename($parseURLPath);
+    }
+
 ?>
