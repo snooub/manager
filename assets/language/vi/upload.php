@@ -19,7 +19,7 @@
         ],
 
         'alert' => [
-            'data_empty_or_not_validate'                  => 'Dữ liệu không trống hoặc không hợp lệ',
+            'data_empty_or_not_validate'                  => 'Dữ liệu trống hoặc không hợp lệ',
             'not_choose_file'                             => 'Chưa chọn tập tin nào cả',
             'file_is_exists'                              => 'Tập tin <strong>{$filename}</strong> đã tồn tại',
             'file_error_max_size'                         => 'Tập tin <strong>{$filename}</strong> vượt quá kích thước',
