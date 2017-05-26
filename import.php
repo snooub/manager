@@ -35,6 +35,7 @@
 
     $forms = [
         'urls'        => null,
+        'filenames'   => null,
         'is_empty'    => true,
         'urls_count'  => 0,
         'exists_func' => EXISTS_FUNC_OVERRIDE
@@ -50,12 +51,17 @@
             $forms['urls_count'] = count($_POST['urls']);
 
             foreach ($_POST['urls'] AS $index => $url) {
-                if (empty($url) == false)
+                if (empty($url) == false) {
                     $forms['is_empty'] = false;
-                else
-                    $forms['urls'][$i] = addslashes($_POST['urls'][$i]);
+                    $forms['urls'][$index] = addslashes($_POST['urls'][$index]);
+                }
             }
-bug($_POST);
+
+            if ($forms['is_empty']) {
+                $appAlert->danger(lng('import.alert.not_input_urls'));
+            } else {
+
+            }
         }
 
         $forms['urls'] = stripslashesArray($forms['urls']);
@@ -78,7 +84,9 @@ bug($_POST);
             <ul class="form-element">
                 <?php for ($i = 0; $i < $forms['urls_count']; ++$i) { ?>
                     <li class="input"<?php if ($i === $forms['urls_count'] - 1) { ?> id="template-input-url"<?php } ?> name="url_<?php echo $i; ?>">
+                        <span><?php echo lng('import.form.input.label_import', 'count', $i + 1); ?></span>
                         <input type="text" name="urls[]" value="<?php if ($forms['urls'] != null && isset($forms['urls'][$i])) echo htmlspecialchars($forms['urls'][$i]); ?>" placeholder="<?php echo lng('import.form.placeholder.input_url'); ?>"/>
+                        <input type="text" name="filenames[]" value="<?php if ($forms['filenames'] != null && isset($forms['filenames'][$i])) echo htmlspecialchars($forms['filenames'][$i]); ?>" placeholder="<?php echo lng('import.form.placeholder.input_filename'); ?>"/>
                     </li>
                 <?php } ?>
 
