@@ -870,11 +870,11 @@ div.form-action ul.form-element > li.paging {
     padding: 0;
 }
 
-div.form-action ul.form-element > li.input span,
-div.form-action ul.form-element > li.input input,
-div.form-action ul.form-element > li.textarea span,
-div.form-action ul.form-element > li.textarea textarea,
-div.form-action ul.form-element > li.select select {
+div.form-action ul.form-element > li.input > span,
+div.form-action ul.form-element > li.input > input,
+div.form-action ul.form-element > li.textarea > span,
+div.form-action ul.form-element > li.textarea > textarea,
+div.form-action ul.form-element > li.select > select {
     display: block;
 }
 
