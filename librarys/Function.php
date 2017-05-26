@@ -67,12 +67,8 @@
 
     function urlSeparatorMatches($str)
     {
-        if (function_exists('filter_var')) {
-            if (filter_var($str, FILTER_VALIDATE_URL))
-                return separator($str, '/');
-        } else if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $str)) {
-            return separator($str, '/');
-        }
+        if (isValidateIP($str))
+            $str = separator($str, '/');
 
         return $str;
     }
@@ -130,6 +126,17 @@
         return false;
     }
 
+    function isValidateURL($url)
+    {
+        if (function_exists('filter_var')) {
+            if (filter_var($str, FILTER_VALIDATE_URL))
+                return true;
+        } else if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $str)) {
+            return true;
+        }
+
+        return false;
+    }
 
     function bug($var)
     {
