@@ -47,6 +47,7 @@
         if (isset($_POST['urls']) == false || is_array($_POST['urls']) == false) {
             $appAlert->danger(lng('import.alert.data_empty_or_not_validate'));
         } else {
+            $isFailed            = false;
             $forms['is_empty']   = true;
             $forms['urls_count'] = count($_POST['urls']);
 
@@ -54,17 +55,30 @@
                 if (empty($url) == false) {
                     $forms['is_empty'] = false;
                     $forms['urls'][$index] = addslashes($_POST['urls'][$index]);
+
+                    if (isValidateURL($forms['urls'][$index]) == false) {
+                        $isFailed = true;
+                        $appAlert->danger(lng('import.alert.url_import_not_validate'));
+                    }
+                }
+
+                if (isset($_POST['filenames'][$index]) && empty($_POST['filenames'][$index]) == false) {
+                    $forms['filenames'][$index] = addslashes($_POST['filenames'][$index]);
+
+                    if ($isFailed == false && empty($url) == false && empty($forms['filenames'][$index]) == false && FileInfo::isNameValidate($forms['filenames'][$index]) == false)
+                        $appAlert->danger(lng('import.alert.name_url_import_not_validate', 'name', $forms['filenames'][$index]));
                 }
             }
 
             if ($forms['is_empty']) {
                 $appAlert->danger(lng('import.alert.not_input_urls'));
-            } else {
+            } else if ($isFailed == false) {
 
             }
         }
 
-        $forms['urls'] = stripslashesArray($forms['urls']);
+        $forms['urls']      = stripslashesArray($forms['urls']);
+        $forms['filenames'] = stripslashesArray($forms['filenames']);
     }
 
     if ($forms['urls_count'] <= 0)
@@ -114,7 +128,7 @@
                 </li>
 
                 <li class="button">
-                    <button type="button" onclick="javascript:MoreInputUrl.onAddMoreInputUrl('template-input-url', 'url_');">
+                    <button type="button" onclick="javascript:MoreInputUrl.onAddMoreInputUrl('template-input-url', 'url_', 'label_index');">
                         <span><?php echo lng('import.form.button.more'); ?></span>
                     </button>
                     <button type="submit" name="import" id="button-save-on-javascript">
@@ -127,6 +141,12 @@
             </ul>
         </form>
     </div>
+
+    <ul class="alert">
+        <li class="info">
+            <span><?php echo lng('import.alert.tips'); ?></span>
+        </li>
+    </ul>
 
     <ul class="menu-action">
         <li>

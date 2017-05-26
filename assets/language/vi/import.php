@@ -5,7 +5,7 @@
 
         'form' => [
             'input' => [
-                'label_import'         => 'Nhập khẩu <span id="label_count">{$count}</span>:',
+                'label_import'         => 'Nhập khẩu:',
                 'url'                  => 'Đường dẫn nhập khẩu:',
                 'filename'             => 'Tên tập tin cho đường dẫn:',
                 'exists_func_override' => 'Ghi đè',
@@ -26,8 +26,11 @@
         ],
 
         'alert' => [
-            'data_empty_or_not_validate' => 'Dữ liệu trống hoặc không hợp lệ',
-            'not_input_urls'             => 'Chưa nhập đường dẫn nào'
+            'tips'                         => 'Để trống tên tập tin cho đường dẫn hệ thống sẽ tự động đặt tên',
+            'data_empty_or_not_validate'   => 'Dữ liệu trống hoặc không hợp lệ',
+            'url_import_not_validate'      => 'Đường dẫn không hợp lệ',
+            'name_url_import_not_validate' => 'Tên tập tin <strong>{$name}</strong> không hợp lệ',
+            'not_input_urls'               => 'Chưa nhập đường dẫn nào'
         ]
     ];
 
