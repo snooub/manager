@@ -128,6 +128,11 @@
 
     function isValidateURL($url)
     {
+        if (empty($url) || empty($url))
+            return false;
+
+        $url = addPrefixHttpURL($url);
+
         if (function_exists('filter_var')) {
             if (filter_var($str, FILTER_VALIDATE_URL))
                 return true;
