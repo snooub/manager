@@ -5,7 +5,8 @@
 
         'form' => [
             'input' => [
-                'choose_file' => 'Chọn tập tin...',
+                'choose_file'          => 'Chọn tập tin...',
+                'label_exists_func'    => 'Chế độ ghi đè khi có tập tin đã tồn tại',
                 'exists_func_override' => 'Ghi đè',
                 'exists_func_skip'     => 'Bỏ qua',
                 'exists_func_rename'   => 'Đổi tên'
@@ -21,9 +22,10 @@
         'alert' => [
             'data_empty_or_not_validate'                  => 'Dữ liệu trống hoặc không hợp lệ',
             'not_choose_file'                             => 'Chưa chọn tập tin nào cả',
+            'exists_func_not_validate'                    => 'Chế độ ghi đè khi có tập tin đã tồn tại không hợp lệ',
             'file_is_exists'                              => 'Tập tin <strong>{$filename}</strong> đã tồn tại',
             'file_error_max_size'                         => 'Tập tin <strong>{$filename}</strong> vượt quá kích thước',
-            'path_file_error_is_directory'                => 'Thư mục tải lên đã chứa một thư mục với tên tập tin <strong>{$filname}</strong> không thể ghi đè',
+            'path_file_error_is_directory'                => 'Thư mục tải lên đã chứa một thư mục với tên này <strong>{$filname}</strong> không thể ghi đè',
             'path_file_is_exists_and_skip'                => 'Thư mục tải lên đã tồn tại một tập tin <strong>{$filename}</strong>, đã bỏ qua tập tin này',
             'error_delete_file_exists'                    => 'lng{upload.alert.file_is_exists}, xóa thất bại để ghi đè',
             'upload_file_exists_override_is_failed'       => 'lng{upload.alert.file_is_exists}, tải lên và ghi đè thất bại',

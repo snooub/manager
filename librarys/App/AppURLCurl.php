@@ -136,6 +136,11 @@
             return $this->buffer;
         }
 
+        public function getBufferLength()
+        {
+            return strlen($this->buffer);
+        }
+
         public function getHttpCode()
         {
             return $this->httpCode;

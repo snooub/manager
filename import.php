@@ -96,24 +96,72 @@
                         if (empty($filename))
                             $filename = baseNameURL($url);
 
-                        $curl = new AppURLCurl($url);
-                        $curl->setUseCurl($forms['mode_import'] === MODE_IMPORT_CURL);
+                        $fileWritePath        = FileInfo::validate($appDirectory->getDirectory() . SP . $filename);
+                        $fileWriteIsDirectory = FileInfo::isTypeDirectory($fileWritePath);
+                        $fileWriteIsFile      = FileInfo::isTypeFile($fileWritePath);
 
-                        if ($curl->curl() == false) {
-                            $errorInt = $curl->getErrorInt();
-
-                            if ($errorInt === AppURLCurl::ERROR_URL_NOT_FOUND)
-                                $appAlert->danger(lng('import.alert.address_not_found', 'url', $url));
-                            else if ($errorInt === AppURLCurl::ERROR_NOT_FOUND)
-                                $appAlert->danger(lng('import.alert.file_not_found', 'url', $url));
-                            else if ($errorInt === AppURLCurl::ERROR_AUTO_REDIRECT)
-                                $appAlert->danger(lng('import.alert.auto_redirect_url_failed', 'url', $url));
-                            else if ($errorInt === AppURLCurl::ERROR_CONNECT_FAILED)
-                                $appAlert->danger(lng('import.alert.connect_url_failed', 'url', $url));
-                            else
-                                $appAlert->danger(lng('import.alert.error_unknown', 'url', $url));
+                        if ($fileWriteIsDirectory && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
+                            $appAlert->danger(lng('import.alert.path_file_error_is_directory', 'filename', $filename));
+                        } else if ($fileWriteIsFile && $forms['exists_func'] === EXISTS_FUNC_SKIP) {
+                            $appAlert->info(lng('import.alert.path_file_is_exists_and_skip', 'filename', $filename));
                         } else {
+                            $curl = new AppURLCurl($url);
+                            $curl->setUseCurl($forms['mode_import'] === MODE_IMPORT_CURL);
 
+                            if ($curl->curl() == false) {
+                                $errorInt = $curl->getErrorInt();
+
+                                if ($errorInt === AppURLCurl::ERROR_URL_NOT_FOUND)
+                                    $appAlert->danger(lng('import.alert.address_not_found', 'url', $url));
+                                else if ($errorInt === AppURLCurl::ERROR_NOT_FOUND)
+                                    $appAlert->danger(lng('import.alert.file_not_found', 'url', $url));
+                                else if ($errorInt === AppURLCurl::ERROR_AUTO_REDIRECT)
+                                    $appAlert->danger(lng('import.alert.auto_redirect_url_failed', 'url', $url));
+                                else if ($errorInt === AppURLCurl::ERROR_CONNECT_FAILED)
+                                    $appAlert->danger(lng('import.alert.connect_url_failed', 'url', $url));
+                                else
+                                    $appAlert->danger(lng('import.alert.error_unknown', 'url', $url));
+                            } else {
+                                $fileSizeStr = FileInfo::sizeToString($curl->getBufferLength());
+
+                                if ($fileWriteIsFile && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
+                                    if (FileInfo::unlink($fileWritePath)) {
+
+                                        if (FileInfo::fileWriteContents($fileWritePath, $curl->getBuffer()) == true)
+                                            $appAlert->success(lng('import.alert.import_file_exists_override_is_success', 'filename', $filename, 'size', $fileSizeStr));
+                                        else
+                                            $appAlert->danger(lng('import.alert.import_file_exists_override_is_failed', 'filename', $filename));
+                                    } else {
+                                        $appAlert->danger(lng('import.alert.error_delete_file_exists', 'filename', $filename));
+                                    }
+                                } else if ($isFile && $forms['exists_func'] === EXISTS_FUNC_RENAME) {
+                                    $fileRename = null;
+                                    $pathRename = null;
+
+                                    for ($i = 0; $i < 50; ++$i) {
+                                        $fileRename = rand(10000, 99999) . '_' . $filename;
+                                        $pathRename = FileInfo::validate($appDirectory->getDirectory() . SP . $fileRename);
+
+                                        if (FileInfo::fileExists($pathRename) == false) {
+                                            break;
+                                        } else {
+                                            $fileRename = null;
+                                            $pathRename = null;
+                                        }
+                                    }
+
+                                    if ($fileRename == null || $pathRename == null)
+                                        $appAlert->danger(lng('import.alert.create_new_filename_exists_rename_is_failed', 'filename', $filename));
+                                    else if (FileInfo::fileWriteContents($pathRename, $curl->getBuffer()))
+                                        $appAlert->success(lng('import.alert.import_file_exists_rename_is_success', 'filename', $fileRename, 'size', $fileSizeStr));
+                                    else
+                                        $appAlert->danger(lng('import.alert.import_file_exists_rename_is_failed', 'filename', $fileRename));
+                                } else if ($fileWriteIsFile || FileInfo::fileWriteContents($fileWritePath, $curl->getBuffer()) == false) {
+                                    $appAlert->danger(lng('import.alert.import_file_is_failed', 'filename', $filename));
+                                } else {
+                                    $appAlert->success(lng('import.alert.import_file_is_success', 'filename', $filename, 'size', $fileSizeStr));
+                                }
+                            }
                         }
                     }
                 }
