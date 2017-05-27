@@ -134,7 +134,7 @@
                                     } else {
                                         $appAlert->danger(lng('import.alert.error_delete_file_exists', 'filename', $filename));
                                     }
-                                } else if ($isFile && $forms['exists_func'] === EXISTS_FUNC_RENAME) {
+                                } else if ($fileWriteIsFile && $forms['exists_func'] === EXISTS_FUNC_RENAME) {
                                     $fileRename = null;
                                     $pathRename = null;
 
