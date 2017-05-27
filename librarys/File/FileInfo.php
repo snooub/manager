@@ -590,6 +590,11 @@
             return @fopen($path, $mode);
         }
 
+        public static function fileSockOpen($host, $port = -1, &$errno = null, &$errstr = null, $timeout = 30)
+        {
+            return @fsockopen($host, $port, $errno, $errstr, $timeout);
+        }
+
         public static function fileClose($handle)
         {
             return @fclose($handle);
@@ -654,6 +659,11 @@
             }
 
             return false;
+        }
+
+        public static function fileGetsLine($handle, $length = 1024)
+        {
+            return @fgets($handle, $length);
         }
 
         public static function fileMTime($path)

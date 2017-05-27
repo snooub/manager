@@ -2,6 +2,8 @@
 
     namespace Librarys\App;
 
+    use Librarys\File\FileInfo;
+
     final class AppURLCurl
     {
 
@@ -24,6 +26,7 @@
         private $hostInfo;
         private $pathInfo;
         private $linkInfo;
+        private $sslInfo;
         private $portInfo;
 
         const USER_AGENT_DEFAULT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36';
@@ -38,6 +41,7 @@
 
         public function __construct($url)
         {
+            $this->makeRandIP();
             $this->setURL($url);
             $this->setTimeout(self::TIME_OUT_DEFAULT);
             $this->setAutoRedirect(self::AUTO_REDIRECT_AUTO);
@@ -46,7 +50,7 @@
 
         public function setURL($url)
         {
-            $this->url = $url;
+            $this->url = addPrefixHttpURL($url);
         }
 
         public function getURL()
@@ -116,9 +120,9 @@
 
         public function setUseCurl($isUse)
         {
-            if ($isUse && function_exists('curl_init'))
-                $this->isUseCurl = true;
-            else
+            // if ($isUse && function_exists('curl_init'))
+            //     $this->isUseCurl = true;
+            // else
                 $this->isUseCurl = false;
         }
 
@@ -127,7 +131,6 @@
             $this->buffer = null;
             $result       = true;
 
-            $this->makeRandIP();
             $this->parseURL();
             $this->makeHeaders();
 
@@ -139,11 +142,13 @@
             if ($result == false)
                 return false;
 
-            if ($this->httpCode !== 200)
+            if ($this->buffer === null || empty($this->buffer))
                 return false;
 
             if (self::matchLinkMediaFire($this->url))
-                $this->receiverLinkMediaFire();
+                return $this->receiverLinkMediaFire();
+
+            return true;
         }
 
         private function makeRandIP()
@@ -162,19 +167,28 @@
                 $path = $matches['path'];
                 $pos  = strpos($path, '/');
 
-                if ($pos !== false && $pos !== 0) {
+                if ($pos !== false && $pos !== 0)
                     $matches['host'] = substr($path, 0, $pos);
-
-                    if (isset($matches['query']) == false)
-                        $matches['path'] = '/' . baseNameURL($path);
-                } else {
+                else
                     $matches['host'] = $path;
-                }
             }
+
+            $indexNextSeparator = 0;
+
+            if (stripos($this->url, 'http://') === 0)
+                $indexNextSeparator = 7;
+            else if (stripos($this->url, 'https://') === 0)
+                $indexNextSeparator = 8;
+
+            $posSeparator      = strpos($this->url, '/', $indexNextSeparator);
+            $posSeparatorQuery = strpos($this->url, '/?', $indexNextSeparator);
+
+            if ($posSeparator !== $posSeparatorQuery || $posSeparatorQuery === false)
+                $matches['path'] = substr($this->url, $posSeparator);
 
             $matches['ssl'] = null;
 
-            if (isset($matches['scheme']) && strncmp($this->url, 'https', 6)) {
+            if (isset($matches['scheme']) && strcasecmp($matches['scheme'], 'https') === 0) {
                 $matches['port'] = 443;
                 $matches['ssl']  = 'ssl://';
             }
@@ -198,25 +212,33 @@
                 $this->portInfo = intval($matches['port']);
             else
                 $this->portInfo = 80;
+
+            $this->sslInfo = $matches['ssl'];
         }
 
         private function makeHeaders()
         {
-            $this->headers = [
-                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language: en-us,en;q=0.5",
-                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                "Content-type: application/x-www-form-urlencoded;charset=UTF-8",
-                //"GET {$this->linkInfo} HTTP/1.1",
-                //"Host: {$this->hostInfo}",
-                //"X-Forwarded-For: {$this->randIP}"
-            ];
-
             if ($this->isUseCurl) {
-                $this->headers[] = "Keep-Alive: 300";
-                $this->headers[] = "Connection: Keep-Alive";
+                $this->headers = [
+                    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                    "Accept-Language: en-us,en;q=0.5",
+                    "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                    "Content-type: application/x-www-form-urlencoded;charset=UTF-8",
+                    "Keep-Alive: 300",
+                    "Connection: Keep-Alive"
+                ];
             } else {
-                $this->headers[] = "Connection: Close";
+                $this->headers = [
+                    "GET {$this->linkInfo} HTTP/1.1",
+                    "Host: {$this->hostInfo}"
+                ];
+
+                if ($this->ref != null)
+                    $this->headers[] = "Referer: {$this->ref}";
+                else
+                    $this->headers[] = "Referer: http://www.google.com.vn/search?hl=vi&client=firefox-a&rls=org.mozilla:en-US:official&hs=hKS&q=video+clip&start=20&sa=N";
+
+                $this->headers[] = "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
 
                 if ($this->cookie != null)
                     $this->headers[] = "Cookie: {$this->cookie}";
@@ -226,12 +248,9 @@
                 else
                     $this->headers[] = "User-Agent: " . self::USER_AGENT_DEFAULT;
 
-                if ($this->ref != null)
-                    $this->headers[] = "Referer: {$this->ref}";
-                else
-                    $this->headers[] = "Referer: http://www.google.com.vn/search?hl=vi&client=firefox-a&rls=org.mozilla:en-US:official&hs=hKS&q=video+clip&start=20&sa=N";
-
+                $this->headers[] = "X-Forwarded-For: {$this->randIP}";
                 $this->headers[] = "Via: CB-Prx";
+                $this->headers[] = "Connection: Close";
             }
         }
 
@@ -263,13 +282,14 @@
             if (strncmp($this->url, 'https', 6))
                 curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 
-            if ($this->cookie)
+            if ($this->cookie != null)
                 curl_setopt($curl, CURLOPT_COOKIE, $this->cookie);
 
             curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $this->autoRedirect);
 
             $this->msgError = curl_error($curl);
+            $this->buffer   = curl_exec($curl);
             $this->httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             $this->errorInt = self::ERROR_NONE;
 
@@ -277,11 +297,7 @@
                 $this->errorInt = self::ERROR_URL_NOT_FOUND;
             else if ($this->httpCode === 404)
                 $this->errorInt = self::ERROR_NOT_FOUND;
-            else if ($this->httpCode === 200)
-                $this->buffer = curl_exec($curl);
-bug($this->httpCode);
-bug($this->msgError);
-bug($this->url);
+
             curl_close($curl);
 
             if ($this->errorInt == self::ERROR_NONE)
@@ -292,26 +308,17 @@ bug($this->url);
 
         private function useFsock()
         {
-
-            $fp   = @fsockopen($matches['ssl'] . $host, $port, $errno, $errval, $this->timeout);
-
+            $handle         = FileInfo::fileSockOpen($this->sslInfo . $this->hostInfo, $this->portInfo, $errno, $errval, $this->timeout);
             $this->errorInt = self::ERROR_NONE;
 
-            if ($fp === false) {
+            if ($handle === false) {
                 $this->buffer   = null;
                 $this->errorInt = self::ERROR_CONNECT_FAILED;
             } else {
-                $ref = $this->ref;
+                FileInfo::fileWrite($handle, @implode("\r\n", $this->headers) . "\r\n\r\n\r\n");
 
-                if ($this->ref == null)
-                    $ref = '';
-
-
-
-                fwrite($fp, $out);
-
-                while (!feof($fp))
-                    $this->buffer .= fgets($fp, 4096);
+                while (!FileInfo::fileEndOfFile($handle))
+                    $this->buffer .= FileInfo::fileGetsLine($handle, 4096);
 
                 if (@preg_match("/^HTTP\/\d\.\d[[:space:]]+([0-9]+).*?(?:\r\n|\r|\n)+/is", $this->buffer, $matches) != false) {
                     $this->httpCode = intval($matches[1]);
@@ -335,10 +342,13 @@ bug($this->url);
                             return false;
 
                         if (strcmp($this->url, $this->ref) !== 0) {
-                            @fclose($fp);
+                            FileInfo::fileClose($handle);
 
                             $this->ref = $this->url;
                             $this->url = $location;
+
+                            if (isValidateURL($this->url) == false)
+                                $this->url = addPrefixHttpURL($this->hostInfo . $location);
 
                             if ($this->curl() == false)
                                 return false;
@@ -348,10 +358,9 @@ bug($this->url);
                             return false;
                         }
                     }
-
                 }
 
-                @fclose($fp);
+                FileInfo::fileClose($handle);
             }
 
             return false;
@@ -359,15 +368,24 @@ bug($this->url);
 
         public static function matchLinkMediaFire($url)
         {
-            return preg_match('/(?:www\.mediafire\.com)+/i', $url);
+            return preg_match('/(?:http(s)\:\/\/)?(?:www\.mediafire\.com)+/i', $url);
         }
 
         private function receiverLinkMediaFire()
         {
-            $links = @preg_split('/kNO[[:space:]]*=\"/i', $this->buffer);
+            if (preg_match('/kNO[[:space:]]*=[[:space:]]*\"(.+?)\"/si', $this->buffer, $matches)) {
+                if (isset($matches[1])) {
+                    $this->ref = $this->url;
+                    $this->url = trim($matches[1]);
 
-            if ($links === false)
-                return false;
+                    if (isValidateURL($this->url) == false)
+                        $this->url = addPrefixHttpURL($this->hostInfo . $location);
+
+                    return $this->curl();
+                }
+            }
+
+            return false;
         }
 
     }
