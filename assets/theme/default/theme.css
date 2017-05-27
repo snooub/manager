@@ -400,7 +400,7 @@ ul.radio-choose-tab > li input + label {
     cursor: pointer;
 }
 
-ul.radio-choose-tab > li input:checked + label {
+ul.radio-choose-tab > li input:enabled:checked + label {
     cursor: default;
 }
 
@@ -410,21 +410,25 @@ ul.radio-choose-tab > li input + label span {
     font-size: 14px;
 }
 
-ul.radio-choose-tab > li input:checked + label,
-ul.radio-choose-tab > li input:checked + label:hover {
+ul.radio-choose-tab > li input:disabled + label span {
+    color: #c0c0c0;
+}
+
+ul.radio-choose-tab > li input:enabled:checked + label,
+ul.radio-choose-tab > li input:enabled:checked + label:hover {
     background-color: #00897b;
 }
 
-ul.radio-choose-tab > li input + label:hover {
+ul.radio-choose-tab > li input + label:enabled:hover {
     background-color: #e0e0e0;
 }
 
-ul.radio-choose-tab > li input:checked + label span,
-ul.radio-choose-tab > li input:checked + label:hover span {
+ul.radio-choose-tab > li input:enabled:checked + label span,
+ul.radio-choose-tab > li input:enabled:checked + label:hover span {
     color: #ffffff;
 }
 
-ul.radio-choose-tab > li input + label:hover span {
+ul.radio-choose-tab > li input + label:enabled:hover span {
     color:  #00897b;
 }
 
