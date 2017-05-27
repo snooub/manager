@@ -46,6 +46,8 @@
 
         if (isset($_FILES['files']) == false || isset($_FILES['files']['name']) == false) {
             $appAlert->danger(lng('upload.alert.data_empty_or_not_validate'));
+        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP && $forms['exists_func'] !== EXISTS_FUNC_RENAME) {
+            $appAlert->danger(lng('upload.alert.exists_func_not_validate'));
         } else {
             $forms['is_empty']    = true;
             $forms['files_count'] = count($_FILES['files']['name']);
