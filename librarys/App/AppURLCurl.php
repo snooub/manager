@@ -105,6 +105,8 @@
 
         public function curl()
         {
+            $this->buffer = null;
+
             //if (function_exists('curl_init'))
                 //return $this->useCurl();
             //else
