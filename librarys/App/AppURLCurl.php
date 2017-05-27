@@ -55,7 +55,7 @@
 
         public function getURL()
         {
-            return $url;
+            return $this->url;
         }
 
         public function setRef($ref)
@@ -158,6 +158,8 @@
 
         public function curl()
         {
+            set_time_limit(0);
+
             $this->buffer = null;
             $result       = true;
 
@@ -348,7 +350,7 @@
                 FileInfo::fileWrite($handle, @implode("\r\n", $this->headers) . "\r\n\r\n\r\n");
 
                 while (!FileInfo::fileEndOfFile($handle))
-                    $this->buffer .= FileInfo::fileGetsLine($handle, 4096);
+                    $this->buffer .= FileInfo::fileGetsLine($handle, 8138);
 
                 if (@preg_match("/^HTTP\/\d\.\d[[:space:]]+([0-9]+).*?(?:\r\n|\r|\n)+/is", $this->buffer, $matches) != false) {
                     $this->httpCode = intval($matches[1]);
@@ -380,8 +382,10 @@
                             if (isValidateURL($this->url) == false)
                                 $this->url = addPrefixHttpURL($this->hostInfo . $location);
 
-                            if ($this->curl() == false)
-                                return false;
+                            if ($this->curl())
+                                return true;
+
+                            $this->errorInt = self::ERROR_AUTO_REDIRECT;
                         } else {
                             $this->errorInt = self::ERROR_AUTO_REDIRECT;
 
