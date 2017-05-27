@@ -17,20 +17,31 @@
         private $errorInt;
         private $buffer;
 
+        private $isUseCurl;
+
+        private $headers;
+        private $randIP;
+        private $hostInfo;
+        private $pathInfo;
+        private $linkInfo;
+        private $portInfo;
+
         const USER_AGENT_DEFAULT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36';
-        const TIME_OUT_DEFAULT   = 5;
+        const TIME_OUT_DEFAULT   = 30;
         const AUTO_REDIRECT_AUTO = true;
 
-        const ERROR_NONE          = 0;
-        const ERROR_URL_NOT_FOUND = 1;
-        const ERROR_NOT_FOUND     = 2;
-        const ERROR_AUTO_REDIRECT = 3;
+        const ERROR_NONE           = 0;
+        const ERROR_URL_NOT_FOUND  = 1;
+        const ERROR_NOT_FOUND      = 2;
+        const ERROR_AUTO_REDIRECT  = 3;
+        const ERROR_CONNECT_FAILED = 4;
 
         public function __construct($url)
         {
             $this->setURL($url);
             $this->setTimeout(self::TIME_OUT_DEFAULT);
             $this->setAutoRedirect(self::AUTO_REDIRECT_AUTO);
+            $this->setUseCurl(true);
         }
 
         public function setURL($url)
@@ -103,30 +114,134 @@
             return $this->autoRedirect;
         }
 
+        public function setUseCurl($isUse)
+        {
+            if ($isUse && function_exists('curl_init'))
+                $this->isUseCurl = true;
+            else
+                $this->isUseCurl = false;
+        }
+
         public function curl()
         {
             $this->buffer = null;
+            $result       = true;
 
-            //if (function_exists('curl_init'))
-                //return $this->useCurl();
-            //else
-                return $this->useFsock();
+            $this->makeRandIP();
+            $this->parseURL();
+            $this->makeHeaders();
+
+            if ($this->isUseCurl)
+                $result = $this->useCurl();
+            else
+                $result = $this->useFsock();
+
+            if ($result == false)
+                return false;
+
+            if ($this->httpCode !== 200)
+                return false;
+
+            if (self::matchLinkMediaFire($this->url))
+                $this->receiverLinkMediaFire();
+        }
+
+        private function makeRandIP()
+        {
+            $this->randIP = rand(1, 254) . "." . rand(1, 254) . "." . rand(1, 254) . "." . rand(1, 254);
+        }
+
+        private function parseURL()
+        {
+            $matches = parse_url($this->url);
+
+            if (isset($matches['path']) == false)
+                $matches['path'] = $this->url;
+
+            if (isset($matches['host']) == false) {
+                $path = $matches['path'];
+                $pos  = strpos($path, '/');
+
+                if ($pos !== false && $pos !== 0) {
+                    $matches['host'] = substr($path, 0, $pos);
+
+                    if (isset($matches['query']) == false)
+                        $matches['path'] = '/' . baseNameURL($path);
+                } else {
+                    $matches['host'] = $path;
+                }
+            }
+
+            $matches['ssl'] = null;
+
+            if (isset($matches['scheme']) && strncmp($this->url, 'https', 6)) {
+                $matches['port'] = 443;
+                $matches['ssl']  = 'ssl://';
+            }
+
+            $this->hostInfo = $matches['host'];
+
+            if (isset($matches['path']))
+                $this->pathInfo = $matches['path'];
+            else
+                $this->pathInfo = '/';
+
+            $this->linkInfo = $this->pathInfo;
+
+            if (isset($matches['query']))
+                $this->linkInfo .= '?' . $matches['query'];
+
+            if (isset($matches['fragment']))
+                $this->linkInfo .= '#' . $matches['fragment'];
+
+            if (isset($matches['port']) && empty($matches['port']) == false)
+                $this->portInfo = intval($matches['port']);
+            else
+                $this->portInfo = 80;
+        }
+
+        private function makeHeaders()
+        {
+            $this->headers = [
+                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language: en-us,en;q=0.5",
+                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                "Content-type: application/x-www-form-urlencoded;charset=UTF-8",
+                //"GET {$this->linkInfo} HTTP/1.1",
+                //"Host: {$this->hostInfo}",
+                //"X-Forwarded-For: {$this->randIP}"
+            ];
+
+            if ($this->isUseCurl) {
+                $this->headers[] = "Keep-Alive: 300";
+                $this->headers[] = "Connection: Keep-Alive";
+            } else {
+                $this->headers[] = "Connection: Close";
+
+                if ($this->cookie != null)
+                    $this->headers[] = "Cookie: {$this->cookie}";
+
+                if ($this->userAgent != null)
+                    $this->headres[] = "User-Agent: {$this->userAgent}";
+                else
+                    $this->headers[] = "User-Agent: " . self::USER_AGENT_DEFAULT;
+
+                if ($this->ref != null)
+                    $this->headers[] = "Referer: {$this->ref}";
+                else
+                    $this->headers[] = "Referer: http://www.google.com.vn/search?hl=vi&client=firefox-a&rls=org.mozilla:en-US:official&hs=hKS&q=video+clip&start=20&sa=N";
+
+                $this->headers[] = "Via: CB-Prx";
+            }
         }
 
         private function useCurl()
         {
             $curl = curl_init();
 
-            $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
-            $headers[] = 'Accept-Language: en-us,en;q=0.5';
-            $headers[] = 'Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7';
-            $headers[] = 'Keep-Alive: 300';
-            $headers[] = 'Connection: Keep-Alive';
-            $headers[] = 'Content-type: application/x-www-form-urlencoded;charset=UTF-8';
-
             curl_setopt($curl, CURLOPT_URL, $this->url);
 
-            if ($this->userAgent)
+            if ($this->userAgent != null)
                 curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
             else
                 curl_setopt($curl, CURLOPT_USERAGENT, self::USER_AGENT_DEFAULT);
@@ -136,7 +251,7 @@
             else
                 curl_setopt($curl, CURLOPT_HEADER, 0);
 
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->headers);
 
             if ($this->ref)
                 curl_setopt($curl, CURLOPT_REFERER, $this->ref);
@@ -164,73 +279,34 @@
                 $this->errorInt = self::ERROR_NOT_FOUND;
             else if ($this->httpCode === 200)
                 $this->buffer = curl_exec($curl);
-
+bug($this->httpCode);
+bug($this->msgError);
+bug($this->url);
             curl_close($curl);
 
             if ($this->errorInt == self::ERROR_NONE)
                 return true;
+
+            return false;
         }
 
         private function useFsock()
         {
-            $matches = parse_url($this->url);
-bug($matches);
-            if (isset($matches['path']) == false)
-                $matches['path'] = $this->url;
 
-            if (isset($matches['host']) == false) {
-                $path = $matches['path'];
-                $pos  = strpos($path, '/');
-
-                if ($pos !== false && $pos !== 0) {
-                    $matches['host'] = substr($path, 0, $pos);
-                    $matches['path'] = '/' . baseNameURL($path);
-                } else {
-                    $matches['host'] = $path;
-                }
-            }
-
-            $matches['ssl'] = null;
-
-            if (isset($matches['scheme']) && strncmp($this->url, 'https', 6)) {
-                $matches['port'] = 443;
-                $matches['ssl']  = 'ssl://';
-            }
-
-            $host = $matches['host'];
-            $path = isset($matches['path']) ? $matches['path'] : '/';
-            $link = $path . (isset($matches['query']) ? '?' . $matches['query'] : '') . (isset($matches['fragment']) ? '#' . $matches['fragment'] : '');
-            $port = !empty($matches['port']) ? $matches['port'] : 80;
             $fp   = @fsockopen($matches['ssl'] . $host, $port, $errno, $errval, $this->timeout);
 
             $this->errorInt = self::ERROR_NONE;
 
-            if (!$fp) {
-                $this->buffer = "$errval ($errno)<br />\n";
+            if ($fp === false) {
+                $this->buffer   = null;
+                $this->errorInt = self::ERROR_CONNECT_FAILED;
             } else {
                 $ref = $this->ref;
 
                 if ($this->ref == null)
-                    $ref = 'http://www.google.com.vn/search?hl=vi&client=firefox-a&rls=org.mozilla:en-US:official&hs=hKS&q=video+clip&start=20&sa=N';
+                    $ref = '';
 
-                $randIP = rand(1, 254) . "." . rand(1, 254) . "." . rand(1, 254) . "." . rand(1, 254);
-                $out    = "GET $link HTTP/1.1\r\n" .
-                          "Host: $host\r\n" .
-                          "Referer: $ref\r\n" .
-                          "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
 
-                if ($this->cookie != null)
-                    $out .= "Cookie: $cookie\r\n";
-
-                if ($this->userAgent != null)
-                    $out .= "User-Agent: " . $this->userAgent . "\r\n";
-                else
-                    $out .= "User-Agent: " . self::USER_AGENT_DEFAULT . "\r\n";
-
-                $out .= "X-Forwarded-For: $randIP\r\n".
-                        "Via: CB-Prx\r\n" .
-                        "Cache-Control: private\r\n" .
-                        "Connection: Close\r\n\r\n";
 
                 fwrite($fp, $out);
 
@@ -239,8 +315,7 @@ bug($matches);
 
                 if (@preg_match("/^HTTP\/\d\.\d[[:space:]]+([0-9]+).*?(?:\r\n|\r|\n)+/is", $this->buffer, $matches) != false) {
                     $this->httpCode = intval($matches[1]);
-bug($this->httpCode);
-bug($out);
+
                     if ($this->httpCode === 0) {
                         $this->errorInt = self::ERROR_URL_NOT_FOUND;
                     } else if ($this->httpCode === 404) {
@@ -280,6 +355,19 @@ bug($out);
             }
 
             return false;
+        }
+
+        public static function matchLinkMediaFire($url)
+        {
+            return preg_match('/(?:www\.mediafire\.com)+/i', $url);
+        }
+
+        private function receiverLinkMediaFire()
+        {
+            $links = @preg_split('/kNO[[:space:]]*=\"/i', $this->buffer);
+
+            if ($links === false)
+                return false;
         }
 
     }
