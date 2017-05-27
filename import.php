@@ -42,7 +42,7 @@
         'is_empty'    => true,
         'urls_count'  => 0,
         'exists_func' => EXISTS_FUNC_OVERRIDE,
-        'mode_import' => MODE_IMPORT_CURL
+        'mode_import' => AppURLCurl::isSupportCurl() ? MODE_IMPORT_CURL : MODE_IMPORT_SOCKET
     ];
 
     if (isset($_POST['import'])) {
@@ -118,6 +118,20 @@
                             $fileWriteIsDirectory = FileInfo::isTypeDirectory($fileWritePath);
                             $fileWriteIsFile      = FileInfo::isTypeFile($fileWritePath);
                             $fileSizeStr          = FileInfo::sizeToString($curl->getBufferLength());
+                            $timeImport           = $curl->getTimeEndRun() - $curl->getTimeStartRun();
+
+                            if ($timeImport < 60) {
+                                $timeImport = $timeImport . 's';
+                            } else if ($timeImport < 3600) {
+                                $timeImportMinute = floor($timeImport / 60);
+                                $timeImportSecond = $timeImport - ($timeImportMinute * 60);
+                                $timeImport       = $timeImportMinute . ':' . $timeImportSecond . 's';
+                            } else {
+                                $timeImportHour   = floor($timeImport / 3600);
+                                $timeImportMinute = floor(($timeImport - ($timeImportHour * 3600)) / 60);
+                                $timeImportSecond = $timeImport - (($timeImportHour * 3600) + ($timeImportMinute * 60));
+                                $timeImport       = $timeImportHour . ':' . $timeImportMinute . ':' . $timeImportSecond . 's';
+                            }
 
                             if ($fileWriteIsDirectory && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
                                 $appAlert->danger(lng('import.alert.path_file_error_is_directory', 'filename', $filename));
@@ -127,7 +141,7 @@
                                 if (FileInfo::unlink($fileWritePath)) {
 
                                     if (FileInfo::fileWriteContents($fileWritePath, $curl->getBuffer()) == true) {
-                                        $appAlert->success(lng('import.alert.import_file_exists_override_is_success', 'filename', $filename, 'size', $fileSizeStr));
+                                        $appAlert->success(lng('import.alert.import_file_exists_override_is_success', 'filename', $filename, 'size', $fileSizeStr, 'time', $timeImport));
                                         $isSuccess = true;
                                     } else {
                                         $appAlert->danger(lng('import.alert.import_file_exists_override_is_failed', 'filename', $filename));
@@ -154,7 +168,7 @@
                                 if ($fileRename == null || $pathRename == null) {
                                     $appAlert->danger(lng('import.alert.create_new_filename_exists_rename_is_failed', 'filename', $filename));
                                 } else if (FileInfo::fileWriteContents($pathRename, $curl->getBuffer())) {
-                                    $appAlert->success(lng('import.alert.import_file_exists_rename_is_success', 'filename', $fileRename, 'size', $fileSizeStr));
+                                    $appAlert->success(lng('import.alert.import_file_exists_rename_is_success', 'filename', $fileRename, 'size', $fileSizeStr, 'time', $timeImport));
                                     $isSuccess = true;
                                 } else {
                                     $appAlert->danger(lng('import.alert.import_file_exists_rename_is_failed', 'filename', $fileRename));
@@ -162,7 +176,7 @@
                             } else if ($fileWriteIsFile || FileInfo::fileWriteContents($fileWritePath, $curl->getBuffer()) == false) {
                                 $appAlert->danger(lng('import.alert.import_file_is_failed', 'filename', $filename));
                             } else {
-                                $appAlert->success(lng('import.alert.import_file_is_success', 'filename', $filename, 'size', $fileSizeStr));
+                                $appAlert->success(lng('import.alert.import_file_is_success', 'filename', $filename, 'size', $fileSizeStr, 'time', $timeImport));
                                 $isSuccess = true;
                             }
                         }
@@ -231,7 +245,7 @@
                     <span><?php echo lng('import.form.input.label_mode_import'); ?></span>
                     <ul class="radio-choose-tab">
                         <li>
-                            <input type="radio" name="mode_import" value="<?php echo MODE_IMPORT_CURL; ?>" id="mode-import-curl"<?php if ($forms['mode_import'] == MODE_IMPORT_CURL) { ?> checked="checked"<?php } ?>/>
+                            <input type="radio" name="mode_import" value="<?php echo MODE_IMPORT_CURL; ?>" id="mode-import-curl"<?php if ($forms['mode_import'] == MODE_IMPORT_CURL) { ?> checked="checked"<?php } ?><?php if (AppURLCurl::isSupportCurl() == false) { ?> disabled="disabled"<?php } ?>/>
                             <label for="mode-import-curl">
                                 <span><?php echo lng('import.form.input.mode_import_curl'); ?></span>
                             </label>

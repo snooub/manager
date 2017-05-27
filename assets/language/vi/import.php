@@ -50,12 +50,12 @@
             'path_file_is_exists_and_skip'                => 'Thư mục nhập khẩu đã tồn tại một tập tin <strong>{$filename}</strong>, đã bỏ qua tập tin này',
             'error_delete_file_exists'                    => 'lng{import.alert.file_is_exists}, xóa thất bại để ghi đè',
             'import_file_exists_override_is_failed'       => 'lng{import.alert.file_is_exists}, nhập khẩu và ghi đè thất bại',
-            'import_file_exists_override_is_success'      => 'lng{import.alert.file_is_exists}, <strong>{$size}</strong> nhập khẩu và ghi đè thành công',
+            'import_file_exists_override_is_success'      => 'lng{import.alert.file_is_exists}, <strong>{$size}</strong> nhập khẩu và ghi đè thành công, mất <strong>{$time}</strong>',
             'create_new_filename_exists_rename_is_failed' => 'lng{upload.alert.file_is_exists}, tạo tên mới cho tập tin thất bại',
             'import_file_exists_rename_is_failed'         => 'lng{upload.alert.file_is_exists}, nhập khẩu và thay đổi tên thất bại',
-            'import_file_exists_rename_is_success'        => 'lng{upload.alert.file_is_exists}, <strong>{$size}</strong> nhập khẩu và thay đổi tên thành công',
+            'import_file_exists_rename_is_success'        => 'lng{upload.alert.file_is_exists}, <strong>{$size}</strong> nhập khẩu và thay đổi tên thành công, mất <strong>{$time}</strong>',
             'import_file_is_failed'                       => 'Nhập khẩu tập tin <strong>{$filename}</strong> thất bại',
-            'import_file_is_success'                      => 'Nhập khẩu tập tin <strong>{$filename}</strong>, <strong>{$size}</strong> thành công'
+            'import_file_is_success'                      => 'Nhập khẩu tập tin <strong>{$filename}</strong>, <strong>{$size}</strong> thành công, mất <strong>{$time}</strong>'
         ]
     ];
 

@@ -29,6 +29,9 @@
         private $sslInfo;
         private $portInfo;
 
+        private $timeStart;
+        private $timeEnd;
+
         const USER_AGENT_DEFAULT = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36';
         const TIME_OUT_DEFAULT   = 30;
         const AUTO_REDIRECT_AUTO = true;
@@ -120,7 +123,7 @@
 
         public function setUseCurl($isUse)
         {
-            if ($isUse && function_exists('curl_init'))
+            if ($isUse && self::isSupportCurl())
                 $this->isUseCurl = true;
             else
                 $this->isUseCurl = false;
@@ -129,6 +132,11 @@
         public function isUseCurl()
         {
             return $this->isUseCurl;
+        }
+
+        public static function isSupportCurl()
+        {
+            return function_exists('curl_init');
         }
 
         public function getBuffer()
@@ -156,12 +164,25 @@
             return $this->msgError;
         }
 
+        public function getTimeStartRun()
+        {
+            return $this->timeStart;
+        }
+
+        public function getTimeEndRun()
+        {
+            return $this->timeEnd;
+        }
+
         public function curl()
         {
             set_time_limit(0);
 
             $this->buffer = null;
             $result       = true;
+
+            if ($this->timeStart == null)
+                $this->timeStart = time();
 
             $this->parseURL();
             $this->makeHeaders();
@@ -171,14 +192,21 @@
             else
                 $result = $this->useFsock();
 
-            if ($result == false)
+            if ($result == false && $this->timeEnd())
                 return false;
 
-            if ($this->buffer === null || empty($this->buffer))
+            if (($this->buffer === null || empty($this->buffer)) && $this->timeEnd())
                 return false;
 
-            if (self::matchLinkMediaFire($this->url))
-                return $this->receiverLinkMediaFire();
+            if (self::matchLinkMediaFire($this->url) && $this->timeEnd())
+                return $this->receiverLinkMediaFire() && $this->timeEnd();
+
+            return true;
+        }
+
+        private function timeEnd()
+        {
+            $this->timeEnd = time();
 
             return true;
         }
@@ -350,7 +378,7 @@
                 FileInfo::fileWrite($handle, @implode("\r\n", $this->headers) . "\r\n\r\n\r\n");
 
                 while (!FileInfo::fileEndOfFile($handle))
-                    $this->buffer .= FileInfo::fileGetsLine($handle, 8138);
+                    $this->buffer .= FileInfo::fileGetsLine($handle, 4069);
 
                 if (@preg_match("/^HTTP\/\d\.\d[[:space:]]+([0-9]+).*?(?:\r\n|\r|\n)+/is", $this->buffer, $matches) != false) {
                     $this->httpCode = intval($matches[1]);
