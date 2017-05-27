@@ -10,6 +10,8 @@
     define('EXISTS_FUNC_OVERRIDE', 1);
     define('EXISTS_FUNC_SKIP',     2);
     define('EXISTS_FUNC_RENAME',   3);
+    define('MODE_IMPORT_CURL',     1);
+    define('MODE_IMPORT_SOCKET',   2);
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
@@ -39,14 +41,20 @@
         'filenames'   => null,
         'is_empty'    => true,
         'urls_count'  => 0,
-        'exists_func' => EXISTS_FUNC_OVERRIDE
+        'exists_func' => EXISTS_FUNC_OVERRIDE,
+        'mode_import' => MODE_IMPORT_CURL
     ];
 
     if (isset($_POST['import'])) {
         $forms['exists_func'] = intval($_POST['exists_func']);
+        $forms['mode_import'] = intval($_POST['mode_import']);
 
         if (isset($_POST['urls']) == false || is_array($_POST['urls']) == false) {
             $appAlert->danger(lng('import.alert.data_empty_or_not_validate'));
+        } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP && $forms['exists_func'] !== EXISTS_FUNC_RENAME) {
+            $appAlert->danger(lng('import.alert.exists_func_not_validate'));
+        } else if ($forms['mode_import'] !== MODE_IMPORT_CURL && $forms['mode_import'] !== MODE_IMPORT_SOCKET) {
+            $appAlert->danger(lng('import.alert.mode_import_not_validate'));
         } else {
             $isFailed            = false;
             $forms['is_empty']   = true;
@@ -89,7 +97,24 @@
                             $filename = baseNameURL($url);
 
                         $curl = new AppURLCurl($url);
-                        $curl->curl();
+                        $curl->setUseCurl($forms['mode_import'] === MODE_IMPORT_CURL);
+
+                        if ($curl->curl() == false) {
+                            $errorInt = $curl->getErrorInt();
+
+                            if ($errorInt === AppURLCurl::ERROR_URL_NOT_FOUND)
+                                $appAlert->danger(lng('import.alert.address_not_found', 'url', $url));
+                            else if ($errorInt === AppURLCurl::ERROR_NOT_FOUND)
+                                $appAlert->danger(lng('import.alert.file_not_found', 'url', $url));
+                            else if ($errorInt === AppURLCurl::ERROR_AUTO_REDIRECT)
+                                $appAlert->danger(lng('import.alert.auto_redirect_url_failed', 'url', $url));
+                            else if ($errorInt === AppURLCurl::ERROR_CONNECT_FAILED)
+                                $appAlert->danger(lng('import.alert.connect_url_failed', 'url', $url));
+                            else
+                                $appAlert->danger(lng('import.alert.error_unknown', 'url', $url));
+                        } else {
+
+                        }
                     }
                 }
             }
@@ -123,6 +148,7 @@
                 <?php } ?>
 
                 <li class="radio-choose">
+                    <span><?php echo lng('import.form.input.label_exists_func'); ?></span>
                     <ul class="radio-choose-tab">
                         <li>
                             <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_OVERRIDE; ?>" id="exists_func_override"<?php if ($forms['exists_func'] === EXISTS_FUNC_OVERRIDE) { ?> checked="checked"<?php } ?>/>
@@ -140,6 +166,24 @@
                             <input type="radio" name="exists_func" value="<?php echo EXISTS_FUNC_RENAME; ?>" id="exists_func_rename"<?php if ($forms['exists_func'] == EXISTS_FUNC_RENAME) { ?> checked="checked"<?php } ?>/>
                             <label for="exists_func_rename">
                                 <span><?php echo lng('import.form.input.exists_func_rename'); ?></span>
+                            </label>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="radio-choose">
+                    <span><?php echo lng('import.form.input.label_mode_import'); ?></span>
+                    <ul class="radio-choose-tab">
+                        <li>
+                            <input type="radio" name="mode_import" value="<?php echo MODE_IMPORT_CURL; ?>" id="mode-import-curl"<?php if ($forms['mode_import'] == MODE_IMPORT_CURL) { ?> checked="checked"<?php } ?>/>
+                            <label for="mode-import-curl">
+                                <span><?php echo lng('import.form.input.mode_import_curl'); ?></span>
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" name="mode_import" value="<?php echo MODE_IMPORT_SOCKET; ?>" id="mode-import-socket"<?php if ($forms['mode_import'] == MODE_IMPORT_SOCKET) { ?> checked="checked"<?php } ?>/>
+                            <label for="mode-import-socket">
+                                <span><?php echo lng('import.form.input.mode_import_socket'); ?></span>
                             </label>
                         </li>
                     </ul>

@@ -120,10 +120,35 @@
 
         public function setUseCurl($isUse)
         {
-            // if ($isUse && function_exists('curl_init'))
-            //     $this->isUseCurl = true;
-            // else
+            if ($isUse && function_exists('curl_init'))
+                $this->isUseCurl = true;
+            else
                 $this->isUseCurl = false;
+        }
+
+        public function isUseCurl()
+        {
+            return $this->isUseCurl;
+        }
+
+        public function getBuffer()
+        {
+            return $this->buffer;
+        }
+
+        public function getHttpCode()
+        {
+            return $this->httpCode;
+        }
+
+        public function getErrorInt()
+        {
+            return $this->errorInt;
+        }
+
+        public function getMsgError()
+        {
+            return $this->msgError;
         }
 
         public function curl()
