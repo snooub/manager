@@ -10,6 +10,7 @@
     use Librarys\Environment;
     use Librarys\Language;
     use Librarys\File\FileInfo;
+    use Librarys\Encryption\Services_JSON;
 
     function env($name, $default = null, $renew = false)
     {
@@ -258,6 +259,16 @@
         return $prefix . $url;
     }
 
+    function removePrefixHttpURL($url)
+    {
+        if (stripos($url, 'http://') !== false)
+            return substr($url, 7);
+        else if (stripos($url, 'https://') !== false)
+            return substr($url, 8);
+
+        return $url;
+    }
+
     function baseNameURL($url)
     {
         $parseURLPath = @parse_url($url, PHP_URL_PATH);
@@ -266,6 +277,32 @@
             return $url;
 
         return basename($parseURLPath);
+    }
+
+    function jsonEncode($var)
+    {
+        if (function_exists('json_encode') == false)
+            return @json_encode($var);
+
+        require_once(__DIR__. SP . 'Encryption' . SP . 'Services_JSON.php');
+
+        $json   = new Services_JSON();
+        $result = $json->encode($var);
+
+        return $result;
+    }
+
+    function jsonDecode($var, $assoc = true)
+    {
+        if (function_exists('json_decode') == false)
+            return @json_decode($var, $assoc);
+
+        require_once(__DIR__. SP . 'Encryption' . SP . 'Services_JSON.php');
+
+        $json = new Services_JSON($assoc ? SERVICES_JSON_LOOSE_TYPE : 0);
+        $result = $json->decode($var);
+
+        return $result;
     }
 
 ?>
