@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     define('MYSQL_REQUIRE',                   1);
     define('PARAMETER_DATABASE_URL',          'database');
     define('PARAMETER_TABLE_URL',             'table');
