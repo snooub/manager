@@ -1139,6 +1139,12 @@ li.button-action-box > a:hover span {
     color: #00897b;
 }
 
+div.form-action ul.form-element > li.button.center,
+div.button-action-box.center,
+li.button-action-box.center {
+    text-align: center;
+}
+
 ul.action-multi,
 ul.action-multi li {
     display: block;
