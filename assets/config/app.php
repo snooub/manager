@@ -10,8 +10,8 @@
 
             'dev' => [
                 'enable'       => true,
-                'compress_css' => true,
-                'compress_js'  => true,
+                'compress_css' => false,
+                'compress_js'  => false,
                 'cache_css'    => 86400,
                 'cache_js'     => 86400,
                 'rand'         => 'generatorDevRandResource',
