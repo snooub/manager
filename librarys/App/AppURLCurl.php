@@ -38,7 +38,7 @@
 
         const ERROR_NONE           = 0;
         const ERROR_URL_NOT_FOUND  = 1;
-        const ERROR_NOT_FOUND      = 2;
+        const ERROR_FILE_NOT_FOUND = 2;
         const ERROR_AUTO_REDIRECT  = 3;
         const ERROR_CONNECT_FAILED = 4;
 
@@ -174,6 +174,14 @@
             return $this->timeEnd;
         }
 
+        public function getTimeRun()
+        {
+            $max = max($this->timeStart, $this->timeEnd);
+            $min = min($this->timeStart, $this->timeEnd);
+
+            return $max - $min;
+        }
+
         public function curl()
         {
             set_time_limit(0);
@@ -181,7 +189,7 @@
             $this->buffer = null;
             $result       = true;
 
-            if ($this->timeStart == null)
+            if ($this->timeStart === null || $this->timeStart <= 0)
                 $this->timeStart = time();
 
             $this->parseURL();
@@ -192,16 +200,16 @@
             else
                 $result = $this->useFsock();
 
-            if ($result == false && $this->timeEnd())
+            if ($this->timeEnd() && $result == false)
                 return false;
 
-            if (($this->buffer === null || empty($this->buffer)) && $this->timeEnd())
+            if ($this->timeEnd() && ($this->buffer === null || empty($this->buffer)))
                 return false;
 
-            if (self::matchLinkMediaFire($this->url) && $this->timeEnd())
-                return $this->receiverLinkMediaFire() && $this->timeEnd();
+            if ($this->timeEnd() && self::matchLinkMediaFire($this->url))
+                return $this->timeEnd() && $this->receiverLinkMediaFire();
 
-            return true;
+            return $this->timeEnd();
         }
 
         private function timeEnd()
@@ -348,15 +356,15 @@
             curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $this->autoRedirect);
 
-            $this->msgError = curl_error($curl);
             $this->buffer   = curl_exec($curl);
+            $this->msgError = curl_error($curl);
             $this->httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             $this->errorInt = self::ERROR_NONE;
 
             if ($this->httpCode === 0)
                 $this->errorInt = self::ERROR_URL_NOT_FOUND;
             else if ($this->httpCode === 404)
-                $this->errorInt = self::ERROR_NOT_FOUND;
+                $this->errorInt = self::ERROR_FILE_NOT_FOUND;
 
             curl_close($curl);
 
@@ -386,7 +394,7 @@
                     if ($this->httpCode === 0) {
                         $this->errorInt = self::ERROR_URL_NOT_FOUND;
                     } else if ($this->httpCode === 404) {
-                        $this->errorInt = self::ERROR_NOT_FOUND;
+                        $this->errorInt = self::ERROR_FILE_NOT_FOUND;
                     } else if ($this->httpCode === 200) {
                         if (($splits = preg_split("/(\r\n\r\n)+([a-zA-Z0-9]+\r\n)*/si", $this->buffer, 2)) != false && isset($splits[1]))
                             $this->buffer = $splits[1];
