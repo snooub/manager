@@ -3,6 +3,8 @@
     define('ALERT_LOGIN', 'alert_login');
     define('ALERT_INDEX', 'alert_index');
 
+    define('ALERT_APP_CHECK_UPDATE', 'alert_check_update');
+
     define('ALERT_SYSTEM_SETTING', 'alert_system_setting');
 
     define('ALERT_CREATE', 'alert_create');
