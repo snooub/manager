@@ -187,7 +187,7 @@
                             </li>
                         <?php } ?>
                         <li class="about">
-                            <a href="<?php echo env('app.http.host'); ?>/about.php">
+                            <a href="<?php echo env('app.http.host'); ?>/app/about.php">
                                 <span class="icomoon icon-about"></span>
                             </a>
                         </li>
