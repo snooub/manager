@@ -281,7 +281,7 @@
 
     function jsonEncode($var)
     {
-        if (function_exists('json_encode') == false)
+        if (function_exists('json_encode'))
             return @json_encode($var);
 
         require_once(__DIR__. SP . 'Encryption' . SP . 'Services_JSON.php');
@@ -294,7 +294,7 @@
 
     function jsonDecode($var, $assoc = true)
     {
-        if (function_exists('json_decode') == false)
+        if (function_exists('json_decode'))
             return @json_decode($var, $assoc);
 
         require_once(__DIR__. SP . 'Encryption' . SP . 'Services_JSON.php');
