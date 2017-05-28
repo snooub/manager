@@ -46,7 +46,7 @@
             'connect_url_failed'                          => 'Kết nối tới địa chỉ <strong>{$url}</strong> thất bại',
             'error_unknown'                               => 'Không rõ lỗi cho địa chỉ <strong>{$url}</strong>',
             'file_is_exists'                              => 'Tập tin <strong>{$filename}</strong> đã tồn tại',
-            'path_file_error_is_directory'                => 'Thư mục nhập khẩu đã chứa một thư mục với tên này <strong>{$filname}</strong> không thể ghi đè',
+            'path_file_error_is_directory'                => 'Thư mục nhập khẩu đã chứa một thư mục với tên này <strong>{$filename}</strong> không thể ghi đè',
             'path_file_is_exists_and_skip'                => 'Thư mục nhập khẩu đã tồn tại một tập tin <strong>{$filename}</strong>, đã bỏ qua tập tin này',
             'error_delete_file_exists'                    => 'lng{import.alert.file_is_exists}, xóa thất bại để ghi đè',
             'import_file_exists_override_is_failed'       => 'lng{import.alert.file_is_exists}, nhập khẩu và ghi đè thất bại',
