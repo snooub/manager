@@ -102,7 +102,7 @@
 
                             if ($errorInt === AppURLCurl::ERROR_URL_NOT_FOUND)
                                 $appAlert->danger(lng('import.alert.address_not_found', 'url', $url));
-                            else if ($errorInt === AppURLCurl::ERROR_NOT_FOUND)
+                            else if ($errorInt === AppURLCurl::ERROR_FILE_NOT_FOUND)
                                 $appAlert->danger(lng('import.alert.file_not_found', 'url', $url));
                             else if ($errorInt === AppURLCurl::ERROR_AUTO_REDIRECT)
                                 $appAlert->danger(lng('import.alert.auto_redirect_url_failed', 'url', $url));
@@ -114,11 +114,15 @@
                             if (empty($filename))
                                 $filename = baseNameURL($curl->getURL());
 
+                            if (empty($filename))
+                                $filename = removePrefixHttpURL($curl->getURL());
+
+                            $filename             = FileInfo::fileNameFix($filename);
                             $fileWritePath        = FileInfo::validate($appDirectory->getDirectory() . SP . $filename);
                             $fileWriteIsDirectory = FileInfo::isTypeDirectory($fileWritePath);
                             $fileWriteIsFile      = FileInfo::isTypeFile($fileWritePath);
                             $fileSizeStr          = FileInfo::sizeToString($curl->getBufferLength());
-                            $timeImport           = $curl->getTimeEndRun() - $curl->getTimeStartRun();
+                            $timeImport           = $curl->getTimeRun();
 
                             if ($timeImport < 60) {
                                 $timeImport = $timeImport . 's';
