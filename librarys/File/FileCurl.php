@@ -1,10 +1,8 @@
 <?php
 
-    namespace Librarys\App;
+    namespace Librarys\File;
 
-    use Librarys\File\FileInfo;
-
-    final class AppURLCurl
+    final class FileCurl
     {
 
         private $url;
