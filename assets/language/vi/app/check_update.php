@@ -39,6 +39,7 @@
             'error_version_guest_not_validate'          => 'Phiên bản của bạn truy vấn tới địa chỉ <strong>{$url}</strong> không hợp lệ',
             'error_version_server_not_validate'         => 'Phiên bản của địa chỉ <strong>{$url}</strong> không hợp lệ',
             'error_not_found_version_current_in_server' => 'Lỗi phiên bản hiện tại không tồn tại trên địa chỉ <strong>{$url}</strong>',
+            'error_write_info_failed'                   => 'Ghi thông tin cập nhật của địa chỉ <strong>{$url}</strong> thất bại',
             'error_unknown'                             => 'Không rõ lỗi cho địa chỉ <strong>{$url}</strong>',
             'version_is_old'                            => 'Phiên bản <strong>{$version_current}</strong> hiện tại đã cũ, đã có phiên bản mới <strong>{$version_update}</strong> bạn hãy nhấn tải về để cập nhật',
             'version_is_latest'                         => 'Phiên bản <strong>{$version_current}</strong> hiện tại là mới nhất',
