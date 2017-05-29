@@ -87,7 +87,7 @@
 
         public function hasEntryConfigArraySystem()
         {
-            return is_array($this->configArraySystem) && count($this->configArraySystem) > 0;
+            return is_array($this->configSystemArray) && count($this->configSystemArray) > 0;
         }
 
         public function hasEntryConfigArrayAny()
