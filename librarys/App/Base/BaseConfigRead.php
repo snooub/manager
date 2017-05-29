@@ -154,7 +154,7 @@
                 $this->configArray = array();
         }
 
-        public function set($name, $value)
+        public function set($name, $value, $systemWrite = false)
         {
             if ($name == null)
                 return false;
@@ -166,8 +166,13 @@
             else
                 $nameSplits = explode('.', $name);
 
-            $configArray     = &$this->configArray;
+            $configArray     = null;
             $nameSplitsCount = count($nameSplits);
+
+            if ($systemWrite)
+                $configArray = &$this->configSystemArray;
+            else
+                $configArray = &$this->configArray;
 
             for ($i = 0; $i < $nameSplitsCount; ++$i) {
                 $nameEntry = $nameSplits[$i];
@@ -186,6 +191,11 @@
                 $this->receiverToCache($name);
 
             return true;
+        }
+
+        public function setSystem($name, $value)
+        {
+            return $this->set($name, $value, true);
         }
 
         public function get($name, $default = null, $recache = false)

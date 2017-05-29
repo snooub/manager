@@ -18,6 +18,12 @@
             parent::parse(true);
         }
 
+        public function fastWriteConfig()
+        {
+            $appAboutConfigWrite = new AppAboutConfigWrite($this);
+            return $appAboutConfigWrite->write();
+        }
+
     }
 
 ?>

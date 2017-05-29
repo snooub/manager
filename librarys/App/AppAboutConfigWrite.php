@@ -23,7 +23,7 @@
 
         public function resultConfigArray()
         {
-            return $this->baseConfigRead->getConfigArray();
+            return $this->baseConfigRead->getConfigArraySystem();
         }
 
     }
