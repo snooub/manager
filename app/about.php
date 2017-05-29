@@ -31,7 +31,7 @@
         	<li class="value">
         		<ul>
         			<li><span><?php echo $config->get('author'); ?></span></li>
-        			<li><span><?php echo $config->get('version'); ?></span></li>
+        			<li><span><?php echo $config->get('version'); ?> <?php if ($config->get('is_beta')) echo 'beta'; ?></span></li>
         			<li><span><?php echo $config->get('email'); ?></span></li>
         			<li><span><a href="<?php echo $config->get('git_link'); ?>" target="_blank"><?php echo $config->get('git_title'); ?></a></span></li>
         			<li><span><a href="<?php echo $config->get('fb_link'); ?>" target="_blank"><?php echo $config->get('fb_title'); ?></a></span></li>
