@@ -200,7 +200,7 @@
 
         public function obBufferEnd()
         {
-            if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
+            if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
                 return;
 
             register_shutdown_function(function() {
