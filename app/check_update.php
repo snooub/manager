@@ -12,7 +12,7 @@
     $title     = lng('app.check_update.title_page');
     $themes    = [ env('resource.theme.about') ];
     $config    = new AppAboutConfig($boot, env('resource.config.about'));
-    $appUpdate = new AppUpdate($config);
+    $appUpdate = new AppUpdate($boot, $config);
     $servers   = $appUpdate->getServers();
     $appAlert->setID(ALERT_APP_CHECK_UPDATE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
@@ -25,10 +25,11 @@
 
             if (is_array($serverErrors)) {
                 foreach ($serverErrors AS $server => $errors) {
-                    $errorInt    = $errors[AppUpdate::ARRAY_KEY_ERROR_INT];
-                    $errorUrl    = $errors[AppUpdate::ARRAY_KEY_URL];
-                    $errorCheck  = $errors[AppUpdate::ARRAY_KEY_ERROR_CHECK];
-                    $errorServer = $errors[AppUpdate::ARRAY_KEY_ERROR_SERVER];
+                    $errorInt       = $errors[AppUpdate::ARRAY_KEY_ERROR_INT];
+                    $errorUrl       = $errors[AppUpdate::ARRAY_KEY_URL];
+                    $errorCheck     = $errors[AppUpdate::ARRAY_KEY_ERROR_CHECK];
+                    $errorServer    = $errors[AppUpdate::ARRAY_KEY_ERROR_SERVER];
+                    $errorWriteInfo = $errors[AppUpdate::ARRAY_KEY_ERROR_WRITE_INFO];
 
                     if ($errorInt === FileCurl::ERROR_URL_NOT_FOUND)
                         $appAlert->danger(lng('app.check_update.alert.address_not_found', 'url', $errorUrl));
@@ -52,6 +53,8 @@
                         $appAlert->danger(lng('app.check_update.alert.error_version_server_not_validate', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_VERSION_CURRENT_IN_SERVER)
                         $appAlert->danger(lng('app.check_update.alert.error_not_found_version_current_in_server', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_INFO_FAILED)
+                        $appAlert->danger(lng('app.check_update.alert.error_write_info_failed', 'url', $errorUrl));
                     else
                         $appAlert->danger(lng('app.check_update.alert.error_unknown', 'url', $errorUrl));
                 }
@@ -64,6 +67,8 @@
             else
                 $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get('version')));
         }
+
+        gotoURL('check_update.php');
     }
 ?>
 
