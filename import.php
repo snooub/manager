@@ -1,10 +1,10 @@
 <?php
 
     use Librarys\File\FileInfo;
+    use Librarys\File\FileCurl;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
-    use Librarys\App\AppURLCurl;
 
     define('LOADED',               1);
     define('EXISTS_FUNC_OVERRIDE', 1);
@@ -42,7 +42,7 @@
         'is_empty'    => true,
         'urls_count'  => 0,
         'exists_func' => EXISTS_FUNC_OVERRIDE,
-        'mode_import' => AppURLCurl::isSupportCurl() ? MODE_IMPORT_CURL : MODE_IMPORT_SOCKET
+        'mode_import' => FileCurl::isSupportCurl() ? MODE_IMPORT_CURL : MODE_IMPORT_SOCKET
     ];
 
     if (isset($_POST['import'])) {
@@ -94,19 +94,19 @@
                         if (isset($forms['filenames'][$i]))
                             $filename = $forms['filenames'][$i];
 
-                        $curl = new AppURLCurl($url);
+                        $curl = new FileCurl($url);
                         $curl->setUseCurl($forms['mode_import'] === MODE_IMPORT_CURL);
 
                         if ($curl->curl() == false) {
                             $errorInt = $curl->getErrorInt();
 
-                            if ($errorInt === AppURLCurl::ERROR_URL_NOT_FOUND)
+                            if ($errorInt === FileCurl::ERROR_URL_NOT_FOUND)
                                 $appAlert->danger(lng('import.alert.address_not_found', 'url', $url));
-                            else if ($errorInt === AppURLCurl::ERROR_FILE_NOT_FOUND)
+                            else if ($errorInt === FileCurl::ERROR_FILE_NOT_FOUND)
                                 $appAlert->danger(lng('import.alert.file_not_found', 'url', $url));
-                            else if ($errorInt === AppURLCurl::ERROR_AUTO_REDIRECT)
+                            else if ($errorInt === FileCurl::ERROR_AUTO_REDIRECT)
                                 $appAlert->danger(lng('import.alert.auto_redirect_url_failed', 'url', $url));
-                            else if ($errorInt === AppURLCurl::ERROR_CONNECT_FAILED)
+                            else if ($errorInt === FileCurl::ERROR_CONNECT_FAILED)
                                 $appAlert->danger(lng('import.alert.connect_url_failed', 'url', $url));
                             else
                                 $appAlert->danger(lng('import.alert.error_unknown', 'url', $url));
@@ -249,7 +249,7 @@
                     <span><?php echo lng('import.form.input.label_mode_import'); ?></span>
                     <ul class="radio-choose-tab">
                         <li>
-                            <input type="radio" name="mode_import" value="<?php echo MODE_IMPORT_CURL; ?>" id="mode-import-curl"<?php if ($forms['mode_import'] == MODE_IMPORT_CURL) { ?> checked="checked"<?php } ?><?php if (AppURLCurl::isSupportCurl() == false) { ?> disabled="disabled"<?php } ?>/>
+                            <input type="radio" name="mode_import" value="<?php echo MODE_IMPORT_CURL; ?>" id="mode-import-curl"<?php if ($forms['mode_import'] == MODE_IMPORT_CURL) { ?> checked="checked"<?php } ?><?php if (FileCurl::isSupportCurl() == false) { ?> disabled="disabled"<?php } ?>/>
                             <label for="mode-import-curl">
                                 <span><?php echo lng('import.form.input.mode_import_curl'); ?></span>
                             </label>

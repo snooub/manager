@@ -2,43 +2,56 @@
 
     use Librarys\App\AppAboutConfig;
     use Librarys\App\AppUpdate;
-    use Librarys\App\AppURLCurl;
+    use Librarys\File\FileCurl;
 
     define('LOADED',              1);
     define('PARAMETER_CHECK_URL', 'check');
 
     require_once('global.php');
 
-    $title  = lng('app.check_update.title_page');
-    $themes = [ env('resource.theme.about') ];
-    $config = new AppAboutConfig($boot, env('resource.config.about'));
+    $title     = lng('app.check_update.title_page');
+    $themes    = [ env('resource.theme.about') ];
+    $config    = new AppAboutConfig($boot, env('resource.config.about'));
+    $appUpdate = new AppUpdate($config);
+    $servers   = $appUpdate->getServers();
     $appAlert->setID(ALERT_APP_CHECK_UPDATE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     if (isset($_GET[PARAMETER_CHECK_URL])) {
-        $appUpdate = new AppUpdate($config);
-
-        if ($appUpdate->checkUpdate() === false) {
+        if (count($servers) <= 0) {
+            $appAlert->danger(lng('app.check_update.alert.not_server_check'));
+        } else if ($appUpdate->checkUpdate() === false) {
             $serverErrors = $appUpdate->getServerErrors();
 
             if (is_array($serverErrors)) {
                 foreach ($serverErrors AS $server => $errors) {
                     $errorInt    = $errors[AppUpdate::ARRAY_KEY_ERROR_INT];
                     $errorUrl    = $errors[AppUpdate::ARRAY_KEY_URL];
-                    $errorUpdate = $errors[AppUpdate::ARRAY_KEY_ERROR_UPDATE];
+                    $errorCheck  = $errors[AppUpdate::ARRAY_KEY_ERROR_CHECK];
+                    $errorServer = $errors[AppUpdate::ARRAY_KEY_ERROR_SERVER];
 
-                    if ($errorInt === AppURLCurl::ERROR_URL_NOT_FOUND)
+                    if ($errorInt === FileCurl::ERROR_URL_NOT_FOUND)
                         $appAlert->danger(lng('app.check_update.alert.address_not_found', 'url', $errorUrl));
-                    else if ($errorInt === AppURLCurl::ERROR_FILE_NOT_FOUND)
+                    else if ($errorInt === FileCurl::ERROR_FILE_NOT_FOUND)
                         $appAlert->danger(lng('app.check_update.alert.file_not_found', 'url', $errorUrl));
-                    else if ($errorInt === AppURLCurl::ERROR_AUTO_REDIRECT)
+                    else if ($errorInt === FileCurl::ERROR_AUTO_REDIRECT)
                         $appAlert->danger(lng('app.check_update.alert.auto_redirect_url_failed', 'url', $errorUrl));
-                    else if ($errorInt === AppURLCurl::ERROR_CONNECT_FAILED)
+                    else if ($errorInt === FileCurl::ERROR_CONNECT_FAILED)
                         $appAlert->danger(lng('app.check_update.alert.connect_url_failed', 'url', $errorUrl));
-                    else if ($errorUpdate === AppUpdate::ERROR_JSON_DATA)
+                    else if ($errorCheck === AppUpdate::ERROR_CHECK_JSON_DATA)
                         $appAlert->danger(lng('app.check_update.alert.error_json_data', 'url', $errorUrl));
-                    else if ($errorUpdate === AppUpdate::ERROR_JSON_DATA_NOT_VALIDATE)
+                    else if ($errorCheck === AppUpdate::ERROR_CHECK_JSON_DATA_NOT_VALIDATE)
                         $appAlert->danger(lng('app.check_update.alert.error_json_data_not_validate', 'url', $errorUrl));
+                    else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_LIST_VERSION_IN_SERVER)
+                        $appAlert->danger(lng('app.check_update.alert.error_not_found_list_version_in_server', 'url', $errorUrl));
+                    else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_PARAMETER_VERSION_GUEST)
+                        $appAlert->danger(lng('app.check_update.alert.error_not_found_parameter_guest', 'url', $errorUrl));
+                    else if ($errorServer === AppUpdate::ERROR_SERVER_VERSION_GUEST_NOT_VALIDATE)
+                        $appAlert->danger(lng('app.check_update.alert.error_version_guest_not_validate', 'url', $errorUrl));
+                    else if ($errorServer === AppUpdate::ERROR_SERVER_VERSION_SERVER_NOT_VALIDATE)
+                        $appAlert->danger(lng('app.check_update.alert.error_version_server_not_validate', 'url', $errorUrl));
+                    else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_VERSION_CURRENT_IN_SERVER)
+                        $appAlert->danger(lng('app.check_update.alert.error_not_found_version_current_in_server', 'url', $errorUrl));
                     else
                         $appAlert->danger(lng('app.check_update.alert.error_unknown', 'url', $errorUrl));
                 }
@@ -67,6 +80,12 @@
                     <li><span><?php echo lng('app.check_update.info.label.last_check_update'); ?></span></li>
                     <li><span><?php echo lng('app.check_update.info.label.last_upgrade'); ?></span></li>
                     <li><span><?php echo lng('app.check_update.info.label.version_current'); ?></span></li>
+
+                    <?php if (is_array($servers)) { ?>
+                        <?php for ($i = 0; $i < count($servers); ++$i) { ?>
+                            <li><span><?php echo lng('app.check_update.info.label.server_check', 'index', $i); ?></span></li>
+                        <?php } ?>
+                    <?php } ?>
                 </ul>
             </li>
 
@@ -84,7 +103,13 @@
                         <li><span><?php echo $config->get('upgrade_at'); ?></span></li>
                     <?php } ?>
 
-                    <li><span><?php echo $config->get('version'); ?></span></li>
+                    <li><span><?php echo $config->get('version'); ?> <?php if ($config->get('is_beta')) echo 'beta'; ?></span></li>
+
+                    <?php if (is_array($servers)) { ?>
+                        <?php foreach ($servers AS $server) { ?>
+                            <li><span><?php echo $server; ?></span></li>
+                        <?php } ?>
+                    <?php } ?>
                 </ul>
             </li>
         </ul>
