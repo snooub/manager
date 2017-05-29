@@ -5,6 +5,7 @@
     if (defined('LOADED') == false)
         exit;
 
+    use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\File\FileCurl;
     use Librarys\App\AppAboutConfig;
@@ -19,6 +20,7 @@
             // 'izerocs.ga'
         ];
 
+        private $boot;
         private $aboutConfig;
         private $serverErrors = array();
         private $path         = 'app/ManagerServer/check_update.php';
@@ -28,18 +30,18 @@
 
         const PARAMETER_VERSION_GUEST_URL = 'version_guest';
 
-        const ARRAY_KEY_URL          = 'url';
-        const ARRAY_KEY_ERROR_INT    = 'error_int';
-        const ARRAY_KEY_HTTP_CODE    = 'http_code';
-        const ARRAY_KEY_ERROR_CHECK  = 'error_check';
-        const ARRAY_KEY_ERROR_SERVER = 'error_server';
+        const ARRAY_KEY_URL              = 'url';
+        const ARRAY_KEY_ERROR_INT        = 'error_int';
+        const ARRAY_KEY_HTTP_CODE        = 'http_code';
+        const ARRAY_KEY_ERROR_CHECK      = 'error_check';
+        const ARRAY_KEY_ERROR_SERVER     = 'error_server';
+        const ARRAY_KEY_ERROR_WRITE_INFO = 'error_write_info';
 
         const ARRAY_DATA_KEY_VERSION         = 'version';
         const ARRAY_DATA_KEY_IS_BETA         = 'is_beta';
         const ARRAY_DATA_KEY_CHANGELOG       = 'changelog';
         const ARRAY_DATA_KEY_BUILD_LAST      = 'build_last';
         const ARRAY_DATA_KEY_COMPRESS_METHOD = 'compress_method';
-        const ARRAY_DATA_KEY_DATA_UPDATE     = 'data_update';
         const ARRAY_DATA_KEY_ERROR_INT       = 'error_int';
 
         const RESULT_NONE              = 0;
@@ -57,8 +59,12 @@
         const ERROR_SERVER_VERSION_SERVER_NOT_VALIDATE         = 4;
         const ERROR_SERVER_NOT_FOUND_VERSION_CURRENT_IN_SERVER = 5;
 
-        public function __construct(AppAboutConfig $about)
+        const ERROR_WRITE_INFO_NONE   = 0;
+        const ERROR_WRITE_INFO_FAILED = 1;
+
+        public function __construct(Boot $boot, AppAboutConfig $about)
         {
+            $this->boot        = $boot;
             $this->aboutConfig = $about;
         }
 
@@ -70,9 +76,10 @@
             $countSuccess = count($this->servers);
 
             foreach ($this->servers AS $server) {
-                $curl        = new FileCurl($server . '/' . $this->path . '?' . self::PARAMETER_VERSION_GUEST_URL . '=' . $this->aboutConfig->get('version'));
-                $errorCheck  = self::ERROR_CHECK_NONE;
-                $errorServer = self::ERROR_SERVER_NONE;
+                $curl           = new FileCurl($server . '/' . $this->path . '?' . self::PARAMETER_VERSION_GUEST_URL . '=' . $this->aboutConfig->get('version'));
+                $errorCheck     = self::ERROR_CHECK_NONE;
+                $errorServer    = self::ERROR_SERVER_NONE;
+                $errorWriteInfo = self::ERROR_WRITE_INFO_NONE;
 
                 if ($curl->curl() != false) {
                     $bufferLength = $curl->getBufferLength();
@@ -89,18 +96,19 @@
 
                         if ($this->hasJsonArrayKey(self::ARRAY_DATA_KEY_ERROR_INT))
                             $errorServer = $this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT);
-                        else if ($this->checkDataUpdate() != false)
+                        else if ($this->checkDataUpdate() != false && $this->makeFileUpdateInfo($errorWriteInfo))
                             return true;
                     }
                 }
 
                 $countSuccess--;
                 $this->serverErrors[$server] = [
-                    self::ARRAY_KEY_URL          => $curl->getURL(),
-                    self::ARRAY_KEY_ERROR_INT    => $curl->getErrorInt(),
-                    self::ARRAY_KEY_HTTP_CODE    => $curl->getHttpCode(),
-                    self::ARRAY_KEY_ERROR_CHECK  => $errorCheck,
-                    self::ARRAY_KEY_ERROR_SERVER => $errorServer
+                    self::ARRAY_KEY_URL              => $curl->getURL(),
+                    self::ARRAY_KEY_ERROR_INT        => $curl->getErrorInt(),
+                    self::ARRAY_KEY_HTTP_CODE        => $curl->getHttpCode(),
+                    self::ARRAY_KEY_ERROR_CHECK      => $errorCheck,
+                    self::ARRAY_KEY_ERROR_SERVER     => $errorServer,
+                    self::ARRAY_KEY_ERROR_WRITE_INFO => $errorWriteInfo
                 ];
             }
 
@@ -110,7 +118,7 @@
             return true;
         }
 
-        public function checkDataUpdate()
+        private function checkDataUpdate()
         {
             if ($this->aboutConfig instanceof AppAboutConfig == false)
                 return false;
@@ -127,6 +135,35 @@
                 $this->updateStatus = self::RESULT_VERSION_IS_LATEST;
             else
                 $this->updateStatus = self::RESULT_VERSION_IS_OLD;
+
+            return true;
+        }
+
+        public function checkUpdateLocal()
+        {
+            $appUpgradeConfig = new AppUpgradeConfig($this->boot);
+
+            if ($AppUpgradeConfig->hasEntryArrayConfigAny()) {
+
+            }
+        }
+
+        private function makeFileUpdateInfo(&$errorWriteInfo = null)
+        {
+            $appUpgradeConfig      = new AppUpgradeConfig($this->boot);
+            $appUpgradeConfigWrite = new AppUpgradeConfigWrite($appUpgradeConfig);
+
+            foreach ($this->jsonArray AS $key => $value) {
+                if ($appUpgradeConfig->set($key, $value) == false) {
+                    $errorWriteInfo = self::ERROR_WRITE_INFO_FAILED;
+                    return false;
+                }
+            }
+
+            if ($appUpgradeConfigWrite->write() == false) {
+                $errorWriteInfo = self::ERROR_WRITE_INFO_FAILED;
+                return false;
+            }
 
             return true;
         }
@@ -206,8 +243,7 @@
                 self::ARRAY_DATA_KEY_VERSION,
                 self::ARRAY_DATA_KEY_CHANGELOG,
                 self::ARRAY_DATA_KEY_BUILD_LAST,
-                self::ARRAY_DATA_KEY_COMPRESS_METHOD,
-                self::ARRAY_DATA_KEY_DATA_UPDATE
+                self::ARRAY_DATA_KEY_COMPRESS_METHOD
             ];
 
             foreach ($jsonArray AS $key => $value) {
