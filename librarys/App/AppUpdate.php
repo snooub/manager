@@ -156,6 +156,9 @@
                 return false;
             }
 
+            $this->aboutConfig->setSystem('check_at', time());
+            $this->aboutConfig->fastWriteConfig();
+
             return true;
         }
 

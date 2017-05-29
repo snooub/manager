@@ -99,13 +99,13 @@
                     <?php if ($config->get('check_at') <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_check_update'); ?></span></li>
                     <?php } else { ?>
-                        <li><span><?php echo $config->get('check_at'); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get('check_at'))); ?></span></li>
                     <?php } ?>
 
                     <?php if ($config->get('upgrade_at') <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_upgrade'); ?></span></li>
                     <?php } else { ?>
-                        <li><span><?php echo $config->get('upgrade_at'); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get('upgrade_at'))); ?></span></li>
                     <?php } ?>
 
                     <li><span><?php echo $config->get('version'); ?> <?php if ($config->get('is_beta')) echo 'beta'; ?></span></li>

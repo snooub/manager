@@ -24,9 +24,9 @@
         			<li><span><?php echo lng('app.about.info.label.facebook'); ?></span></li>
         			<li><span><?php echo lng('app.about.info.label.phone'); ?></span></li>
         			<li><span><?php echo lng('app.about.info.label.create_at'); ?></span></li>
+                    <li><span><?php echo lng('app.about.info.label.check_at'); ?></span></li>
                     <li><span><?php echo lng('app.about.info.label.upgrade_at'); ?></span></li>
-        			<li><span><?php echo lng('app.about.info.label.check_at'); ?></span></li>
-        		</ul>
+    		</ul>
         	</li>
         	<li class="value">
         		<ul>
@@ -37,8 +37,18 @@
         			<li><span><a href="<?php echo $config->get('fb_link'); ?>" target="_blank"><?php echo $config->get('fb_title'); ?></a></span></li>
         			<li><span><?php echo $config->get('phone'); ?></span></li>
         			<li><span><?php echo date('d.m.Y - H:i', $config->get('create_at')); ?></span></li>
-                    <li><span><?php echo date('d.m.Y - H:i', $config->get('update_at')); ?></span></li>
-        			<li><span><?php echo date('d.m.Y - H:i', $config->get('check_at')); ?></span></li>
+
+                    <?php if ($config->get('check_at') <= 0) { ?>
+                        <li><span><?php echo lng('app.check_update.info.value.not_last_check_update'); ?></span></li>
+                    <?php } else { ?>
+                        <li><span><?php echo date('d.m.Y - H:i:s', $config->get('check_at')); ?></span></li>
+                    <?php } ?>
+
+                    <?php if ($config->get('upgrade_at') <= 0) { ?>
+                        <li><span><?php echo lng('app.check_update.info.value.not_last_upgrade'); ?></span></li>
+                    <?php } else { ?>
+                        <li><span><?php echo date('d.m.Y - H:i:s', $config->get('upgrade_at')); ?></span></li>
+                    <?php } ?>
         		</ul>
         	</li>
         </ul>
