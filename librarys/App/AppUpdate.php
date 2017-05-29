@@ -131,21 +131,12 @@
             $versionCurrent = $this->aboutConfig->get('version');
             $versionUpdate  = $this->getVersionUpdate();
 
-            if (strcasecmp($versionCurrent, $versionUpdate) === 0)
+            if (self::versionCurrentIsOld($versionCurrent, $versionUpdate))
                 $this->updateStatus = self::RESULT_VERSION_IS_LATEST;
             else
                 $this->updateStatus = self::RESULT_VERSION_IS_OLD;
 
             return true;
-        }
-
-        public function checkUpdateLocal()
-        {
-            $appUpgradeConfig = new AppUpgradeConfig($this->boot);
-
-            if ($AppUpgradeConfig->hasEntryArrayConfigAny()) {
-
-            }
         }
 
         private function makeFileUpdateInfo(&$errorWriteInfo = null)
@@ -267,6 +258,38 @@
         public static function validateVersionValue($version, &$matches = null)
         {
             return preg_match('/^(\d)+\.(\d)+\.?(\d)?$/i', $version, $matches);
+        }
+
+        public static function versionCurrentIsOld($versionCurrent, $versionUpdate)
+        {
+            $versionCurrentMatches = null;
+            $versionUpdateMacthes  =  null;
+
+            if (is_array($versionCurrent) == false)
+                self::validateVersionValue($versionCurrent, $versionCurrentMatches);
+            else
+                $versionCurrentMatches = $versionCurrent;
+
+            if (is_array($versionUpdate) == false)
+                self::validateVersionValue($versionUpdate, $versionUpdateMacthes);
+            else
+                $versionUpdateMacthes = $versionUpdate;
+
+            if (is_array($versionCurrentMatches) == false || is_array($versionUpdateMacthes) == false)
+                return false;
+
+            if (isset($versionCurrentMatches[3]) == false)
+                $versionCurrentMatches[3] = -1;
+
+            if (isset($versionUpdateMacthes[3]) == false)
+                $versionUpdateMacthes[3] = -1;
+
+            for ($i = 0; $i < 3; ++$i) {
+                if (intval($versionUpdateMacthes[$i]) > intval($versionCurrentMatches[$i]))
+                    return true;
+            }
+
+            return false;
         }
 
     }

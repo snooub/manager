@@ -7,7 +7,7 @@
 
     $title  = lng('app.about.title_page');
     $themes = [ env('resource.theme.about') ];
-    $config = new AppAboutConfig($boot, env('resource.config.about'));
+    $config = new AppAboutConfig($boot);
 
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 ?>

@@ -11,7 +11,7 @@
 
     $title     = lng('app.check_update.title_page');
     $themes    = [ env('resource.theme.about') ];
-    $config    = new AppAboutConfig($boot, env('resource.config.about'));
+    $config    = new AppAboutConfig($boot);
     $appUpdate = new AppUpdate($boot, $config);
     $servers   = $appUpdate->getServers();
     $appAlert->setID(ALERT_APP_CHECK_UPDATE);
