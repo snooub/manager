@@ -36,6 +36,7 @@
                 if (strcasecmp($httpHttps, 'on') === 0 || strcasecmp($httpHttps, '1') || $httpHttps == true)
                     $requestScheme = 'https';
             }
+
             $this->cache('server.document_root',  env('SERVER.DOCUMENT_ROOT',  dirname(__DIR__)));
             $this->cache('server.request_scheme', $requestScheme);
             $this->cache('server.http_host',      env('server.request_scheme', $requestScheme) . '://' . env('SERVER.HTTP_HOST', '/'));
@@ -149,6 +150,11 @@
             } else {
                 $this->cache('dev.rand', 0);
             }
+
+            $this->cache('dev.compress_css', false);
+            $this->cache('dev.compress_js',  false);
+            $this->cache('dev.cache_css',    86400);
+            $this->cache('dev.cache_js',     86400);
         }
 
         public static function env($name, $default = null)
