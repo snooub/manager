@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page_directory' => 'Sao chép thư mục',
         'title_page_file'      => 'Sao chép tập tin',

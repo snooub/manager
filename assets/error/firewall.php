@@ -1,3 +1,4 @@
+<?php if (defined('LOADED') == false) exit; ?>
 <?php use Librarys\Firewall\FirewallProcess; ?>
 
 <!DOCTYPE html>

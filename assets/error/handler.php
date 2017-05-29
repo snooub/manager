@@ -1,3 +1,5 @@
+<?php if (defined('LOADED') == false) exit; ?>
+
 <!DOCTYPE html>
 <html>
 	<head>

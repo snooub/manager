@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page' => 'Xóa sạch dữ liệu',
 

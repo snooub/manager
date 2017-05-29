@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page' => 'Kết nối cơ sở dữ liệu',
 

@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page_directory' => 'Thông tin thư mục',
         'title_page_file'      => 'Thông tin tập tin',

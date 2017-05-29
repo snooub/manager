@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page'    => 'Sửa văn bản',
         'title_page_as' => 'Sửa dạng văn bản',

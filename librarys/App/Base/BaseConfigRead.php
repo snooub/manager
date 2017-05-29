@@ -2,6 +2,9 @@
 
     namespace Librarys\App\Base;
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\Boot;
     use Librarys\App\AppUser;
     use Librarys\File\FileInfo;

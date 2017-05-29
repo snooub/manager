@@ -2,6 +2,9 @@
 
     namespace Librarys\Database\Extension;
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\Database\DatabaseConnect;
 
     abstract class DatabaseExtensionInterface

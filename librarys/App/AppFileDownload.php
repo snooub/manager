@@ -2,6 +2,9 @@
 
     namespace Librarys\App;
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\App\AppDirectory;
     use Librarys\File\FileInfo;
 

@@ -5,6 +5,9 @@
     if (defined('SP') == false)
         define('SP', DIRECTORY_SEPARATOR);
 
+    if (defined('LOADED') == false)
+        exit;
+
     require_once('File' . SP . 'FileInfo.php');
 
     use Librarys\File\FileInfo;

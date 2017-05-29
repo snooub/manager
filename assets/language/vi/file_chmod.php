@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page_directory' => 'Phân quyền thư mục',
         'title_page_file'      => 'Phân quyền tập tin',

@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page_directory' => 'Đổi tên thư mục',
         'title_page_file'      => 'Đổi tên tập tin',

@@ -2,6 +2,9 @@
 
     namespace Librarys\App;
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\App\Base\BaseConfigRead;

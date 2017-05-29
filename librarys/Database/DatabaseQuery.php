@@ -2,6 +2,9 @@
 
 	namespace Librarys\Database;
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\Boot;
 
 	class DatabaseQuery

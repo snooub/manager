@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'mysql_host'       => 'localhost',
         'mysql_username'   => 'root',

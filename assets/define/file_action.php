@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     define('FILE_ACTION_RENAME_MULTI', 'rename_multi');
     define('FILE_ACTION_COPY_MULTI',   'copy_multi');
     define('FILE_ACTION_DELETE_MULTI', 'delete_multi');

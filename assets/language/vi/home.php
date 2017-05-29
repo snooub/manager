@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page_root'      => 'Danh sách',
         'title_page_directory' => 'Danh sách: ',

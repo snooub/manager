@@ -2,6 +2,9 @@
 
     namespace Librarys\Database;
 
+    if (defined('LOADED') == false)
+        exit;
+
     final class DatabaseSchema
     {
 

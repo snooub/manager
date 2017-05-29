@@ -5,6 +5,9 @@
     if (defined('SP') == false)
         define('SP', DIRECTORY_SEPARATOR);
 
+    if (defined('LOADED') == false)
+        exit;
+
     error_reporting(E_ALL);
 
     require_once(__DIR__ . SP . 'Function.php');

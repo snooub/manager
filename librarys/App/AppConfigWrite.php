@@ -2,6 +2,9 @@
 
 	namespace Librarys\App;
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\App\Base\BaseConfigWrite;
 
 	final class AppConfigWrite extends BaseConfigWrite

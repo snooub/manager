@@ -4,6 +4,9 @@
 
     require_once('File' . SP . 'FileInfo.php');
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\File\FileInfo;
 
     class Environment

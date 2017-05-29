@@ -1,5 +1,8 @@
 <?php
 
+    if (defined('LOADED') == false)
+        exit;
+
     return [
         'title_page'          => 'Quản lý bản sao lưu',
         'empty_backup_record' => 'Không có bản sao lưu nào',
