@@ -15,9 +15,9 @@
 
         private $servers = [
             'localhost',
-            // 'izerocs.mobi',
-            // 'izerocs.net',
-            // 'izerocs.ga'
+            'izerocs.mobi',
+            'izerocs.net',
+            'izerocs.ga'
         ];
 
         private $boot;
@@ -37,12 +37,14 @@
         const ARRAY_KEY_ERROR_SERVER     = 'error_server';
         const ARRAY_KEY_ERROR_WRITE_INFO = 'error_write_info';
 
-        const ARRAY_DATA_KEY_VERSION         = 'version';
-        const ARRAY_DATA_KEY_IS_BETA         = 'is_beta';
-        const ARRAY_DATA_KEY_CHANGELOG       = 'changelog';
-        const ARRAY_DATA_KEY_BUILD_LAST      = 'build_last';
-        const ARRAY_DATA_KEY_COMPRESS_METHOD = 'compress_method';
-        const ARRAY_DATA_KEY_ERROR_INT       = 'error_int';
+        const ARRAY_DATA_KEY_VERSION       = 'version';
+        const ARRAY_DATA_KEY_IS_BETA       = 'is_beta';
+        const ARRAY_DATA_KEY_CHANGELOG     = 'changelog';
+        const ARRAY_DATA_KEY_BUILD_LAST    = 'build_last';
+        const ARRAY_DATA_KEY_DATA_UPGRADE  = 'data_upgrade';
+        const ARRAY_DATA_KEY_MD5_BIN_CHECK = 'md5_bin_check';
+        const ARRAY_DATA_KEY_SERVER_NAME   = 'server_name';
+        const ARRAY_DATA_KEY_ERROR_INT     = 'error_int';
 
         const RESULT_NONE              = 0;
         const RESULT_VERSION_IS_LATEST = 1;
@@ -59,8 +61,16 @@
         const ERROR_SERVER_VERSION_SERVER_NOT_VALIDATE         = 4;
         const ERROR_SERVER_NOT_FOUND_VERSION_CURRENT_IN_SERVER = 5;
 
-        const ERROR_WRITE_INFO_NONE   = 0;
-        const ERROR_WRITE_INFO_FAILED = 1;
+        const ERROR_WRITE_INFO_NONE         = 0;
+        const ERROR_WRITE_INFO_FAILED       = 1;
+        const ERROR_MKDIR_SAVE_DATA_UPGRADE = 2;
+        const ERROR_DECODE_COMPRESS_DATA    = 3;
+        const ERROR_WRITE_DATA_UPGRADE      = 4;
+        const ERROR_MD5_BIN_CHECK           = 5;
+
+        const VERSION_BIN_FILENAME       = 'bin.zip';
+        const VERSION_BIN_MD5_FILENAME   = 'bin.zip.md5';
+        const VERSION_CHANGELOG_FILENAME = 'changelog.md';
 
         public function __construct(Boot $boot, AppAboutConfig $about)
         {
@@ -94,7 +104,7 @@
                     } else {
                         $this->jsonArray = $jsonData;
 
-                        if ($this->hasJsonArrayKey(self::ARRAY_DATA_KEY_ERROR_INT))
+                        if ($this->hasJsonArrayKey(self::ARRAY_DATA_KEY_ERROR_INT) && $this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT) !== self::ERROR_SERVER_NONE)
                             $errorServer = $this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT);
                         else if ($this->checkDataUpdate() != false && $this->makeFileUpdateInfo($errorWriteInfo))
                             return true;
@@ -132,9 +142,9 @@
             $versionUpdate  = $this->getVersionUpdate();
 
             if (self::versionCurrentIsOld($versionCurrent, $versionUpdate))
-                $this->updateStatus = self::RESULT_VERSION_IS_LATEST;
-            else
                 $this->updateStatus = self::RESULT_VERSION_IS_OLD;
+            else
+                $this->updateStatus = self::RESULT_VERSION_IS_LATEST;
 
             return true;
         }
@@ -145,7 +155,7 @@
             $appUpgradeConfigWrite = new AppUpgradeConfigWrite($appUpgradeConfig);
 
             foreach ($this->jsonArray AS $key => $value) {
-                if ($appUpgradeConfig->set($key, $value) == false) {
+                if ($key !== self::ARRAY_DATA_KEY_DATA_UPGRADE && $key !== self::ARRAY_DATA_KEY_CHANGELOG && $appUpgradeConfig->set($key, $value) == false) {
                     $errorWriteInfo = self::ERROR_WRITE_INFO_FAILED;
                     return false;
                 }
@@ -156,10 +166,45 @@
                 return false;
             }
 
+            $pathDirectoryUpgrade = env('app.path.upgrade');
+
+            if (FileInfo::fileExists($pathDirectoryUpgrade) == false && FileInfo::mkdir($pathDirectoryUpgrade, true) == false) {
+                $errorWriteInfo = self::ERROR_MKDIR_SAVE_DATA_UPGRADE;
+                return false;
+            }
+
+            $binFilePath       = FileInfo::validate($pathDirectoryUpgrade . SP . self::VERSION_BIN_FILENAME);
+            $changelogFilePath = FileInfo::validate($pathDirectoryUpgrade . SP . self::VERSION_CHANGELOG_FILENAME);
+
+            $binFileBuffer       = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_DATA_UPGRADE));
+            $changelogFileBuffer = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_CHANGELOG));
+
+            if ($binFileBuffer === false) {
+                $errorWriteInfo = self::ERROR_DECODE_COMPRESS_DATA;
+                return false;
+            } else if (FileInfo::fileWriteContents($binFilePath, $binFileBuffer) == false) {
+                $errorWriteInfo = self::ERROR_WRITE_DATA_UPGRADE;
+                return false;
+            } else if (strcmp(@md5_file($binFilePath), $this->getJsonArrayValue(self::ARRAY_DATA_KEY_MD5_BIN_CHECK)) !== 0) {
+                $errorWriteInfo = self::ERROR_MD5_BIN_CHECK;
+                return false;
+            }
+
+            if ($changelogFileBuffer !== false)
+                FileInfo::fileWriteContents($changelogFilePath, $changelogFileBuffer);
+
             $this->aboutConfig->setSystem('check_at', time());
             $this->aboutConfig->fastWriteConfig();
 
             return true;
+        }
+
+        public static function decodeCompress($data)
+        {
+            if ($data == null || empty($data))
+                return false;
+
+            return @hex2bin($data);
         }
 
         public function getServers()
@@ -204,26 +249,6 @@
             return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_VERSION);
         }
 
-        public function getChangeMsgUpdate()
-        {
-            return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_CHANGE_MSG);
-        }
-
-        public function getBuildLastUpdate()
-        {
-            return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_BUILD_LAST);
-        }
-
-        public function getCompressMethodUpdate()
-        {
-            return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_COMPRESS_METHOD);
-        }
-
-        public function getDataUpdate()
-        {
-            return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_DATA_UPDATE);
-        }
-
         public static function validateJsonData($jsonArray)
         {
             if ($jsonArray == null || is_array($jsonArray) == false)
@@ -237,7 +262,8 @@
                 self::ARRAY_DATA_KEY_VERSION,
                 self::ARRAY_DATA_KEY_CHANGELOG,
                 self::ARRAY_DATA_KEY_BUILD_LAST,
-                self::ARRAY_DATA_KEY_COMPRESS_METHOD
+                self::ARRAY_DATA_KEY_DATA_UPGRADE,
+                self::ARRAY_DATA_KEY_MD5_BIN_CHECK
             ];
 
             foreach ($jsonArray AS $key => $value) {
@@ -287,7 +313,7 @@
             if (isset($versionUpdateMacthes[3]) == false)
                 $versionUpdateMacthes[3] = -1;
 
-            for ($i = 0; $i < 3; ++$i) {
+            for ($i = 1; $i <= 3; ++$i) {
                 if (intval($versionUpdateMacthes[$i]) > intval($versionCurrentMatches[$i]))
                     return true;
             }

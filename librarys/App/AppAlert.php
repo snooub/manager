@@ -126,6 +126,28 @@
             return $this->langMsg;
         }
 
+        public function clean($id = null)
+        {
+            if ($id == null)
+                $id = $this->id;
+
+            if ($id == null)
+                return;
+
+            unset($_SESSION[self::SESSION_NAME_PREFIX . $id]);
+        }
+
+        public function hasAlertDisplay($id = null)
+        {
+            if ($id == null)
+                $id = $this->id;
+
+            if ($id == null)
+                return false;
+
+            return isset($_SESSION[self::SESSION_NAME_PREFIX . $id]) && count($_SESSION[self::SESSION_NAME_PREFIX . $id]) > 0;
+        }
+
         public function gotoURL($url)
         {
             gotoURL($url);

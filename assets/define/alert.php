@@ -6,7 +6,9 @@
     define('ALERT_LOGIN', 'alert_login');
     define('ALERT_INDEX', 'alert_index');
 
-    define('ALERT_APP_CHECK_UPDATE', 'alert_check_update');
+    define('ALERT_APP_ABOUT',        'alert_app_about');
+    define('ALERT_APP_CHECK_UPDATE', 'alert_app_check_update');
+    define('ALERT_APP_UPGRADE_APP',  'alert_app_upgrade_app');
 
     define('ALERT_SYSTEM_SETTING', 'alert_system_setting');
 

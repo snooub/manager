@@ -2,6 +2,7 @@
 
     use Librarys\App\AppAboutConfig;
     use Librarys\App\AppUpdate;
+    use Librarys\App\AppUpgrade;
     use Librarys\File\FileCurl;
 
     define('LOADED',              1);
@@ -9,13 +10,16 @@
 
     require_once('global.php');
 
-    $title     = lng('app.check_update.title_page');
-    $themes    = [ env('resource.theme.about') ];
-    $config    = new AppAboutConfig($boot);
-    $appUpdate = new AppUpdate($boot, $config);
-    $servers   = $appUpdate->getServers();
+    $title      = lng('app.check_update.title_page');
+    $themes     = [ env('resource.theme.about') ];
+    $config     = new AppAboutConfig($boot);
+    $appUpdate  = new AppUpdate($boot, $config);
+    $appUpgrade = new AppUpgrade($boot, $config);
+    $servers    = $appUpdate->getServers();
     $appAlert->setID(ALERT_APP_CHECK_UPDATE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
+
+    $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
 
     if (isset($_GET[PARAMETER_CHECK_URL])) {
         if (count($servers) <= 0) {
@@ -55,6 +59,14 @@
                         $appAlert->danger(lng('app.check_update.alert.error_not_found_version_current_in_server', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_INFO_FAILED)
                         $appAlert->danger(lng('app.check_update.alert.error_write_info_failed', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_MKDIR_SAVE_DATA_UPGRADE)
+                        $appAlert->danger(lng('app.check_update.alert.error_mkdir_save_data_upgrade', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_DECODE_COMPRESS_DATA)
+                        $appAlert->danger(lng('app.check_update.alert.error_decode_compress_data', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_DATA_UPGRADE)
+                        $appAlert->danger(lng('app.check_update.alert.error_write_data_upgrade', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_MD5_BIN_CHECK)
+                        $appAlert->danger(lng('app.check_update.alert.error_md5_bin_check', 'url', $errorUrl));
                     else
                         $appAlert->danger(lng('app.check_update.alert.error_unknown', 'url', $errorUrl));
                 }
@@ -69,6 +81,8 @@
         }
 
         gotoURL('check_update.php');
+    } else if ($hasUpgrade && $appAlert->hasAlertDisplay() == false) {
+        $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get('version'), 'version_update', $appUpgrade->getVersionUpgrade()));
     }
 ?>
 
@@ -134,6 +148,16 @@
                     <span><?php echo lng('app.about.menu_action.about'); ?></span>
                 </a>
             </li>
+
+            <?php if ($hasUpgrade) { ?>
+                <li>
+                    <a href="upgrade_app.php">
+                        <span class="icomoon icon-update"></span>
+                        <span><?php echo lng('app.about.menu_action.upgrade_app'); ?></span>
+                    </a>
+                </li>
+            <?php } ?>
+
             <li>
                 <a href="validate_app.php">
                     <span class="icomoon icon-check"></span>

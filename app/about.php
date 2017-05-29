@@ -1,16 +1,25 @@
 <?php
 
     use Librarys\App\AppAboutConfig;
+    use Librarys\App\AppUpgrade;
 
     define('LOADED', 1);
     require_once('global.php');
 
-    $title  = lng('app.about.title_page');
-    $themes = [ env('resource.theme.about') ];
-    $config = new AppAboutConfig($boot);
-
+    $title      = lng('app.about.title_page');
+    $themes     = [ env('resource.theme.about') ];
+    $config     = new AppAboutConfig($boot);
+    $appUpgrade = new AppUpgrade($boot, $config);
+    $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
+    $appAlert->setID(ALERT_APP_ABOUT);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
+
+    if ($hasUpgrade && $appAlert->hasAlertDisplay() == false)
+        $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get('version'), 'version_update', $appUpgrade->getVersionUpgrade()));
+
 ?>
+
+    <?php $appAlert->display(); ?>
 
     <div id="about">
         <h1><?php echo $config->get('name'); ?></h1>
@@ -62,6 +71,16 @@
                     <span><?php echo lng('app.about.menu_action.check_update'); ?></span>
                 </a>
             </li>
+
+            <?php if ($hasUpgrade) { ?>
+                <li>
+                    <a href="upgrade_app.php">
+                        <span class="icomoon icon-update"></span>
+                        <span><?php echo lng('app.about.menu_action.upgrade_app'); ?></span>
+                    </a>
+                </li>
+            <?php } ?>
+
             <li>
                 <a href="validate_app.php">
                     <span class="icomoon icon-check"></span>

@@ -23,6 +23,7 @@
         'menu_action' => [
             'about'        => 'Thông tin ứng dụng',
             'check_update' => 'Kiểm tra cập nhật',
+            'upgrade_app'  => 'Nâng cấp ứng dụng',
             'validate_app' => 'Kiểm tra ứng dụng',
             'help'         => 'Trợ giúp',
             'feedback'     => 'Góp ý',
