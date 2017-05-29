@@ -89,11 +89,13 @@
             $buffer = null;
 
             foreach ($chars AS $char) {
-                if (self::isNameValidate($name))
-                    $buffer .= $name;
+                if (self::isNameValidate($char))
+                    $buffer .= $char;
+                else
+                    $buffer .= '_';
             }
 
-            return $name;
+            return $buffer;
         }
 
 		public static function extFile($file)
