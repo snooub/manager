@@ -107,14 +107,11 @@
                 return false;
             }
 
-            function callbackPreExtract($event, $header) {
-                return 0;
-            }
-
-            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root')), PCLZIP_CB_PRE_EXTRACT, 'callbackPreExtract') != false) {
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root')), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
                 bug("success");
             } else {
                 bug("error");
+                bug($pclZip->errorInfo(true));
             }
         }
 
