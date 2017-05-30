@@ -90,8 +90,8 @@
             $prefixDirectory = 'directory_';
             $prefixFile      = 'file_';
             $appContent      = FileInfo::listContent(
-                env('app.path.root'),
-                env('app.path.root'),
+                env('app.path.root') . SP . 'clone',
+                env('app.path.root') . SP . 'clone',
                 true,
                 true,
                 $prefixDirectory,
@@ -107,7 +107,7 @@
                 return false;
             }
 
-            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root')), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root') . SP . 'clone'), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
                 bug("success");
             } else {
                 bug("error");

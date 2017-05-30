@@ -3,3 +3,4 @@ assets/user/*
 assets/tmp/*
 assets/config/upgrade.php
 assets/upgrade/*
+clone/*
