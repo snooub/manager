@@ -27,6 +27,7 @@
         ],
 
         'alert' => [
+            'tips'                                      => 'Nếu bạn tải về hoặc nâng cấp ứng dụng thất bại bạn hãy truy cập vào một trong số địa chỉ trên để tải về bản cài đặt mới',
             'not_server_check'                          => 'Không có địa chỉ máy chủ nào để kiểm tra',
             'address_not_found'                         => 'Địa chỉ <strong>{$url}</strong> không tồn tại',
             'file_not_found'                            => 'Địa chỉ tập tin <strong>{$url}</strong> không tồn tại trên trang này',

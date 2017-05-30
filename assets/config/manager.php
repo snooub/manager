@@ -23,7 +23,9 @@
         ],
 
         'login' => [
-            'enable_forgot_password' => false
+            'enable_forgot_password'   => false,
+            'enable_lock_count_failed' => true,
+            'max_lock_count'           => 5
         ],
 
         'paging' => [

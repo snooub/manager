@@ -14,14 +14,9 @@
     final class AppUpdate
     {
 
-        private $servers = [
-            'localhost',
-            'izerocs.net',
-            'izerocs.ga'
-        ];
-
         private $boot;
         private $aboutConfig;
+        private $servers;
         private $serverErrors = array();
         private $path         = null;
 
@@ -80,6 +75,7 @@
         {
             $this->boot        = $boot;
             $this->aboutConfig = $about;
+            $this->servers     = env('app.server_app');
 
             if (Boot::isRunLocal())
                 $this->path = 'app/ManagerServer/check_update.php';

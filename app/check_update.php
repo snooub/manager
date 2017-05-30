@@ -140,6 +140,10 @@
         </div>
     </div>
 
+    <ul class="alert">
+        <li class="info"><span><?php echo lng('app.check_update.alert.tips'); ?></span></li>
+    </ul>
+
     <?php if ($appUser->isLogin()) { ?>
         <ul class="menu-action">
             <li>

@@ -11,6 +11,12 @@
         'app' => [
             'sleep_time_redirect' => 3,
 
+            'server_app' => [
+                'localhost',
+                'izerocs.net',
+                'izerocs.ga'
+            ],
+
             'dev' => [
                 'enable'       => true,
                 'compress_css' => false,
