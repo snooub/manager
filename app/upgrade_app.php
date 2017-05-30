@@ -24,6 +24,16 @@
 
     if ($hasUpgrade == false)
         $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get('version')), ALERT_APP_ABOUT, 'about.php');
+
+    if (isset($_GET[PARAMETER_UPGRADE_URL])) {
+        $errorZipExtract = null;
+
+        if ($appUpgrade->upgradeNow(false, $errorZipExtract) == false) {
+            bug($errorZipExtract);
+        } else {
+            bug("Upgrade success");
+        }
+    }
 ?>
 
     <?php $appAlert->display(); ?>
