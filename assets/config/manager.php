@@ -37,8 +37,9 @@
 
         'theme' => [
             'directory' => 'default'
-        ]
+        ],
 
+        'language' => 'vi'
     ];
 
 ?>
