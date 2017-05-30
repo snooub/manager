@@ -75,7 +75,7 @@
             $updateStatus = $appUpdate->getUpdateStatus();
 
             if ($updateStatus === AppUpdate::RESULT_VERSION_IS_OLD)
-                $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get('version'), 'version_update', $appUpdate->getVersionUpdate()));
+                $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get('version'), 'version_update', $appUpdate->getVersionUpdate()), ALERT_APP_UPGRADE_APP, 'upgrade_app.php');
             else
                 $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get('version')));
         }
