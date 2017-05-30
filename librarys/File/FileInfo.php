@@ -686,24 +686,35 @@
             return @filegroup($path);
         }
 
-        public static function listContent($path, $isGetSize = false, $isGetChmodRWX = false, $parentNotModify = null, &$entryNotModify = null, &$entrySizeNotModify = null)
+        public static function listContent($path, $pathRemove = null, $isGetSize = false, $isGetChmodRWX = false, $parentNotModify = null, &$entryNotModify = null)
         {
             if (is_array($entryNotModify) == false)
                 $entryNotModify = array();
 
             if (self::isTypeDirectory($path)) {
-                if ($parentNotModify == null)
+                if ($parentNotModify == null) {
                     $parentNotModify = $path;
 
-                $entryNotModify[] = [
-                    'filepath'      => $path,
-                    'filename'      => basename($path),
-                    'filesize'      => 0,
-                    'is_directory'  => true,
-                    'is_readable'   => $isGetChmodRWX ? self::isReadable($path)   : null,
-                    'is_writable'   => $isGetChmodRWX ? self::isWriteable($path)  : null,
-                    'is_executable' => $isGetChmodRWX ? self::isExecutable($path) : null
-                ];
+                    if ($pathRemove !== null)
+                        $pathRemove = self::validate($pathRemove);
+                }
+
+                if ($path !== $parentNotModify) {
+                    $pathDirectory = $path;
+
+                    if ($pathRemove !== null && strpos($path, $pathRemove) === 0)
+                        $pathDirectory = substr($path, strlen($pathRemove) + 1);
+
+                    $entryNotModify[] = [
+                        'filepath'      => $pathDirectory,
+                        'filename'      => basename($path),
+                        'filesize'      => 0,
+                        'is_directory'  => true,
+                        'is_readable'   => $isGetChmodRWX ? self::isReadable($path)   : null,
+                        'is_writable'   => $isGetChmodRWX ? self::isWriteable($path)  : null,
+                        'is_executable' => $isGetChmodRWX ? self::isExecutable($path) : null
+                    ];
+                }
 
                 $handleScan = self::scanDirectory($path);
 
@@ -715,20 +726,18 @@
                         $filepath = self::validate($path . SP . $filename);
 
                         if (self::isTypeDirectory($filepath)) {
-                            if (self::listContent($filepath, $isGetSize, $isGetChmodRWX, $parentNotModify, $entryNotModify) == false)
+                            if (self::listContent($filepath, $pathRemove, $isGetSize, $isGetChmodRWX, $parentNotModify, $entryNotModify) == false)
                                 return false;
                         } else {
-                            $filesize = 0;
+                            $entrypath = $filepath;
 
-                            if ($isGetSize) {
-                                $filesize            = self::fileSize($filepath);
-                                $entrySizeNotModify += $filesize;
-                            }
+                            if ($pathRemove !== null && strpos($entrypath, $pathRemove) === 0)
+                                $entrypath = substr($entrypath, strlen($pathRemove) + 1);
 
                             $entryNotModify[] = [
-                                'filepath'      => $filepath,
+                                'filepath'      => $entrypath,
                                 'filename'      => basename($filepath),
-                                'filesize'      => $filesize,
+                                'filesize'      => $isGetSize ? self::fileSize($filepath) : 0,
                                 'is_directory'  => false,
                                 'is_readable'   => $isGetChmodRWX ? self::isReadable($filepath)   : null,
                                 'is_writable'   => $isGetChmodRWX ? self::isWriteable($filepath)  : null,
@@ -744,6 +753,12 @@
                     $filesize            = self::fileSize($path);
                     $entrySizeNotModify += $filesize;
                 }
+
+                if ($pathRemove !== null)
+                    $pathRemove = self::validate($pathRemove);
+
+                if ($pathRemove !== null && strpos($path, $pathRemove) === 0)
+                    $path = substr($path, strlen($pathRemove) + 1);
 
                 $entryNotModify[] = [
                     'filepath'      => $path,

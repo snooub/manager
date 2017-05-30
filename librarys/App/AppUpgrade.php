@@ -99,7 +99,7 @@
             }
 
             FileInfo::fileWrite($logHandle, "Info: Get list content in zip success\n");
-            $appContent = FileInfo::listContent(env('app.path.root'), true, true);
+            $appContent = FileInfo::listContent(env('app.path.root'), env('app.path.root'), true, true);
 
             if (is_array($appContent) == false || count($appContent) <= 0) {
                 $errorUpgrade = self::ERROR_UPGRADE_NOT_LIST_FILE_APP;
