@@ -127,15 +127,8 @@
                     if ($entrys['folder'] == false && array_key_exists($prefixFile . $entryFilename, $appContent))
                         unset($appContent[$prefixFile . $entryFilename]);
                 }
-//bug($this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_ENTRY_IGONE_REMOVE));
 
-                $appPathConfig  = $appPath . SP . 'assets' . SP . 'config';
-                $appPathUser    = $appPath . SP . 'assets' . SP . 'user';
-                $appPathLength  = strlen($appPath) + 1;
-                $appEntryIgones = [
-                    substr($appPathConfig, $appPathLength),
-                    substr($appPathUser,   $appPathLength)
-                ];
+                $appEntryIgones = $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_ENTRY_IGONE_REMOVE);
 
                 foreach ($appContent AS $key => $entrys) {
                     $entryFilepath = $entrys['filepath'];
@@ -186,7 +179,7 @@
                 FileInfo::fileWrite($logHandle, "Info: Upgrade success");
                 FileInfo::fileClose($logHandle);
 
-                return true;
+                return $this->writeAbout();
             } else {
                 $errorZipExtract = self::ERROR_ZIP_EXTRACT;
 
@@ -195,6 +188,18 @@
             }
 
             return false;
+        }
+
+        private function writeAbout()
+        {
+            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_VERSION,    $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION));
+            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT,   $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT));
+            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_UPGRADE_AT, time());
+
+            $appAboutConfigWrite = new AppAboutConfigWrite($this->appAboutConfig);
+            $appAboutConfigWrite->write();
+
+            return true;
         }
 
         public function getAppAboutConfig()

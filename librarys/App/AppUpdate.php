@@ -220,7 +220,7 @@
             if ($readmeFileBuffer !== false)
                 FileInfo::fileWriteContents($readmeFilePath, htmlspecialchars($readmeFileBuffer));
 
-            $this->aboutConfig->setSystem('check_at', time());
+            $this->aboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT, time());
             $this->aboutConfig->fastWriteConfig();
 
             return true;

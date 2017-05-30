@@ -39,24 +39,24 @@
         	</li>
         	<li class="value">
         		<ul>
-        			<li><span><?php echo $config->get('author'); ?></span></li>
-        			<li><span><?php echo $config->get('version'); ?> <?php if ($config->get('is_beta')) echo 'beta'; ?></span></li>
-        			<li><span><?php echo $config->get('email'); ?></span></li>
-        			<li><span><a href="<?php echo $config->get('git_link'); ?>" target="_blank"><?php echo $config->get('git_title'); ?></a></span></li>
-        			<li><span><a href="<?php echo $config->get('fb_link'); ?>" target="_blank"><?php echo $config->get('fb_title'); ?></a></span></li>
-        			<li><span><?php echo $config->get('phone'); ?></span></li>
-        			<li><span><?php echo date('d.m.Y - H:i', $config->get('create_at')); ?></span></li>
+        			<li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_NAME); ?></span></li>
+        			<li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_VERSION); ?> <?php if ($config->get(AppAboutConfig::ARRAY_KEY_IS_BETA)) echo 'beta'; ?></span></li>
+        			<li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_EMAIL); ?></span></li>
+        			<li><span><a href="<?php echo $config->get(AppAboutConfig::ARRAY_KEY_GIT_LINK); ?>" target="_blank"><?php echo $config->get(AppAboutConfig::ARRAY_KEY_GIT_TITLE); ?></a></span></li>
+        			<li><span><a href="<?php echo $config->get(AppAboutConfig::ARRAY_KEY_FB_LINK); ?>" target="_blank"><?php echo $config->get(AppAboutConfig::ARRAY_KEY_FB_TITLE); ?></a></span></li>
+        			<li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_PHONE); ?></span></li>
+        			<li><span><?php echo date('d.m.Y - H:i', $config->get(AppAboutConfig::ARRAY_KEY_CREATE_AT)); ?></span></li>
 
-                    <?php if ($config->get('check_at') <= 0) { ?>
+                    <?php if ($config->get(AppAboutConfig::ARRAY_KEY_CHECK_AT) <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_check_update'); ?></span></li>
                     <?php } else { ?>
-                        <li><span><?php echo date('d.m.Y - H:i:s', $config->get('check_at')); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', $config->get(AppAboutConfig::ARRAY_KEY_CHECK_AT)); ?></span></li>
                     <?php } ?>
 
-                    <?php if ($config->get('upgrade_at') <= 0) { ?>
+                    <?php if ($config->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT) <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_upgrade'); ?></span></li>
                     <?php } else { ?>
-                        <li><span><?php echo date('d.m.Y - H:i:s', $config->get('upgrade_at')); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', $config->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT)); ?></span></li>
                     <?php } ?>
         		</ul>
         	</li>
