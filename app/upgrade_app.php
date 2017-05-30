@@ -20,18 +20,31 @@
     $appAlert->setID(ALERT_APP_UPGRADE_APP);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
-    $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
+    $hasUpgrade = $appUpgrade->checkHasUpgradeLocal($errorCheckUpgrade);
 
-    if ($hasUpgrade == false)
+    if ($hasUpgrade == false && $errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_NONE)
         $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get('version')), ALERT_APP_ABOUT, 'about.php');
+    else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_NOT_FOUND)
+        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_file_not_found'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+    else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_DATA_ERROR)
+        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_file_data_error'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+    else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED)
+        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_md5_check_failed'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
 
     if (isset($_GET[PARAMETER_UPGRADE_URL])) {
         $errorZipExtract = null;
 
-        if ($appUpgrade->upgradeNow(false, $errorZipExtract) == false) {
-            bug($errorZipExtract);
+        if ($appUpgrade->upgradeNow(false, $errorZipExtract, $errorUpgrade) == false) {
+            if ($errorZipExtract === AppUpgrade::ERROR_ZIP_NOT_OPEN)
+                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_not_open'));
+            else if ($errorZipExtract === AppUpgrade::ERROR_ZIP_EXTRACT)
+                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_extract'));
+            else if ($errorUpgrade === AppUpgrade::ERROR_UPGRADE_NOT_LIST_FILE_APP)
+                $appAlert->danger(lng('app.upgrade_app.alert.error_upgrade_not_list_file_app'));
+            else
+                $appAlert->danger(lng('app.upgrade_app.alert.error_unknown'));
         } else {
-            bug("Upgrade success");
+            $appAlert->success(lng('app.upgrade_app.alert.upgrade_app_success', 'version', $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         }
     }
 ?>
@@ -56,10 +69,10 @@
 
             <li class="value">
                 <ul>
-                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get('server_name'); ?></span></li>
-                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get('version'); ?></span></li>
-                    <li><span><?php echo date('d.m.Y - H:i:s', intval($appUpgrade->getAppUpgradeConfig()->get('build_last'))); ?></span></li>
-                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get('md5_bin_check'); ?></span></li>
+                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_SERVER_NAME); ?></span></li>
+                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION); ?></span></li>
+                    <li><span><?php echo date('d.m.Y - H:i:s', intval($appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_BUILD_LAST))); ?></span></li>
+                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK); ?></span></li>
                     <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME), true); ?></span></li>
                 </ul>
             </li>

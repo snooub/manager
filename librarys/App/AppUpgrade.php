@@ -26,6 +26,11 @@
         const ERROR_UPGRADE_NONE             = 0;
         const ERROR_UPGRADE_NOT_LIST_FILE_APP = 1;
 
+        const ERROR_CHECK_UPGRADE_NONE             = 0;
+        const ERROR_CHECK_UPGRADE_FILE_NOT_FOUND   = 1;
+        const ERROR_CHECK_UPGRADE_FILE_DATA_ERROR  = 2;
+        const ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED = 3;
+
         public function __construct(Boot $boot, $appAboutConfig = null, $appUpgradeConfig = null)
         {
             $this->boot = $boot;
@@ -41,8 +46,10 @@
                 $this->appUpgradeConfig = $appUpgradeConfig;
         }
 
-        public function checkHasUpgradeLocal()
+        public function checkHasUpgradeLocal(&$errorCheckUpgrade = null)
         {
+            $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_NONE;
+
             if ($this->appUpgradeConfig->hasEntryConfigArrayAny() == false)
                 return false;
 
@@ -56,6 +63,23 @@
                 if (FileInfo::fileExists($this->appUpgradeConfig->getPathConfigSystem()))
                     FileInfo::unlink($this->appUpgradeConfig->getPathConfigSystem());
 
+                return false;
+            }
+
+            $binFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
+
+            if (FileInfo::isTypeFile($binFilePath) == false) {
+                $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_FILE_NOT_FOUND;
+                return false;
+            }
+
+            if (FileInfo::fileSize($binFilePath) <= 0) {
+                $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_FILE_DATA_ERROR;
+                return false;
+            }
+
+            if ($this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK) !== @md5_file($binFilePath)) {
+                $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED;
                 return false;
             }
 
@@ -179,7 +203,7 @@
                 FileInfo::fileWrite($logHandle, "Info: Clone and remove file upgrade begin\n");
 
                 $binFilePath       = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
-                $changelogFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGLOG_FILENAME);
+                $changelogFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME);
                 $readmeFilePath    = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME);
                 $resourceDirectory = env('app.path.resource');
 
@@ -189,7 +213,7 @@
                     FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $binFilePath . "\n");
 
                 if (FileInfo::isTypeFile($changelogFilePath)) {
-                    FileInfo::copySystem($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGLOG_FILENAME, $resourceDirectory));
+                    FileInfo::copySystem($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME, $resourceDirectory));
 
                     if (FileInfo::unlink($changelogFilePath))
                         FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $changelogFilePath . "\n");
@@ -197,8 +221,8 @@
                         FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $changelogFilePath . "\n");
                 }
 
-                if (FileInfo::isTypeFile($readmeFilePath) && FileInfo::unlink($readmeFilePath)) {
-                    FileInfo::copySystem($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME, $resourceDirectory));
+                if (FileInfo::isTypeFile($readmeFilePath)) {
+                    FileInfo::copySystem($readmeFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME, $resourceDirectory));
 
                     if (FileInfo::unlink($readmeFilePath))
                         FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $readmeFilePath . "\n");
@@ -206,6 +230,8 @@
                         FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $readmeFilePath . "\n");
                 }
 
+                if (FileInfo::isTypeFile(env('resource.config.upgrade')))
+                    FileInfo::unlink(env('resource.config.upgrade'));
 
                 FileInfo::fileWrite($logHandle, "Info: Clone and remove file upgrade end\n");
                 FileInfo::fileWrite($logHandle, "Info: Update about upgrade begin\n");

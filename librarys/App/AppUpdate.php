@@ -16,7 +16,6 @@
 
         private $servers = [
             'localhost',
-            'izerocs.mobi',
             'izerocs.net',
             'izerocs.ga'
         ];
@@ -24,7 +23,7 @@
         private $boot;
         private $aboutConfig;
         private $serverErrors = array();
-        private $path         = 'app/ManagerServer/check_update.php';
+        private $path         = null;
 
         private $jsonArray;
         private $updateStatus;
@@ -81,6 +80,11 @@
         {
             $this->boot        = $boot;
             $this->aboutConfig = $about;
+
+            if (Boot::isRunLocal())
+                $this->path = 'app/ManagerServer/check_update.php';
+            else
+                $this->path = 'app/manager/check_update.php';
         }
 
         public function checkUpdate()
@@ -166,6 +170,9 @@
 
         private function makeFileUpdateInfo(&$errorWriteInfo = null)
         {
+            if ($this->updateStatus == self::RESULT_VERSION_IS_LATEST)
+                return true;
+
             $appUpgradeConfig      = new AppUpgradeConfig($this->boot);
             $appUpgradeConfigWrite = new AppUpgradeConfigWrite($appUpgradeConfig);
 

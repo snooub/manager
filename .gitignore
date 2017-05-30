@@ -1,6 +1,9 @@
+.gitignore
+
 assets/backup/mysql/*
 assets/user/*
 assets/tmp/*
 assets/config/upgrade.php
 assets/upgrade/*
-clone/*
+assets/changelog.md
+assets/readme.md
