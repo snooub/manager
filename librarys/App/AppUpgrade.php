@@ -19,8 +19,9 @@
 
         const LOG_FILENAME_UPGRADE = 'upgrade.log';
 
-        const ERROR_ZIP_NONE             = 0;
-        const ERROR_ZIP_NOT_OPEN         = 1;
+        const ERROR_ZIP_NONE     = 0;
+        const ERROR_ZIP_NOT_OPEN = 1;
+        const ERROR_ZIP_EXTRACT  = 2;
 
         const ERROR_UPGRADE_NONE             = 0;
         const ERROR_UPGRADE_NOT_LIST_FILE_APP = 1;
@@ -76,6 +77,8 @@
             $errorZipExtract = self::ERROR_ZIP_NONE;
             $errorUpgrade    = self::ERROR_UPGRADE_NONE;
 
+            FileInfo::fileWrite($logHandle, "Info: Open file zip begin\n");
+
             if ($pclZip === false) {
                 $errorZipExtract = self::ERROR_ZIP_NOT_OPEN;
 
@@ -85,7 +88,8 @@
                 return false;
             }
 
-            FileInfo::fileWrite($logHandle, "Info: Open file zip success\n");
+            FileInfo::fileWrite($logHandle, "Info: Open file zip end\n");
+            FileInfo::fileWrite($logHandle, "Info: Get list content in zip begin\n");
             $listContent = $pclZip->listContent();
 
             if (is_array($listContent) == false || count($listContent) <= 0) {
@@ -97,7 +101,7 @@
                 return false;
             }
 
-            FileInfo::fileWrite($logHandle, "Info: Get list content in zip success\n");
+            FileInfo::fileWrite($logHandle, "Info: Get list content in zip end\n");
 
             $prefixDirectory = 'directory_';
             $prefixFile      = 'file_';
@@ -114,13 +118,82 @@
             }
 
             if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root') . SP . 'clone'), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
-                foreach ($listContent AS $entrys) {
+                FileInfo::fileWrite($logHandle, "Info: Extract upgrade success\n");
+                FileInfo::fileWrite($logHandle, "Info: Check file recycle in app begin\n");
 
+                foreach ($listContent AS $entrys) {
+                    $entryFilename = FileInfo::validate($entrys['stored_filename']);
+
+                    if ($entrys['folder'] == false && array_key_exists($prefixFile . $entryFilename, $appContent))
+                        unset($appContent[$prefixFile . $entryFilename]);
                 }
+
+                $appPathConfig  = $appPath . SP . 'assets' . SP . 'config';
+                $appPathUser    = $appPath . SP . 'assets' . SP . 'user';
+                $appPathLength  = strlen($appPath) + 1;
+                $appEntryIgones = [
+                    substr($appPathConfig, $appPathLength),
+                    substr($appPathUser,   $appPathLength)
+                ];
+
+                foreach ($appContent AS $key => $entrys) {
+                    $entryFilepath = $entrys['filepath'];
+                    $entryIsIgone  = false;
+
+                    foreach ($appEntryIgones AS $entryIgone) {
+                        if (strpos($entryFilepath, $entryIgone) === 0) {
+                            $entryIsIgone = true;
+                            break;
+                        }
+                    }
+
+                    $appEntryPath = FileInfo::validate($appPath . SP . $entryFilepath);
+
+                    if ($entryIsIgone) {
+                        unset($appContent[$key]);
+                    } else if ($entrys['is_directory'] == false) {
+                        if (FileInfo::unlink($appEntryPath) != false)
+                            FileInfo::fileWrite($logHandle, 'Success: Remove file ' . $appEntryPath . "\n");
+                        else
+                            FileInfo::fileWrite($logHandle, 'Failed: Remove file ' . $appEntryPath . "\n");
+                    } else if ($entrys['is_directory'] == false) {
+                        FileInfo::fileWrite($logHandle, 'Info: Skip remove file ' . $appEntryPath . "\n");
+                    }
+                }
+
+                FileInfo::fileWrite($logHandle, "Info: Check file recycle in app end\n");
+                FileInfo::fileWrite($logHandle, "Info: Check directory empty in app begin\n");
+
+                foreach ($appContent AS $entrys) {
+                    if ($entrys['is_directory']) {
+                        $entryFilepath      = $entrys['filepath'];
+                        $appEntryPath       = FileInfo::validate($appPath . SP . $entryFilepath);
+                        $globDirectoryEntry = FileInfo::globDirectory($appEntryPath . SP . '*');
+
+                        if ($globDirectoryEntry === false ||  count($globDirectoryEntry) <= 0) {
+                            if (FileInfo::rmdir($appEntryPath) != false)
+                                FileInfo::fileWrite($logHandle, 'Success: Remove directory empty ' . $appEntryPath . "\n");
+                            else
+                                FileInfo::fileWrite($logHandle, 'Failed: Remove directory empty ' . $appEntryPath . "\n");
+                        } else {
+                            FileInfo::fileWrite($logHandle, 'Info: Skip remove directory ' . $appEntryPath . "\n");
+                        }
+                    }
+                }
+
+                FileInfo::fileWrite($logHandle, "Info: Check directory empty in app end\n");
+                FileInfo::fileWrite($logHandle, "Info: Upgrade success");
+                FileInfo::fileClose($logHandle);
+
+                return true;
             } else {
-                bug("error");
-                bug($pclZip->errorInfo(true));
+                $errorZipExtract = self::ERROR_ZIP_EXTRACT;
+
+                FileInfo::fileWrite($logHandle, $pclZip->errorInfo(true) . "\n");
+                FileInfo::fileClose($logHandle);
             }
+
+            return false;
         }
 
         public function getAppAboutConfig()

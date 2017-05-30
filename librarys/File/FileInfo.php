@@ -371,6 +371,11 @@
             return rename($old, $new);
         }
 
+        public static function rmdir($path)
+        {
+            return @rmdir($path);
+        }
+
         /**
          * [rrmdir Delete directory and delete entry in directory]
          * @param  [string|array]  $path                    [Path directory or array entry]
@@ -429,7 +434,7 @@
                     if ($directoryCurrentHasPermission)
                         return true;
 
-                    return @rmdir($path);
+                    return self::rmdir($path);
                 }
             }
 
@@ -724,7 +729,7 @@
                     ];
 
                     if ($prefixKeyDirectoryArray !== null)
-                        $entryNotModify[$prefixKeyDirectoryArray . $array['filename']] = $array;
+                        $entryNotModify[$prefixKeyDirectoryArray . $array['filepath']] = $array;
                     else
                         $entryNotModify[] = $array;
                 }
@@ -768,7 +773,7 @@
                             ];
 
                             if ($prefixKeyFileArray !== null)
-                                $entryNotModify[$prefixKeyFileArray . $array['filename']] = $array;
+                                $entryNotModify[$prefixKeyFileArray . $array['filepath']] = $array;
                             else
                                 $entryNotModify[] = $array;
                         }

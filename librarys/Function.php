@@ -310,6 +310,10 @@
 
     function upgradeCallbackExtractZip($event, $header)
     {
+        if (FileInfo::isTypeFile($header['filename'])) {
+            if (FileInfo::unlink($header['filename']) == false)
+                return 0;
+        }
         return 1;
     }
 
