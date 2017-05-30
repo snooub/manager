@@ -113,6 +113,37 @@ ul.about-list > li.value li {
     white-space: nowrap;
 }
 
+div#about ul > li.message,
+ul.about-list > li.message,
+
+div#about ul > li.message > div,
+ul.about-list > li.message > div {
+    display: block;
+}
+
+div#about ul > li.message > div:first-child,
+ul.about-list > li.message > div:first-child {
+    padding: 15px;
+    text-align: center;
+}
+
+div#about ul > li.message > div:first-child span,
+ul.about-list > li.message > div:first-child span {
+    color: #00897b;
+    font-weight: bold;
+}
+
+div#about ul > li.message > div:last-child,
+ul.about-list > li.message > div:last-child {
+    padding: 10px;
+    text-align: left;
+}
+
+div#about ul > li.message > div:last-child span,
+ul.about-list > li.message > div:last-child span {
+    color: #505050;
+}
+
 div.about-button-check {
     border-top: 1px solid #efefef;
     width: auto;

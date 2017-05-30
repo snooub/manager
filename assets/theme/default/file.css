@@ -198,7 +198,7 @@ ul.file-list > li.back a,
 ul.file-list > li.type-directory a.file-name,
 ul.file-list > li.type-file a.file-name {
     display: inline-block;
-    max-width: 60%;
+    max-width: 55%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
