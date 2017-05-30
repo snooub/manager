@@ -3,6 +3,8 @@
     use Librarys\App\AppAboutConfig;
     use Librarys\App\AppUpdate;
     use Librarys\App\AppUpgrade;
+    use Librarys\File\FileInfo;
+    use Librarys\Parse\MarkdownParse;
 
     define('LOADED',                1);
     define('PARAMETER_UPGRADE_URL', 'upgrade');
@@ -34,15 +36,41 @@
         <ul class="about-list">
             <li class="label">
                 <ul>
-
+                    <li><span><?php echo lng('app.upgrade_app.info.label_server_name'); ?></span></li>
+                    <li><span><?php echo lng('app.upgrade_app.info.label_version'); ?></span></li>
+                    <li><span><?php echo lng('app.upgrade_app.info.label_build_last'); ?></span></li>
+                    <li><span><?php echo lng('app.upgrade_app.info.label_md5_bin_check'); ?></span></li>
+                    <li><span><?php echo lng('app.upgrade_app.info.label_data_length'); ?></span></li>
                 </ul>
             </li>
 
             <li class="value">
                 <ul>
-
+                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get('server_name'); ?></span></li>
+                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get('version'); ?></span></li>
+                    <li><span><?php echo date('d.m.Y - H:i:s', intval($appUpgrade->getAppUpgradeConfig()->get('build_last'))); ?></span></li>
+                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get('md5_bin_check'); ?></span></li>
+                    <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME), true); ?></span></li>
                 </ul>
             </li>
+
+            <?php $markdownParse    = new MarkdownParse(); ?>
+            <?php $changelogContent = FileInfo::fileReadContents(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME)); ?>
+            <?php $readmeContent    = FileInfo::fileReadContents(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME)); ?>
+
+            <?php if ($readmeContent !== false && $readmeContent !== null && empty($readmeContent) == false) { ?>
+                <li class="message">
+                    <div><span><?php echo lng('app.upgrade_app.info.label_readme'); ?></span></div>
+                    <div><span><?php echo $markdownParse->text($readmeContent); ?></span></div>
+                </li>
+            <?php } ?>
+
+            <?php if ($changelogContent !== false && $changelogContent !== null && empty($changelogContent) == false) { ?>
+                <li class="message">
+                    <div><span><?php echo lng('app.upgrade_app.info.label_changelog'); ?></span></div>
+                    <div><span><?php echo $markdownParse->text($changelogContent); ?></span></div>
+                </li>
+            <?php } ?>
         </ul>
 
         <div class="about-button-check button-action-box center">
