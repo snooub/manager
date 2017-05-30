@@ -122,6 +122,9 @@
 
     function isValidateIP($ip)
     {
+        if ($ip === null || is_string($ip) == false)
+            return false;
+
         if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip) != false)
             return true;
         else if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip) != false)

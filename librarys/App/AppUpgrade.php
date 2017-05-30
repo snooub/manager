@@ -105,7 +105,7 @@
 
             $prefixDirectory = 'directory_';
             $prefixFile      = 'file_';
-            $appPath         = env('app.path.root') . SP . 'clone';
+            $appPath         = env('app.path.root');
             $appContent      = FileInfo::listContent($appPath, $appPath, true, true, $prefixDirectory, $prefixFile);
 
             if (is_array($appContent) == false || count($appContent) <= 0) {
@@ -127,6 +127,7 @@
                     if ($entrys['folder'] == false && array_key_exists($prefixFile . $entryFilename, $appContent))
                         unset($appContent[$prefixFile . $entryFilename]);
                 }
+//bug($this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_ENTRY_IGONE_REMOVE));
 
                 $appPathConfig  = $appPath . SP . 'assets' . SP . 'config';
                 $appPathUser    = $appPath . SP . 'assets' . SP . 'user';

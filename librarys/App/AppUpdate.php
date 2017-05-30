@@ -39,15 +39,16 @@
         const ARRAY_KEY_ERROR_SERVER     = 'error_server';
         const ARRAY_KEY_ERROR_WRITE_INFO = 'error_write_info';
 
-        const ARRAY_DATA_KEY_VERSION       = 'version';
-        const ARRAY_DATA_KEY_IS_BETA       = 'is_beta';
-        const ARRAY_DATA_KEY_CHANGELOG     = 'changelog';
-        const ARRAY_DATA_KEY_README        = 'readme';
-        const ARRAY_DATA_KEY_BUILD_LAST    = 'build_last';
-        const ARRAY_DATA_KEY_DATA_UPGRADE  = 'data_upgrade';
-        const ARRAY_DATA_KEY_MD5_BIN_CHECK = 'md5_bin_check';
-        const ARRAY_DATA_KEY_SERVER_NAME   = 'server_name';
-        const ARRAY_DATA_KEY_ERROR_INT     = 'error_int';
+        const ARRAY_DATA_KEY_SERVER_NAME        = 'server_name';
+        const ARRAY_DATA_KEY_VERSION            = 'version';
+        const ARRAY_DATA_KEY_IS_BETA            = 'is_beta';
+        const ARRAY_DATA_KEY_CHANGELOG          = 'changelog';
+        const ARRAY_DATA_KEY_README             = 'readme';
+        const ARRAY_DATA_KEY_BUILD_LAST         = 'build_last';
+        const ARRAY_DATA_KEY_DATA_UPGRADE       = 'data_upgrade';
+        const ARRAY_DATA_KEY_MD5_BIN_CHECK      = 'md5_bin_check';
+        const ARRAY_DATA_KEY_ENTRY_IGONE_REMOVE = 'entry_igone_remove';
+        const ARRAY_DATA_KEY_ERROR_INT          = 'error_int';
 
         const RESULT_NONE              = 0;
         const RESULT_VERSION_IS_LATEST = 1;
@@ -295,7 +296,8 @@
                 self::ARRAY_DATA_KEY_README,
                 self::ARRAY_DATA_KEY_BUILD_LAST,
                 self::ARRAY_DATA_KEY_DATA_UPGRADE,
-                self::ARRAY_DATA_KEY_MD5_BIN_CHECK
+                self::ARRAY_DATA_KEY_MD5_BIN_CHECK,
+                self::ARRAY_DATA_KEY_ENTRY_IGONE_REMOVE
             ];
 
             foreach ($jsonArray AS $key => $value) {
