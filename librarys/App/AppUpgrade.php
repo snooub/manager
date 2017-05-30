@@ -86,29 +86,37 @@
             }
 
             FileInfo::fileWrite($logHandle, "Info: Open file zip success\n");
+            $listContent = $pclZip->listContent();
 
-            // $prefixDirectory = 'directory_';
-            // $prefixFile      = 'file_';
-            // $appContent      = FileInfo::listContent(
-            //     env('app.path.root') . SP . 'clone',
-            //     env('app.path.root') . SP . 'clone',
-            //     true,
-            //     true,
-            //     $prefixDirectory,
-            //     $prefixFile
-            // );
+            if (is_array($listContent) == false || count($listContent) <= 0) {
+                $errorZipExtract = self::ERROR_ZIP_NOT_LIST_CONTENT;
 
-            // if (is_array($appContent) == false || count($appContent) <= 0) {
-            //     $errorUpgrade = self::ERROR_UPGRADE_NOT_LIST_FILE_APP;
+                FileInfo::fileWrite($logHandle, $pclZip->errorInfo(true));
+                FileInfo::fileClose($logHandle);
 
-            //     FileInfo::fileWrite($logHandle, "Error: Not get list content app\n");
-            //     FileInfo::fileClose($logHandle);
+                return false;
+            }
 
-            //     return false;
-            // }
+            FileInfo::fileWrite($logHandle, "Info: Get list content in zip success\n");
+
+            $prefixDirectory = 'directory_';
+            $prefixFile      = 'file_';
+            $appPath         = env('app.path.root') . SP . 'clone';
+            $appContent      = FileInfo::listContent($appPath, $appPath, true, true, $prefixDirectory, $prefixFile);
+
+            if (is_array($appContent) == false || count($appContent) <= 0) {
+                $errorUpgrade = self::ERROR_UPGRADE_NOT_LIST_FILE_APP;
+
+                FileInfo::fileWrite($logHandle, "Error: Not get list content app\n");
+                FileInfo::fileClose($logHandle);
+
+                return false;
+            }
 
             if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root') . SP . 'clone'), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
-                bug("success");
+                foreach ($listContent AS $entrys) {
+
+                }
             } else {
                 bug("error");
                 bug($pclZip->errorInfo(true));
