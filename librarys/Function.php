@@ -310,7 +310,7 @@
 
     function upgradeCallbackExtractZip($event, $header)
     {
-        return true;
+        return 1;
     }
 
 ?>
