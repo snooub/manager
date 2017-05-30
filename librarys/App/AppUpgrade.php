@@ -141,7 +141,7 @@
                 return false;
             }
 
-            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root') . SP . 'clone'), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root')), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
                 FileInfo::fileWrite($logHandle, "Info: Extract upgrade success\n");
                 FileInfo::fileWrite($logHandle, "Info: Check file recycle in app begin\n");
 
