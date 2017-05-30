@@ -308,4 +308,9 @@
         return $result;
     }
 
+    function upgradeCallbackExtractZip($event, $header)
+    {
+        return false;
+    }
+
 ?>
