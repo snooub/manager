@@ -115,7 +115,12 @@ div#content div#login-form-action button {
     padding-right: 8px;
 }
 
-div#content div#login-form-action button:hover {
+div#content div#login-form-action button:disabled {
+    background-color: #a0a0a0;
+    cursor: default;
+}
+
+div#content div#login-form-action button:enabled:hover {
     background-color: #00a99b;
 }
 

@@ -12,7 +12,7 @@
     require_once('global.php');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
+        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
     else if ($appMysqlConfig->get('mysql_name') != null)
         $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 

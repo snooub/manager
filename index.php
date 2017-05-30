@@ -14,7 +14,7 @@
     requireDefine('file_action');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
+        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
 
     $title   = lng('home.title_page_root');
     $themes  = [ env('resource.theme.file') ];

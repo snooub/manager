@@ -25,7 +25,8 @@
         'login' => [
             'enable_forgot_password'   => false,
             'enable_lock_count_failed' => true,
-            'max_lock_count'           => 5
+            'max_lock_count'           => 5,
+            'time_lock'                => 180
         ],
 
         'paging' => [

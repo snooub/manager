@@ -297,7 +297,7 @@
                 return false;
 
             foreach ($envProtecteds AS $envKey => $envFlag) {
-                if ($envFlag)
+                if ($envFlag == false)
                     $this->addEnvProtected($envKey, true);
             }
         }

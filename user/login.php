@@ -1,14 +1,16 @@
 <?php
 
-    define('LOADED', 1);
-    define('ROOT',   '..' . DIRECTORY_SEPARATOR);
+    define('LOADED',                  1);
+    define('ROOT',                    '..' . DIRECTORY_SEPARATOR);
+    define('SESSION_NAME_LOCK_COUNT', 'login_lock_count');
+    define('SESSION_NAME_LOCK_TIME',  'login_lock_time');
 
     require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     if ($appUser->isLogin())
-        $appAlert->info(lng('login.alert.login_already'), ALERT_INDEX, env('app.http.host'));
+        $appAlert->info(lng('user.login.alert.login_already'), ALERT_INDEX, env('app.http.host'));
 
-    $title = lng('login.title_page');
+    $title = lng('user.login.title_page');
     $themes = [ env('resource.theme.login') ];
     $appAlert->setID(ALERT_LOGIN);
     require_once('..' . SP . 'incfiles' . SP . 'header.php');
@@ -16,42 +18,103 @@
     $username = null;
     $password = null;
 
-    if (isset($_POST['submit'])) {
+    $isEnabledLockCount  = $appConfig->get('login.enable_lock_count_failed');
+    $maxLockCountFailed  = $appConfig->get('login.max_lock_count');
+    $timeLockCountFailed = $appConfig->get('login.time_lock');
+    $currentTimeNow      = intval($_SERVER['REQUEST_TIME']);
+    $isLockCountStatus   = false;
+    $currentCountLock    = 0;
+    $currentTimeLock     = 0;
+
+    if ($isEnabledLockCount) {
+        if (isset($_SESSION[SESSION_NAME_LOCK_COUNT]))
+            $currentCountLock = intval(addslashes($_SESSION[SESSION_NAME_LOCK_COUNT]));
+
+        if (isset($_SESSION[SESSION_NAME_LOCK_TIME]))
+            $currentTimeLock = intval(addslashes($_SESSION[SESSION_NAME_LOCK_TIME]));
+
+        if ($currentTimeNow - $currentTimeLock > $timeLockCountFailed) {
+            $currentCountLock = 0;
+            $currentTimeLock  = $currentTimeNow;
+            $isLockStatus     = false;
+
+            if ($currentCountLock >= $maxLockCountFailed && $currentTimeLock > 0 && isset($_SESSION[SESSION_NAME_LOCK_COUNT]) && isset($_SESSION[SESSION_NAME_LOCK_TIME]))
+                $appAlert->success(lng('user.login.alert.unlock_count'));
+
+            unset($_SESSION[SESSION_NAME_LOCK_COUNT]);
+            unset($_SESSION[SESSION_NAME_LOCK_TIME]);
+        } else {
+            $isLockStatus = $currentCountLock >= $maxLockCountFailed;
+        }
+    }
+
+    if ($isEnabledLockCount && $isLockStatus) {
+        $timeLockCalc = ($currentTimeLock + $timeLockCountFailed) - $currentTimeNow;
+
+        if ($timeLockCalc < 60) {
+            $timeLockCalc = $timeLockCalc . 's';
+        } else if ($timeLockCalc >= 60 && $timeLockCalc < 3600) {
+            $timeLockCalcMinute = floor($timeLockCalc / 60);
+            $timeLockCalcSecond = $timeLockCalc - ($timeLockCalcMinute * 60);
+            $timeLockCalc       = $timeLockCalcMinute . ':' . $timeLockCalcSecond . 's';
+        } else {
+            $timeLockCalcHour   = floor($timeLockCalc / 3600);
+            $timeLockCalcMinute = floor(($timeLockCalc - ($timeLockCalcHour * 3600)) / 60);
+            $timeLockCalcSecond = $timeLockCalc - (($timeLockCalcHour * 3600) + ($timeLockCalcMinute * 60));
+            $timeLockCalc       = $timeLockCalcHour . ':' . $timeLockCalcMinute . ':' . $timeLockCalcSecond . 's';
+        }
+
+        if (isset($_SERVER['REQUEST_METHOD']) && strcasecmp($_SERVER['REQUEST_METHOD'], 'post') === 0)
+            gotoURL('login.php');
+
+        $appAlert->danger(lng('user.login.alert.lock_count_failed', 'count', $currentCountLock, 'time', $timeLockCalc));
+    } else if (isset($_POST['submit'])) {
         $user     = null;
         $username = addslashes($_POST['username']);
         $password = addslashes($_POST['password']);
 
         if (empty($username) || empty($password)) {
-            $appAlert->danger(lng('login.alert.not_input_username_or_password'));
+            $appAlert->danger(lng('user.login.alert.not_input_username_or_password'));
         } else if (($user = $appUser->isUser($username, $password, true)) == false) {
-            $appAlert->danger(lng('login.alert.username_or_password_wrong'));
+            $appAlert->danger(lng('user.login.alert.username_or_password_wrong'));
         } else if ($user == null) {
-            $appAlert->danger(lng('login.alert.user_not_exists'));
+            $appAlert->danger(lng('user.login.alert.user_not_exists'));
         } else {
+            if (isset($_SESSION[SESSION_NAME_LOCK_COUNT]))
+                unset($_SESSION[SESSION_NAME_LOCK_COUNT]);
+
+            if (isset($_SESSION[SESSION_NAME_LOCK_TIME]))
+                unset($_SESSION[SESSION_NAME_LOCK_TIME]);
+
             $appUser->createSessionUser($user[Librarys\App\AppUser::KEY_USERNAME]);
-            $appAlert->success(lng('login.alert.login_success'), ALERT_INDEX, env('app.http.host'));
+            $appAlert->success(lng('user.login.alert.login_success'), ALERT_INDEX, env('app.http.host'));
         }
+
+        $_SESSION[SESSION_NAME_LOCK_COUNT] = intval(++$currentCountLock);
+        $_SESSION[SESSION_NAME_LOCK_TIME]  = intval(time());
     }
 
     $appAlert->display();
 ?>
 
-    <div id="login">
-        <form action="login.php" method="post" id="login-form">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
-            <input type="text" name="username" value="<?php echo stripslashes($username); ?>" placeholder="<?php echo lng('login.form.input_username_placeholder'); ?>" autofocus="autofocus"/>
-            <input type="password" name="password" value="<?php echo stripslashes($password); ?>" placeholder="<?php echo lng('login.form.input_password_placeholder'); ?>"/>
-            <div id="login-form-action">
-                <?php if ($appConfig->get('login.enable_forgot_password')) { ?>
-                    <a href="forgot_password.php" id="forgot-password">
-                        <span><?php echo lng('login.form.forgot_password'); ?></span>
-                    </a>
-                <?php } ?>
-                <button type="submit" name="submit">
-                    <span><?php echo lng('login.form.button_login'); ?></span>
-                </button>
-            </div>
-        </form>
-    </div>
+    <?php if ($isLockStatus == false) { ?>
+        <div id="login">
+            <form action="login.php" method="post" id="login-form">
+                <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+                <input type="text" name="username" value="<?php echo stripslashes($username); ?>" placeholder="<?php echo lng('user.login.form.input_username_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockStatus) { ?> disabled="disabled"<?php } ?>/>
+                <input type="password" name="password" value="<?php echo stripslashes($password); ?>" placeholder="<?php echo lng('user.login.form.input_password_placeholder'); ?>"<?php if ($isLockStatus) { ?> disabled="disabled"<?php } ?>/>
+                <div id="login-form-action">
+                    <?php if ($appConfig->get('user.login.enable_forgot_password')) { ?>
+                        <a href="forgot_password.php" id="forgot-password">
+                            <span><?php echo lng('user.login.form.forgot_password'); ?></span>
+                        </a>
+                    <?php } ?>
+                    <button type="submit" name="submit"<?php if ($isLockStatus) { ?> disabled="disabled"<?php } ?>>
+                        <span><?php echo lng('user.login.form.button_login'); ?></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    <?php } ?>
 
 <?php require_once('..' .SP . 'incfiles' . SP . 'footer.php'); ?>

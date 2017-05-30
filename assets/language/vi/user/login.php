@@ -15,6 +15,8 @@
         ],
 
         'alert' => [
+            'lock_count_failed'              => 'Bạn đã đăng nhập sai quá <strong>{$count}</strong> lần, bạn còn <strong>{$time}</strong> nữa để đăng nhập lại',
+            'unlock_count'                   => 'Bạn có thể tiếp tục đăng nhập',
             'not_input_username_or_password' => 'Chưa nhập tên đăng nhập hoặc mật khẩu',
             'username_or_password_wrong'     => 'Tên đăng nhập hoặc mật khẩu sai',
             'user_not_exists'                => 'Người dùng không tồn tại',

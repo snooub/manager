@@ -53,6 +53,16 @@ select {
     outline: 0;
 }
 
+input[type=text]:disabled,
+input[type=number]:disabled,
+input[type=password]:disabled,
+input[type=file]:disabled + label,
+
+textarea:disabled,
+select:disabled {
+    background-color: #f0f0f0;
+}
+
 input[type=file] + label {
     cursor: pointer;
 }
@@ -126,19 +136,36 @@ input[type=file] + label {
     white-space: nowrap;
 }
 
-input[type=text]:hover,
-input[type=text]:focus,
-input[type=number]:hover,
-input[type=number]:focus,
-input[type=password]:hover,
-input[type=password]:focus,
-input[type=file] + label:hover,
-input[type=file] + label:focus,
+input[type=text]:disabled,
+input[type=text]:disabled,
+input[type=number]:disabled,
+input[type=number]:disabled,
+input[type=password]:disabled,
+input[type=password]:disabled,
+input[type=file]:disabled + label,
+input[type=file]:disabled + label,
 
-textarea:hover,
-textarea:focus,
-select:hover,
-select:focus,
+textarea:disabled,
+textarea:disabled,
+select:disabled,
+select:disabled {
+    color: #707070;
+    border-bottom-color: #c0c0c0;
+}
+
+input[type=text]:enabled:hover,
+input[type=text]:enabled:focus,
+input[type=number]:enabled:hover,
+input[type=number]:enabled:focus,
+input[type=password]:enabled:hover,
+input[type=password]:enabled:focus,
+input[type=file]:enabled + label:hover,
+input[type=file]:enabled + label:focus,
+
+textarea:enabled:hover,
+textarea:enabled:focus,
+select:enabled:hover,
+select:enabled:focus,
 
 div.select:hover::before,
 div.select:focus::before {
@@ -146,75 +173,75 @@ div.select:focus::before {
     border-bottom-color: #a0a0a0;
 }
 
-input:not(.none):invalid,
-input:not(.none):invalid:hover,
-input:not(.none):invalid:focus {
+input:enabled:not(.none):invalid,
+input:enabled:not(.none):invalid:hover,
+input:enabled:not(.none):invalid:focus {
     color: #ef5350;
     border-bottom-color: #ef5350;
 }
 
-input[type=text].danger:hover,
-input[type=text].danger:focus,
-input[type=number].danger:hover,
-input[type=number].danger:focus,
-input[type=password].danger:hover,
-input[type=password].danger:focus,
+input[type=text].danger:enabled:hover,
+input[type=text].danger:enabled:focus,
+input[type=number].danger:enabled:hover,
+input[type=number].danger:enabled:focus,
+input[type=password].danger:enabled:hover,
+input[type=password].danger:enabled:focus,
 
-textarea.danger:hover,
-textarea.danger:focus,
-select.danger:hover,
-select.danger:focus,
+textarea.danger:enabled:hover,
+textarea.danger:enabled:focus,
+select.danger:enabled:hover,
+select.danger:enabled:focus,
 
 div.select.danger:hover::before,
 div.select.danger:focus::before {
     border-bottom-color: #ef5350;
 }
 
-input[type=text].success:hover,
-input[type=text].success:focus,
-input[type=number].success:hover,
-input[type=number].success:focus,
-input[type=password].success:hover,
-input[type=password].success:focus,
+input[type=text].success:enabled:hover,
+input[type=text].success:enabled:focus,
+input[type=number].success:enabled:hover,
+input[type=number].success:enabled:focus,
+input[type=password].success:enabled:hover,
+input[type=password].success:enabled:focus,
 
-textarea.success:hover,
-textarea.success:focus,
-select.success:hover,
-select.success:focus,
+textarea.success:enabled:hover,
+textarea.success:enabled:focus,
+select.success:enabled:hover,
+select.success:enabled:focus,
 
 div.select.success:hover::before,
 div.select.success:focus::before {
     border-bottom-color: #66bb6a;
 }
 
-input[type=text].info:hover,
-input[type=text].info:focus,
-input[type=number].info:hover,
-input[type=number].info:focus,
-input[type=password].info:hover,
-input[type=password].info:focus,
+input[type=text].info:enabled:hover,
+input[type=text].info:enabled:focus,
+input[type=number].info:enabled:hover,
+input[type=number].info:enabled:focus,
+input[type=password].info:enabled:hover,
+input[type=password].info:enabled:focus,
 
-textarea.info:hover,
-textarea.info:focus,
-select.info:hover,
-select.info:focus,
+textarea.info:enabled:hover,
+textarea.info:enabled:focus,
+select.info:enabled:hover,
+select.info:enabled:focus,
 
 div.select.info:hover::before,
 div.select.info:focus::before {
     border-bottom-color: #42a5f5;
 }
 
-input[type=text].warning:hover,
-input[type=text].warning:focus,
-input[type=number].warning:hover,
-input[type=number].warning:focus,
-input[type=password].warning:hover,
-input[type=password].warning:focus,
+input[type=text].warning:enabled:hover,
+input[type=text].warning:enabled:focus,
+input[type=number].warning:enabled:hover,
+input[type=number].warning:enabled:focus,
+input[type=password].warning:enabled:hover,
+input[type=password].warning:enabled:focus,
 
-textarea.warning:hover,
-textarea.warning:focus,
-select.warning:hover,
-select.warning:focus,
+textarea.warning:enabled:hover,
+textarea.warning:enabled:focus,
+select.warning:enabled:hover,
+select.warning:enabled:focus,
 
 div.select.warning:hover::before,
 div.select.warning:focus::before {

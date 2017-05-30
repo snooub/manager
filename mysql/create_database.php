@@ -7,7 +7,7 @@
     require_once('global.php');
 
     if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
+        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
 
     $title  = lng('mysql.create_database.title_page');
     $themes = [ env('resource.theme.mysql') ];
