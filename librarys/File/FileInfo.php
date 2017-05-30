@@ -193,7 +193,7 @@
             return true;
         }
 
-        public static function clone($old, $new)
+        public static function copySystem($old, $new)
         {
             return @copy($old, $new);
         }
@@ -231,7 +231,7 @@
                         if ($file == null)
                             return true;
 
-                        if (self::clone($path, $file) == false)
+                        if (self::copySystem($path, $file) == false)
                             return false;
 
                         if ($move)
@@ -273,7 +273,7 @@
                     if ($new == null)
                         return true;
 
-                    if (self::clone($old, $new) == false)
+                    if (self::copySystem($old, $new) == false)
                         return false;
 
                     if ($move)
@@ -322,7 +322,7 @@
                                     if ($dest == null)
                                         return true;
 
-                                    if (self::clone($source, $dest) == false)
+                                    if (self::copySystem($source, $dest) == false)
                                         return false;
 
                                     if ($move)

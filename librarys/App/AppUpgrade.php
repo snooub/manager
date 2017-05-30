@@ -189,7 +189,7 @@
                     FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $binFilePath . "\n");
 
                 if (FileInfo::isTypeFile($changelogFilePath)) {
-                    FileInfo::clone($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGLOG_FILENAME, $resourceDirectory));
+                    FileInfo::copySystem($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGLOG_FILENAME, $resourceDirectory));
 
                     if (FileInfo::unlink($changelogFilePath))
                         FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $changelogFilePath . "\n");
@@ -198,7 +198,7 @@
                 }
 
                 if (FileInfo::isTypeFile($readmeFilePath) && FileInfo::unlink($readmeFilePath)) {
-                    FileInfo::clone($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME, $resourceDirectory));
+                    FileInfo::copySystem($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME, $resourceDirectory));
 
                     if (FileInfo::unlink($readmeFilePath))
                         FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $readmeFilePath . "\n");
