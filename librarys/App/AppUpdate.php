@@ -9,6 +9,7 @@
     use Librarys\File\FileInfo;
     use Librarys\File\FileCurl;
     use Librarys\App\AppAboutConfig;
+    use Librarys\App\AppParameter;
 
     final class AppUpdate
     {
@@ -28,7 +29,8 @@
         private $jsonArray;
         private $updateStatus;
 
-        const PARAMETER_VERSION_GUEST_URL = 'version_guest';
+        const PARAMETER_VERSION_GUEST_URL  = 'version_guest';
+        const PARAMETER_LANGUAGE_GUEST_URL = 'language_guest';
 
         const ARRAY_KEY_URL              = 'url';
         const ARRAY_KEY_ERROR_INT        = 'error_int';
@@ -40,6 +42,7 @@
         const ARRAY_DATA_KEY_VERSION       = 'version';
         const ARRAY_DATA_KEY_IS_BETA       = 'is_beta';
         const ARRAY_DATA_KEY_CHANGELOG     = 'changelog';
+        const ARRAY_DATA_KEY_README        = 'readme';
         const ARRAY_DATA_KEY_BUILD_LAST    = 'build_last';
         const ARRAY_DATA_KEY_DATA_UPGRADE  = 'data_upgrade';
         const ARRAY_DATA_KEY_MD5_BIN_CHECK = 'md5_bin_check';
@@ -71,6 +74,7 @@
         const VERSION_BIN_FILENAME       = 'bin.zip';
         const VERSION_BIN_MD5_FILENAME   = 'bin.zip.md5';
         const VERSION_CHANGELOG_FILENAME = 'changelog.md';
+        const VERSION_README_FILENAME    = 'readme.md';
 
         public function __construct(Boot $boot, AppAboutConfig $about)
         {
@@ -80,13 +84,23 @@
 
         public function checkUpdate()
         {
+            global $appConfig;
+
             if (is_array($this->servers) == false)
                 return false;
 
-            $countSuccess = count($this->servers);
+            $languageCurrent = 'en';
+            $countSuccess    = count($this->servers);
+            $appParameter    = new AppParameter();
+
+            if ($appConfig != null)
+                $languageCurrent = $appConfig->get('language');
+
+            $appParameter->add(self::PARAMETER_VERSION_GUEST_URL,  AppDirectory::rawEncode($this->aboutConfig->get('version')));
+            $appParameter->add(self::PARAMETER_LANGUAGE_GUEST_URL, AppDirectory::rawEncode($languageCurrent));
 
             foreach ($this->servers AS $server) {
-                $curl           = new FileCurl($server . '/' . $this->path . '?' . self::PARAMETER_VERSION_GUEST_URL . '=' . $this->aboutConfig->get('version'));
+                $curl           = new FileCurl($server . '/' . $this->path . $appParameter->toString());
                 $errorCheck     = self::ERROR_CHECK_NONE;
                 $errorServer    = self::ERROR_SERVER_NONE;
                 $errorWriteInfo = self::ERROR_WRITE_INFO_NONE;
@@ -105,7 +119,7 @@
                         $this->jsonArray = $jsonData;
 
                         if ($this->hasJsonArrayKey(self::ARRAY_DATA_KEY_ERROR_INT) && $this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT) !== self::ERROR_SERVER_NONE)
-                            $errorServer = $this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT);
+                            $errorServer = intval($this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT));
                         else if ($this->checkDataUpdate() != false && $this->makeFileUpdateInfo($errorWriteInfo))
                             return true;
                     }
@@ -155,7 +169,14 @@
             $appUpgradeConfigWrite = new AppUpgradeConfigWrite($appUpgradeConfig);
 
             foreach ($this->jsonArray AS $key => $value) {
-                if ($key !== self::ARRAY_DATA_KEY_DATA_UPGRADE && $key !== self::ARRAY_DATA_KEY_CHANGELOG && $appUpgradeConfig->set($key, $value) == false) {
+                if (
+                        $key !== self::ARRAY_DATA_KEY_DATA_UPGRADE &&
+                        $key !== self::ARRAY_DATA_KEY_CHANGELOG    &&
+                        $key !== self::ARRAY_DATA_KEY_README       &&
+
+                        $appUpgradeConfig->set($key, $value) == false
+                    )
+                {
                     $errorWriteInfo = self::ERROR_WRITE_INFO_FAILED;
                     return false;
                 }
@@ -173,11 +194,13 @@
                 return false;
             }
 
-            $binFilePath       = FileInfo::validate($pathDirectoryUpgrade . SP . self::VERSION_BIN_FILENAME);
-            $changelogFilePath = FileInfo::validate($pathDirectoryUpgrade . SP . self::VERSION_CHANGELOG_FILENAME);
+            $binFilePath       = self::getPathFileUpgrade(self::VERSION_BIN_FILENAME);
+            $changelogFilePath = self::getPathFileUpgrade(self::VERSION_CHANGELOG_FILENAME);
+            $readmeFilePath    = self::getPathFileUpgrade(self::VERSION_README_FILENAME);
 
             $binFileBuffer       = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_DATA_UPGRADE));
             $changelogFileBuffer = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_CHANGELOG));
+            $readmeFileBuffer    = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_README));
 
             if ($binFileBuffer === false) {
                 $errorWriteInfo = self::ERROR_DECODE_COMPRESS_DATA;
@@ -191,7 +214,10 @@
             }
 
             if ($changelogFileBuffer !== false)
-                FileInfo::fileWriteContents($changelogFilePath, $changelogFileBuffer);
+                FileInfo::fileWriteContents($changelogFilePath, htmlspecialchars($changelogFileBuffer));
+
+            if ($readmeFileBuffer !== false)
+                FileInfo::fileWriteContents($readmeFilePath, htmlspecialchars($readmeFileBuffer));
 
             $this->aboutConfig->setSystem('check_at', time());
             $this->aboutConfig->fastWriteConfig();
@@ -249,6 +275,11 @@
             return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_VERSION);
         }
 
+        public static function getPathFileUpgrade($filenameEntry)
+        {
+            return FileInfo::validate(env('app.path.upgrade') . SP . $filenameEntry);
+        }
+
         public static function validateJsonData($jsonArray)
         {
             if ($jsonArray == null || is_array($jsonArray) == false)
@@ -261,6 +292,7 @@
             $keyValidate = [
                 self::ARRAY_DATA_KEY_VERSION,
                 self::ARRAY_DATA_KEY_CHANGELOG,
+                self::ARRAY_DATA_KEY_README,
                 self::ARRAY_DATA_KEY_BUILD_LAST,
                 self::ARRAY_DATA_KEY_DATA_UPGRADE,
                 self::ARRAY_DATA_KEY_MD5_BIN_CHECK
