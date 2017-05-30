@@ -276,8 +276,11 @@
             return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_VERSION);
         }
 
-        public static function getPathFileUpgrade($filenameEntry)
+        public static function getPathFileUpgrade($filenameEntry, $pathDirectorysCustom = null)
         {
+            if ($pathDirectorysCustom !== null)
+                return FileInfo::validate($pathDirectorysCustom . SP . $filenameEntry);
+
             return FileInfo::validate(env('app.path.upgrade') . SP . $filenameEntry);
         }
 

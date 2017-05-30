@@ -193,6 +193,11 @@
             return true;
         }
 
+        public static function clone($old, $new)
+        {
+            return @copy($old, $new);
+        }
+
         /**
          * @param $old = Array list path copy | Path directory, file copy
          * @param $new = Path directory parent copy of $old = array list path | Path directory, file copy to
@@ -226,7 +231,7 @@
                         if ($file == null)
                             return true;
 
-                        if (@copy($path, $file) == false)
+                        if (self::clone($path, $file) == false)
                             return false;
 
                         if ($move)
@@ -268,7 +273,7 @@
                     if ($new == null)
                         return true;
 
-                    if (@copy($old, $new) == false)
+                    if (self::clone($old, $new) == false)
                         return false;
 
                     if ($move)
@@ -280,7 +285,7 @@
                 if (self::permissionDenyPath($old) || self::permissionDenyPath($new)) {
                     $isHasFileAppPermission = true;
                 } else {
-                    $handle = @scandir($old);
+                    $handle = self::scanDirectory($old);
 
                     if ($handle !== false) {
                         if (($parent && $old != SP) || $parent == false) {
@@ -317,7 +322,7 @@
                                     if ($dest == null)
                                         return true;
 
-                                    if (@copy($source, $dest) == false)
+                                    if (self::clone($source, $dest) == false)
                                         return false;
 
                                     if ($move)

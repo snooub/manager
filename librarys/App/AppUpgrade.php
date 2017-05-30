@@ -176,10 +176,51 @@
                 }
 
                 FileInfo::fileWrite($logHandle, "Info: Check directory empty in app end\n");
+                FileInfo::fileWrite($logHandle, "Info: Clone and remove file upgrade begin\n");
+
+                $binFilePath       = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
+                $changelogFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGLOG_FILENAME);
+                $readmeFilePath    = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME);
+                $resourceDirectory = env('app.path.resource');
+
+                if (FileInfo::isTypeFile($binFilePath) && FileInfo::unlink($binFilePath))
+                    FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $binFilePath . "\n");
+                else
+                    FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $binFilePath . "\n");
+
+                if (FileInfo::isTypeFile($changelogFilePath)) {
+                    FileInfo::clone($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGLOG_FILENAME, $resourceDirectory));
+
+                    if (FileInfo::unlink($changelogFilePath))
+                        FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $changelogFilePath . "\n");
+                    else
+                        FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $changelogFilePath . "\n");
+                }
+
+                if (FileInfo::isTypeFile($readmeFilePath) && FileInfo::unlink($readmeFilePath)) {
+                    FileInfo::clone($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME, $resourceDirectory));
+
+                    if (FileInfo::unlink($readmeFilePath))
+                        FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $readmeFilePath . "\n");
+                    else
+                        FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $readmeFilePath . "\n");
+                }
+
+
+                FileInfo::fileWrite($logHandle, "Info: Clone and remove file upgrade end\n");
+                FileInfo::fileWrite($logHandle, "Info: Update about upgrade begin\n");
+
+                $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_VERSION,    $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION));
+                $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT,   $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT));
+                $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_UPGRADE_AT, time());
+
+                $appAboutConfigWrite = new AppAboutConfigWrite($this->appAboutConfig);
+                $appAboutConfigWrite->write();
+
+                FileInfo::fileWrite($logHandle, "Info: Update about upgrade end\n");
                 FileInfo::fileWrite($logHandle, "Info: Upgrade success");
                 FileInfo::fileClose($logHandle);
-
-                return $this->writeAbout();
+                return true;
             } else {
                 $errorZipExtract = self::ERROR_ZIP_EXTRACT;
 
@@ -188,18 +229,6 @@
             }
 
             return false;
-        }
-
-        private function writeAbout()
-        {
-            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_VERSION,    $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION));
-            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT,   $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT));
-            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_UPGRADE_AT, time());
-
-            $appAboutConfigWrite = new AppAboutConfigWrite($this->appAboutConfig);
-            $appAboutConfigWrite->write();
-
-            return true;
         }
 
         public function getAppAboutConfig()
