@@ -21,7 +21,6 @@
 
         const ERROR_ZIP_NONE             = 0;
         const ERROR_ZIP_NOT_OPEN         = 1;
-        const ERROR_ZIP_NOT_LIST_CONTENT = 2;
 
         const ERROR_UPGRADE_NONE             = 0;
         const ERROR_UPGRADE_NOT_LIST_FILE_APP = 1;
@@ -87,25 +86,16 @@
             }
 
             FileInfo::fileWrite($logHandle, "Info: Open file zip success\n");
-            $listContent = $pclZip->listContent();
 
-            if (is_array($listContent) == false || count($listContent) <= 0) {
-                $errorZipExtract = self::ERROR_ZIP_NOT_LIST_CONTENT;
-
-                FileInfo::fileWrite($logHandle, $pclZip->errorInfo(true));
-                FileInfo::fileClose($logHandle);
-
-                return false;
-            }
-
-            FileInfo::fileWrite($logHandle, "Info: Get list content in zip success\n");
-            $appContent = FileInfo::listContent(
+            $prefixDirectory = 'directory_';
+            $prefixFile      = 'file_';
+            $appContent      = FileInfo::listContent(
                 env('app.path.root'),
                 env('app.path.root'),
                 true,
                 true,
-                'directory_',
-                'file_'
+                $prefixDirectory,
+                $prefixFile
             );
 
             if (is_array($appContent) == false || count($appContent) <= 0) {
@@ -116,11 +106,16 @@
 
                 return false;
             }
-ksort($appContent);
-bug($appContent);
-            // foreach ($listContent AS $entrys) {
-            //     $
-            // }
+
+            function callbackPreExtract($event, $header) {
+                return 0;
+            }
+
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate(env('app.path.root')), PCLZIP_CB_PRE_EXTRACT, 'callbackPreExtract') != false) {
+                bug("success");
+            } else {
+                bug("error");
+            }
         }
 
         public function getAppAboutConfig()
