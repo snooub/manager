@@ -686,6 +686,82 @@
             return @filegroup($path);
         }
 
+        public static function listContent($path, $isGetSize = false, $isGetChmodRWX = false, $parentNotModify = null, &$entryNotModify = null, &$entrySizeNotModify = null)
+        {
+            if (is_array($entryNotModify) == false)
+                $entryNotModify = array();
+
+            if (self::isTypeDirectory($path)) {
+                if ($parentNotModify == null)
+                    $parentNotModify = $path;
+
+                $entryNotModify[] = [
+                    'filepath'      => $path,
+                    'filename'      => basename($path),
+                    'filesize'      => 0,
+                    'is_directory'  => true,
+                    'is_readable'   => $isGetChmodRWX ? self::isReadable($path)   : null,
+                    'is_writable'   => $isGetChmodRWX ? self::isWriteable($path)  : null,
+                    'is_executable' => $isGetChmodRWX ? self::isExecutable($path) : null
+                ];
+
+                $handleScan = self::scanDirectory($path);
+
+                if ($handleScan === false)
+                    return false;
+
+                foreach ($handleScan AS $filename) {
+                    if ($filename != '.' && $filename != '..' && $filename != '.git') {
+                        $filepath = self::validate($path . SP . $filename);
+
+                        if (self::isTypeDirectory($filepath)) {
+                            if (self::listContent($filepath, $isGetSize, $isGetChmodRWX, $parentNotModify, $entryNotModify) == false)
+                                return false;
+                        } else {
+                            $filesize = 0;
+
+                            if ($isGetSize) {
+                                $filesize            = self::fileSize($filepath);
+                                $entrySizeNotModify += $filesize;
+                            }
+
+                            $entryNotModify[] = [
+                                'filepath'      => $filepath,
+                                'filename'      => basename($filepath),
+                                'filesize'      => $filesize,
+                                'is_directory'  => false,
+                                'is_readable'   => $isGetChmodRWX ? self::isReadable($filepath)   : null,
+                                'is_writable'   => $isGetChmodRWX ? self::isWriteable($filepath)  : null,
+                                'is_executable' => $isGetChmodRWX ? self::isExecutable($filepath) : null
+                            ];
+                        }
+                    }
+                }
+            } else {
+                $filesize = 0;
+
+                if ($isGetSize) {
+                    $filesize            = self::fileSize($path);
+                    $entrySizeNotModify += $filesize;
+                }
+
+                $entryNotModify[] = [
+                    'filepath'      => $path,
+                    'filename'      => basename($path),
+                    'filesize'      => $filesize,
+                    'is_directory'  => false,
+                    'is_readable'   => $isGetChmodRWX ? self::isReadable($path)   : null,
+                    'is_writable'   => $isGetChmodRWX ? self::isWriteable($path)  : null,
+                    'is_executable' => $isGetChmodRWX ? self::isExecutable($path) : null
+                ];
+            }
+
+            if ($path == $parentNotModify)
+                return $entryNotModify;
+            else
+                return true;
+        }
+
 	}
 
 ?>
