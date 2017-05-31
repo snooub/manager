@@ -176,7 +176,7 @@
             for ($i = 0; $i < $nameSplitsCount; ++$i) {
                 $nameEntry = $nameSplits[$i];
 
-                if ($i === $nameSplitsCount - 1) {
+                if ($i >= $nameSplitsCount - 1) {
                     $configArray[$nameEntry] = $value;
                 } else {
                     if (isset($configArray[$nameEntry]) == false)
@@ -235,6 +235,7 @@
                         $configArray[$nameEntry] = [];
 
                     $configArray = &$configArray[$nameEntry];
+                    bug($configArray);
                 }
             }
 
