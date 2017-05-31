@@ -13,9 +13,6 @@
     set_time_limit(0);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
-
     $title   = lng('upload.title_page');
     $themes  = [ env('resource.theme.file') ];
     $scripts = [ env('resource.javascript.custom_input_file') ];

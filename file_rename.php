@@ -9,9 +9,6 @@
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
-
     if ($appDirectory->isFileExistsDirectorySeparatorName() == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
     else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
@@ -55,9 +52,9 @@
                 $appAlert->danger(lng('file_rename.alert.not_input_name_file'));
         } else if (FileInfo::isNameValidate($forms['name']) == false) {
             if ($isDirectory)
-                $appAlert->danger(lng('file_rename.alert.name_directory_not_validate'));
+                $appAlert->danger(lng('file_rename.alert.name_directory_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
             else
-                $appAlert->danger(lng('file_rename.alert.name_file_not_validate'));
+                $appAlert->danger(lng('file_rename.alert.name_file_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
         } else if ($appDirectory->getName() == $forms['name']) {
             $appAlert->danger(lng('file_rename.alert.name_not_change'));
         } else {

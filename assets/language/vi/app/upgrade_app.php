@@ -9,8 +9,8 @@
             'label_build_last'    => 'Đóng gói lúc:',
             'label_data_length'   => 'Kích thước dữ liệu:',
             'label_md5_bin_check' => 'MD5 sum:',
-            'label_readme'        => 'Thông tin:',
-            'label_changelog'     => 'Thay đổi của phiên bản:'
+            'label_readme'        => 'Thông tin',
+            'label_changelog'     => 'Thay đổi của phiên bản'
         ],
 
         'form' => [

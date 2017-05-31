@@ -2,7 +2,9 @@
 
     use Librarys\File\FileInfo;
 
-    define('LOADED', 1);
+    define('LOADED',              1);
+    define('DISABLE_CHECK_LOGIN', 1);
+
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
     requireDefine('asset');
 

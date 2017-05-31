@@ -60,7 +60,7 @@
 
             'backup' => [
                 'not_input_filename'       => 'Chưa nhập tên tập tin sao lưu',
-                'filename_not_validate'    => 'Tên tập tin sao lưu không hợp lệ',
+                'filename_not_validate'    => 'Tên tập tin sao lưu không hợp lệ, không được chứa bất kỳ ký tự <strong>{$validate}</strong>',
                 'filename_is_exists'       => 'Tên tập tin <strong>{$name}</strong> sao lưu đã tồn tại',
                 'backup_infomation_failed' => 'Sao lưu thông tin cơ sở dữ liệu <strong>{$name}</strong> thất bại: <strong>{$error}</strong>',
                 'backup_table_failed'      => 'Sao lưu bảng <strong>{$name}</strong> thất bại: <strong>{$error}</strong>',

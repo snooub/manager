@@ -30,6 +30,7 @@ input:invalid {
 }
 
 input[type=text],
+input[type=email],
 input[type=number],
 input[type=password],
 input[type=file] + label,
@@ -49,11 +50,13 @@ select {
     border-bottom: 2px solid #e0e0e0;
     padding: 10px;
     width: 100%;
-    height: 45px;
+    height: 50px;
+    line-height: 50px;
     outline: 0;
 }
 
 input[type=text]:disabled,
+input[type=email]:disabled,
 input[type=number]:disabled,
 input[type=password]:disabled,
 input[type=file]:disabled + label,
@@ -68,6 +71,7 @@ input[type=file] + label {
 }
 
 input[type=text],
+input[type=email],
 input[type=number],
 input[type=password],
 
@@ -138,6 +142,8 @@ input[type=file] + label {
 
 input[type=text]:disabled,
 input[type=text]:disabled,
+input[type=email]:disabled,
+input[type=email]:disabled,
 input[type=number]:disabled,
 input[type=number]:disabled,
 input[type=password]:disabled,
@@ -155,6 +161,8 @@ select:disabled {
 
 input[type=text]:enabled:hover,
 input[type=text]:enabled:focus,
+input[type=email]:enabled:hover,
+input[type=email]:enabled:focus,
 input[type=number]:enabled:hover,
 input[type=number]:enabled:focus,
 input[type=password]:enabled:hover,
@@ -182,6 +190,8 @@ input:enabled:not(.none):invalid:focus {
 
 input[type=text].danger:enabled:hover,
 input[type=text].danger:enabled:focus,
+input[type=email].danger:enabled:hover,
+input[type=email].danger:enabled:focus,
 input[type=number].danger:enabled:hover,
 input[type=number].danger:enabled:focus,
 input[type=password].danger:enabled:hover,
@@ -199,6 +209,8 @@ div.select.danger:focus::before {
 
 input[type=text].success:enabled:hover,
 input[type=text].success:enabled:focus,
+input[type=email].success:enabled:hover,
+input[type=email].success:enabled:focus,
 input[type=number].success:enabled:hover,
 input[type=number].success:enabled:focus,
 input[type=password].success:enabled:hover,
@@ -216,6 +228,8 @@ div.select.success:focus::before {
 
 input[type=text].info:enabled:hover,
 input[type=text].info:enabled:focus,
+input[type=email].info:enabled:hover,
+input[type=email].info:enabled:focus,
 input[type=number].info:enabled:hover,
 input[type=number].info:enabled:focus,
 input[type=password].info:enabled:hover,
@@ -233,6 +247,8 @@ div.select.info:focus::before {
 
 input[type=text].warning:enabled:hover,
 input[type=text].warning:enabled:focus,
+input[type=email].warning:enabled:hover,
+input[type=email].warning:enabled:focus,
 input[type=number].warning:enabled:hover,
 input[type=number].warning:enabled:focus,
 input[type=password].warning:enabled:hover,

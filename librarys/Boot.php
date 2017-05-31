@@ -97,6 +97,8 @@
 
                 session_start();
             }
+
+            return true;
         }
 
         public function dateInitializing()

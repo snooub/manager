@@ -3,7 +3,9 @@
     use Librarys\App\AppAboutConfig;
     use Librarys\App\AppUpgrade;
 
-    define('LOADED', 1);
+    define('LOADED',              1);
+    define('DISABLE_CHECK_LOGIN', 1);
+
     require_once('global.php');
 
     $title      = lng('app.about.title_page');

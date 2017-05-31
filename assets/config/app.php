@@ -174,6 +174,7 @@
         'config_file_name' => [
         	'about'   => 'about.php',
             'manager' => 'manager.php',
+            'user'    => 'user.php',
             'mysql'   => 'mysql.php',
             'upgrade' => 'upgrade.php'
         ]

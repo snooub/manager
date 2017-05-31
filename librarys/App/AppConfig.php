@@ -12,9 +12,9 @@
     final class AppConfig extends BaseConfigRead
     {
 
-        public function __construct(Boot $boot, $pathConfigSystem = null)
+        public function __construct(Boot $boot)
         {
-            parent::__construct($boot, $pathConfigSystem, env('config_file_name.manager'));
+            parent::__construct($boot, env('resource.config.manager'), env('config_file_name.manager'));
             parent::parse(true);
         }
 

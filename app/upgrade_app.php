@@ -103,41 +103,39 @@
         </div>
     </div>
 
-    <?php if ($appUser->isLogin()) { ?>
-        <ul class="menu-action">
-            <li>
-                <a href="about.php">
-                    <span class="icomoon icon-about"></span>
-                    <span><?php echo lng('app.about.menu_action.about'); ?></span>
-                </a>
-            </li>
+    <ul class="menu-action">
+        <li>
+            <a href="about.php">
+                <span class="icomoon icon-about"></span>
+                <span><?php echo lng('app.about.menu_action.about'); ?></span>
+            </a>
+        </li>
 
-            <li>
-                <a href="check_update.php">
-                    <span class="icomoon icon-update"></span>
-                    <span><?php echo lng('app.about.menu_action.check_update'); ?></span>
-                </a>
-            </li>
+        <li>
+            <a href="check_update.php">
+                <span class="icomoon icon-update"></span>
+                <span><?php echo lng('app.about.menu_action.check_update'); ?></span>
+            </a>
+        </li>
 
-            <li>
-                <a href="validate_app.php">
-                    <span class="icomoon icon-check"></span>
-                    <span><?php echo lng('app.about.menu_action.validate_app'); ?></span>
-                </a>
-            </li>
-            <li>
-                <a href="help.php">
-                    <span class="icomoon icon-help"></span>
-                    <span><?php echo lng('app.about.menu_action.help'); ?></span>
-                </a>
-            </li>
-            <li>
-                <a href="feedback.php">
-                    <span class="icomoon icon-feedback"></span>
-                    <span><?php echo lng('app.about.menu_action.feedback'); ?></span>
-                </a>
-            </li>
-        </ul>
-    <?php } ?>
+        <li>
+            <a href="validate_app.php">
+                <span class="icomoon icon-check"></span>
+                <span><?php echo lng('app.about.menu_action.validate_app'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="help.php">
+                <span class="icomoon icon-help"></span>
+                <span><?php echo lng('app.about.menu_action.help'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="feedback.php">
+                <span class="icomoon icon-feedback"></span>
+                <span><?php echo lng('app.about.menu_action.feedback'); ?></span>
+            </a>
+        </li>
+    </ul>
 
 <?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>

@@ -4,12 +4,8 @@
 
     define('LOADED',  1);
     define('SETTING', 1);
-    define('ROOT',    '..' . DIRECTORY_SEPARATOR);
 
-    require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
-
-    if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, env('app.http.host') . '/user/login.php');
+    require_once('global.php');
 
     $title = lng('system.setting.title_page');
     $appAlert->setID(ALERT_SYSTEM_SETTING);

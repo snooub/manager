@@ -39,7 +39,7 @@
 
             'data_empty_or_not_validate'                  => 'Dữ liệu trống hoặc không hợp lệ',
             'url_import_not_validate'                     => 'Đường dẫn <strong>{$url}</strong> không hợp lệ',
-            'name_url_import_not_validate'                => 'Tên tập tin <strong>{$name}</strong> không hợp lệ',
+            'name_url_import_not_validate'                => 'Tên tập tin <strong>{$name}</strong> không hợp lệ, không được chứa bất kỳ ký tự <strong>{$validate}</strong>',
             'not_input_urls'                              => 'Chưa nhập đường dẫn nào',
             'exists_func_not_validate'                    => 'Chế độ ghi đè khi có tập tin đã tồn tại không hợp lệ',
             'mode_import_not_validate'                    => 'Chế độ nhập khẩu tập tin không hợp lệ',

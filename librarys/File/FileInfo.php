@@ -14,6 +14,8 @@
 		private $fileExt;
 		private $fileMime;
 
+        const FILENAME_VALIDATE = '\\/:*?"<>|';
+
 		public function __construct($filePath, $receiverMime = true)
 		{
 			$this->setFilePath($filePath, $receiverMime);
@@ -76,7 +78,7 @@
 
         public static function isNameValidate($name)
         {
-            return strpbrk($name, '\\/:*?"<>|') == false;
+            return strpbrk($name, self::FILENAME_VALIDATE) == false;
         }
 
         public static function fileNameFix($name)

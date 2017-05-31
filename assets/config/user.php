@@ -4,45 +4,26 @@
         exit;
 
     return [
-        [
-            'username' => 'Admin',
-            'password' => Librarys\App\AppUser::passwordEncode('12345'),
-            'position' => 8,
-
-            'time_create' => 0,
-            'time_modify' => 0,
-            'time_login'  => 0
-        ],
-
-        [
+        'cfcd208495d565ef66e7dff9f98764da' => [
             'username' => 'IzeroCs',
-            'password' => Librarys\App\AppUser::passwordEncode('12345'),
+            'email' => 'izero.cs@gmail.com',
+            'password' => '86bafb3d7462038b04e3f740d81af8d1',
             'position' => 8,
+            'create_at' => 0,
+            'modify_at' => 1496204348,
+            'band_at' => 0,
+            'band_of' => '',
+            'login_at' => 1496204328,
+            'tokens' => [
+                'tokenfe271d462b4682ae715f0dc7ae285907' => 1496203546,
+                'tokenc26a3ac69325199a3187b8cc608bf592' => 1496204195,
+                'token05a14797f433cbfccfebb731361c38ee' => 1496204270,
+                'token86397373225cd3176c73aa6e13a9a55c' => 1496204295,
+                'tokenb8ceceda6e733d4a3ab1a6af2f6a1549' => 1496204328,
+            ],
 
-            'time_create' => 0,
-            'time_modify' => 0,
-            'time_login'  => 0
         ],
 
-        [
-            'username' => 'User',
-            'password' => Librarys\App\AppUser::passwordEncode('12345'),
-            'position' => 1,
-
-            'time_create' => 0,
-            'time_modify' => 0,
-            'time_login'  => 0
-        ],
-
-        [
-            'username' => 'Band',
-            'password' => Librarys\App\AppUser::passwordEncode('12345'),
-            'position' => 0,
-
-            'time_create' => 0,
-            'time_modify' => 0,
-            'time_login'  => 0
-        ]
     ];
 
 ?>

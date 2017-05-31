@@ -12,9 +12,6 @@
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
-
     $title  = lng('create.title_page');
     $themes = [ env('resource.theme.file') ];
     $appAlert->setID(ALERT_CREATE);
@@ -53,9 +50,9 @@
             $appAlert->danger(lng('create.alert.not_choose_type'));
         } else if (FileInfo::isNameValidate($forms['name']) == false) {
             if ($forms['type'] === TYPE_FOLDER)
-                $appAlert->danger(lng('create.alert.name_not_validate_type_directory'));
+                $appAlert->danger(lng('create.alert.name_not_validate_type_directory', 'validate', FileInfo::FILENAME_VALIDATE));
             else if ($forms['type'] === TYPE_FILE)
-                $appAlert->danger(lng('create.alert.name_not_validate_type_file'));
+                $appAlert->danger(lng('create.alert.name_not_validate_type_file', 'validate', FileInfo::FILENAME_VALIDATE));
         } else {
             $forms['path'] = FileInfo::validate($appDirectory->getDirectory() . SP . $forms['name']);
 

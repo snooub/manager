@@ -15,9 +15,6 @@
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
-
     $title   = lng('import.title_page');
     $themes  = [ env('resource.theme.file') ];
     $scripts = [ env('resource.javascript.more_input_url') ];
@@ -75,7 +72,7 @@
                     $forms['filenames'][$index] = addslashes($_POST['filenames'][$index]);
 
                     if ($isFailed == false && empty($url) == false && empty($forms['filenames'][$index]) == false && FileInfo::isNameValidate($forms['filenames'][$index]) == false)
-                        $appAlert->danger(lng('import.alert.name_url_import_not_validate', 'name', $forms['filenames'][$index]));
+                        $appAlert->danger(lng('import.alert.name_url_import_not_validate', 'name', $forms['filenames'][$index], 'validate', FileInfo::FILENAME_VALIDATE));
                 }
             }
 

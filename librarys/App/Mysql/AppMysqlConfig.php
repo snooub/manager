@@ -8,9 +8,9 @@
     final class AppMysqlConfig extends BaseConfigRead
     {
 
-        public function __construct(Boot $boot, $pathConfigSystem)
+        public function __construct(Boot $boot)
         {
-            parent::__construct($boot, $pathConfigSystem, env('config_file_name.mysql'));
+            parent::__construct($boot, env('resource.config.mysql'), env('config_file_name.mysql'));
             parent::parse(true);
         }
 

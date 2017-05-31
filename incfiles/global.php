@@ -26,12 +26,12 @@
         )
     );
 
-    $appChecker      = new Librarys\App\AppChecker   ($boot);
-    $appUser         = new Librarys\App\AppUser      ($boot, env('resource.config.user'));
-    $appConfig       = new Librarys\App\AppConfig    ($boot, env('resource.config.manager'));
-    $appAlert        = new Librarys\App\AppAlert     ($boot, env('resource.define.alert'));
-    $appDirectory    = new Librarys\App\AppDirectory ($boot);
-    $appMysqlConfig  = new Librarys\App\Mysql\AppMysqlConfig($boot, env('resource.config.mysql'));
+    $appChecker      = new Librarys\App\AppChecker          ($boot);
+    $appConfig       = new Librarys\App\AppConfig           ($boot);
+    $appUser         = new Librarys\App\AppUser             ($boot);
+    $appAlert        = new Librarys\App\AppAlert            ($boot);
+    $appDirectory    = new Librarys\App\AppDirectory        ($boot);
+    $appMysqlConfig  = new Librarys\App\Mysql\AppMysqlConfig($boot);
 
     unset($directory);
 
@@ -48,7 +48,11 @@
         exit(0);
     }
 
+    // Get config system
+    $appConfig->execute();
     $appUser->execute();
+
+    // Get config user
     $appConfig->execute($appUser);
     $appConfig->requireEnvProtected(env('resource.config.manager_disabled'));
 
@@ -61,5 +65,12 @@
     $appMysqlConfig->execute($appUser);
 
     Librarys\App\AppTmpClean::scanAutoClean();
+
+    if (defined('DISABLE_CHECK_LOGIN') == false) {
+        if ($appUser->isLogin() == false)
+            $appAlert->danger(lng('user.login.alert.not_login'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
+        else if ($appUser->isUserBand())
+            $appAlert->danger(lng('user.login.alert.user_is_band'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
+    }
 
 ?>

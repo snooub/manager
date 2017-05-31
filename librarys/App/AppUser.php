@@ -8,66 +8,113 @@
     use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\CFSR\CFSRToken;
+    use Librarys\App\AppUserConfig;
+    use Librarys\App\AppUserConfigWrite;
 
     final class AppUser
     {
 
         private $boot;
-        private $db;
+        private $config;
+        private $configWrite;
 
         private $id;
-        private $user;
         private $token;
-
         private $isLogin;
 
-        const KEY_USERNAME = 'username';
-        const KEY_PASSWORD = 'password';
-        const KEY_POSITION = 'position';
+        const POSITION_BAND        = 0;
+        const POSITION_USER        = 2;
+        const POSTION_ADMIN        = 4;
+        const POSTION_ADMINSTRATOR = 8;
 
-        const KEY_TIME_CREATE = 'time_create';
-        const KEY_TIME_MODIFY = 'time_modify';
-        const KEY_TIME_LOGIN  = 'time_login';
+        const USERNAME_VALIDATE = '\\/:*?"<>|\'';
 
-        const POSITION_BAN         = 0;
-        const POSITION_USER        = 1;
-        const POSTION_ADMIN        = 2;
-        const POSTION_ADMINSTRATOR = 4;
-
-        public function __construct(Boot $boot, $db)
+        public function __construct(Boot $boot)
         {
-            $this->boot = $boot;
-            $this->parse($db);
+            $this->boot        = $boot;
+            $this->config      = new AppUserConfig($boot);
+            $this->configWrite = new AppUserConfigWrite($this->config);
+
+            $this->cleanToken();
+        }
+
+        public function cleanToken()
+        {
+            global $appConfig;
+
+            $arrays = $this->config->getConfigArraySystem();
+
+            if (is_array($arrays) && count($arrays) > 0) {
+                $timeNow   = time();
+                $timeLogin = intval($appConfig->get('login.time_login', 86400));
+
+                if ($timeLogin <= 0)
+                    $timeLogin = 86400;
+
+                foreach ($arrays AS $id => $arrayUser) {
+                    if (is_array($arrayUser) && isset($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS]) && is_array($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS])) {
+                        $tokens = $arrayUser[AppUserConfig::ARRAY_KEY_TOKENS];
+
+                        foreach ($tokens AS $token => $time) {
+                            if ($timeNow - $time >= $timeLogin)
+                                $this->config->removeSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $token);
+                        }
+                    }
+                }
+
+                $this->configWrite->write();
+            }
         }
 
         public function execute()
         {
-            if (isset($_SESSION[env('app.login.session_login_name')]) && isset($_SESSION[env('app.login.session_token_name')])) {
-                $id    = intval($_SESSION[env('app.login.session_login_name')]);
-                $token = addslashes($_SESSION[env('app.login.session_token_name')]);
+            $this->isLogin = false;
 
-                if (isset($this->db[$id])) {
-                    $this->user    = $this->db[$id];
-                    $this->isLogin = true;
-                } else {
-                    $this->isLogin = false;
-                }
-            } else {
-                $this->isLogin = false;
+            if (isset($_SESSION[env('app.login.session_login_name')]) == false || isset($_SESSION[env('app.login.session_token_name')]) == false)
+                return;
+
+            $id     = addslashes($_SESSION[env('app.login.session_login_name')]);
+            $token  = addslashes($_SESSION[env('app.login.session_token_name')]);
+            $tokens = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS, false);
+
+            if ($tokens === false || is_array($tokens) == false || count($tokens) <= 0 || @array_key_exists($token, $tokens) == false) {
+                $this->exitSession();
+                return;
             }
+
+            $this->id      = $id;
+            $this->token   = $token;
+            $this->isLogin = true;
         }
 
         public function get($key)
         {
-            if ($this->isLogin() && is_array($this->user)) {
-                if (array_key_exists($key, $this->user))
-                    return $this->user[$key];
-            }
+            if ($this->isLogin() == false)
+                return null;
 
-            return null;
+            return $this->config->get($this->id . '.' . $key);
         }
 
-        public function getID()
+        public function setConfig($key, $value)
+        {
+            if ($this->isLogin() == false)
+                return false;
+
+            return $this->config->setSystem($this->id . '.' . $key, $value);
+        }
+
+        public function writeConfig($exitUser = false)
+        {
+            if ($this->configWrite->write() == false)
+                return false;
+
+            if ($exitUser)
+                $this->exitSession();
+
+            return true;
+        }
+
+        public function getId()
         {
             return $this->id;
         }
@@ -82,33 +129,42 @@
             return $this->isLogin;
         }
 
-        public function parse($db)
-        {
-            if (is_null($db))
-                return;
-
-            if (is_array($db))
-                $this->db = $db;
-            else if (FileInfo::isTypeFile($db))
-                $this->db = require_once($db);
-            else if (is_null($db) == false)
-                $this->db = json_decode($db, true);
-            else
-                $this->db = array();
-        }
-
         public function isUser($username, $password, $passwordEncode = true)
         {
-            if (is_array($this->db) && count($this->db) > 0) {
+            $arrays = $this->config->getConfigArraySystem();
+
+            if (is_array($arrays) && count($arrays) > 0) {
                 $username = strtolower($username);
 
                 if ($passwordEncode)
                     $password = self::passwordEncode($password);
 
-                foreach ($this->db AS $id => $user) {
-                    if ($username == strtolower($user[self::KEY_USERNAME]) && $password == $user[self::KEY_PASSWORD])
-                        return $user;
+                foreach ($arrays AS $id => $arrayUser) {
+                    if (strcasecmp($arrayUser[AppUserConfig::ARRAY_KEY_USERNAME], $username) === 0 || strcasecmp($arrayUser[AppUserConfig::ARRAY_KEY_EMAIL], $username) === 0) {
+                        if (strcmp($arrayUser[AppUserConfig::ARRAY_KEY_PASSWORD], $password) === 0)
+                            return $id;
+                    }
                 }
+            }
+
+            return false;
+        }
+
+        public function isUserBand($id = null, $exitUser = true)
+        {
+            if ($id == null)
+                $id = $this->id;
+
+            if ($id == null || empty($id))
+                return false;
+
+            $position = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_POSITION, false);
+
+            if ($position === false || $position === 0) {
+                if ($exitUser)
+                    $this->exitSession();
+
+                return true;
             }
 
             return false;
@@ -119,10 +175,36 @@
             if ($token == null)
                 $token = CFSRToken::generator();
 
-            $_SESSION[env('app.login.session_login_name')] = intval($id);
-            $_SESSION[env('app.login.session_token_name')] = addslashes($token);
+            $id    = addslashes($id);
+            $token = addslashes($token);
+            $time  = time();
+
+            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $token, $time) == false)
+                return false;
+
+            $this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time);
+
+            if ($this->configWrite->write() == false)
+                return false;
+
+            $_SESSION[env('app.login.session_login_name')] = $id;
+            $_SESSION[env('app.login.session_token_name')] = $token;
 
             $this->execute();
+
+            return true;
+        }
+
+        public static function isValidateUsername($username)
+        {
+            return @strpbrk($username, self::USERNAME_VALIDATE) == false;
+        }
+
+        public function exitSession()
+        {
+            $sessionDestroy = @session_destroy();
+
+            return $sessionDestroy;
         }
 
         public static function passwordEncode($password)

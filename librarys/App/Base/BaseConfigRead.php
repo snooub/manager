@@ -25,7 +25,7 @@
         protected $cacheArray;
         protected $envProtectedArray;
 
-        public function __construct(Boot $boot, $pathConfigSystem, $fileConfigName)
+        public function __construct(Boot $boot, $pathConfigSystem, $fileConfigName = null)
         {
             $this->configArray       = array();
             $this->configSystemArray = array();
@@ -98,11 +98,10 @@
         public function execute($appUser = null)
         {
             if ($appUser != null && $appUser->isLogin()) {
-                $username  = $appUser->get('username');
                 $directory = env('app.path.user');
                 $isMkdir   = true;
 
-                $this->pathConfig = FileInfo::validate($directory . SP . md5($username));
+                $this->pathConfig = FileInfo::validate($directory . SP . $appUser->getId());
 
                 if (FileInfo::isTypeDirectory($directory) == false)
                     $isMkdir = FileInfo::mkdir($directory);
@@ -204,6 +203,50 @@
                 return $this->cacheArray[$name];
 
             return $this->receiverToCache($name, $default);
+        }
+
+        public function remove($name, $systemRemove = false)
+        {
+            if ($name == null)
+                return false;
+
+            $nameSplits = array();
+
+            if (strpos($name, '.') === false)
+                $nameSplits[] = $name;
+            else
+                $nameSplits = explode('.', $name);
+
+            $configArray     = null;
+            $nameSplitsCount = count($nameSplits);
+
+            if ($systemRemove)
+                $configArray = &$this->configSystemArray;
+            else
+                $configArray = &$this->configArray;
+
+            for ($i = 0; $i < $nameSplitsCount; ++$i) {
+                $nameEntry = $nameSplits[$i];
+
+                if ($i === $nameSplitsCount - 1) {
+                    unset($configArray[$nameEntry]);
+                } else {
+                    if (isset($configArray[$nameEntry]) == false)
+                        $configArray[$nameEntry] = [];
+
+                    $configArray = &$configArray[$nameEntry];
+                }
+            }
+
+            if (array_key_exists($name, $this->cacheArray) == true)
+                unset($this->cacheArray[$name]);
+
+            return true;
+        }
+
+        public function removeSystem($name)
+        {
+            return $this->remove($name, true);
         }
 
         private function receiverToCache($name, $default = null)

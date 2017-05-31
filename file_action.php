@@ -10,9 +10,6 @@
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appUser->isLogin() == false)
-        $appAlert->danger(lng('user.login.alert.not_login'), ALERT_LOGIN, 'user/login.php');
-
     if ($appDirectory->isDirectoryExists() == false)
         $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
     else if ($appDirectory->isPermissionDenyPath())
@@ -127,9 +124,9 @@
                             $isFailed = true;
 
                             if ($entryIsTypeDirectory)
-                                $appAlert->danger(lng('file_action.alert.rename.name_directory_is_error', 'name', $entryFilenameModifier));
+                                $appAlert->danger(lng('file_action.alert.rename.name_directory_is_error', 'name', $entryFilenameModifier, 'validate', FileInfo::FILENAME_VALIDATE));
                             else
-                                $appAlert->danger(lng('file_action.alert.rename.name_file_is_error', 'name', $entryFilenameModifier));
+                                $appAlert->danger(lng('file_action.alert.rename.name_file_is_error', 'name', $entryFilenameModifier, 'validate', FileInfo::FILENAME_VALIDATE));
 
                             break;
                         }
@@ -345,7 +342,7 @@
         } else if (empty($forms['zip']['name_zip'])) {
             $appAlert->danger(lng('file_action.alert.zip.not_input_name_zip'));
         } else if (FileInfo::isNameValidate($forms['zip']['name_zip']) == false) {
-            $appAlert->danger(lng('file_action.alert.zip.name_zip_not_validate'));
+            $appAlert->danger(lng('file_action.alert.zip.name_zip_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
         } else {
             $isFailed                        = false;
             $forms['zip']['path_create_zip'] = FileInfo::validate($forms['zip']['path_create_zip']);

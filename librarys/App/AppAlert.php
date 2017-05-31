@@ -23,12 +23,12 @@
         const INFO    = 'info';
         const NONE    = 'none';
 
-        public function __construct(Boot $boot, $alertDefine)
+        public function __construct(Boot $boot)
         {
             $this->boot = $boot;
 
-            if (FileInfo::isTypeFile($alertDefine))
-                require_once($alertDefine);
+            if (FileInfo::isTypeFile(env('resource.define.alert')))
+                require_once(env('resource.define.alert'));
         }
 
         public function danger($message, $id = null, $urlGoto = null)
