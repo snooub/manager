@@ -77,7 +77,7 @@
             $token  = addslashes($_SESSION[env('app.login.session_token_name')]);
             $tokens = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS, false);
 
-            if ($tokens === false || is_array($tokens) == false || count($tokens) <= 0 || @array_key_exists($token, $tokens) == false) {
+            if ($tokens === false || @is_array($tokens) == false || @count($tokens) <= 0 || @isset($tokens[$token]) == false) {
                 $this->exitSession();
                 return;
             }
