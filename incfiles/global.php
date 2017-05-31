@@ -27,7 +27,7 @@
     );
 
     $appChecker      = new Librarys\App\AppChecker          ($boot);
-    $appConfig       = new Librarys\App\AppConfig           ($boot);
+    $appConfig       = new Librarys\App\Config\AppConfig    ($boot);
     $appUser         = new Librarys\App\AppUser             ($boot);
     $appAlert        = new Librarys\App\AppAlert            ($boot);
     $appDirectory    = new Librarys\App\AppDirectory        ($boot);

@@ -1,8 +1,8 @@
 <?php
 
-    use Librarys\App\AppConfigWrite;
     use Librarys\App\AppUser;
-    use Librarys\App\AppUserConfig;
+    use Librarys\App\Config\AppConfigWrite;
+    use Librarys\App\Config\AppUserConfig;
 
     define('LOADED', 1);
     require_once('global.php');

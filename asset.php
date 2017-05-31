@@ -1,6 +1,7 @@
 <?php
 
     use Librarys\File\FileInfo;
+    use Librarys\App\AppAssets;
 
     define('LOADED',              1);
     define('DISABLE_CHECK_LOGIN', 1);
@@ -40,23 +41,22 @@
         $cacheLifetime = env('app.dev.cache_css');
 
         if (checkCache($cachePath, $cacheLifetime) == false) {
-            if (strpos($themeFile, '.'))
-                $themeEntrys = explode('.', $themeFile);
-            else
-                array_push($themeEntrys, $themeFile);
+            $themePath = FileInfo::validate($themePath . SP . $themeDirectory);
 
-            if (FileInfo::isTypeDirectory(FileInfo::validate($themePath . SP . $themeDirectory)) == false)
+            if (FileInfo::isTypeDirectory($themePath) == false)
                 die('Thư mục chứa tài nguyên không tồn tại');
 
             header('Content-Type: text/css');
 
-            foreach ($themeEntrys AS $themeFilename) {
-                $themeFilepath = FileInfo::validate($themePath . SP . $themeDirectory . SP . $themeFilename . '.css');
+            $themeFilename = $themeFile . '.css';
+            $themeFilepath = FileInfo::validate($themePath . SP . $themeFilename);
+            $appAssets     = new AppAssets($themePath, $themeFilename);
 
-                if (FileInfo::isTypeFile($themeFilepath)) {
-                    require $themeFilepath;
-                    echo "\n\n";
-                }
+            if ($appAssets->load()) {
+                $appAssets->display();
+            } else {
+                die('Tài nguyên không hợp lệ');
+                exit(0);
             }
         }
     } else if (isset($_GET[ASSET_PARAMETER_JS_URL]) && empty($_GET[ASSET_PARAMETER_JS_URL]) == false) {

@@ -1,16 +1,16 @@
 <?php
 
-    namespace Librarys\App;
+    namespace Librarys\App\Config;
 
     if (defined('LOADED') == false)
         exit;
 
     use Librarys\App\Base\BaseConfigWrite;
 
-    final class AppAboutConfigWrite extends BaseConfigWrite
+    final class AppUserConfigWrite extends BaseConfigWrite
     {
 
-        public function __construct(AppAboutConfig $appConfig)
+        public function __construct(AppUserConfig $appConfig)
         {
             parent::__construct($appConfig, $appConfig->getPathConfigSystem());
             parent::setSpacing('    ');

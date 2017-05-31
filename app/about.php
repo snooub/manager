@@ -1,6 +1,6 @@
 <?php
 
-    use Librarys\App\AppAboutConfig;
+    use Librarys\App\Config\AppAboutConfig;
     use Librarys\App\AppUpgrade;
 
     define('LOADED',              1);

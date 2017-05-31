@@ -1,6 +1,6 @@
 <?php
 
-    use Librarys\App\AppAboutConfig;
+    use Librarys\App\Config\AppAboutConfig;
     use Librarys\App\AppUpdate;
     use Librarys\App\AppUpgrade;
     use Librarys\File\FileCurl;

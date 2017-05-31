@@ -1,6 +1,6 @@
 <?php
 
-	use Librarys\App\AppConfigWrite;
+	use Librarys\App\Config\AppConfigWrite;
 
     define('LOADED',  1);
     define('SETTING', 1);

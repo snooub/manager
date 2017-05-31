@@ -1,6 +1,6 @@
 <?php
 
-    namespace Librarys\App;
+    namespace Librarys\App\Config;
 
     if (defined('LOADED') == false)
         exit;

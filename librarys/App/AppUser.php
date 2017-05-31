@@ -8,8 +8,8 @@
     use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\CFSR\CFSRToken;
-    use Librarys\App\AppUserConfig;
-    use Librarys\App\AppUserConfigWrite;
+    use Librarys\App\Config\AppUserConfig;
+    use Librarys\App\Config\AppUserConfigWrite;
 
     final class AppUser
     {

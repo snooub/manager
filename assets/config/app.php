@@ -166,11 +166,12 @@
                 ],
 
                 'config' => [
-                    'about'   => 'about.php',
-                    'manager' => 'manager.php',
-                    'user'    => 'user.php',
-                    'mysql'   => 'mysql.php',
-                    'upgrade' => 'upgrade.php'
+                    'about'     => 'about.php',
+                    'manager'   => 'manager.php',
+                    'user'      => 'user.php',
+                    'mysql'     => 'mysql.php',
+                    'upgrade'   => 'upgrade.php',
+                    'env_theme' => 'env.php'
                 ]
             ],
 

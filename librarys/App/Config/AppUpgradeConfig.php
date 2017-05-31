@@ -1,12 +1,11 @@
 <?php
 
-    namespace Librarys\App;
+    namespace Librarys\App\Config;
 
     if (defined('LOADED') == false)
         exit;
 
     use Librarys\Boot;
-    use Librarys\File\FileInfo;
     use Librarys\App\Base\BaseConfigRead;
 
     final class AppUpgradeConfig extends BaseConfigRead
