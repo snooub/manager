@@ -89,7 +89,10 @@
                 if ($this->pathConfig == null)
                     return false;
 
-                if (FileInfo::fileWriteContents($this->pathConfig, $this->buffer))
+//bug($this->pathConfig);
+//bug($this->buffer);
+bug($config);
+                bug(FileInfo::fileWriteContents($this->pathConfig, $this->buffer));
                     return true;
             }
 

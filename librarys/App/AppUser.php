@@ -51,7 +51,7 @@
                 if ($timeLogin <= 0)
                     $timeLogin = 86400;
 
-                foreach ($arrays AS $id => $arrayUser) {
+/*                foreach ($arrays AS $id => $arrayUser) {
                     if (is_array($arrayUser) && isset($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS]) && is_array($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS])) {
                         $tokens = $arrayUser[AppUserConfig::ARRAY_KEY_TOKENS];
 
@@ -62,7 +62,7 @@
                     }
                 }
 
-                $this->configWrite->write();
+                $this->configWrite->write();*/
             }
         }
 

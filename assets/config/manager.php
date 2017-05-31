@@ -24,7 +24,7 @@
 
         'login' => [
             'enable_forgot_password'   => false,
-            'enable_lock_count_failed' => true,
+            'enable_lock_count_failed' => false,
             'max_lock_count'           => 5,
             'time_lock'                => 180,
             'time_login'               => 86400 * 7
