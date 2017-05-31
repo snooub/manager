@@ -3,30 +3,15 @@
     use Librarys\File\FileInfo;
     use Librarys\App\AppAssets;
 
-    define('LOADED',              1);
-    define('DISABLE_CHECK_LOGIN', 1);
+    define('LOADED',               1);
+    define('DISABLE_CHECK_LOGIN',  1);
+    define('ENABLE_CUSTOM_HEADER', 1);
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
     requireDefine('asset');
 
-    if ($boot->getCFSRToken()->validateGet() !== true) {
-        die('CFSR Token không hợp lệ');
-        exit(0);
-    }
-
-    $cachePath     = env('app.path.cache');
-    $cacheLifetime = 0;
-
-    function checkCache($path, $lifetime)
-    {
-        if (FileInfo::fileExists($path) == false)
-            return false;
-
-        if ($lifetime <= 0 || time() - FileInfo::fileMTime($path) > $lifetime)
-            return false;
-
-        return true;
-    }
+    if ($boot->getCFSRToken()->validateGet() !== true)
+        die(lng('default.global.cfsr_token_not_validate'));
 
     if (
             isset($_GET[ASSET_PARAMETER_THEME_URL]) && empty($_GET[ASSET_PARAMETER_THEME_URL]) == false &&
@@ -35,66 +20,41 @@
         $themeDirectory = addslashes(trim($_GET[ASSET_PARAMETER_THEME_URL]));
         $themeFile      = addslashes(trim($_GET[ASSET_PARAMETER_CSS_URL]));
         $themePath      = env('app.path.theme');
-        $themeEntrys    = array();
 
-        $cachePath    .= $themeFile . '.css';
-        $cacheLifetime = env('app.dev.cache_css');
+        $themePath = FileInfo::validate($themePath . SP . $themeDirectory);
 
-        if (checkCache($cachePath, $cacheLifetime) == false) {
-            $themePath = FileInfo::validate($themePath . SP . $themeDirectory);
+        if (FileInfo::isTypeDirectory($themePath) == false)
+            die(lng('default.resource.directory_not_found'));
 
-            if (FileInfo::isTypeDirectory($themePath) == false)
-                die('Thư mục chứa tài nguyên không tồn tại');
+        header('Content-Type: text/css');
 
-            header('Content-Type: text/css');
+        $themeFilename = $themeFile . '.css';
+        $themeFilepath = FileInfo::validate($themePath . SP . $themeFilename);
+        $appAssets     = new AppAssets($themePath, $themeFilename);
 
-            $themeFilename = $themeFile . '.css';
-            $themeFilepath = FileInfo::validate($themePath . SP . $themeFilename);
-            $appAssets     = new AppAssets($themePath, $themeFilename);
-
-            if ($appAssets->load()) {
-                $appAssets->display();
-            } else {
-                die('Tài nguyên không hợp lệ');
-                exit(0);
-            }
-        }
+        if ($appAssets->loadCss())
+            $appAssets->display();
+        else
+            die(lng('default.resource.file_not_found'));
     } else if (isset($_GET[ASSET_PARAMETER_JS_URL]) && empty($_GET[ASSET_PARAMETER_JS_URL]) == false) {
         $jsFile   = addslashes(trim($_GET[ASSET_PARAMETER_JS_URL]));
         $jsPath   = env('app.path.javascript');
-        $jsEntrys = array();
 
-        $cachePath    .= $jsFile . '.js';
-        $cacheLifetime = env('app.dev.cache_js');
+        if (FileInfo::isTypeDirectory($jsPath) == false)
+            die(lng('default.resource.directory_not_found'));
 
-        if (checkCache($cachePath, $cacheLifetime) == false) {
-            if (strpos($jsFile, '.'))
-                $jsEntrys = explode('.', $jsFile);
-            else
-                array_push($jsEntrys, $jsFile);
+        header('Content-Type: text/javascript');
 
-            header('Content-Type: text/javascript');
+        $jsFilename = $jsFile . '.js';
+        $jsFilePath = FileInfo::validate($jsPath . SP . $jsFilename);
+        $appAssets  = new AppAssets($jsPath, $jsFilename);
 
-            foreach ($jsEntrys AS $jsFilename) {
-                $jsFilepath = FileInfo::validate($jsPath . SP . $jsFilename . '.js');
-
-                if (FileInfo::isTypeFile($jsFilepath)) {
-                    require $jsFilepath;
-                    echo "\n\n";
-                }
-            }
-        }
+        if ($appAssets->loadJs())
+            $appAssets->display();
+        else
+            die(lng('default.resource.file_not_found'));
     } else {
-        die('Tài nguyên không hợp lệ');
-        exit(0);
+        die(lng('default.resource.file_not_found'));
     }
 
-    if ($cacheLifetime > 0) {
-        $contents = @ob_get_contents();
-
-        $boot->obBufferClean();
-        $boot->obBufferStart();
-
-        echo ($contents);
-    }
 ?>

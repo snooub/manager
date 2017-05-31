@@ -18,10 +18,7 @@
             ],
 
             'dev' => [
-                'enable'       => true,
-                'cache_css'    => 86400,
-                'cache_js'     => 86400,
-                'rand'         => 'generatorDevRandResource',
+                'enable' => false
             ],
 
             'date' => [
@@ -43,23 +40,24 @@
             ],
 
             'path' => [
-                'root'         => dirname(dirname(__DIR__)),
-                'librarys'     => '${app.path.root}${SP}librarys',
-                'resource'     => '${app.path.root}${SP}assets',
-                'error'        => '${app.path.resource}${SP}error',
-                'theme'        => '${app.path.resource}${SP}theme',
-                'icon'         => '${app.path.resource}${SP}icon',
-                'javascript'   => '${app.path.resource}${SP}javascript',
-                'template'     => '${app.path.resource}${SP}template',
-                'lang'         => '${app.path.resource}${SP}language',
-                'user'         => '${app.path.resource}${SP}user',
-                'config'       => '${app.path.resource}${SP}config',
-                'define'       => '${app.path.resource}${SP}define',
-                'cache'        => '${app.path.resource}${SP}cache',
-                'tmp'          => '${app.path.resource}${SP}tmp',
-                'backup'       => '${app.path.resource}${SP}backup',
-                'upgrade'      => '${app.path.resource}${SP}upgrade',
-                'backup_mysql' => '${app.path.backup}${SP}mysql'
+                'root'            => dirname(dirname(__DIR__)),
+                'librarys'        => '${app.path.root}${SP}librarys',
+                'resource'        => '${app.path.root}${SP}assets',
+                'error'           => '${app.path.resource}${SP}error',
+                'theme'           => '${app.path.resource}${SP}theme',
+                'icon'            => '${app.path.resource}${SP}icon',
+                'javascript'      => '${app.path.resource}${SP}javascript',
+                'template'        => '${app.path.resource}${SP}template',
+                'lang'            => '${app.path.resource}${SP}language',
+                'user'            => '${app.path.resource}${SP}user',
+                'config'          => '${app.path.resource}${SP}config',
+                'define'          => '${app.path.resource}${SP}define',
+                'cache'           => '${app.path.resource}${SP}cache',
+                'tmp'             => '${app.path.resource}${SP}tmp',
+                'backup'          => '${app.path.resource}${SP}backup',
+                'upgrade'         => '${app.path.resource}${SP}upgrade',
+                'backup_mysql'    => '${app.path.backup}${SP}mysql',
+                'data_javascript' => '${app.path.javascript}${SP}minify'
             ],
 
             'http' => [
@@ -70,34 +68,6 @@
                 'path'   => '${app.path.resource}${SP}language',
                 'mime'   => '.php',
                 'locale' => 'vi'
-            ],
-
-            'tmp' => [
-                'lifetime' => 180,
-                'limit'    => 20
-            ],
-
-            'firewall' => [
-                'path'            => '${app.path.resource}${SP}firewall',
-                'path_htaccess'   => '${app.path.root}${SP}.htaccess',
-                'email'           => 'Izero.Cs@gmail.com',
-                'enable'          => false,
-                'enable_htaccess' => true,
-
-                'time' => [
-                    'request' => 1,
-                    'small'   => 10,
-                    'medium'  => 120,
-                    'large'   => 3600
-                ],
-
-                'lock_count' => [
-                    'small'    => 5,
-                    'medium'   => 10,
-                    'large'    => 15,
-                    'forever'  => 20,
-                    'htaccess' => 25
-                ]
             ],
 
             'cfsr' => [
@@ -114,16 +84,6 @@
                 'session_login_name' => 'LOGIN_MANAGER',
                 'session_token_name' => 'LOGIN_TOKEN_MANAGER'
             ]
-        ],
-
-        'error' => [
-            'reporting' => E_ALL | E_STRICT,
-            'mime'      => '.php',
-            'theme'     => '${resource.theme.default}',
-
-            'handler'   => 'handler',
-            'not_found' => 'not_found',
-            'firewall'  => 'firewall'
         ],
 
         'resource' => [
@@ -166,12 +126,13 @@
                 ],
 
                 'config' => [
-                    'about'     => 'about.php',
-                    'manager'   => 'manager.php',
-                    'user'      => 'user.php',
-                    'mysql'     => 'mysql.php',
-                    'upgrade'   => 'upgrade.php',
-                    'env_theme' => 'env.php'
+                    'about'          => 'about.php',
+                    'manager'        => 'manager.php',
+                    'user'           => 'user.php',
+                    'mysql'          => 'mysql.php',
+                    'upgrade'        => 'upgrade.php',
+                    'env_theme'      => 'env.php',
+                    'env_javascript' => 'env.php'
                 ]
             ],
 

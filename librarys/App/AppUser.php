@@ -202,9 +202,10 @@
 
         public function exitSession()
         {
-            $sessionDestroy = @session_destroy();
+            if ($this->config->removeSystem($this->id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $this->token))
+                $this->configWrite->write();
 
-            return $sessionDestroy;
+            return @session_destroy();
         }
 
         public static function passwordEncode($password)

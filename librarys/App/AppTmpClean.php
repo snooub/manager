@@ -6,18 +6,22 @@
         exit;
 
     use Librarys\File\FileInfo;
+    use Librarys\App\Config\AppConfig;
 
     final class AppTmpClean
     {
 
-        public static function scanAutoClean()
+        public static function scanAutoClean(AppConfig $appConfig)
         {
+            if ($appConfig == null)
+                return false;
+
             $directory = env('app.path.tmp');
 
             if (FileInfo::isTypeDirectory($directory)) {
                 $time     = time();
-                $lifetime = env('app.tmp.lifetime', 180);
-                $limit    = env('app.tmp.limit',    10);
+                $lifetime = $appConfig->get('tmp.lifetime', 180);
+                $limit    = $appConfig->get('tmp.limit',    10);
                 $handle   = FileInfo::scanDirectory($directory);
 
                 if ($handle === false)

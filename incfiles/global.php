@@ -23,7 +23,9 @@
             'assets'   . SP .
             'config'   . SP .
             'app.php'
-        )
+        ),
+
+        defined('ENABLE_CUSTOM_HEADER')
     );
 
     $appChecker      = new Librarys\App\AppChecker          ($boot);
@@ -37,13 +39,13 @@
 
     if ($appChecker->execute()->isAccept() == false) {
         if ($appChecker->isInstallDirectory() == false)
-            trigger_error('Bạn đang cài đặt ứng dụng trên thư mục gốc, hãy cài đặt vào một thư mục con.');
+            trigger_error(lng('default.global.app_is_install_root'));
         else if ($appChecker->isDirectoryPermissionExecute() == false)
-            trigger_error('Có vẻ host bạn cài ứng dụng không thể thực thi được, bạn vui lòng kiểm tra lại.');
+            trigger_error(lng('default.global.host_is_not_premission'));
         else if ($appChecker->isConfigValidate() == false)
-            trigger_error('Cấu hình cho ứng dụng không tồn tại, bạn hãy xóa bỏ ứng dụng và cài lại thử xem.');
+            trigger_error(lng('default.global.config_app_not_found'));
         else
-            trigger_error('Không thể xác định lỗi, bạn hãy kiểm tra lại, hoặc cài lại ứng dụng');
+            trigger_error(lng('default.global.unknown_error_app'));
 
         exit(0);
     }
@@ -57,14 +59,14 @@
     $appConfig->requireEnvProtected(env('resource.config.manager_disabled'));
 
     if ($boot->getCFSRToken()->validatePost() !== true) {
-        trigger_error('CFSR Token không hợp lệ');
+        trigger_error(lng('default.global.cfsr_not_validate'));
         exit(0);
     }
 
     $appDirectory->execute();
     $appMysqlConfig->execute($appUser);
 
-    Librarys\App\AppTmpClean::scanAutoClean();
+    Librarys\App\AppTmpClean::scanAutoClean($appConfig);
 
     if (defined('DISABLE_CHECK_LOGIN') == false) {
         if ($appUser->isLogin() == false)

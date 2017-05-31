@@ -683,6 +683,11 @@
             return @fgets($handle, $length);
         }
 
+        public static function fileReadsToArray($filename, $flag = 0, $context = null)
+        {
+            return @file($filename, $flag, $context);
+        }
+
         public static function fileMTime($path)
         {
             return @filemtime($path);
