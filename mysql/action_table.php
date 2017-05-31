@@ -13,8 +13,8 @@
     if ($appMysqlConfig->get('mysql_name') != null)
         $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
-    $themes  = [ env('resource.theme.mysql') ];
-    $scripts = [ env('resource.javascript.checkbox_checkall') ];
+    $themes  = [ env('resource.filename.theme.mysql') ];
+    $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
     $appAlert->setID(ALERT_MYSQL_ACTION_TABLE);
     requireDefine('mysql_action_table');
 

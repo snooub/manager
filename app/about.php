@@ -9,7 +9,7 @@
     require_once('global.php');
 
     $title      = lng('app.about.title_page');
-    $themes     = [ env('resource.theme.about') ];
+    $themes     = [ env('resource.filename.theme.about') ];
     $config     = new AppAboutConfig($boot);
     $appUpgrade = new AppUpgrade($boot, $config);
     $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();

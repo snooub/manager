@@ -14,7 +14,7 @@
 
         public function __construct(Boot $boot)
         {
-            parent::__construct($boot, env('resource.config.manager'), env('config_file_name.manager'));
+            parent::__construct($boot, env('resource.config.manager'), env('resource.filename.config.manager'));
             parent::parse(true);
         }
 

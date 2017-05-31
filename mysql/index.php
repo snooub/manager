@@ -11,7 +11,7 @@
     require_once('global.php');
 
     $title  = lng('mysql.home.title_page');
-    $themes = [ env('resource.theme.mysql') ];
+    $themes = [ env('resource.filename.theme.mysql') ];
     $appAlert->setID(ALERT_MYSQL_HOME);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 

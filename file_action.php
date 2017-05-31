@@ -57,8 +57,8 @@
     else
         $appAlert->danger(lng('file_action.alert.action_not_validate'), ALERT_INDEX, 'index.php');
 
-    $themes  = [ env('resource.theme.file') ];
-    $scripts = [ env('resource.javascript.checkbox_checkall') ];
+    $themes  = [ env('resource.filename.theme.file') ];
+    $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
     $appAlert->setID(ALERT_FILE_ACTION);
 
     $forms = [

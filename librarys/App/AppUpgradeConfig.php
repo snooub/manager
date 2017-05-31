@@ -14,7 +14,7 @@
 
         public function __construct(Boot $boot)
         {
-            parent::__construct($boot, env('resource.config.upgrade'), env('config_file_name.upgrade'));
+            parent::__construct($boot, env('resource.config.upgrade'), env('resource.filename.config.upgrade'));
             parent::parse(true);
         }
 

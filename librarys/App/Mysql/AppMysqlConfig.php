@@ -10,7 +10,7 @@
 
         public function __construct(Boot $boot)
         {
-            parent::__construct($boot, env('resource.config.mysql'), env('config_file_name.mysql'));
+            parent::__construct($boot, env('resource.config.mysql'), env('resource.filename.config.mysql'));
             parent::parse(true);
         }
 

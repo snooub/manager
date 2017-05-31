@@ -14,8 +14,8 @@
     requireDefine('file_action');
 
     $title   = lng('home.title_page_root');
-    $themes  = [ env('resource.theme.file') ];
-    $scripts = [ env('resource.javascript.checkbox_checkall') ];
+    $themes  = [ env('resource.filename.theme.file') ];
+    $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
     $appAlert->setID(ALERT_INDEX);
 
     require_once('incfiles' . SP . 'header.php');

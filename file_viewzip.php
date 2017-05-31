@@ -43,7 +43,7 @@
     }
 
     $title   = lng('file_viewzip.title_page');
-    $themes  = [ env('resource.theme.file') ];
+    $themes  = [ env('resource.filename.theme.file') ];
     $appAlert->setID(ALERT_FILE_VIEWZIP);
     require_once('incfiles' . SP . 'header.php');
 

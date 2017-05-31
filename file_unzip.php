@@ -44,7 +44,7 @@
     }
 
     $title   = lng('file_unzip.title_page');
-    $themes  = [ env('resource.theme.file') ];
+    $themes  = [ env('resource.filename.theme.file') ];
     $appAlert->setID(ALERT_FILE_UNZIP);
     require_once('incfiles' . SP . 'header.php');
 

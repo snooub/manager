@@ -13,7 +13,7 @@
         $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
 
     $title  = lng('mysql.rename_database.title_page');
-    $themes = [ env('resource.theme.mysql') ];
+    $themes = [ env('resource.filename.theme.mysql') ];
     $appAlert->setID(ALERT_MYSQL_RENAME_DATABASE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 

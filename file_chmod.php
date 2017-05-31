@@ -32,8 +32,8 @@
     else
         $title = lng('file_chmod.title_page_file');
 
-    $themes  = [ env('resource.theme.file') ];
-    $scripts = [ env('resource.javascript.chmod_input') ];
+    $themes  = [ env('resource.filename.theme.file') ];
+    $scripts = [ env('resource.filename.javascript.chmod_input') ];
     $appAlert->setID(ALERT_FILE_CHMOD);
     require_once('incfiles' . SP . 'header.php');
 

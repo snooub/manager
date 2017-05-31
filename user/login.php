@@ -12,7 +12,7 @@
         $appAlert->info(lng('user.login.alert.login_already'), ALERT_INDEX, env('app.http.host'));
 
     $title = lng('user.login.title_page');
-    $themes = [ env('resource.theme.login') ];
+    $themes = [ env('resource.filename.theme.login') ];
     $appAlert->setID(ALERT_USER_LOGIN);
     require_once('..' . SP . 'incfiles' . SP . 'header.php');
 

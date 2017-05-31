@@ -11,7 +11,7 @@
     require_once('global.php');
 
     $title      = lng('app.check_update.title_page');
-    $themes     = [ env('resource.theme.about') ];
+    $themes     = [ env('resource.filename.theme.about') ];
     $config     = new AppAboutConfig($boot);
     $appUpdate  = new AppUpdate($boot, $config);
     $appUpgrade = new AppUpgrade($boot, $config);

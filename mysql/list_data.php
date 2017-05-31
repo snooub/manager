@@ -40,7 +40,7 @@
         $appAlert->warning(lng('mysql.list_data.alert.data_is_empty_not_view'), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
 
     $title  = lng('mysql.list_data.title_page');
-    $themes = [ env('resource.theme.mysql') ];
+    $themes = [ env('resource.filename.theme.mysql') ];
     $appAlert->setID(ALERT_MYSQL_LIST_DATA);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
