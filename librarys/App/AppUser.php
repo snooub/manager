@@ -75,16 +75,15 @@
 
             $id     = addslashes($_SESSION[env('app.login.session_login_name')]);
             $token  = addslashes($_SESSION[env('app.login.session_token_name')]);
-            $tokens = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS, false);
+            $tokens = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS);
 
-            if ($tokens === false || @is_array($tokens) == false || @count($tokens) <= 0 || @isset($tokens[$token]) == false) {
+            if (@is_array($tokens) && @isset($tokens[$token])) {
+                $this->id      = $id;
+                $this->token   = $token;
+                $this->isLogin = true;
+            } else {
                 $this->exitSession();
-                return;
             }
-
-            $this->id      = $id;
-            $this->token   = $token;
-            $this->isLogin = true;
         }
 
         public function get($key)
