@@ -128,7 +128,7 @@
                 'h_shadow' => '0',
                 'v_shadow' => '1px',
                 'blur'     => '5px',
-                'color'    => 'rgba(0, 0, 0, 1)'
+                'color'    => 'rgba(0, 0, 0, 0.5)'
             ],
 
             'span_logo' => [
@@ -329,10 +329,6 @@
                                 'text_color'             => '505050',
                                 'background_color'       => 'e0e0e0',
                                 'hover_background_color' => 'eaeaea'
-                            ],
-
-                            'disabled' => [
-
                             ]
                         ]
                     ]
