@@ -93,7 +93,7 @@
                 foreach ($matches[2] AS $index => $env) {
                     $value = $this->config->get($env);
 
-                    if ($value == null || empty($value) || is_string($value) == false)
+                    if (($value == null || empty($value) || is_string($value) == false) && $value !== '0')
                         trigger_error('Not value for key "' . $env);
                     else if ($matches[1][$index] === '#')
                         $this->buffer = str_replace($matches[0][$index], '#' . $value, $this->buffer);
