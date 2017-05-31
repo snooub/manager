@@ -8,8 +8,8 @@
 
     require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    //if ($appUser->isLogin() && $appUser->isUserBand(null, true) == false)
-        //$appAlert->info(lng('user.login.alert.login_already'), ALERT_INDEX, env('app.http.host'));
+    if ($appUser->isLogin() && $appUser->isUserBand(null, true) == false)
+        $appAlert->info(lng('user.login.alert.login_already'), ALERT_INDEX, env('app.http.host'));
 
     $title = lng('user.login.title_page');
     $themes = [ env('resource.filename.theme.login') ];
@@ -97,7 +97,7 @@
             if (isset($_SESSION[SESSION_NAME_LOCK_TIME]))
                 unset($_SESSION[SESSION_NAME_LOCK_TIME]);
 
-            //$appAlert->success(lng('user.login.alert.login_success'), ALERT_INDEX, env('app.http.host'));
+            $appAlert->success(lng('user.login.alert.login_success'), ALERT_INDEX, env('app.http.host'));
         }
 
         $_SESSION[SESSION_NAME_LOCK_COUNT] = intval(++$currentCountLock);
