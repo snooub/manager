@@ -45,7 +45,7 @@
             if ($salt == null)
                 $salt = self::randomSalt();
 
-            return crypt($password, $salt);
+            return @crypt($password, $salt);
         }
 
         public static function hashEqualsPassword($passwordSalt, $password)
