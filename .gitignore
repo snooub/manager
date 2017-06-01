@@ -7,4 +7,5 @@ assets/upgrade/*
 
 assets/changelog.md
 assets/readme.md
+assets/config/user.php
 assets/config/upgrade.php
