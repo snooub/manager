@@ -46,24 +46,28 @@
             $arrays = $this->config->getConfigArraySystem();
 
             if (is_array($arrays) && count($arrays) > 0) {
+                $isWrite   = false;
                 $timeNow   = time();
                 $timeLogin = intval($appConfig->get('login.time_login', 86400));
 
                 if ($timeLogin <= 0)
                     $timeLogin = 86400;
 
-/*                foreach ($arrays AS $id => $arrayUser) {
-                    if (is_array($arrayUser) && isset($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS]) && is_array($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS])) {
-                        $tokens = $arrayUser[AppUserConfig::ARRAY_KEY_TOKENS];
+                // foreach ($arrays AS $id => $arrayUser) {
+                //     if (is_array($arrayUser) && isset($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS]) && is_array($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS])) {
+                //         $tokens = $arrayUser[AppUserConfig::ARRAY_KEY_TOKENS];
 
-                        foreach ($tokens AS $token => $time) {
-                            if ($timeNow - $time >= $timeLogin)
-                                $this->config->removeSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $token);
-                        }
-                    }
-                }
+                //         foreach ($tokens AS $time => $token) {
+                //             if ($timeNow - intval($time) >= $timeLogin) {
+                //                 $this->config->removeSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $time);
+                //                 $isWrite = true;
+                //             }
+                //         }
+                //     }
+                // }
 
-                $this->configWrite->write();*/
+                // if ($isWrite)
+                //     $this->configWrite->write();
             }
         }
 
@@ -73,22 +77,24 @@
 
             if (
                 isset($_SESSION[env('app.login.session_login_name')])      == false ||
-                isset($_SESSION[env('app.login.session_token_name')])      == false ||
-                isset($_SESSION[env('app.login.session_token_time_name')]) == false
+                isset($_SESSION[env('app.login.session_token_name')])      == false
+//                isset($_SESSION[env('app.login.session_token_time_name')]) == false
             ) {
                 return;
             }
 
             $id         = addslashes($_SESSION[env('app.login.session_login_name')]);
             $tokenValue = addslashes($_SESSION[env('app.login.session_token_name')]);
-            $tokenTime  = addslashes($_SESSION[env('app.login.session_token_time_name')]);
+//            $tokenTime  = addslashes($_SESSION[env('app.login.session_token_time_name')]);
             $tokens     = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS);
 
-            if (@is_array($tokens) && @isset($tokens[$tokenTime])) {
+            if (is_array($tokens) && isset($tokens[$tokenValue])) {
                 $this->id         = $id;
                 $this->tokenValue = $tokenValue;
-                $this->tokenTime  = $tokenTime;
+//                $this->tokenTime  = $tokenTime;
                 $this->isLogin    = true;
+
+//                $this->config->setSystem($this->id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $this->tokenTime, $tokenValue);
             } else {
                 $this->exitSession();
             }
@@ -184,12 +190,13 @@
 
             $id    = addslashes($id);
             $token = addslashes($token);
+            $token = substr($token, strlen($token) >> 1);
             $time  = time();
 
             if (empty($id))
                 return false;
 
-            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $time, $token) == false)
+            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $token, (string)$time) == false)
                 return false;
 
             if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false)
@@ -200,9 +207,8 @@
 
             $this->boot->sessionInitializing();
 
-            $_SESSION[env('app.login.session_login_name')]      = $id;
-            $_SESSION[env('app.login.session_token_name')]      = $token;
-            $_SESSION[env('app.login.session_token_time_name')] = $time;
+            $_SESSION[env('app.login.session_login_name')] = $id;
+            $_SESSION[env('app.login.session_token_name')] = $token;
 
             return true;
         }
@@ -214,7 +220,7 @@
 
         public function exitSession()
         {
-            if ($this->id != null && $this->config->removeSystem($this->id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $this->tokenTime));
+            if ($this->id != null && $this->config->removeSystem($this->id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $this->tokenValue));
                 $this->configWrite->write();
 
             return @session_destroy();
