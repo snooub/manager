@@ -10,7 +10,6 @@
     use Librarys\CFSR\CFSRToken;
     use Librarys\Encryption\PasswordCrypt;
     use Librarys\App\Config\AppUserConfig;
-    use Librarys\App\Config\AppUserTokenConfig;
 
     final class AppUser
     {
@@ -36,17 +35,13 @@
         const TOKEN_ARRAY_KEY_USER_IP    = 'ip';
         const TOKEN_ARRAY_KEY_USER_LIVE  = 'live';
 
+        const USERNAME_CREATE_FIRST = 'Admin';
+        const PASSWORD_CREATE_FIRST = '12345';
+
         public function __construct(Boot $boot)
         {
             $this->boot   = $boot;
             $this->config = new AppUserConfig($boot);
-
-            $this->cleanToken();
-        }
-
-        public function cleanToken()
-        {
-            global $appConfig;
         }
 
         public function execute()
@@ -57,6 +52,37 @@
                 $this->exitSession();
             else
                 $this->isLogin = true;
+        }
+
+        public function createFirstUser()
+        {
+            if ($this->config->hasEntryConfigArraySystem())
+                return false;
+
+            $username = self::USERNAME_CREATE_FIRST;
+            $password = self::createPasswordCrypt(self::PASSWORD_CREATE_FIRST);
+            $position = self::POSTION_ADMINSTRATOR;
+            $idUser   = md5(base64_encode(time() . rand(100000, 999999)));
+            $symbol   = '.';
+
+            if (
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_USERNAME,  $username) == false ||
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_EMAIL,     null)      == false ||
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_PASSWORD,  $password) == false ||
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_POSITION,  $position) == false ||
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_CREATE_AT, time())    == false ||
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_MODIFY_AT, 0)         == false ||
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_LOGIN_AT,  0)         == false ||
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_BAND_AT,   0)         == false ||
+                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_BAND_OF,   null)      == false
+            ) {
+                return false;
+            }
+
+            if ($this->config->write() == false)
+                return false;
+
+            return true;
         }
 
         private function checkUserLogin()
@@ -113,12 +139,44 @@
             return true;
         }
 
+        public function checkUserIsUsePasswordDefault()
+        {
+            if ($this->isLogin == false || $this->id == null)
+                return false;
+
+            $timeNow   = time();
+            $timeShow  = 60;
+            $checkTime = $timeNow;
+            $timeLogin = intval($this->config->get($this->id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT));
+
+            if ($timeNow - $timeLogin < $timeShow)
+                return false;
+
+            if (isset($_SESSION[env('app.login.session_check_password_name')]))
+                $checkTime = intval($_SESSION[env('app.login.session_check_password_name')]);
+            else
+                $_SESSION[env('app.login.session_check_password_name')] = $timeNow;
+
+            if ($checkTime >= $timeShow && $timeNow - $checkTime >= $timeShow)
+                return false;
+
+            $password        = $this->config->get($this->id . '.' . AppUserConfig::ARRAY_KEY_PASSWORD, null);
+            $passwordDefault = self::PASSWORD_CREATE_FIRST;
+
+            return $this->checkPassword($password, $passwordDefault);
+        }
+
         public function get($key)
         {
             if ($this->isLogin() == false)
                 return null;
 
             return $this->config->get($this->id . '.' . $key);
+        }
+
+        public function getConfig()
+        {
+            return $this->config;
         }
 
         public function setConfig($key, $value)
@@ -170,7 +228,7 @@
             return $this->isLogin;
         }
 
-        public function isUser($username, $password, $passwordEncode = true)
+        public function isUser($username, $password)
         {
             $arrays = $this->config->getConfigArraySystem();
 
@@ -230,13 +288,13 @@
                     break;
             }
 
-            $tokenArray = @serialize([
+            $tokenBuffer = @serialize([
                 self::TOKEN_ARRAY_KEY_USER_AGENT => takeUserAgent(),
                 self::TOKEN_ARRAY_KEY_USER_IP    => takeIP(),
                 self::TOKEN_ARRAY_KEY_USER_LIVE  => time()
             ]);
 
-            if (FileInfo::fileWriteContents($tokenPath, $tokenArray));
+            if (FileInfo::fileWriteContents($tokenPath, $tokenBuffer));
 
             if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false || $this->config->write() == false)
                 return false;
