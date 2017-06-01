@@ -9,7 +9,7 @@
     use Librarys\App\AppUser;
     use Librarys\File\FileInfo;
 
-    abstract class BaseConfigRead
+    abstract class BaseConfig
     {
 
         protected $boot;
@@ -84,7 +84,7 @@
         }
 
         public function hasEntryConfigArray()
-        {
+        { bug($this->configSystemArray);
             return is_array($this->configArray) && count($this->configArray) > 0;
         }
 
@@ -181,6 +181,8 @@
             if ($this->splitNames($name, $nameSplits, $nameSplitsCount) == false)
                 return false;
 
+            $configArray = null;
+
             if ($isSystem)
                 $configArray = &$this->configSystemArray;
             else
@@ -193,7 +195,7 @@
                     $configArray[$nameEntry] = $value;
                 } else {
                     if (array_key_exists(trim($nameEntry), $configArray) == false)
-                        array_push($configArray, array());
+                        $configArray[$nameEntry] = null;
 
                     $configArray = &$configArray[$nameEntry];
                 }
@@ -264,7 +266,7 @@
                     unset($configArray[$nameEntry]);
                 } else {
                     if (isset($configArray[$nameEntry]) == false)
-                        $configArray[$nameEntry] = [];
+                        $configArray[$nameEntry] = null;
 
                     $configArray = &$configArray[$nameEntry];
                 }
@@ -414,15 +416,24 @@
 
         public abstract function takePathConfigWrite();
 
-        public function write()
+        public function write($isWriteSystem = false)
         {
-            if ($this->callbackPreWrite() == false)
+            if ($this->callbackPreWrite() == false && $isWriteSystem == false)
                 return false;
 
-            if ($this->takePathConfigWrite() == null)
+            if ($this->takePathConfigWrite() == null && $isWriteSystem == false)
                 return false;
 
-            $config = $this->takeConfigArrayWrite();
+            $config = null;
+            $path   = null;
+
+            if ($isWriteSystem) {
+                $config = $this->getConfigArraySystem();
+                $path   = $this->getPathConfigSystem();
+            } else {
+                $config = $this->takeConfigArrayWrite();
+                $path   = $this->takePathConfigWrite();
+            }
 
             if (is_array($config)) {
                 $this->sortArrayWrite($config);
@@ -433,19 +444,19 @@
                 $buffer .= $this->spacingWrite . 'return [' . "\n";
 
                 foreach ($config AS $key => $entry)
-                    $this->writeBufferEntry($buffer, $key, $entry, $this->spacingWrite);
+                    $this->writeBufferEntry($isWriteSystem, $buffer, $key, $entry, $this->spacingWrite);
 
                 $buffer .= $this->spacingWrite . '];' . "\n\n";
                 $buffer .= '?>';
 
-                if (FileInfo::fileWriteContents($this->takePathConfigWrite(), $buffer) !== false)
+                if (FileInfo::fileWriteContents($path, $buffer) !== false)
                     return true;
             }
 
             return false;
         }
 
-        protected function writeBufferEntry(&$buffer, $key, &$entry, $spacing = null, $envKey = null)
+        private function writeBufferEntry($isWriteSystem, &$buffer, $key, &$entry, $spacing = null, $envKey = null)
         {
             $spacing .= '    ';
 
@@ -454,7 +465,7 @@
             else
                 $envKey .= '.' . $key;
 
-            if ($this->isEnvDisabled($envKey))
+            if ($isWriteSystem == false && $this->isEnvDisabled($envKey))
                 return;
 
             if (is_array($entry)) {
@@ -462,7 +473,7 @@
                 $buffer .= $spacing . '\'' . $key . '\' => [' . "\n";
 
                 foreach ($entry AS $keyWith => $entryWith)
-                    $this->writeBufferEntry($buffer, $keyWith, $entryWith, $spacing, $envKey);
+                    $this->writeBufferEntry($isWriteSystem, $buffer, $keyWith, $entryWith, $spacing, $envKey);
 
                 $buffer .= $spacing . '],' . "\n\n";
             } else {

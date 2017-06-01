@@ -3,9 +3,9 @@
     namespace Librarys\App\Mysql;
 
     use Librarys\Boot;
-    use Librarys\App\Config\BaseConfigRead;
+    use Librarys\App\Config\BaseConfig;
 
-    final class AppMysqlConfig extends BaseConfigRead
+    final class AppMysqlConfig extends BaseConfig
     {
 
         public function __construct(Boot $boot)
