@@ -41,7 +41,7 @@
             $appAlert->danger(lng('user.setting.alert.username_not_validate', 'validate', AppUser::USERNAME_VALIDATE));
         } else if (isValidateEmail($forms['email']) == false) {
             $appAlert->danger(lng('user.setting.alert.email_not_validate'));
-        } else if (empty($passwordConfig) == false && strcmp($passwordConfig, AppUser::passwordEncode($forms['password_old'])) !== 0) {
+        } else if (empty($passwordConfig) == false && $appUser->checkPassword($passwordConfig, $forms['password_old']) === false) {
             $appAlert->danger(lng('user.setting.alert.password_old_wrong'));
         } else if (empty($forms['password_new']) == false && strcmp($forms['password_new'], $forms['password_verify']) !== 0) {
             $appAlert->danger(lng('user.setting.alert.password_new_not_equal_password_verify'));
@@ -66,7 +66,7 @@
                 $appAlert->danger(lng('user.setting.alert.change_config_info_failed'));
             } else if (
                 empty($forms['password_new']) == false &&
-                $appUser->setConfig(AppUserConfig::ARRAY_KEY_PASSWORD, AppUser::passwordEncode($forms['password_new'])) == false
+                $appUser->setConfig(AppUserConfig::ARRAY_KEY_PASSWORD, AppUser::createPasswordCrypt($forms['password_new'])) == false
             ) {
                 $appAlert->danger(lng('user.setting.alert.change_config_password_failed'));
             } else if ($appUser->writeConfig(true) == false) {
