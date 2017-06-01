@@ -176,9 +176,12 @@
                 $token = CFSRToken::generator();
 
             $id          = addslashes($id);
+            $time        = time();
+
             $token       = addslashes($token);
             $tokenLength = strlen($token);
-            $time        = time();
+
+            // Fix token key array
             $rand        = rand(0, $tokenLength - 10);
             $token       = substr($token, $rand);
             $token       = md5($token);
