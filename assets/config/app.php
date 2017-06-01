@@ -81,8 +81,9 @@
             ],
 
             'login' => [
-                'session_login_name' => 'LOGIN_MANAGER',
-                'session_token_name' => 'LOGIN_TOKEN_MANAGER'
+                'session_login_name'      => 'LOGIN_MANAGER',
+                'session_token_name'      => 'LOGIN_TOKEN_MANAGER',
+                'session_token_time_name' => 'LOGIN_TOKEN_TIME_MANAGER'
             ]
         ],
 
