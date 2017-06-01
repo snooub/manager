@@ -61,8 +61,6 @@
                         if ($appMysqlConfig->write() == false) {
                             $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
                         } else {
-                            $boot->sleepFixHeaderRedirectUrl();
-
                             if (empty($forms['mysql_name']))
                                 $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
                             else
