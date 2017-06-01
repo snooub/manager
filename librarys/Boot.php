@@ -63,11 +63,6 @@
             }
         }
 
-        public function sleepFixHeaderRedirectUrl()
-        {
-            sleep(env('app.sleep_time_redirect', 2));
-        }
-
         public function sessionInitializing()
         {
             $sessionStart = false;
