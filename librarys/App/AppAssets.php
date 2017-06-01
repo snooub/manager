@@ -18,6 +18,9 @@
         const LOAD_CSS = 2;
         const LOAD_JS  = 4;
 
+        const CACHE_CSS_MIME = 'css';
+        const CACHE_JS_MIME  = 'js';
+
         public function __construct($pathDirectory, $filename)
         {
             $this->setPathDirectory($pathDirectory);
@@ -153,17 +156,20 @@
             $minify        = null;
             $cacheEnable   = true;
             $cacheLifetime = 86400;
+            $cacheMime     = null;
 
             if ($loadType === self::LOAD_CSS) {
                 header('Content-Type: text/css');
 
                 $cacheEnable   = $appConfig->get('cache.css.enable',   true);
                 $cacheLifetime = $appConfig->get('cache.css.lifetime', 86400);
+                $cacheMime     = self::CACHE_CSS_MIME;
             } else if ($loadType === self::LOAD_JS) {
                 header('Content-Type: text/javascript');
 
                 $cacheEnable   = $appConfig->get('cache.js.enable',   true);
                 $cacheLifetime = $appConfig->get('cache.js.lifetime', 86400);
+                $cacheMime     = self::CACHE_JS_MIME;
             }
 
             if ($cacheEnable) {
@@ -174,7 +180,7 @@
                 $timeNow              = time();
                 $cacheDirectory       = env('app.path.cache');
                 $cacheFilename        = md5($this->filename);
-                $cacheFilepath        = FileInfo::filterPaths($cacheDirectory . SP . $cacheFilename);
+                $cacheFilepath        = FileInfo::filterPaths($cacheDirectory . SP . $cacheFilename . '.' . $cacheMime);
                 $cacheFiletime        = 0;
                 $fileResourceTime     = 0;
                 $cacheDirectoryExists = true;
