@@ -52,7 +52,7 @@
                 if ($timeLogin <= 0)
                     $timeLogin = 86400;
 
-/*                foreach ($arrays AS $id => $arrayUser) {
+                foreach ($arrays AS $id => $arrayUser) {
                     if (is_array($arrayUser) && isset($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS]) && is_array($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS])) {
                         $tokens = $arrayUser[AppUserConfig::ARRAY_KEY_TOKENS];
 
@@ -63,7 +63,7 @@
                     }
                 }
 
-                $this->configWrite->write();*/
+                $this->configWrite->write();
             }
         }
 
@@ -175,9 +175,14 @@
             if ($token == null)
                 $token = CFSRToken::generator();
 
-            $id    = addslashes($id);
-            $token = substr(addslashes($token), (strlen($token) >> 1) + 10);
-            $time  = time();
+            $id          = addslashes($id);
+            $token       = addslashes($token);
+            $tokenLength = strlen($token);
+            $time        = time();
+            $rand        = rand(0, $tokenLength - 10);
+            $token       = substr($token, $rand);
+            $token       = md5($token);
+            $token       = substr($token, $rand, 9);
 
             if (empty($id))
                 return false;
