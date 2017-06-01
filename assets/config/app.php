@@ -80,8 +80,9 @@
             ],
 
             'login' => [
-                'session_login_name'      => 'LOGIN_MANAGER',
-                'session_token_name'      => 'LOGIN_TOKEN_MANAGER'
+                'session_login_name'          => 'LOGIN_MANAGER',
+                'session_token_name'          => 'LOGIN_TOKEN_MANAGER',
+                'session_check_password_name' => 'LOGIN_CHECK_PASSWORD_MANAGER'
             ]
         ],
 
