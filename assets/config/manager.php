@@ -41,14 +41,14 @@
 
         'cache' => [
             'css' => [
-                'enable'   => false,
-                'minify'   => false,
+                'enable'   => true,
+                'minify'   => true,
                 'lifetime' => 31536000
             ],
 
             'js' => [
-                'enable'   => false,
-                'minify'   => false,
+                'enable'   => true,
+                'minify'   => true,
                 'lifetime' => 31536000
             ]
         ],

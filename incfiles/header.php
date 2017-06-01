@@ -16,13 +16,15 @@
     array_unshift($themes, env('resource.filename.theme.icomoon'));
     array_unshift($themes, env('resource.filename.theme.app'));
 
-    if ($appConfig->get('enable_disable.auto_focus_input_last') == true)
-        array_unshift($scripts, env('resource.filename.javascript.auto_focus_input_last'));
+    if ($scripts != null && count($scripts) > 0) {
+        if ($appConfig->get('enable_disable.auto_focus_input_last') == true)
+            array_unshift($scripts, env('resource.filename.javascript.auto_focus_input_last'));
 
-    if ($appConfig->get('enable_disable.button_save_on_javascript') == true)
-        array_unshift($scripts, env('resource.filename.javascript.button_save_on_javascript'));
+        if ($appConfig->get('enable_disable.button_save_on_javascript') == true)
+            array_unshift($scripts, env('resource.filename.javascript.button_save_on_javascript'));
 
-    array_unshift($scripts, env('resource.filename.javascript.onload'));
+        array_unshift($scripts, env('resource.filename.javascript.onload'));
+    }
 ?>
 
 <!DOCTYPE html>

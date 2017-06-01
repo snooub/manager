@@ -69,7 +69,7 @@
     $appDirectory->execute();
     $appMysqlConfig->execute($appUser);
 
-    Librarys\App\AppTmpClean::scanAutoClean($appConfig);
+    Librarys\App\AppClean::scanAutoClean($appConfig);
 
     if (defined('DISABLE_CHECK_LOGIN') == false) {
         if ($appUser->isLogin() == false)

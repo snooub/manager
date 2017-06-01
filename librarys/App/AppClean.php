@@ -8,7 +8,7 @@
     use Librarys\File\FileInfo;
     use Librarys\App\Config\AppConfig;
 
-    final class AppTmpClean
+    final class AppClean
     {
 
         public static function scanAutoClean(AppConfig $appConfig)
@@ -16,6 +16,15 @@
             if ($appConfig == null)
                 return false;
 
+            self::scanAutoCleanTmp();
+            self::scanAutoCleanToken();
+            self::scanAutoCleanCache();
+
+            return true;
+        }
+
+        private static function scanAutoCleanTmp()
+        {
             $directory = env('app.path.tmp');
 
             if (FileInfo::isTypeDirectory($directory)) {
@@ -57,8 +66,6 @@
                     }
                 }
             }
-
-            return true;
         }
 
     }

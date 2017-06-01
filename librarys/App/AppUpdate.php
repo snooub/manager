@@ -224,7 +224,7 @@
                 FileInfo::fileWriteContents($readmeFilePath, htmlspecialchars($readmeFileBuffer));
 
             $this->aboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT, time());
-            $this->aboutConfig->fastWriteConfig();
+            $this->aboutConfig->write();
 
             return true;
         }

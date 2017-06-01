@@ -99,7 +99,7 @@
             if (FileInfo::isTypeFile($filepath) == false)
                 return false;
 
-            if ($this->loadCache($loadType))
+            if ($this->loadCache($loadType, $filepath))
                 return true;
 
             $envpath = null;
@@ -140,13 +140,13 @@
             if ($minify !== null)
                 $this->buffer = $minify->minify();
 
-            if ($this->loadCache($loadType, true) && $this->buffer !== false)
+            if ($this->loadCache($loadType, $filepath, true) && $this->buffer !== false)
                 return true;
 
             return false;
         }
 
-        private function loadCache($loadType, $writeCache = false)
+        private function loadCache($loadType, $filepath, $writeCache = false)
         {
             global $appConfig;
 
@@ -168,7 +168,7 @@
 
             if ($cacheEnable) {
                 header("Cache-Control: max-age={$cacheLifetime}, immutable, public");
-                header('Date: ' . gmdate('D, d M Y H:i:s ', time()) . 'GMT');
+                header('Date:    ' . gmdate('D, d M Y H:i:s ', time()) . 'GMT');
                 header('Expires: ' . gmdate('D, d M Y H:i:s ', time() + $cacheLifetime) . 'GMT');
 
                 $timeNow              = time();
@@ -176,6 +176,7 @@
                 $cacheFilename        = md5($this->filename);
                 $cacheFilepath        = FileInfo::filterPaths($cacheDirectory . SP . $cacheFilename);
                 $cacheFiletime        = 0;
+                $fileResourceTime     = 0;
                 $cacheDirectoryExists = true;
 
                 if (FileInfo::isTypeDirectory($cacheDirectory) == false && FileInfo::mkdir($cacheDirectory, true) == false)
@@ -185,7 +186,10 @@
                     if (FileInfo::isTypeFile($cacheFilepath))
                         $cacheFiletime = FileInfo::fileMTime($cacheFilepath);
 
-                    if ($timeNow - $cacheFiletime >= $cacheLifetime) {
+                    if (FileInfo::isTypeFile($filepath))
+                        $fileResourceTime = FileInfo::fileMTime($filepath);
+
+                    if ($fileResourceTime >= $cacheFiletime || $timeNow - $cacheFiletime >= $cacheLifetime) {
                         if ($writeCache == false || FileInfo::fileWriteContents($cacheFilepath, $this->buffer) == false)
                             return false;
                     } else {
