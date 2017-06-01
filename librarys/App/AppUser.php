@@ -181,6 +181,8 @@
             $_SESSION[env('app.login.session_login_name')] = $id;
             $_SESSION[env('app.login.session_token_name')] = $token;
 
+            $this->execute();
+
             return true;
         }
 
