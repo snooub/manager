@@ -131,7 +131,7 @@
                     'about'          => 'about.php',
                     'manager'        => 'manager.php',
                     'user'           => 'user.php',
-                    'user_token'     => 'user_token.php',
+                    'user_token'     => 'token.php',
                     'mysql'          => 'mysql.php',
                     'upgrade'        => 'upgrade.php',
                     'env_theme'      => 'env.php',

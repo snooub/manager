@@ -11,7 +11,6 @@
     use Librarys\App\AppParameter;
     use Librarys\App\Config\AppAboutConfig;
     use Librarys\App\Config\AppUpgradeConfig;
-    use Librarys\App\Config\AppUpgradeConfigWrite;
 
     final class AppUpdate
     {
@@ -171,8 +170,7 @@
             if ($this->updateStatus == self::RESULT_VERSION_IS_LATEST)
                 return true;
 
-            $appUpgradeConfig      = new AppUpgradeConfig($this->boot);
-            $appUpgradeConfigWrite = new AppUpgradeConfigWrite($appUpgradeConfig);
+            $appUpgradeConfig = new AppUpgradeConfig($this->boot);
 
             foreach ($this->jsonArray AS $key => $value) {
                 if (
@@ -188,7 +186,7 @@
                 }
             }
 
-            if ($appUpgradeConfigWrite->write() == false) {
+            if ($appUpgradeConfig->write() == false) {
                 $errorWriteInfo = self::ERROR_WRITE_INFO_FAILED;
                 return false;
             }

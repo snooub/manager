@@ -7,7 +7,6 @@
 
     use Librarys\Boot;
     use Librarys\File\FileInfo;
-    use Librarys\App\Base\BaseConfigRead;
 
     final class AppConfig extends BaseConfigRead
     {
@@ -16,6 +15,24 @@
         {
             parent::__construct($boot, env('resource.config.manager'), env('resource.filename.config.manager'));
             parent::parse(true);
+        }
+
+        public function callbackPreWrite()
+        {
+            if ($this->getPathConfig() == $this->getPathConfigSystem())
+                return false;
+
+            return true;
+        }
+
+        public function takeConfigArrayWrite()
+        {
+            return $this->getConfigArray();
+        }
+
+        public function takePathConfigWrite()
+        {
+            return $this->pathConfig;
         }
 
     }

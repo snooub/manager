@@ -1,6 +1,6 @@
 <?php
 
-    namespace Librarys\App\Base;
+    namespace Librarys\App\Config;
 
     if (defined('LOADED') == false)
         exit;
@@ -25,6 +25,8 @@
         protected $cacheArray;
         protected $envProtectedArray;
 
+        protected $spacingWrite;
+
         public function __construct(Boot $boot, $pathConfigSystem, $fileConfigName = null)
         {
             $this->configArray       = array();
@@ -33,6 +35,7 @@
 
             $this->setPathConfigSystem($pathConfigSystem);
             $this->setFileConfigName($fileConfigName);
+            $this->setSpacingWrite('    ');
         }
 
         public function getPathConfig()
@@ -95,13 +98,16 @@
             return $this->hasEntryConfigArray() || $this->hasEntryConfigArraySystem();
         }
 
-        public function execute($appUser = null)
+        public function execute($appUser = null, $idUser = null)
         {
-            if ($appUser != null && $appUser->isLogin()) {
+            if (($appUser != null && $appUser->isLogin()) || $idUser !== null) {
                 $directory = env('app.path.user');
                 $isMkdir   = true;
 
-                $this->pathConfig = FileInfo::validate($directory . SP . $appUser->getId());
+                if ($appUser !== null)
+                    $idUser = $appUser->getId();
+
+                $this->pathConfig = FileInfo::validate($directory . SP . $idUser);
 
                 if (FileInfo::isTypeDirectory($directory) == false)
                     $isMkdir = FileInfo::mkdir($directory);
@@ -142,9 +148,9 @@
             }
 
             if ($parseSystem)
-                $this->configSystemArray = require($path);
+                $this->configSystemArray = require_once($path);
             else
-                $this->configArray = require($path);
+                $this->configArray = require_once($path);
 
             if (is_array($this->configSystemArray) == false)
                 $this->configSystemArray = array();
@@ -153,7 +159,7 @@
                 $this->configArray = array();
         }
 
-        public function set($name, $value, $systemWrite = false)
+        private function splitNames($name, &$nameSplits, &$nameSplitsCount)
         {
             if ($name == null)
                 return false;
@@ -165,10 +171,17 @@
             else
                 $nameSplits = explode('.', $name);
 
-            $configArray     = null;
             $nameSplitsCount = count($nameSplits);
 
-            if ($systemWrite)
+            return true;
+        }
+
+        public function set($name, $value, $isSystem = false)
+        {
+            if ($this->splitNames($name, $nameSplits, $nameSplitsCount) == false)
+                return false;
+
+            if ($isSystem)
                 $configArray = &$this->configSystemArray;
             else
                 $configArray = &$this->configArray;
@@ -205,22 +218,41 @@
             return $this->receiverToCache($name, $default);
         }
 
-        public function remove($name, $systemRemove = false)
+        public function hasKey($name, $isSystem = false)
         {
-            if ($name == null)
+            if ($this->splitNames($name, $nameSplits, $nameSplitsCount) == false)
                 return false;
 
-            $nameSplits = array();
-
-            if (strpos($name, '.') === false)
-                $nameSplits[] = $name;
+            if ($isSystem)
+                $configArray = &$this->configSystemArray;
             else
-                $nameSplits = explode('.', $name);
+                $configArray = &$this->configArray;
 
-            $configArray     = null;
-            $nameSplitsCount = count($nameSplits);
+            for ($i = 0; $i < $nameSplitsCount; ++$i) {
+                $nameEntry = $nameSplits[$i];
 
-            if ($systemRemove)
+                if ($i >= $nameSplitsCount - 1) {
+                    if (is_array($configArray) == false || array_key_exists(trim($nameEntry), $configArray) == false)
+                        return false;
+
+                    return true;
+                } else {
+                    if (array_key_exists(trim($nameEntry), $configArray) == false)
+                        return false;
+
+                    $configArray = &$configArray[$nameEntry];
+                }
+            }
+
+            return true;
+        }
+
+        public function remove($name, $isSystem = false)
+        {
+            if ($this->splitNames($name, $nameSplits, $nameSplitsCount) == false)
+                return false;
+
+            if ($isSystem)
                 $configArray = &$this->configSystemArray;
             else
                 $configArray = &$this->configArray;
@@ -364,6 +396,119 @@
                 return $this->envProtectedArray[$name] == true;
 
             return false;
+        }
+
+        public function setSpacingWrite($spacing)
+        {
+            $this->spacingWrite = $spacing;
+        }
+
+        public function getSpacingWrite()
+        {
+            return $this->spacingWrite;
+        }
+
+        public abstract function callbackPreWrite();
+
+        public abstract function takeConfigArrayWrite();
+
+        public abstract function takePathConfigWrite();
+
+        public function write()
+        {
+            if ($this->callbackPreWrite() == false)
+                return false;
+
+            if ($this->takePathConfigWrite() == null)
+                return false;
+
+            $config = $this->takeConfigArrayWrite();
+
+            if (is_array($config)) {
+                $this->sortArrayWrite($config);
+
+                $buffer  = '<?php' . "\n\n";
+                $buffer .= $this->spacingWrite . 'if (defined(\'LOADED\') == false)' . "\n";
+                $buffer .= $this->spacingWrite . $this->spacingWrite . 'exit;' . "\n\n";
+                $buffer .= $this->spacingWrite . 'return [' . "\n";
+
+                foreach ($config AS $key => $entry)
+                    $this->writeBufferEntry($buffer, $key, $entry, $this->spacingWrite);
+
+                $buffer .= $this->spacingWrite . '];' . "\n\n";
+                $buffer .= '?>';
+
+                if (FileInfo::fileWriteContents($this->takePathConfigWrite(), $buffer) !== false)
+                    return true;
+            }
+
+            return false;
+        }
+
+        protected function writeBufferEntry(&$buffer, $key, &$entry, $spacing = null, $envKey = null)
+        {
+            $spacing .= '    ';
+
+            if ($envKey == null)
+                $envKey = $key;
+            else
+                $envKey .= '.' . $key;
+
+            if ($this->isEnvDisabled($envKey))
+                return;
+
+            if (is_array($entry)) {
+                $this->sortArrayWrite($entry);
+                $buffer .= $spacing . '\'' . $key . '\' => [' . "\n";
+
+                foreach ($entry AS $keyWith => $entryWith)
+                    $this->writeBufferEntry($buffer, $keyWith, $entryWith, $spacing, $envKey);
+
+                $buffer .= $spacing . '],' . "\n\n";
+            } else {
+                $type = null;
+
+                if ($entry != null)
+                    $type = getType($entry);
+
+                if ($type == null && is_numeric($entry)) {
+                    if (is_int($entry))
+                        $type = 'integer';
+                    else if (is_float($entry))
+                        $type = 'float';
+                    else if (is_double($entry))
+                        $type = 'double';
+                }
+
+                $buffer .= $spacing . '\'' . $key . '\' => ';
+
+                if ($type == 'string') {
+                    $buffer .= '\'' . $entry . '\'';
+                } else if ($type == 'integer') {
+                    $buffer .= intval($entry);
+                } else if ($type == 'float') {
+                    $buffer .= floatval($entry);
+                } else if ($type == 'double') {
+                    $buffer .= doubleval($entry);
+                } else if ($type == 'boolean' || $entry === false) {
+                    if (boolval($entry) == true)
+                        $buffer .= 'true';
+                    else
+                        $buffer .= 'false';
+                } else if ($type === null) {
+                    $buffer .= '\'\'';
+                } else {
+                    $buffer .= $entry;
+                }
+
+                $buffer .= ",\n";
+            }
+        }
+
+        protected function sortArrayWrite($array)
+        {
+            if (is_array($array))
+                krsort($array);
         }
 
     }

@@ -6,7 +6,6 @@
         exit;
 
     use Librarys\Boot;
-    use Librarys\App\Base\BaseConfigRead;
 
     final class AppAssetsConfig extends BaseConfigRead
     {
@@ -15,6 +14,21 @@
         {
             parent::__construct($boot, $pathThemeEnv);
             parent::parse(true);
+        }
+
+        public function callbackPreWrite()
+        {
+            return false;
+        }
+
+        public function takeConfigArrayWrite()
+        {
+            return $this->getConfigArraySystem();
+        }
+
+        public function takePathConfigWrite()
+        {
+            return $this->pathConfigSystem;
         }
 
     }

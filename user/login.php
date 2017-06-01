@@ -2,11 +2,10 @@
 
     define('LOADED',                  1);
     define('DISABLE_CHECK_LOGIN',     1);
-    define('ROOT',                    '..' . DIRECTORY_SEPARATOR);
     define('SESSION_NAME_LOCK_COUNT', 'login_lock_count');
     define('SESSION_NAME_LOCK_TIME',  'login_lock_time');
 
-    require_once(ROOT . 'incfiles' . DIRECTORY_SEPARATOR . 'global.php');
+    require_once('global.php');
 
     if ($appUser->isLogin() && $appUser->isUserBand(null, true) == false)
         $appAlert->info(lng('user.login.alert.login_already'), ALERT_INDEX, env('app.http.host'));

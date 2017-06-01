@@ -9,14 +9,14 @@
     use Librarys\File\FileInfo;
     use Librarys\CFSR\CFSRToken;
     use Librarys\App\Config\AppUserConfig;
-    use Librarys\App\Config\AppUserConfigWrite;
+    use Librarys\App\Config\AppUserTokenConfig;
 
     final class AppUser
     {
 
         private $boot;
         private $config;
-        private $configWrite;
+        private $tokenConfig;
 
         private $id;
         private $timeToken;
@@ -32,9 +32,8 @@
 
         public function __construct(Boot $boot)
         {
-            $this->boot        = $boot;
-            $this->config      = new AppUserConfig($boot);
-            $this->configWrite = new AppUserConfigWrite($this->config);
+            $this->boot   = $boot;
+            $this->config = new AppUserConfig($boot);
 
             $this->cleanToken();
         }
@@ -56,11 +55,15 @@
             $arrays = $this->config->getConfigArraySystem();
 
             if (is_array($arrays) && isset($arrays[$id])) {
-                $this->id      = $id;
-                $this->token   = $token;
-                $this->isLogin = true;
+                $tokenConfig = new AppUserTokenConfig($this->boot, $id);
+
+                if ($tokenConfig->hasKey($token)) {
+                    $this->id      = $id;
+                    $this->token   = $token;
+                    $this->isLogin = true;
+                }
             } else {
-                $this->exitSession();
+
             }
         }
 
@@ -82,7 +85,7 @@
 
         public function writeConfig($exitUser = false)
         {
-            if ($this->configWrite->write() == false)
+            if ($this->config->write() == false)
                 return false;
 
             if ($exitUser)
@@ -147,11 +150,14 @@
             return false;
         }
 
-        public function createSessionUser($id)
+        public function createSessionUser($id, $token = null)
         {
+            if ($token == null)
+                $token = CFSRToken::generator();
+
             $id    = addslashes($id);
+            $token = addslashes($token);
             $time  = time();
-            $token = rand(0, time());
 
             if (empty($id))
                 return false;
@@ -159,7 +165,15 @@
             if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false)
                     return false;
 
-            if ($this->configWrite->write() == false)
+            if ($this->config->write() == false)
+                return false;
+
+            $appToken = new AppUserTokenConfig($this->boot, $id);
+
+            if ($appToken->set($token, $time) == false)
+                return false;
+
+            if ($appToken->write() == false)
                 return false;
 
             $this->boot->sessionInitializing();

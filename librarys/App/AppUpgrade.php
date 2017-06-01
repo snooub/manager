@@ -10,7 +10,6 @@
     use Librarys\Zip\PclZip;
     use Librarys\App\Config\AppAboutConfig;
     use Librarys\App\Config\AppUpgradeConfig;
-    use Librarys\App\Config\AppAboutConfigWrite;
 
     final class AppUpgrade
     {
@@ -242,9 +241,7 @@
                 $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_VERSION,    $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION));
                 $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT,   $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT));
                 $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_UPGRADE_AT, time());
-
-                $appAboutConfigWrite = new AppAboutConfigWrite($this->appAboutConfig);
-                $appAboutConfigWrite->write();
+                $this->appAboutConfig->write();
 
                 FileInfo::fileWrite($logHandle, "Info: Update about upgrade end\n");
                 FileInfo::fileWrite($logHandle, "Info: Upgrade success");

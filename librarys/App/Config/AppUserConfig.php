@@ -6,7 +6,6 @@
         exit;
 
     use Librarys\Boot;
-    use Librarys\App\Base\BaseConfigRead;
 
     final class AppUserConfig extends BaseConfigRead
     {
@@ -25,6 +24,21 @@
         {
             parent::__construct($boot, env('resource.config.user'));
             parent::parse(true);
+        }
+
+        public function callbackPreWrite()
+        {
+            return true;
+        }
+
+        public function takeConfigArrayWrite()
+        {
+            return $this->getConfigArraySystem();
+        }
+
+        public function takePathConfigWrite()
+        {
+            return $this->pathConfigSystem;
         }
 
     }

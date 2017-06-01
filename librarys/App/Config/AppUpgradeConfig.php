@@ -6,7 +6,6 @@
         exit;
 
     use Librarys\Boot;
-    use Librarys\App\Base\BaseConfigRead;
 
     final class AppUpgradeConfig extends BaseConfigRead
     {
@@ -15,6 +14,21 @@
         {
             parent::__construct($boot, env('resource.config.upgrade'), env('resource.filename.config.upgrade'));
             parent::parse(true);
+        }
+
+        public function callbackPreWrite()
+        {
+            return true;
+        }
+
+        public function takeConfigArrayWrite()
+        {
+            return $this->getConfigArraySystem();
+        }
+
+        public function takePathConfigWrite()
+        {
+            return $this->pathConfigSystem;
         }
 
     }

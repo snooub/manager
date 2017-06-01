@@ -54,14 +54,11 @@
             }
 
             if ($isFailed == false) {
-                $appMysqlConfigWrite = new AppMysqlConfigWrite($appMysqlConfig);
-                $appMysqlConfigWrite->setSpacing('    ');
-
-                if ($appMysqlConfigWrite->write()) {
+                if ($appMysqlConfig->write()) {
                     if ($appMysqlConnect->openConnect(false)) {
                         $appMysqlConfig->set('mysql_is_connect', true);
 
-                        if ($appMysqlConfigWrite->write() == false) {
+                        if ($appMysqlConfig->write() == false) {
                             $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
                         } else {
                             $boot->sleepFixHeaderRedirectUrl();

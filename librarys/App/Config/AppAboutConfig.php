@@ -6,7 +6,6 @@
         exit;
 
     use Librarys\Boot;
-    use Librarys\App\Base\BaseConfigRead;
 
     final class AppAboutConfig extends BaseConfigRead
     {
@@ -31,10 +30,19 @@
             parent::parse(true);
         }
 
-        public function fastWriteConfig()
+        public function callbackPreWrite()
         {
-            $appAboutConfigWrite = new AppAboutConfigWrite($this);
-            return $appAboutConfigWrite->write();
+            return true;
+        }
+
+        public function takeConfigArrayWrite()
+        {
+            return $this->getConfigArraySystem();
+        }
+
+        public function takePathConfigWrite()
+        {
+            return $this->pathConfigSystem;
         }
 
     }

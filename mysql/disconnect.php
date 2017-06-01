@@ -7,7 +7,7 @@
         $appMysqlConfigWrite = new Librarys\App\Mysql\AppMysqlConfigWrite($appMysqlConfig);
         $appMysqlConfigWrite->setSpacing('    ');
 
-        if ($appMysqlConfigWrite->write()) {
+        if ($appMysqlConfig->write()) {
             $boot->sleepFixHeaderRedirectUrl();
             $appAlert->success(lng('mysql.home.alert.disconnect_success'), ALERT_MYSQL_HOME, 'index.php');
         }

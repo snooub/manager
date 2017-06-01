@@ -1,7 +1,5 @@
 <?php
 
-	use Librarys\App\Config\AppConfigWrite;
-
     define('LOADED',  1);
     define('SETTING', 1);
 
@@ -120,10 +118,7 @@
         }
 
         if ($isFailed == false) {
-            $appConfigWrite = new AppConfigWrite($appConfig);
-            $appConfigWrite->setSpacing('    ');
-
-        	if ($appConfigWrite->write())
+        	if ($appConfig->write())
                 $appAlert->success(lng('system.setting.alert.save_setting_success'), null);
     	    else
                 $appAlert->danger(lng('system.setting.alert.save_setting_failed'));
