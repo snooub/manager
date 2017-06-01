@@ -14,7 +14,7 @@
     else if ($appDirectory->isPermissionDenyPath())
         $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
-    $path = FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $path = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName());
 
     if (getimagesize($path) !== false)
         readfile($path);

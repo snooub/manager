@@ -8,6 +8,7 @@
     use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\CFSR\CFSRToken;
+    use Librarys\Encryption\PasswordCrypt;
     use Librarys\App\Config\AppUserConfig;
     use Librarys\App\Config\AppUserTokenConfig;
 
@@ -16,11 +17,12 @@
 
         private $boot;
         private $config;
-        private $tokenConfig;
 
         private $id;
-        private $timeToken;
         private $tokenValue;
+        private $tokenUserAgent;
+        private $tokenUserIp;
+        private $tokenUserLive;
         private $isLogin;
 
         const POSITION_BAND        = 0;
@@ -29,6 +31,10 @@
         const POSTION_ADMINSTRATOR = 8;
 
         const USERNAME_VALIDATE = '\\/:*?"<>|\'';
+
+        const TOKEN_ARRAY_KEY_USER_AGENT = 'user_agent';
+        const TOKEN_ARRAY_KEY_USER_IP    = 'ip';
+        const TOKEN_ARRAY_KEY_USER_LIVE  = 'live';
 
         public function __construct(Boot $boot)
         {
@@ -47,20 +53,64 @@
         {
             $this->isLogin = false;
 
+            if ($this->checkUserLogin() == false)
+                $this->exitSession();
+            else
+                $this->isLogin = true;
+        }
+
+        private function checkUserLogin()
+        {
+            global $appConfig;
+
             if (isset($_SESSION[env('app.login.session_login_name')]) == false || isset($_SESSION[env('app.login.session_token_name')]) == false)
-                return;
+                return false;
 
             $id     = addslashes($_SESSION[env('app.login.session_login_name')]);
             $token  = addslashes($_SESSION[env('app.login.session_token_name')]);
             $arrays = $this->config->getConfigArraySystem();
 
-            if (is_array($arrays) && isset($arrays[$id])) {
-                $this->id      = $id;
-                $this->token   = $token;
-                $this->isLogin = true;
-            } else {
+            if (is_array($arrays) == false || isset($arrays[$id]) == false)
+                return false;
 
-            }
+            $tokenDirectory = env('app.path.token');
+            $tokenPath      = FileInfo::filterPaths($tokenDirectory . SP . $token);
+
+            if (FileInfo::isTypeDirectory($tokenDirectory) == false || FileInfo::isTypeFile($tokenPath) == false)
+                return false;
+
+            $tokenBuffer = FileInfo::fileReadContents($tokenPath);
+            $tokenArray  = @unserialize($tokenBuffer);
+
+            if ($tokenArray === false)
+                return false;
+
+            $userAgent = takeUserAgent();
+            $userIp    = takeIP();
+            $userLive  = time();
+
+            $this->id             = $id;
+            $this->tokenValue     = $token;
+            $this->tokenUserAgent = $tokenArray[self::TOKEN_ARRAY_KEY_USER_AGENT];
+            $this->tokenUserIp    = $tokenArray[self::TOKEN_ARRAY_KEY_USER_IP];
+            $this->tokenUserLive  = $tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE];
+
+            if (strcmp($userAgent, $tokenArray[self::TOKEN_ARRAY_KEY_USER_AGENT]) !== 0)
+                return false;
+
+            if (strcmp($userIp, $tokenArray[self::TOKEN_ARRAY_KEY_USER_IP]) !== 0)
+                return false;
+
+            if ($userLive - intval($tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE]) >= $appConfig->get('login.time_login', 3600))
+                return false;
+
+            $tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE] = $userLive;
+            $tokenBuffer                                 = @serialize($tokenArray);
+
+            if ($tokenBuffer !== false)
+                FileInfo::fileWriteContents($tokenPath, $tokenBuffer);
+
+            return true;
         }
 
         public function get($key)
@@ -95,9 +145,24 @@
             return $this->id;
         }
 
-        public function getToken()
+        public function getTokenValue()
         {
-            return $this->token;
+            return $this->tokenValue;
+        }
+
+        public function getTokenUserAgent()
+        {
+            return $this->tokenUserAgent;
+        }
+
+        public function getTokenIP()
+        {
+            return $this->tokenUserIp;
+        }
+
+        public function getTokenLive()
+        {
+            return $this->tokenUserLive;
         }
 
         public function isLogin()
@@ -112,12 +177,9 @@
             if (is_array($arrays) && count($arrays) > 0) {
                 $username = strtolower($username);
 
-                if ($passwordEncode)
-                    $password = self::passwordEncode($password);
-
                 foreach ($arrays AS $id => $arrayUser) {
                     if (strcasecmp($arrayUser[AppUserConfig::ARRAY_KEY_USERNAME], $username) === 0 || strcasecmp($arrayUser[AppUserConfig::ARRAY_KEY_EMAIL], $username) === 0) {
-                        if (strcmp($arrayUser[AppUserConfig::ARRAY_KEY_PASSWORD], $password) === 0)
+                        if (self::checkPassword($arrayUser[AppUserConfig::ARRAY_KEY_PASSWORD], $password))
                             return $id;
                     }
                 }
@@ -146,28 +208,43 @@
             return false;
         }
 
-        public function createSessionUser($id, $token = null)
+        public function createSessionUser($id)
         {
-            if ($token == null)
-                $token = CFSRToken::generator();
+            $id             = addslashes($id);
+            $time           = time();
+            $tokenPath      = null;
+            $tokenGenerator = null;
+            $tokenDirectory = env('app.path.token');
 
-            $id    = addslashes($id);
-            $token = addslashes($token);
-            $time  = time();
+            if (FileInfo::isTypeDirectory($tokenDirectory) == false && FileInfo::mkdir($tokenDirectory, true) == false)
+                return false;
 
             if (empty($id))
                 return false;
 
-            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false)
-                    return false;
+            for ($i = 0; $i < 10; ++$i) {
+                $tokenGenerator = CFSRToken::generator();
+                $tokenPath      = FileInfo::filterPaths($tokenDirectory . SP . $tokenGenerator);
 
-            if ($this->config->write() == false)
+                if (FileInfo::fileExists($tokenPath) == false)
+                    break;
+            }
+
+            $tokenArray = @serialize([
+                self::TOKEN_ARRAY_KEY_USER_AGENT => takeUserAgent(),
+                self::TOKEN_ARRAY_KEY_USER_IP    => takeIP(),
+                self::TOKEN_ARRAY_KEY_USER_LIVE  => time()
+            ]);
+
+            if (FileInfo::fileWriteContents($tokenPath, $tokenArray));
+
+            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false || $this->config->write() == false)
                 return false;
 
             $this->boot->sessionInitializing();
 
             $_SESSION[env('app.login.session_login_name')] = $id;
-            $_SESSION[env('app.login.session_token_name')] = $token;
+            $_SESSION[env('app.login.session_token_name')] = $tokenGenerator;
 
             return true;
         }
@@ -179,14 +256,26 @@
 
         public function exitSession()
         {
+            if ($this->tokenValue !== null) {
+                $tokenDirectory = env('app.path.token');
+                $tokenPath      = FileInfo::filterPaths($tokenDirectory . SP . $this->tokenValue);
+
+                if (FileInfo::isTypeFile($tokenPath))
+                    FileInfo::unlink($tokenPath);
+            }
+
             return @session_destroy();
         }
 
-        public static function passwordEncode($password)
+        public static function createPasswordCrypt($password, $salt = null)
         {
-            return md5(md5(base64_encode($password)));
+            return PasswordCrypt::createCrypt($password, $salt);
         }
 
+        public static function checkPassword($passwordUser, $passwrodCheck)
+        {
+            return PasswordCrypt::hashEqualsPassword($passwordUser, $passwrodCheck);
+        }
     }
 
 ?>

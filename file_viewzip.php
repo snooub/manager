@@ -48,7 +48,7 @@
     require_once('incfiles' . SP . 'header.php');
 
 
-    $pclZip = new PclZip(FileInfo::validate($appDirectory->getDirectoryAndName()));
+    $pclZip = new PclZip(FileInfo::filterPaths($appDirectory->getDirectoryAndName()));
     $pclZipListContent = $pclZip->listContent();
     $pclZipSeparator   = '/';
 
@@ -58,7 +58,7 @@
     $pclZipCountArrayEntry = 0;
 
     if (isset($_GET[PARAMETER_ZIP_PATH]) && empty($_GET[PARAMETER_ZIP_PATH]) == false) {
-        $pclZipDirectoryOrigin = separator(FileInfo::validate(AppDirectory::rawDecode($_GET[PARAMETER_ZIP_PATH])), $pclZipSeparator);
+        $pclZipDirectoryOrigin = separator(FileInfo::filterPaths(AppDirectory::rawDecode($_GET[PARAMETER_ZIP_PATH])), $pclZipSeparator);
         $pclZipDirectory       = separator($pclZipDirectoryOrigin . $pclZipSeparator, $pclZipSeparator);
     }
 

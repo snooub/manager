@@ -1,6 +1,10 @@
 <?php
 
     namespace Librarys\PathConverter;
+
+    if (defined('LOADED') == false)
+        exit;
+
     /**
      * Don't convert paths.
      *

@@ -282,9 +282,9 @@
         public static function getPathFileUpgrade($filenameEntry, $pathDirectorysCustom = null)
         {
             if ($pathDirectorysCustom !== null)
-                return FileInfo::validate($pathDirectorysCustom . SP . $filenameEntry);
+                return FileInfo::filterPaths($pathDirectorysCustom . SP . $filenameEntry);
 
-            return FileInfo::validate(env('app.path.upgrade') . SP . $filenameEntry);
+            return FileInfo::filterPaths(env('app.path.upgrade') . SP . $filenameEntry);
         }
 
         public static function validateJsonData($jsonArray)

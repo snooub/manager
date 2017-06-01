@@ -58,7 +58,7 @@
             'max'        => $appConfig->get('paging.file_edit_text')
         ],
 
-        'path'    => FileInfo::validate($appDirectory->getDirectoryAndName()),
+        'path'    => FileInfo::filterPaths($appDirectory->getDirectoryAndName()),
         'content' => null,
 
         'content_lines'      => null,

@@ -30,7 +30,7 @@
                 $lists = array();
 
                 foreach ($handle AS $filename) {
-                    $filepath = FileInfo::validate($directory . SP . $filename);
+                    $filepath = FileInfo::filterPaths($directory . SP . $filename);
 
                     if (FileInfo::isTypeFile($filepath)) {
                         $filetime         = FileInfo::fileMTime($filepath);
@@ -47,7 +47,7 @@
                 asort($lists);
 
                 foreach ($lists AS $filename => $filetime) {
-                    $filepath = FileInfo::validate($directory . SP . $filename);
+                    $filepath = FileInfo::filterPaths($directory . SP . $filename);
 
                     if ($time - $filetime >= $lifetime || $countDelete >= $limit) {
                         $countDelete--;

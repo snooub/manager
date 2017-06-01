@@ -143,12 +143,12 @@
                 return false;
             }
 
-            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate($appPath), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::filterPaths($appPath), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
                 FileInfo::fileWrite($logHandle, "Info: Extract upgrade success\n");
                 FileInfo::fileWrite($logHandle, "Info: Check file recycle in app begin\n");
 
                 foreach ($listContent AS $entrys) {
-                    $entryFilename = FileInfo::validate($entrys['stored_filename']);
+                    $entryFilename = FileInfo::filterPaths($entrys['stored_filename']);
 
                     if ($entrys['folder'] == false && array_key_exists($prefixFile . $entryFilename, $appContent))
                         unset($appContent[$prefixFile . $entryFilename]);
@@ -167,7 +167,7 @@
                         }
                     }
 
-                    $appEntryPath = FileInfo::validate($appPath . SP . $entryFilepath);
+                    $appEntryPath = FileInfo::filterPaths($appPath . SP . $entryFilepath);
 
                     if ($entryIsIgone) {
                         unset($appContent[$key]);
@@ -187,7 +187,7 @@
                 foreach ($appContent AS $entrys) {
                     if ($entrys['is_directory']) {
                         $entryFilepath      = $entrys['filepath'];
-                        $appEntryPath       = FileInfo::validate($appPath . SP . $entryFilepath);
+                        $appEntryPath       = FileInfo::filterPaths($appPath . SP . $entryFilepath);
                         $globDirectoryEntry = FileInfo::globDirectory($appEntryPath . SP . '*');
 
                         if ($globDirectoryEntry === false ||  count($globDirectoryEntry) <= 0) {

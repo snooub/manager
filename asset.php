@@ -21,7 +21,7 @@
         $themeFile      = addslashes(trim($_GET[ASSET_PARAMETER_CSS_URL]));
         $themePath      = env('app.path.theme');
 
-        $themePath = FileInfo::validate($themePath . SP . $themeDirectory);
+        $themePath = FileInfo::filterPaths($themePath . SP . $themeDirectory);
 
         if (FileInfo::isTypeDirectory($themePath) == false)
             die(lng('default.resource.directory_not_found'));
@@ -29,7 +29,7 @@
         header('Content-Type: text/css');
 
         $themeFilename = $themeFile . '.css';
-        $themeFilepath = FileInfo::validate($themePath . SP . $themeFilename);
+        $themeFilepath = FileInfo::filterPaths($themePath . SP . $themeFilename);
         $appAssets     = new AppAssets($themePath, $themeFilename);
 
         if ($appAssets->loadCss())
@@ -46,7 +46,7 @@
         header('Content-Type: text/javascript');
 
         $jsFilename = $jsFile . '.js';
-        $jsFilePath = FileInfo::validate($jsPath . SP . $jsFilename);
+        $jsFilePath = FileInfo::filterPaths($jsPath . SP . $jsFilename);
         $appAssets  = new AppAssets($jsPath, $jsFilename);
 
         if ($appAssets->loadJs())

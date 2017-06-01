@@ -6,6 +6,10 @@
      *
      * @author Matthias Mullie <minify@mullie.eu>
      */
+
+    if (defined('LOADED') == false)
+        exit;
+
     abstract class Exception extends \Exception
     {
 

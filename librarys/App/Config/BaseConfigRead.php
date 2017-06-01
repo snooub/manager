@@ -107,7 +107,7 @@
                 if ($appUser !== null)
                     $idUser = $appUser->getId();
 
-                $this->pathConfig = FileInfo::validate($directory . SP . $idUser);
+                $this->pathConfig = FileInfo::filterPaths($directory . SP . $idUser);
 
                 if (FileInfo::isTypeDirectory($directory) == false)
                     $isMkdir = FileInfo::mkdir($directory);
@@ -117,7 +117,7 @@
                         $isMkdir = FileInfo::mkdir($this->pathConfig);
 
                     if ($isMkdir) {
-                        $this->pathConfig = FileInfo::validate($this->pathConfig . SP . $this->fileConfigName);
+                        $this->pathConfig = FileInfo::filterPaths($this->pathConfig . SP . $this->fileConfigName);
 
                         if (FileInfo::isTypeFile($this->pathConfig))
                             return $this->parse();

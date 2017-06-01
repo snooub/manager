@@ -68,7 +68,7 @@
         $countSuccess = $countRecords;
 
         foreach ($listRecords AS $recordFilename) {
-            $recordPath = FileInfo::validate($databaseBackupRestore->getPathDirectoryDatabaseBackup() . SP . $recordFilename);
+            $recordPath = FileInfo::filterPaths($databaseBackupRestore->getPathDirectoryDatabaseBackup() . SP . $recordFilename);
 
             if (FileInfo::unlink($recordPath) == false) {
                 $isFailed = true;
@@ -87,13 +87,13 @@
         if (FileInfo::mkdir($pathDirectoryTmp, true) == false)
             $appAlert->danger(lng('mysql.restore_manager.alert.download.download_failed'));
 
-        $pathFile     = FileInfo::validate($pathDirectoryTmp . SP . md5(time()));
+        $pathFile     = FileInfo::filterPaths($pathDirectoryTmp . SP . md5(time()));
         $pclZip       = new PclZip($pathFile);
         $isFailed     = false;
         $countSuccess = $countRecords;
 
         foreach ($listRecords AS $recordFilename) {
-            $recordPath = FileInfo::validate($databaseBackupRestore->getPathDirectoryDatabaseBackup() . SP . $recordFilename);
+            $recordPath = FileInfo::filterPaths($databaseBackupRestore->getPathDirectoryDatabaseBackup() . SP . $recordFilename);
 
             if ($pclZip->add($recordPath, PCLZIP_OPT_REMOVE_PATH, $databaseBackupRestore->getPathDirectoryDatabaseBackup()) == false) {
                 $isFailed = true;
@@ -151,7 +151,7 @@
 
                     <?php for ($i = 0; $i < $countList; ++$i) { ?>
                         <?php $entryFilename = $listBackups[$i]; ?>
-                        <?php $entryFilepath = FileInfo::validate($pathDatabaseBackup . SP . $entryFilename); ?>
+                        <?php $entryFilepath = FileInfo::filterPaths($pathDatabaseBackup . SP . $entryFilename); ?>
 
                         <li class="type-backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($countList === 1) { ?> entry-only-one<?php } ?>">
                             <div class="icon">

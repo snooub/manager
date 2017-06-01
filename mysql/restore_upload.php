@@ -65,12 +65,12 @@
                 $fileRename = null;
                 $pathRename = null;
                 $nameStore  = FileInfo::fileNameFix($nameStore);
-                $pathStore  = FileInfo::validate($databaseBackupRestore->getPathFileDatabaseBackup($nameStore));
+                $pathStore  = FileInfo::filterPaths($databaseBackupRestore->getPathFileDatabaseBackup($nameStore));
 
                 if (FileInfo::fileExists($pathStore)) {
                     for ($i = 0; $i < 50; ++$i) {
                         $fileRename = rand(10000, 99999) . '_' . $nameStore;
-                        $pathRename = FileInfo::validate($databaseBackupRestore->getPathFileDatabaseBackup($fileRename));
+                        $pathRename = FileInfo::filterPaths($databaseBackupRestore->getPathFileDatabaseBackup($fileRename));
 
                         if (FileInfo::fileExists($pathRename) == false) {
                             break;

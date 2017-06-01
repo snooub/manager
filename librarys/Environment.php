@@ -64,8 +64,8 @@
                 $this->cache('app.directory', '');
                 $this->cache('app.directory_absolute', '');
             } else {
-                $appDirectory         = FileInfo::validate(substr(env('app.path.root'), strlen(env('server.document_root'))));
-                $appDirectoryAbsolute = FileInfo::validate(substr(env('app.path.root'), strlen(env('SERVER.DOCUMENT_ROOT'))));
+                $appDirectory         = FileInfo::filterPaths(substr(env('app.path.root'), strlen(env('server.document_root'))));
+                $appDirectoryAbsolute = FileInfo::filterPaths(substr(env('app.path.root'), strlen(env('SERVER.DOCUMENT_ROOT'))));
 
                 if (strpos($appDirectory, SP) === 0)
                     $appDirectory = substr($appDirectory, 1);

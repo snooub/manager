@@ -54,7 +54,7 @@
             else if ($forms['type'] === TYPE_FILE)
                 $appAlert->danger(lng('create.alert.name_not_validate_type_file', 'validate', FileInfo::FILENAME_VALIDATE));
         } else {
-            $forms['path'] = FileInfo::validate($appDirectory->getDirectory() . SP . $forms['name']);
+            $forms['path'] = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $forms['name']);
 
             if (FileInfo::fileExists($forms['path'])) {
                 if (FileInfo::isTypeDirectory($forms['path']))

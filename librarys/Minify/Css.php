@@ -2,6 +2,9 @@
 
     namespace Librarys\Minify;
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\Minify\Exceptions\FileImportException;
     use Librarys\PathConverter\ConverterInterface;
     use Librarys\PathConverter\Converter;

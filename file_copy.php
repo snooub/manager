@@ -81,18 +81,18 @@
                    $forms['exists_func'] !== EXISTS_FUNC_RENAME)
         {
             $appAlert->danger(lng('file_copy.alert.exists_func_not_validate'));
-        } else if (FileInfo::validate($forms['path'] . SP . $appDirectory->getName()) == FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
+        } else if (FileInfo::filterPaths($forms['path'] . SP . $appDirectory->getName()) == FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
             if ($forms['action'] === ACTION_COPY)
                 $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
             else
                 $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'));
-        } else if (FileInfo::isTypeDirectory(FileInfo::validate($forms['path'])) == false) {
+        } else if (FileInfo::isTypeDirectory(FileInfo::filterPaths($forms['path'])) == false) {
             $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'));
         } else if (FileInfo::permissionDenyPath($forms['path'])) {
             $appAlert->danger(lng('file_copy.alert.not_copy_file_to_directory_app'));
         } else {
-            $filePathOld            = FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName());
-            $filePathNew            = FileInfo::validate($forms['path'] . SP . $appDirectory->getName());
+            $filePathOld            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName());
+            $filePathNew            = FileInfo::filterPaths($forms['path'] . SP . $appDirectory->getName());
             $isHasFileAppPermission = false;
 
             $callbackFileExists = function($directory, $filename, $isDirectory) {
@@ -104,10 +104,10 @@
                     $fileRename = null;
                     $pathRename = null;
 
-                    if (FileInfo::fileExists(FileInfo::validate($directory . SP . $filename))) {
+                    if (FileInfo::fileExists(FileInfo::filterPaths($directory . SP . $filename))) {
                         while (true) {
                             $fileRename = rand(10000, 99999) . '_' . $filename;
-                            $pathRename = FileInfo::validate($directory . SP . $fileRename);
+                            $pathRename = FileInfo::filterPaths($directory . SP . $fileRename);
 
                             if (FileInfo::fileExists($pathRename) == false)
                                 break;
@@ -141,11 +141,11 @@
     }
 
     if ($appFileCopy->isSession()) {
-        $appFileCopyPathSrc          = FileInfo::validate($appFileCopy->getDirectory() . SP . $appFileCopy->getName());
-        $appFileCopyPathDest         = FileInfo::validate($appFileCopy->getPath()      . SP . $appFileCopy->getName());
+        $appFileCopyPathSrc          = FileInfo::filterPaths($appFileCopy->getDirectory() . SP . $appFileCopy->getName());
+        $appFileCopyPathDest         = FileInfo::filterPaths($appFileCopy->getPath()      . SP . $appFileCopy->getName());
         $isChooseDirectoryPathFailed = true;
 
-        if ($appFileCopyPathSrc == FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
+        if ($appFileCopyPathSrc == FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
             $idAlert = null;
 
             if (isset($_SERVER['HTTP_REFERER']) && strpos(strtolower($_SERVER['HTTP_REFERER']), 'index.php') !== false)

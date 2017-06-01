@@ -40,7 +40,7 @@
                 $this->directory = env('SERVER.DOCUMENT_ROOT');
 
             if ($this->directory != null) {
-                $this->directory       = FileInfo::validate($this->directory);
+                $this->directory       = FileInfo::filterPaths($this->directory);
                 $this->directoryEncode = self::rawEncode($this->directory);
             }
 
@@ -67,11 +67,11 @@
                 $this->page = 1;
 
             if ($this->directory != '.' && $this->directory != '..') {
-                $isPermissionDenyDirectory     = FileInfo::permissionDenyPath(FileInfo::validate($this->directory));
+                $isPermissionDenyDirectory     = FileInfo::permissionDenyPath(FileInfo::filterPaths($this->directory));
                 $isPermissionDenyDirectoryName = false;
 
                 if ($this->name != null)
-                    $isPermissionDenyDirectoryName = FileInfo::permissionDenyPath(FileInfo::validate($this->directory . SP . $this->name));
+                    $isPermissionDenyDirectoryName = FileInfo::permissionDenyPath(FileInfo::filterPaths($this->directory . SP . $this->name));
 
                 if ($isPermissionDenyDirectory == false && $isPermissionDenyDirectoryName == false)
                     $this->permissionDeny = false;
@@ -203,7 +203,7 @@
             if ($this->name == null || empty($this->name))
                 return false;
 
-            return FileInfo::isTypeDirectory(FileInfo::validate($this->directory . SP . $this->name));
+            return FileInfo::isTypeDirectory(FileInfo::filterPaths($this->directory . SP . $this->name));
         }
 
         public function isFileSeparatorNameExists()
@@ -214,7 +214,7 @@
             if ($this->name == null || empty($this->name))
                 return false;
 
-            return FileInfo::isTypeFile(FileInfo::validate($this->directory . SP . $this->name));
+            return FileInfo::isTypeFile(FileInfo::filterPaths($this->directory . SP . $this->name));
         }
 
         public function isFileExistsDirectory()
@@ -233,7 +233,7 @@
             if ($this->name == null || empty($this->name))
                 return false;
 
-            return FileInfo::fileExists(FileInfo::validate($this->directory . SP . $this->name));
+            return FileInfo::fileExists(FileInfo::filterPaths($this->directory . SP . $this->name));
         }
 
     }

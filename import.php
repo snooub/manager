@@ -115,7 +115,7 @@
                                 $filename = removePrefixHttpURL($curl->getURL());
 
                             $filename             = FileInfo::fileNameFix($filename);
-                            $fileWritePath        = FileInfo::validate($appDirectory->getDirectory() . SP . $filename);
+                            $fileWritePath        = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $filename);
                             $fileWriteIsDirectory = FileInfo::isTypeDirectory($fileWritePath);
                             $fileWriteIsFile      = FileInfo::isTypeFile($fileWritePath);
                             $fileSizeStr          = FileInfo::sizeToString($curl->getBufferLength());
@@ -156,7 +156,7 @@
 
                                 for ($i = 0; $i < 50; ++$i) {
                                     $fileRename = rand(10000, 99999) . '_' . $filename;
-                                    $pathRename = FileInfo::validate($appDirectory->getDirectory() . SP . $fileRename);
+                                    $pathRename = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $fileRename);
 
                                     if (FileInfo::fileExists($pathRename) == false) {
                                         break;

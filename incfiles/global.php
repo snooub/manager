@@ -30,6 +30,11 @@
         defined('ENABLE_CUSTOM_HEADER')
     );
 
+    if (isValidateIP(($ip = takeIP())) == false)
+        die(lng('default.global.ip_not_validate', 'ip', $ip));
+    else
+        unset($ip);
+
     $appChecker      = new Librarys\App\AppChecker          ($boot);
     $appConfig       = new Librarys\App\Config\AppConfig    ($boot);
     $appUser         = new Librarys\App\AppUser             ($boot);
@@ -41,15 +46,13 @@
 
     if ($appChecker->execute()->isAccept() == false) {
         if ($appChecker->isInstallDirectory() == false)
-            trigger_error(lng('default.global.app_is_install_root'));
+            die(lng('default.global.app_is_install_root'));
         else if ($appChecker->isDirectoryPermissionExecute() == false)
-            trigger_error(lng('default.global.host_is_not_premission'));
+            die(lng('default.global.host_is_not_premission'));
         else if ($appChecker->isConfigValidate() == false)
-            trigger_error(lng('default.global.config_app_not_found'));
+            die(lng('default.global.config_app_not_found'));
         else
-            trigger_error(lng('default.global.unknown_error_app'));
-
-        exit(0);
+            die(lng('default.global.unknown_error_app'));
     }
 
     // Get config system
@@ -60,10 +63,8 @@
     $appConfig->execute($appUser);
     $appConfig->requireEnvProtected(env('resource.config.manager_dis'));
 
-    if ($boot->getCFSRToken()->validatePost() !== true) {
-        trigger_error(lng('default.global.cfsr_not_validate'));
-        exit(0);
-    }
+    if ($boot->getCFSRToken()->validatePost() !== true)
+        die(lng('default.global.cfsr_not_validate'));
 
     $appDirectory->execute();
     $appMysqlConfig->execute($appUser);

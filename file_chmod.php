@@ -38,7 +38,7 @@
     require_once('incfiles' . SP . 'header.php');
 
     $forms = [
-        'chmod' => FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()))
+        'chmod' => FileInfo::chmod(FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName()))
     ];
 
     if (isset($_POST['chmod'])) {
@@ -50,7 +50,7 @@
             else
                 $appAlert->danger(lng('file_chmod.alert.not_input_chmod_permission_file'));
         } else {
-            if (FileInfo::chmod(FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName()), intval($forms['chmod'], 8)) == false) {
+            if (FileInfo::chmod(FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName()), intval($forms['chmod'], 8)) == false) {
                 if ($isDirectory)
                     $appAlert->danger(lng('file_chmod.alert.chmod_permission_directory_failed', 'filename', $appDirectory->getName()));
                 else

@@ -2,6 +2,9 @@
 
     namespace Librarys\Parse;
 
+    if (defined('LOADED') == false)
+        exit;
+
     #
     #
     # Parsedown

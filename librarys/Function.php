@@ -77,7 +77,7 @@
         return $str;
     }
 
-    function receiverIP()
+    function takeIP()
     {
         $arrayIP = array();
 
@@ -112,7 +112,7 @@
         return null;
     }
 
-    function receiverUserAgent()
+    function takeUserAgent()
     {
         if (getenv('HTTP_USER_AGENT') !== false)
             return getenv('HTTP_USER_AGENT');

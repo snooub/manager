@@ -44,7 +44,7 @@
             if (($path = $this->isFileLibrarys($classes)) !== false)
                 require_once($path);
             else
-                trigger_error('Class ' . $classes . ' not require');
+                die('Class ' . $classes . ' not require');
         }
 
         public function isFileLibrarys($classes)

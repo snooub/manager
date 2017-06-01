@@ -68,7 +68,7 @@
                 $current  = new FileInfo(realpath('.'));
 
             $path     = $current->getFilePath();
-            $pathRoot = FileInfo::validate(env('SERVER.DOCUMENT_ROOT'));
+            $pathRoot = FileInfo::filterPaths(env('SERVER.DOCUMENT_ROOT'));
             $isRoot   = stripos($pathRoot, $path) === 0;
 
             if ($isRoot) {
@@ -81,9 +81,9 @@
                 $this->applicationParentPath = dirname($path);
             }
 
-            $this->applicationDirectory  = FileInfo::validate($this->applicationDirectory);
-            $this->applicationPath       = FileInfo::validate($this->applicationPath);
-            $this->applicationParentPath = FileInfo::validate($this->applicationParentPath);
+            $this->applicationDirectory  = FileInfo::filterPaths($this->applicationDirectory);
+            $this->applicationPath       = FileInfo::filterPaths($this->applicationPath);
+            $this->applicationParentPath = FileInfo::filterPaths($this->applicationParentPath);
 
             $this->isInstallDirectory = $isRoot == false;
             $this->isAccept           = $this->isInstallDirectory;
@@ -101,8 +101,8 @@
             if ($this->isAccept == false)
                 return;
 
-            $root = FileInfo::validate(env('SERVER.DOCUMENT_ROOT'));
-            $path = FileInfo::validate($this->applicationPath);
+            $root = FileInfo::filterPaths(env('SERVER.DOCUMENT_ROOT'));
+            $path = FileInfo::filterPaths($this->applicationPath);
 
             if (strpos($path, SP) !== false) {
                 $split    = explode(SP, $path);

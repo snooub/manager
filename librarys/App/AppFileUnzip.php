@@ -55,7 +55,7 @@
 
             $this->setDirectory($directory);
             $this->setName($name);
-            $this->setPath(FileInfo::validate($directory));
+            $this->setPath(FileInfo::filterPaths($directory));
             $this->setExistsFunc($existsFunc);
             $this->flushSession();
         }

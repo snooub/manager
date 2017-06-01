@@ -94,7 +94,7 @@
         {
             global $boot, $appConfig;
 
-            $filepath = FileInfo::validate($this->pathDirectory . SP . $this->filename);
+            $filepath = FileInfo::filterPaths($this->pathDirectory . SP . $this->filename);
 
             if (FileInfo::isTypeFile($filepath) == false)
                 return false;
@@ -105,9 +105,9 @@
             $envpath = null;
 
             if ($loadType === self::LOAD_CSS)
-                $envpath = FileInfo::validate($this->pathDirectory . SP . env('resource.filename.config.env_theme'));
+                $envpath = FileInfo::filterPaths($this->pathDirectory . SP . env('resource.filename.config.env_theme'));
             else if ($loadType === self::LOAD_JS)
-                $envpath = FileInfo::validate($this->pathDirectory . SP . env('resource.filename.config.env_javascript'));
+                $envpath = FileInfo::filterPaths($this->pathDirectory . SP . env('resource.filename.config.env_javascript'));
 
             $this->buffer = FileInfo::fileReadContents($filepath);
 
@@ -122,7 +122,7 @@
                     $value = $this->config->get($env);
 
                     if (($value == null || empty($value) || is_string($value) == false) && $value !== '0')
-                        trigger_error('Not value for key "' . $env);
+                        die('Not value for key "' . $env);
                     else if ($matches[1][$index] === '#')
                         $this->buffer = str_replace($matches[0][$index], '#' . $value, $this->buffer);
                     else
@@ -174,7 +174,7 @@
                 $timeNow              = time();
                 $cacheDirectory       = env('app.path.cache');
                 $cacheFilename        = md5($this->filename);
-                $cacheFilepath        = FileInfo::validate($cacheDirectory . SP . $cacheFilename);
+                $cacheFilepath        = FileInfo::filterPaths($cacheDirectory . SP . $cacheFilename);
                 $cacheFiletime        = 0;
                 $cacheDirectoryExists = true;
 

@@ -2,6 +2,9 @@
 
     namespace Librarys\PathConverter;
 
+    if (defined('LOADED') == false)
+        exit;
+
     /**
      * Convert paths relative from 1 file to another.
      *

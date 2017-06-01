@@ -51,7 +51,7 @@
 
             (
                 empty($forms['password_new']) ||
-                strcmp($passwordConfig, AppUser::passwordEncode($forms['password_new'])) === 0
+                AppUser::checkPassword($passwordConfig, $forms['password_new'])
             )
         ) {
             $appAlert->danger(lng('user.setting.alert.nothing_change'));

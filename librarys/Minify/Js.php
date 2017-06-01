@@ -2,6 +2,9 @@
 
     namespace Librarys\Minify;
 
+    if (defined('LOADED') == false)
+        exit;
+
     use Librarys\File\FileInfo;
 
     /**

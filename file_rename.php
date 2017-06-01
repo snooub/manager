@@ -58,8 +58,8 @@
         } else if ($appDirectory->getName() == $forms['name']) {
             $appAlert->danger(lng('file_rename.alert.name_not_change'));
         } else {
-            $forms['path_old'] = FileInfo::validate($appDirectory->getDirectory() . SP . $appDirectory->getName());
-            $forms['path_new'] = FileInfo::validate($appDirectory->getDirectory() . SP . $forms['name']);
+            $forms['path_old'] = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName());
+            $forms['path_new'] = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $forms['name']);
 
             if (FileInfo::rename($forms['path_old'], $forms['path_new']) == false) {
                 if ($isDirectory)

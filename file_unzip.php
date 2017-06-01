@@ -77,12 +77,12 @@
             $appAlert->danger(lng('file_unzip.alert.not_input_path_unzip'));
         } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP) {
             $appAlert->danger(lng('file_unzip.alert.exists_func_not_validate'));
-        } else if (FileInfo::isTypeDirectory(FileInfo::validate($forms['path'])) == false) {
+        } else if (FileInfo::isTypeDirectory(FileInfo::filterPaths($forms['path'])) == false) {
             $appAlert->danger(lng('file_unzip.alert.path_unzip_not_exists'));
         } else if (FileInfo::permissionDenyPath($forms['path'])) {
             $appAlert->danger(lng('file_unzip.alert.not_unzip_file_to_directory_app'));
         } else {
-        	$pclZip = new PclZip(FileInfo::validate($appDirectory->getDirectoryAndName()));
+        	$pclZip = new PclZip(FileInfo::filterPaths($appDirectory->getDirectoryAndName()));
             $isHasFileAppPermission = false;
             $isHasFileSkip          = false;
 
@@ -92,7 +92,7 @@
                 	   $isHasFileAppPermission,
                 	   $isHasFileSkip;
 
-                $filePath = FileInfo::validate($appDirectory->getDirectory() . SP . $header['stored_filename']);
+                $filePath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $header['stored_filename']);
 
                 if (FileInfo::permissionDenyPath($filePath)) {
                     $isHasFileAppPermission = true;
@@ -114,7 +114,7 @@
                 return 0;
             };
 
-            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::validate($forms['path']), PCLZIP_CB_PRE_EXTRACT, 'callbackPreExtract') != false) {
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::filterPaths($forms['path']), PCLZIP_CB_PRE_EXTRACT, 'callbackPreExtract') != false) {
                 if ($isHasFileAppPermission)
                     $appAlert->warning(lng('file_unzip.alert.file_zip_has_file_app'), ALERT_INDEX);
 
@@ -122,7 +122,7 @@
                     $appAlert->info(lng('file_unzip.alert.file_zip_has_file_skip'), ALERT_INDEX);
 
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-                $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::validate($forms['path']), true);
+                $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::filterPaths($forms['path']), true);
                 $appParameter->toString(true);
 
                 $appAlert->success(lng('file_unzip.alert.unzip_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
@@ -202,7 +202,7 @@
                         <span><?php echo lng('file_unzip.form.button.browser'); ?></span>
                     </button>
                     <?php if ($idAlert == ALERT_INDEX && $appFileUnzip->isSession()) { ?>
-                        <?php $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::validate($appFileUnzip->getPath()), true); ?>
+                        <?php $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, FileInfo::filterPaths($appFileUnzip->getPath()), true); ?>
                         <?php $appParameter->toString(true); ?>
                     <?php } ?>
                     <a href="index.php<?php echo $appParameter->toString(); ?>">

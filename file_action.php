@@ -101,7 +101,7 @@
 
                     if (isset($forms['rename']['modifier_entrys'][$entryFilenameRawEncode])) {
                         $entryFilenameModifier = $forms['rename']['modifier_entrys'][$entryFilenameRawEncode];
-                        $entryPathOdd          = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+                        $entryPathOdd          = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
                         $entryIsTypeDirectory  = FileInfo::isTypeDirectory($entryPathOdd);
 
                         if (empty($entryFilenameModifier)) {
@@ -115,7 +115,7 @@
                             break;
                         }
 
-                        $entryPathNew = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilenameModifier);
+                        $entryPathNew = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilenameModifier);
 
                         if ($entryFilename != $entryFilenameModifier)
                             $isHasModifier = true;
@@ -164,7 +164,7 @@
                     $rand     = substr($rand, 0, strlen($rand) >> 1);
 
                     foreach ($listEntrys AS $entryFilename) {
-                        $entryPath = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+                        $entryPath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
                         FileInfo::rename($entryPath, $entryPath . $symbol . $rand);
                     }
 
@@ -172,8 +172,8 @@
 
                     foreach ($listEntrys AS $entryFilename) {
                         $entryFilenameRawEncode = AppDirectory::rawEncode($entryFilename);
-                        $entryPath              = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename . $symbol . $rand);
-                        $entryPathRename        = FileInfo::validate($appDirectory->getDirectory() . SP . $forms['rename']['modifier_entrys'][$entryFilenameRawEncode]);
+                        $entryPath              = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename . $symbol . $rand);
+                        $entryPathRename        = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $forms['rename']['modifier_entrys'][$entryFilenameRawEncode]);
                         $entryIsTypeDirectory   = FileInfo::isTypeDirectory($entryPath);
                         $entryAlertMessage      = null;
 
@@ -217,7 +217,7 @@
         {
             $appAlert->danger(lng('file_action.alert.copy.exists_func_not_validate'));
         } else {
-            $forms['copy']['path_copy'] = FileInfo::validate($forms['copy']['path_copy']);
+            $forms['copy']['path_copy'] = FileInfo::filterPaths($forms['copy']['path_copy']);
 
             if ($forms['copy']['path_copy'] == $appDirectory->getDirectory()) {
                 if ($forms['copy']['mode'] === FILE_ACTION_COPY_MULTI_MODE_COPY)
@@ -238,10 +238,10 @@
                         $fileRename = null;
                         $pathRename = null;
 
-                        if (FileInfo::fileExists(FileInfo::validate($directory . SP . $filename))) {
+                        if (FileInfo::fileExists(FileInfo::filterPaths($directory . SP . $filename))) {
                             while (true) {
                                 $fileRename = rand(10000, 99999) . '_' . $filename;
-                                $pathRename = FileInfo::validate($directory . SP . $fileRename);
+                                $pathRename = FileInfo::filterPaths($directory . SP . $fileRename);
 
                                 if (FileInfo::fileExists($pathRename) == false)
                                     break;
@@ -258,8 +258,8 @@
                 $countSuccess = $countEntrys;
 
                 foreach ($listEntrys AS $entryFilename) {
-                    $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
-                    $entryPathCopy        = FileInfo::validate($forms['copy']['path_copy']   . SP . $entryFilename);
+                    $entryPath            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
+                    $entryPathCopy        = FileInfo::filterPaths($forms['copy']['path_copy']   . SP . $entryFilename);
                     $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
                     if (FileInfo::copy($entryPath, $entryPathCopy, true, $forms['copy']['mode'] === FILE_ACTION_COPY_MULTI_MODE_MOVE, $isHasFileAppPermission, $callbackFileExists) == false) {
@@ -295,7 +295,7 @@
         $isHasFileAppPermission = false;
 
         foreach ($listEntrys AS $entryFilename) {
-            $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+            $entryPath            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
             $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
             if (FileInfo::permissionDenyPath($entryPath)) {
@@ -345,15 +345,15 @@
             $appAlert->danger(lng('file_action.alert.zip.name_zip_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
         } else {
             $isFailed                        = false;
-            $forms['zip']['path_create_zip'] = FileInfo::validate($forms['zip']['path_create_zip']);
-            $pathFileZip                     = FileInfo::validate($forms['zip']['path_create_zip'] . SP . $forms['zip']['name_zip']);
+            $forms['zip']['path_create_zip'] = FileInfo::filterPaths($forms['zip']['path_create_zip']);
+            $pathFileZip                     = FileInfo::filterPaths($forms['zip']['path_create_zip'] . SP . $forms['zip']['name_zip']);
 
             if (FileInfo::permissionDenyPath($forms['zip']['path_create_zip'])) {
                 $isFailed = true;
                 $appAlert->danger(lng('file_action.alert.zip.not_create_zip_to_path_app'));
             } else if ($forms['zip']['delete_source'] == true) {
                 foreach ($listEntrys AS $entryFilename) {
-                    $entryPath = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+                    $entryPath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
 
                     if (FileInfo::isTypeDirectory($entryPath) && $entryPath == $forms['zip']['path_create_zip']) {
                         $isFailed = true;
@@ -379,7 +379,7 @@
 
                 function callbackPreAdd($event, $header)
                 {
-                    if (FileInfo::permissionDenyPath(FileInfo::validate($header['filename']))) {
+                    if (FileInfo::permissionDenyPath(FileInfo::filterPaths($header['filename']))) {
                         $isHasFileAppPermission = true;
                         return 0;
                     }
@@ -390,7 +390,7 @@
                 $countSuccess = $countEntrys;
 
                 foreach ($listEntrys AS $entryFilename) {
-                    $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+                    $entryPath            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
                     $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
                     if ($pclZip->add($entryPath, PCLZIP_OPT_REMOVE_PATH, $appDirectory->getDirectory(), PCLZIP_CB_PRE_ADD, 'callbackPreAdd') == false) {
@@ -437,7 +437,7 @@
             $chmodFile      = intval($forms['chmod']['file'],      8);
 
             foreach ($listEntrys AS $entryFilename) {
-                $entryPath            = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename);
+                $entryPath            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
                 $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
                 if ($entryIsTypeDirectory && FileInfo::chmod($entryPath, $chmodDirectory) == false) {
@@ -479,7 +479,7 @@
                 <?php $countLoopEntry = 0; ?>
 
                 <?php foreach ($listEntrys AS $entryFilename) { ?>
-                    <?php $entryPath = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename); ?>
+                    <?php $entryPath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename); ?>
 
                     <?php if (FileInfo::permissionDenyPath($entryPath)) { ?>
 
@@ -559,7 +559,7 @@
             <ul class="form-element">
                 <?php if ($nameAction == FILE_ACTION_RENAME_MULTI) { ?>
                     <?php foreach ($listEntrys AS $entryFilename) { ?>
-                        <?php $entryPath = FileInfo::validate($appDirectory->getDirectory() . SP . $entryFilename); ?>
+                        <?php $entryPath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename); ?>
 
                         <li class="input">
                             <?php $valueModifierRename = $entryFilename; ?>

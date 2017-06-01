@@ -184,7 +184,7 @@
 
                         $isFirstIndexBuffer = true;
                     } else {
-                        $pathBuffer = self::validate($pathBuffer . $separator . $entry);
+                        $pathBuffer = self::filterPaths($pathBuffer . $separator . $entry);
                     }
 
                     if (self::fileExists($pathBuffer) == false && @mkdir($pathBuffer) == false)
@@ -469,7 +469,7 @@
             return @unlink($path);
         }
 
-        public static function validate($path, $isPathZIP = false)
+        public static function filterPaths($path, $isPathZIP = false)
         {
             $SP = SP;
 
@@ -514,7 +514,7 @@
                     $sp = SP . SP;
 
                 $path = strtolower($path);
-                $path = self::validate($path);
+                $path = self::filterPaths($path);
 
                 if ($isUseName)
                     $reg = env('application.directory');
@@ -524,7 +524,7 @@
                 if ($reg != null)
                     $reg = strtolower($reg);
 
-                $reg = self::validate($reg);
+                $reg = self::filterPaths($reg);
 
                 if (SP == '\\')
                     $reg = str_replace(SP, $sp, $reg);
@@ -721,7 +721,7 @@
                     $parentNotModify = $path;
 
                     if ($pathRemove !== null)
-                        $pathRemove = self::validate($pathRemove);
+                        $pathRemove = self::filterPaths($pathRemove);
                 }
 
                 if ($path !== $parentNotModify) {
@@ -753,7 +753,7 @@
 
                 foreach ($handleScan AS $filename) {
                     if ($filename != '.' && $filename != '..' && $filename != '.git') {
-                        $filepath = self::validate($path . SP . $filename);
+                        $filepath = self::filterPaths($path . SP . $filename);
 
                         if (self::isTypeDirectory($filepath)) {
                             if (self::listContent(
