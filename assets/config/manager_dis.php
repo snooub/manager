@@ -7,6 +7,8 @@
     // Disable env set to false, enable env set to true
 
     return [
+        'http_host' => false,
+
         'login'                          => false,
         'login.enable_forgot_password'   => false,
         'login.enable_lock_count_failed' => false,
