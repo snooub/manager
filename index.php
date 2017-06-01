@@ -266,6 +266,8 @@
         $appFileCopy->flushSession();
     }
 
+    if ($appUser->checkUserIsUsePasswordDefault())
+        $appAlert->warning(lng('home.alert.password_user_is_equal_default'));
 ?>
 
     <?php echo $appAlert->display(); ?>
