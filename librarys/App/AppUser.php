@@ -170,27 +170,16 @@
             return false;
         }
 
-        public function createSessionUser($id, $token = null)
+        public function createSessionUser($id)
         {
-            if ($token == null)
-                $token = CFSRToken::generator();
-
-            $id          = addslashes($id);
-            $time        = time();
-
-            $token       = addslashes($token);
-            $tokenLength = strlen($token);
-
-            // Fix token key array
-            $rand        = rand(0, $tokenLength - 10);
-            $token       = substr($token, $rand);
-            $token       = md5($token);
-            $token       = substr($token, $rand, 9);
+            $id    = addslashes($id);
+            $time  = time();
+            $token = rand(0, time());
 
             if (empty($id))
                 return false;
 
-            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $token, $time) == false)
+            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $token, (string)$time) == false)
                 return false;
 
             if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false)
