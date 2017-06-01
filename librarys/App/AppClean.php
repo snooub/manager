@@ -68,6 +68,16 @@
             }
         }
 
+        private static function scanAutoCleanToken()
+        {
+
+        }
+
+        private static function scanAutoCleanCache()
+        {
+
+        }
+
     }
 
 ?>
