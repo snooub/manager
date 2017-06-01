@@ -55,6 +55,10 @@ select {
     outline: 0;
 }
 
+textarea {
+    line-height: 22px;
+}
+
 input[type=text]:disabled,
 input[type=email]:disabled,
 input[type=number]:disabled,
