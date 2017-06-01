@@ -81,7 +81,7 @@
 
         if (empty($username) || empty($password)) {
             $appAlert->danger(lng('user.login.alert.not_input_username_or_password'));
-        } else if (($idUser = $appUser->isUser($username, $password, true)) === false) {
+        } else if (($idUser = $appUser->isUser($username, $password)) === false) {
             $appAlert->danger(lng('user.login.alert.username_or_password_wrong'));
         } else if ($idUser === null || empty($idUser)) {
             $appAlert->danger(lng('user.login.alert.user_not_exists'));
