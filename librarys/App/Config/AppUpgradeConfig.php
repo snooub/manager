@@ -7,7 +7,7 @@
 
     use Librarys\Boot;
 
-    final class AppUpgradeConfig extends BaseConfigRead
+    final class AppUpgradeConfig extends BaseConfig
     {
 
         public function __construct(Boot $boot)

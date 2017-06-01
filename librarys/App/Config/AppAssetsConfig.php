@@ -7,7 +7,7 @@
 
     use Librarys\Boot;
 
-    final class AppAssetsConfig extends BaseConfigRead
+    final class AppAssetsConfig extends BaseConfig
     {
 
         public function __construct(Boot $boot, $pathThemeEnv)

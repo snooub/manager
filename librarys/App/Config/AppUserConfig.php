@@ -7,7 +7,7 @@
 
     use Librarys\Boot;
 
-    final class AppUserConfig extends BaseConfigRead
+    final class AppUserConfig extends BaseConfig
     {
 
         const ARRAY_KEY_USERNAME  = 'username';

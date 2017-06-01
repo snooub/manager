@@ -8,7 +8,7 @@
     use Librarys\Boot;
     use Librarys\File\FileInfo;
 
-    final class AppConfig extends BaseConfigRead
+    final class AppConfig extends BaseConfig
     {
 
         public function __construct(Boot $boot)

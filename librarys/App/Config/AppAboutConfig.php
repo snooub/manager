@@ -7,7 +7,7 @@
 
     use Librarys\Boot;
 
-    final class AppAboutConfig extends BaseConfigRead
+    final class AppAboutConfig extends BaseConfig
     {
 
         const ARRAY_KEY_NAME       = 'name';
