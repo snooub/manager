@@ -55,13 +55,9 @@
             $arrays = $this->config->getConfigArraySystem();
 
             if (is_array($arrays) && isset($arrays[$id])) {
-                $tokenConfig = new AppUserTokenConfig($this->boot, $id);
-
-                if ($tokenConfig->hasKey($token)) {
-                    $this->id      = $id;
-                    $this->token   = $token;
-                    $this->isLogin = true;
-                }
+                $this->id      = $id;
+                $this->token   = $token;
+                $this->isLogin = true;
             } else {
 
             }
@@ -168,20 +164,10 @@
             if ($this->config->write() == false)
                 return false;
 
-            $appToken = new AppUserTokenConfig($this->boot, $id);
-
-            if ($appToken->set($token, $time) == false)
-                return false;
-
-            if ($appToken->write() == false)
-                return false;
-
             $this->boot->sessionInitializing();
 
             $_SESSION[env('app.login.session_login_name')] = $id;
             $_SESSION[env('app.login.session_token_name')] = $token;
-
-            $this->execute();
 
             return true;
         }

@@ -43,13 +43,12 @@
                 'root'            => dirname(dirname(__DIR__)),
                 'librarys'        => '${app.path.root}${SP}librarys',
                 'resource'        => '${app.path.root}${SP}assets',
-                'error'           => '${app.path.resource}${SP}error',
                 'theme'           => '${app.path.resource}${SP}theme',
                 'icon'            => '${app.path.resource}${SP}icon',
                 'javascript'      => '${app.path.resource}${SP}javascript',
-                'template'        => '${app.path.resource}${SP}template',
                 'lang'            => '${app.path.resource}${SP}language',
                 'user'            => '${app.path.resource}${SP}user',
+                'token'           => '${app.path.resource}${SP}token',
                 'config'          => '${app.path.resource}${SP}config',
                 'define'          => '${app.path.resource}${SP}define',
                 'cache'           => '${app.path.resource}${SP}cache',
@@ -88,13 +87,12 @@
 
         'resource' => [
             'config' => [
-                'about'            => '${app.path.config}${SP}about.php',
-                'manager'          => '${app.path.config}${SP}manager.php',
-                'manager_disabled' => '${app.path.config}${SP}manager_disabled.php',
-                'user'             => '${app.path.config}${SP}user.php',
-                'user_token'       => '${app.path.config}${SP}user_token.php',
-                'mysql'            => '${app.path.config}${SP}mysql.php',
-                'upgrade'          => '${app.path.config}${SP}upgrade.php'
+                'about'       => '${app.path.config}${SP}about.php',
+                'manager'     => '${app.path.config}${SP}manager.php',
+                'manager_dis' => '${app.path.config}${SP}manager_dis.php',
+                'user'        => '${app.path.config}${SP}user.php',
+                'mysql'       => '${app.path.config}${SP}mysql.php',
+                'upgrade'     => '${app.path.config}${SP}upgrade.php'
             ],
 
             'define' => [

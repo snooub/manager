@@ -58,7 +58,7 @@
 
     // Get config user
     $appConfig->execute($appUser);
-    $appConfig->requireEnvProtected(env('resource.config.manager_disabled'));
+    $appConfig->requireEnvProtected(env('resource.config.manager_dis'));
 
     if ($boot->getCFSRToken()->validatePost() !== true) {
         trigger_error(lng('default.global.cfsr_not_validate'));
