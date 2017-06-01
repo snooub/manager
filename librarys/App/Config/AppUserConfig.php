@@ -20,7 +20,6 @@
         const ARRAY_KEY_LOGIN_AT  = 'login_at';
         const ARRAY_KEY_BAND_AT   = 'band_at';
         const ARRAY_KEY_BAND_OF   = 'band_of';
-        const ARRAY_KEY_TOKENS    = 'tokens';
 
         public function __construct(Boot $boot)
         {

@@ -42,29 +42,6 @@
         public function cleanToken()
         {
             global $appConfig;
-
-            $arrays = $this->config->getConfigArraySystem();
-
-            if (is_array($arrays) && count($arrays) > 0) {
-                $timeNow   = time();
-                $timeLogin = intval($appConfig->get('login.time_login', 86400));
-
-                if ($timeLogin <= 0)
-                    $timeLogin = 86400;
-
-                foreach ($arrays AS $id => $arrayUser) {
-                    if (is_array($arrayUser) && isset($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS]) && is_array($arrayUser[AppUserConfig::ARRAY_KEY_TOKENS])) {
-                        $tokens = $arrayUser[AppUserConfig::ARRAY_KEY_TOKENS];
-
-                        foreach ($tokens AS $token => $time) {
-                            if ($timeNow - $time >= $timeLogin)
-                                $this->config->removeSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $token);
-                        }
-                    }
-                }
-
-                $this->configWrite->write();
-            }
         }
 
         public function execute()
@@ -76,9 +53,9 @@
 
             $id     = addslashes($_SESSION[env('app.login.session_login_name')]);
             $token  = addslashes($_SESSION[env('app.login.session_token_name')]);
-            $tokens = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS);
+            $arrays = $this->config->getConfigArraySystem();
 
-            if (@is_array($tokens) && @isset($tokens[$token])) {
+            if (is_array($arrays) && isset($arrays[$id])) {
                 $this->id      = $id;
                 $this->token   = $token;
                 $this->isLogin = true;
@@ -179,9 +156,6 @@
             if (empty($id))
                 return false;
 
-            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $token, (string)$time) == false)
-                return false;
-
             if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false)
                     return false;
 
@@ -203,9 +177,6 @@
 
         public function exitSession()
         {
-            if ($this->id != null && $this->config->removeSystem($this->id . '.' . AppUserConfig::ARRAY_KEY_TOKENS . '.' . $this->token));
-                $this->configWrite->write();
-
             return @session_destroy();
         }
 

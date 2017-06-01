@@ -192,6 +192,8 @@
                         $this->buffer = FileInfo::fileReadContents($cacheFilepath);
                     }
                 }
+            } else if ($writeCache == false) {
+                return false;
             }
 
             header('ContentLength: ' . strlen($this->buffer));

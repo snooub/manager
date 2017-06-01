@@ -93,6 +93,7 @@
                 'manager'          => '${app.path.config}${SP}manager.php',
                 'manager_disabled' => '${app.path.config}${SP}manager_disabled.php',
                 'user'             => '${app.path.config}${SP}user.php',
+                'user_token'       => '${app.path.config}${SP}user_token.php',
                 'mysql'            => '${app.path.config}${SP}mysql.php',
                 'upgrade'          => '${app.path.config}${SP}upgrade.php'
             ],
@@ -130,6 +131,7 @@
                     'about'          => 'about.php',
                     'manager'        => 'manager.php',
                     'user'           => 'user.php',
+                    'user_token'     => 'user_token.php',
                     'mysql'          => 'mysql.php',
                     'upgrade'        => 'upgrade.php',
                     'env_theme'      => 'env.php',

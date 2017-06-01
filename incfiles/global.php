@@ -1,5 +1,7 @@
 <?php
 
+    $memoryUsageBegin = @memory_get_usage();
+
     if (defined('LOADED') == false)
         exit;
 

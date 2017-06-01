@@ -161,6 +161,16 @@
             return $this->isCustomHeader;
         }
 
+        public function getMemoryUsageBegin()
+        {
+            return $this->memoryUsageBegin;
+        }
+
+        public function getMemoryUsageEnd()
+        {
+            return $this->memoryUsageEnd;
+        }
+
         public static function isRunLocal()
         {
             $host = env('SERVER.HTTP_HOST');

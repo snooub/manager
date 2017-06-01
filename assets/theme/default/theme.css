@@ -614,9 +614,12 @@ div#footer {
     right: 0;
     margin: 0 auto;
     margin-top: 50px;
-    max-width: 150px;
+    max-width: 200px;
     padding: 15px;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div#footer::after {
@@ -629,9 +632,10 @@ div#footer::after {
     height: 1px;
 }
 
+div#footer,
 div#footer span {
     color: #c0c0c0;
-    font-size: 15px;
+    font-size: 14px;
     text-shadow: 1px 1px #ffffff;
 }
 
