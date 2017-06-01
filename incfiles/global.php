@@ -11,6 +11,8 @@
     if (defined('ROOT') == false)
         define('ROOT', '.');
 
+    define('PARAMETER_CHECK_CHANGE_CONFIG_URL', 'check_change_config');
+
     $directory = realpath(ROOT);
 
     require_once(
@@ -35,12 +37,20 @@
     else
         unset($ip);
 
-    $appChecker      = new Librarys\App\AppChecker          ($boot);
-    $appConfig       = new Librarys\App\Config\AppConfig    ($boot);
-    $appUser         = new Librarys\App\AppUser             ($boot);
-    $appAlert        = new Librarys\App\AppAlert            ($boot);
-    $appDirectory    = new Librarys\App\AppDirectory        ($boot);
-    $appMysqlConfig  = new Librarys\App\Mysql\AppMysqlConfig($boot);
+    use Librarys\App\AppUser;
+    use Librarys\App\AppAlert;
+    use Librarys\App\AppClean;
+    use Librarys\App\AppChecker;
+    use Librarys\App\AppDirectory;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\App\Mysql\AppMysqlConfig;
+
+    $appChecker      = new AppChecker    ($boot);
+    $appConfig       = new AppConfig     ($boot);
+    $appUser         = new AppUser       ($boot);
+    $appAlert        = new AppAlert      ($boot);
+    $appDirectory    = new AppDirectory  ($boot);
+    $appMysqlConfig  = new AppMysqlConfig($boot);
 
     unset($directory);
 
@@ -69,7 +79,34 @@
     $appDirectory->execute();
     $appMysqlConfig->execute($appUser);
 
-    Librarys\App\AppClean::scanAutoClean($appConfig);
+    $httpHostApp    = env('app.http.host');
+    $httpHostConfig = $appConfig->get('http_host');
+
+    if (strcmp($httpHostApp, $httpHostConfig) !== 0) {
+        if ($appConfig->setSystem('http_host', $httpHostApp) == false || $appConfig->write(true) == false)
+            die(lng('default.global.change_config_failed'));
+
+        if (isset($_GET[PARAMETER_CHECK_CHANGE_CONFIG_URL]))
+            die(lng('default.global.change_config_failed'));
+
+        if (AppClean::scanAutoClean(true))
+            gotoURL($httpHostApp . '?' . PARAMETER_CHECK_CHANGE_CONFIG_URL);
+    } else {
+        AppClean::scanAutoClean();
+
+        if (isset($_GET[PARAMETER_CHECK_CHANGE_CONFIG_URL]))
+            $appAlert->success(lng('default.global.change_config_success'), $appUser->isLogin() ? ALERT_INDEX : ALERT_USER_LOGIN, $httpHostApp);
+    }
+
+    if ($appUser->getConfig()->hasEntryConfigArraySystem() == false) {
+        $idAlert = ALERT_USER_LOGIN;
+        $urlGoto = $httpHostApp . '/user/login.php';
+
+        if ($appUser->createFirstUser())
+            $appAlert->success(lng('default.global.create_first_user_success', 'username', AppUser::USERNAME_CREATE_FIRST, 'password', AppUser::PASSWORD_CREATE_FIRST), $idAlert, $urlGoto);
+        else
+            $appAlert->danger(lng('default.global.create_first_user_failed'), $idAlert, $urlGoto);
+    }
 
     if (defined('DISABLE_CHECK_LOGIN') == false) {
         if ($appUser->isLogin() == false)
@@ -77,5 +114,8 @@
         else if ($appUser->isUserBand())
             $appAlert->danger(lng('user.login.alert.user_is_band'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
     }
+
+    unset($httpHostApp);
+    unset($httpHostConfig);
 
 ?>
