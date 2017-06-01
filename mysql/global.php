@@ -57,16 +57,13 @@
         }
 
         if ($appMysqlConnect->openConnect(false) == false) {
-            if ($appMysqlConnect->isDatabaseNameCustom()) {
+            if ($appMysqlConnect->isDatabaseNameCustom())
                 $appAlert->danger(lng('mysql.home.alert.mysql_connect_database_name_failed', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, env('app.http.host') . '/mysql/list_database.php');
-            } else if (defined('MYSQL_HOME') && strtolower($_SERVER['REQUEST_METHOD']) == 'get') {
+            else if (defined('MYSQL_HOME') && strtolower($_SERVER['REQUEST_METHOD']) == 'get')
                 $appAlert->danger(lng('mysql.home.alert.mysql_connect_failed', 'error', $appMysqlConnect->errorConnect()), ALERT_MYSQL_HOME);
-            } else if (defined('MYSQL_HOME') == false) {
-                $boot->sleepFixHeaderRedirectUrl();
+            else if (defined('MYSQL_HOME') == false)
                 $appAlert->danger(lng('mysql.home.alert.mysql_connect_failed', 'error', $appMysqlConnect->errorConnect()), ALERT_MYSQL_HOME, env('app.http.host') . '/mysql');
-            }
         } else if (defined('MYSQL_HOME')) {
-            $boot->sleepFixHeaderRedirectUrl();
             $appAlert->info(lng('mysql.home.alert.mysql_is_already_connect'), $idAlertMysql, $urlRedirectMysql);
         }
 
