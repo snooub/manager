@@ -179,8 +179,8 @@
                 if ($i >= $nameSplitsCount - 1) {
                     $configArray[$nameEntry] = $value;
                 } else {
-                    if (isset($configArray[$nameEntry]) == false)
-                        $configArray[$nameEntry] = [];
+                    if (array_key_exists(trim($nameEntry), $configArray) == false)
+                        array_push($configArray, array());
 
                     $configArray = &$configArray[$nameEntry];
                 }
@@ -235,7 +235,6 @@
                         $configArray[$nameEntry] = [];
 
                     $configArray = &$configArray[$nameEntry];
-                    bug($configArray);
                 }
             }
 
