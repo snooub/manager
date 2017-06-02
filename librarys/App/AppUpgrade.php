@@ -282,9 +282,19 @@
 
         private function installEnd($logHandle, $fileUpdatePath)
         {
+            $updateScriptPath   = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_UPDATE_SCRIPT_FILENAME);
             $changelogFilePath  = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME);
             $readmeFilePath     = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME);
             $resourceDirectory  = env('app.path.resource');
+
+            if (FileInfo::isTypeFile($updateScriptPath)) {
+                FileInfo::fileWrite($logHandle, "Info: Run update script begin\n");
+
+                require_once($updateScriptPath);
+
+                FileInfo::unlink($updateScriptPath);
+                FileInfo::fileWrite($logHandle, "Info: Run update script end\n");
+            }
 
             FileInfo::fileWrite($logHandle, "Info: Clone and remove file update begin\n");
 
