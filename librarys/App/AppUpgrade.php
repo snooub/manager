@@ -330,6 +330,7 @@
                 FileInfo::fileWrite($logHandle, "Info: Install additional update success");
 
             FileInfo::fileClose($logHandle);
+            AppUpdate::cleanUpgrade();
 
             return true;
         }
