@@ -250,7 +250,7 @@
                 return false;
 
             $logHandle          = FileInfo::fileOpen(AppUpdate::getPathFileUpgrade(self::LOG_FILENAME_ADDITIONAL), 'wa+');
-            $additionalFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
+            $additionalFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_ADDITIONAL_FILENAME);
             $pclZip             = new PclZip($additionalFilePath);
             $appPath            = env('app.path.root');
 

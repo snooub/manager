@@ -110,6 +110,8 @@
             if (is_array($this->servers) == false)
                 return false;
 
+            self::cleanUpgrade();
+
             $languageCurrent = 'en';
             $countSuccess    = count($this->servers);
             $appParameter    = new AppParameter();
@@ -427,6 +429,8 @@
         public static function cleanUpgrade()
         {
             $files = [
+                env('resource.config.upgrade'),
+
                 self::getPathFileUpgrade(self::VERSION_BIN_FILENAME),
                 self::getPathFileUpgrade(self::VERSION_ADDITIONAL_FILENAME),
                 self::getPathFileUpgrade(self::VERSION_CHANGELOG_FILENAME),
