@@ -319,6 +319,7 @@
 
             $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_VERSION,    $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION));
             $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT,   $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT));
+            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_BUILD_AT,   $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_BUILD_LAST));
             $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_UPGRADE_AT, time());
             $this->appAboutConfig->write();
 

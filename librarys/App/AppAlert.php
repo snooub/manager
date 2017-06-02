@@ -8,6 +8,9 @@
     use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\App\AppUser;
+    use Librarys\App\AppUpdate;
+    use Librarys\App\AppUpgrade;
+    use Librarys\App\Config\AppAboutConfig;
 
     final class AppAlert
     {
@@ -77,10 +80,42 @@
 
         public function display()
         {
-            global $appUser;
+            global $appUser, $appConfig;
 
             if ($appUser->checkUserIsUsePasswordDefault())
                 $this->warning(lng('home.alert.password_user_is_equal_default', 'time', AppUser::TIME_SHOW_WARNING_PASSWORD_DEFAULT));
+
+            if (defined('DISABLE_ALERT_HAS_UPDATE') == false && $this->hasAlertDisplay() == false && $appConfig->get('check_update.enable', false) == true) {
+                $appAboutConfig = new AppAboutConfig($this->boot);
+                $timeCurrent    = time();
+                $timeShow       = 300;
+                $timeCheck      = $appConfig->get('check_update.time', 86400);
+                $checkLast      = $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT, $timeCurrent);
+
+                if ($timeCurrent - $checkLast >= $timeCheck) {
+                    $appUpdate = new AppUpdate($this->boot, $appAboutConfig);
+
+                    if ($appUpdate->checkUpdate() === true) {
+                        $updateStatus = $appUpdate->getUpdateStatus();
+
+                        if ($updateStatus === AppUpdate::RESULT_VERSION_IS_OLD)
+                            $this->success(lng('app.check_update.alert.version_is_old', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpdate->getVersionUpdate()));
+                        else if ($updateStatus === AppUpdate::RESULT_HAS_ADDITIONAL)
+                            $this->success(lng('app.check_update.alert.has_additional', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                        else
+                            $this->info(lng('app.check_update.alert.version_is_latest', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                    }
+                } else {
+                    $appUpgrade = new AppUpgrade($this->boot, $appAboutConfig);
+
+                    if ($appUpgrade->checkHasUpgradeLocal()) {
+                        if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
+                            $this->success(lng('app.check_update.alert.version_is_old', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+                        else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
+                            $this->success(lng('app.check_update.alert.has_additional', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                    }
+                }
+            }
 
             if ($this->id != null && isset($_SESSION[self::SESSION_NAME_PREFIX . $this->id]) && count($_SESSION[self::SESSION_NAME_PREFIX . $this->id]) > 0) {
                 $array  = $_SESSION[self::SESSION_NAME_PREFIX . $this->id];

@@ -5,8 +5,9 @@
     use Librarys\App\AppUpgrade;
     use Librarys\File\FileCurl;
 
-    define('LOADED',              1);
-    define('PARAMETER_CHECK_URL', 'check');
+    define('LOADED',                   1);
+    define('DISABLE_ALERT_HAS_UPDATE', 1);
+    define('PARAMETER_CHECK_URL',      'check');
 
     require_once('global.php');
 
@@ -94,9 +95,12 @@
                 $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
         }
 
-        //gotoURL('check_update.php');
+        gotoURL('check_update.php');
     } else if ($hasUpgrade && $appAlert->hasAlertDisplay() == false) {
-        $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+        if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
+            $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+        else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
+            $appAlert->success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
     }
 ?>
 
@@ -112,6 +116,7 @@
                 <ul>
                     <li><span><?php echo lng('app.check_update.info.label.last_check_update'); ?></span></li>
                     <li><span><?php echo lng('app.check_update.info.label.last_upgrade'); ?></span></li>
+                    <li><span><?php echo lng('app.check_update.info.label.last_build'); ?></span></li>
                     <li><span><?php echo lng('app.check_update.info.label.version_current'); ?></span></li>
 
                     <?php if (is_array($servers)) { ?>
@@ -127,16 +132,18 @@
                     <?php if ($config->get(AppAboutConfig::ARRAY_KEY_CHECK_AT) <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_check_update'); ?></span></li>
                     <?php } else { ?>
-                        <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get('check_at'))); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get(AppAboutConfig::ARRAY_KEY_CHECK_AT))); ?></span></li>
                     <?php } ?>
 
                     <?php if ($config->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT) <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_upgrade'); ?></span></li>
                     <?php } else { ?>
-                        <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get('upgrade_at'))); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT))); ?></span></li>
                     <?php } ?>
 
-                    <li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_VERSION); ?> <?php if ($config->get('is_beta')) echo 'beta'; ?></span></li>
+                    <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get(AppAboutConfig::ARRAY_KEY_BUILD_AT))); ?></span></li>
+
+                    <li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_VERSION); ?> <?php if ($config->get(AppAboutConfig::ARRAY_KEY_IS_BETA)) echo 'beta'; ?></span></li>
 
                     <?php if (is_array($servers)) { ?>
                         <?php foreach ($servers AS $server) { ?>

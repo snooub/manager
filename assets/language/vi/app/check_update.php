@@ -10,6 +10,7 @@
             'label' => [
                 'last_check_update' => 'Thời gian kiểm tra cuối:',
                 'last_upgrade'      => 'Thời gian nâng cấp cuối:',
+                'last_build'        => 'Thời gian đóng gói cuối:',
                 'version_current'   => 'Phiên bản hiện tại:',
                 'server_check'      => 'Địa chỉ máy chủ kiểm tra ({$index}):'
             ],
@@ -52,9 +53,9 @@
             'error_md5_bin_check'                       => 'Dữ liệu nâng cấp tải về từ địa chỉ <strong>{$url}</strong> bị lỗi không khớp với mã md5',
             'error_md5_additional_update_check'         => 'Dữ liệu gói cài đặt bổ sung tải về từ địa chỉ <strong>{$url}</strong> bị lỗi không khớp với mã md5',
             'error_unknown'                             => 'Không rõ lỗi cho địa chỉ <strong>{$url}</strong>',
-            'version_is_old'                            => 'Phiên bản <strong>{$version_current}</strong> hiện tại đã cũ, đã có phiên bản mới <strong>{$version_update}</strong> đã tải về cập nhật, bạn hãy nhấn nâng cấp để lên phiên bản mới',
-            'version_is_latest'                         => 'Phiên bản <strong>{$version_current}</strong> hiện tại là mới nhất',
-            'has_additional'                            => 'Phiên bản <strong>{$version_current}</strong> có một gói cài đặt bổ sung, đã tải về bạn hãy nhấn nâng cấp để cập nhật gói bổ sung'
+            'version_is_old'                            => 'Phiên bản <strong>{$version_current}</strong> hiện tại đã cũ, đã có phiên bản mới <strong>{$version_update}</strong> đã tải về cập nhật, bạn hãy nhấn cài đặt gói nâng cấp để lên phiên bản mới',
+            'version_is_latest'                         => 'Phiên bản <strong>{$version_current}</strong> hiện tại của bạn là mới nhất và cũng không có gói cài đặt bổ sung nào mới',
+            'has_additional'                            => 'Phiên bản <strong>{$version_current}</strong> có một gói cài đặt bổ sung, đã tải về bạn hãy nhấn cài đặt gói bổ sung để cập nhật gói bổ sung mới nhất'
         ]
     ];
 

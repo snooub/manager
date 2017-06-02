@@ -3,8 +3,9 @@
     use Librarys\App\Config\AppAboutConfig;
     use Librarys\App\AppUpgrade;
 
-    define('LOADED',              1);
-    define('DISABLE_CHECK_LOGIN', 1);
+    define('LOADED',                   1);
+    define('DISABLE_CHECK_LOGIN',      1);
+    define('DISABLE_ALERT_HAS_UPDATE', 1);
 
     require_once('global.php');
 
@@ -16,8 +17,12 @@
     $appAlert->setID(ALERT_APP_ABOUT);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
-    if ($hasUpgrade && $appAlert->hasAlertDisplay() == false)
-        $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get('version'), 'version_update', $appUpgrade->getVersionUpgrade()));
+    if ($hasUpgrade && $appAlert->hasAlertDisplay() == false) {
+        if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
+            $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+        else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
+            $appAlert->success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+    }
 
 ?>
 
@@ -37,6 +42,7 @@
         			<li><span><?php echo lng('app.about.info.label.create_at'); ?></span></li>
                     <li><span><?php echo lng('app.about.info.label.check_at'); ?></span></li>
                     <li><span><?php echo lng('app.about.info.label.upgrade_at'); ?></span></li>
+                    <li><span><?php echo lng('app.about.info.label.build_at'); ?></span></li>
     		</ul>
         	</li>
         	<li class="value">
@@ -60,6 +66,8 @@
                     <?php } else { ?>
                         <li><span><?php echo date('d.m.Y - H:i:s', $config->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT)); ?></span></li>
                     <?php } ?>
+
+                    <li><span><?php echo date('d.m.Y - H:i:s', $config->get(AppAboutConfig::ARRAY_KEY_BUILD_AT)); ?></span></li>
         		</ul>
         	</li>
         </ul>

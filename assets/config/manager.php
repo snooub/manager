@@ -60,7 +60,14 @@
             'directory' => 'default',
         ],
 
+        'check_update' => [
+            'enable' => true,
+            'time'   => 86400
+        ],
+
         'language' => 'vi',
+
+
         'http_host' => 'http://izerocs.mobi/Manager',
     ];
 

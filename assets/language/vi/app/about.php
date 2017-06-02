@@ -16,7 +16,8 @@
 				'phone'      => 'Số điện thoại:',
 				'create_at'  => 'Tạo ngày:',
                 'upgrade_at' => 'Nâng cấp ngày:',
-                'check_at'   => 'Kiểm tra ngày:'
+                'check_at'   => 'Kiểm tra ngày:',
+                'build_at'   => 'Đóng gói ngày:'
 			]
 		],
 

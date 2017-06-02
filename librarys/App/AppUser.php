@@ -38,7 +38,7 @@
         const USERNAME_CREATE_FIRST = 'Admin';
         const PASSWORD_CREATE_FIRST = '12345';
 
-        const TIME_SHOW_WARNING_PASSWORD_DEFAULT = 30;
+        const TIME_SHOW_WARNING_PASSWORD_DEFAULT = 10;
 
         public function __construct(Boot $boot)
         {
