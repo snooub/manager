@@ -49,8 +49,13 @@
                 $appAlert->danger(lng('app.upgrade_app.alert.error_upgrade_not_list_file_app'));
             else
                 $appAlert->danger(lng('app.upgrade_app.alert.error_unknown'));
-        } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) {
-
+        } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL && $appUpgrade->installAdditionalNow(false, $errorZipExtract) == false) {
+            if ($errorZipExtract === AppUpgrade::ERROR_ZIP_NOT_OPEN_FILE_ADDITIONAL)
+                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_not_open_file_additional'));
+            else if ($errorZipExtract === AppUpgrade::ERROR_ZIP_EXTRACT_FILE_ADDITIONAL)
+                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_extract_file_additional'));
+            else
+                $appAlert->danger(lng('app.upgrade_app.alert.error_unknown'));
         } else {
             $appAlert->success(lng('app.upgrade_app.alert.upgrade_app_success', 'version', $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         }
