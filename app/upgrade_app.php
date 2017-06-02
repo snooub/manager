@@ -59,7 +59,7 @@
         } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) {
             $appAlert->success(lng('app.upgrade_app.alert.install_upgrade_app_success', 'version', $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) {
-            $appAlert->success(lng('app.upgrade_app.alert.install_additional_app_success', 'version'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+            $appAlert->success(lng('app.upgrade_app.alert.install_additional_app_success', 'version', $appUpgrade->getAppAboutConfig()->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         }
     }
 ?>

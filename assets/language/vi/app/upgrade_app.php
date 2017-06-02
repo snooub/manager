@@ -35,7 +35,8 @@
             'error_zip_extract_file_upgrade'                         => 'Giải nén tập tin nâng cấp thất bại',
             'error_upgrade_not_list_file_app'                        => 'Quét danh sách tập tin ứng dụng thất bại',
             'error_unknown'                                          => 'Lỗi không xác định',
-            'upgrade_app_success'                  => 'Nâng cấp lên phiên bản <strong>{$version}</strong> thành công'
+            'install_upgrade_app_success'                            => 'Cài đặt gói nâng cấp lên phiên bản <strong>{$version}</strong> thành công',
+            'install_additional_app_success'                         => 'Cài đặt gói bổ sung cho phiên bản <strong>{$version}</strong> thành công'
         ]
     ];
 
