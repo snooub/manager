@@ -6,8 +6,9 @@
     use Librarys\File\FileInfo;
     use Librarys\Parse\MarkdownParse;
 
-    define('LOADED',                1);
-    define('PARAMETER_INSTALL_URL', 'install');
+    define('LOADED',                   1);
+    define('DISABLE_ALERT_HAS_UPDATE', 1);
+    define('PARAMETER_INSTALL_URL',    'install');
 
     require_once('global.php');
 
