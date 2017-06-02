@@ -23,8 +23,10 @@
 
         private $jsonArray;
         private $updateStatus;
+        private $updateType;
 
         const PARAMETER_VERSION_GUEST_URL  = 'version_guest';
+        const PARAMETER_VERSION_BUILD_URL  = 'version_build_guest';
         const PARAMETER_LANGUAGE_GUEST_URL = 'language_guest';
 
         const ARRAY_KEY_URL              = 'url';
@@ -34,20 +36,24 @@
         const ARRAY_KEY_ERROR_SERVER     = 'error_server';
         const ARRAY_KEY_ERROR_WRITE_INFO = 'error_write_info';
 
-        const ARRAY_DATA_KEY_SERVER_NAME        = 'server_name';
-        const ARRAY_DATA_KEY_VERSION            = 'version';
-        const ARRAY_DATA_KEY_IS_BETA            = 'is_beta';
-        const ARRAY_DATA_KEY_CHANGELOG          = 'changelog';
-        const ARRAY_DATA_KEY_README             = 'readme';
-        const ARRAY_DATA_KEY_BUILD_LAST         = 'build_last';
-        const ARRAY_DATA_KEY_DATA_UPGRADE       = 'data_upgrade';
-        const ARRAY_DATA_KEY_MD5_BIN_CHECK      = 'md5_bin_check';
-        const ARRAY_DATA_KEY_ENTRY_IGONE_REMOVE = 'entry_igone_remove';
-        const ARRAY_DATA_KEY_ERROR_INT          = 'error_int';
+        const ARRAY_DATA_KEY_SERVER_NAME          = 'server_name';
+        const ARRAY_DATA_KEY_VERSION              = 'version';
+        const ARRAY_DATA_KEY_IS_BETA              = 'is_beta';
+        const ARRAY_DATA_KEY_CHANGELOG            = 'changelog';
+        const ARRAY_DATA_KEY_README               = 'readme';
+        const ARRAY_DATA_KEY_BUILD_LAST           = 'build_last';
+        const ARRAY_DATA_KEY_DATA_UPGRADE         = 'data_upgrade';
+        const ARRAY_DATA_KEY_ADDITIONAL_UPDATE    = 'additional_update';
+        const ARRAY_DATA_KEY_UPDATE_SCRIPT        = 'update_script';
+        const ARRAY_DATA_KEY_MD5_BIN_CHECK        = 'md5_bin_check';
+        const ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK = 'md5_additional_check';
+        const ARRAY_DATA_KEY_ENTRY_IGONE_REMOVE   = 'entry_igone_remove';
+        const ARRAY_DATA_KEY_ERROR_INT            = 'error_int';
 
         const RESULT_NONE              = 0;
         const RESULT_VERSION_IS_LATEST = 1;
         const RESULT_VERSION_IS_OLD    = 2;
+        const RESULT_HAS_ADDITIONAL    = 3;
 
         const ERROR_CHECK_NONE                   = 0;
         const ERROR_CHECK_JSON_DATA              = 1;
@@ -56,21 +62,34 @@
         const ERROR_SERVER_NONE                                = 0;
         const ERROR_SERVER_NOT_FOUND_LIST_VERSION_IN_SERVER    = 1;
         const ERROR_SERVER_NOT_FOUND_PARAMETER_VERSION_GUEST   = 2;
-        const ERROR_SERVER_VERSION_GUEST_NOT_VALIDATE          = 3;
-        const ERROR_SERVER_VERSION_SERVER_NOT_VALIDATE         = 4;
-        const ERROR_SERVER_NOT_FOUND_VERSION_CURRENT_IN_SERVER = 5;
+        const ERROR_SERVER_NOT_FOUND_PARAMETER_VERSION_BUILD   = 3;
+        const ERROR_SERVER_VERSION_GUEST_NOT_VALIDATE          = 4;
+        const ERROR_SERVER_VERSION_SERVER_NOT_VALIDATE         = 5;
+        const ERROR_SERVER_NOT_FOUND_VERSION_CURRENT_IN_SERVER = 6;
 
-        const ERROR_WRITE_INFO_NONE         = 0;
-        const ERROR_WRITE_INFO_FAILED       = 1;
-        const ERROR_MKDIR_SAVE_DATA_UPGRADE = 2;
-        const ERROR_DECODE_COMPRESS_DATA    = 3;
-        const ERROR_WRITE_DATA_UPGRADE      = 4;
-        const ERROR_MD5_BIN_CHECK           = 5;
+        const ERROR_WRITE_INFO_NONE                    = 0;
+        const ERROR_WRITE_INFO_FAILED                  = 1;
+        const ERROR_MKDIR_SAVE_DATA_UPGRADE            = 2;
+        const ERROR_DECODE_COMPRESS_DATA               = 3;
+        const ERROR_DECODE_COMPRESS_ADDITIONAL_UPDATE  = 4;
+        const ERROR_DECODE_COMPRESS_UPDATE_SCRIPT      = 5;
+        const ERROR_WRITE_DATA_UPGRADE                 = 6;
+        const ERROR_WRITE_ADDITIONAL_UPDATE            = 7;
+        const ERROR_WRITE_UPDATE_SCRIPT                = 8;
+        const ERROR_MD5_BIN_CHECK                      = 9;
+        const ERROR_MD5_ADDITIONAL_UPDATE_CHECK        = 10;
+        const ERROR_WRITE_UNKNOWN                      = 11;
 
-        const VERSION_BIN_FILENAME       = 'bin.zip';
-        const VERSION_BIN_MD5_FILENAME   = 'bin.zip.md5';
-        const VERSION_CHANGELOG_FILENAME = 'changelog.md';
-        const VERSION_README_FILENAME    = 'readme.md';
+        const VERSION_BIN_FILENAME            = 'bin.zip';
+        const VERSION_ADDITIONAL_FILENAME     = 'additional.zip';
+        const VERSION_BIN_MD5_FILENAME        = 'bin.zip.md5';
+        const VERSION_ADDITIONAL_MD5_FILENAME = 'additional.zip.md5';
+        const VERSION_CHANGELOG_FILENAME      = 'changelog.md';
+        const VERSION_README_FILENAME         = 'readme.md';
+        const VERSION_UPDATE_SCRIPT_FILENAME  = 'update.script';
+
+        const TYPE_BIN_UPGRDAE    = 1;
+        const TYPE_BIN_ADDITIONAL = 2;
 
         public function __construct(Boot $boot, AppAboutConfig $about)
         {
@@ -98,7 +117,8 @@
             if ($appConfig != null)
                 $languageCurrent = $appConfig->get('language');
 
-            $appParameter->add(self::PARAMETER_VERSION_GUEST_URL,  AppDirectory::rawEncode($this->aboutConfig->get('version')));
+            $appParameter->add(self::PARAMETER_VERSION_GUEST_URL,  AppDirectory::rawEncode($this->aboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+            $appParameter->add(self::PARAMETER_VERSION_BUILD_URL,  AppDirectory::rawEncode($this->aboutConfig->get(AppAboutConfig::ARRAY_KEY_BUILD_AT)));
             $appParameter->add(self::PARAMETER_LANGUAGE_GUEST_URL, AppDirectory::rawEncode($languageCurrent));
 
             foreach ($this->servers AS $server) {
@@ -154,11 +174,15 @@
 
             $this->updateStatus = self::RESULT_NONE;
 
-            $versionCurrent = $this->aboutConfig->get('version');
+            $buildAt        = intval($this->aboutConfig->get(AppAboutConfig::ARRAY_KEY_BUILD_AT));
+            $versionCurrent = $this->aboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION);
             $versionUpdate  = $this->getVersionUpdate();
+            $buildUpdate    = intval($this->getBuildUpdate());
 
             if (self::versionCurrentIsOld($versionCurrent, $versionUpdate))
                 $this->updateStatus = self::RESULT_VERSION_IS_OLD;
+            else if ($buildUpdate > $buildAt)
+                $this->updateStatus = self::RESULT_HAS_ADDITIONAL;
             else
                 $this->updateStatus = self::RESULT_VERSION_IS_LATEST;
 
@@ -167,18 +191,21 @@
 
         private function makeFileUpdateInfo(&$errorWriteInfo = null)
         {
-            if ($this->updateStatus == self::RESULT_VERSION_IS_LATEST)
+            if ($this->updateStatus === self::RESULT_VERSION_IS_LATEST && $this->updateStatus !== self::RESULT_HAS_ADDITIONAL)
                 return true;
 
             $appUpgradeConfig = new AppUpgradeConfig($this->boot);
 
             foreach ($this->jsonArray AS $key => $value) {
                 if (
-                        $key !== self::ARRAY_DATA_KEY_DATA_UPGRADE &&
-                        $key !== self::ARRAY_DATA_KEY_CHANGELOG    &&
-                        $key !== self::ARRAY_DATA_KEY_README       &&
+                        $key !== self::ARRAY_DATA_KEY_DATA_UPGRADE      &&
+                        $key !== self::ARRAY_DATA_KEY_ADDITIONAL_UPDATE &&
+                        $key !== self::ARRAY_DATA_KEY_CHANGELOG         &&
+                        $key !== self::ARRAY_DATA_KEY_README            &&
+                        $key !== self::ARRAY_DATA_KEY_UPDATE_SCRIPT     &&
+                        $key !== self::ARRAY_DATA_KEY_ERROR_INT         &&
 
-                        $appUpgradeConfig->set($key, $value) == false
+                        $appUpgradeConfig->setSystem($key, $value) == false
                     )
                 {
                     $errorWriteInfo = self::ERROR_WRITE_INFO_FAILED;
@@ -198,22 +225,50 @@
                 return false;
             }
 
-            $binFilePath       = self::getPathFileUpgrade(self::VERSION_BIN_FILENAME);
-            $changelogFilePath = self::getPathFileUpgrade(self::VERSION_CHANGELOG_FILENAME);
-            $readmeFilePath    = self::getPathFileUpgrade(self::VERSION_README_FILENAME);
+            $binFilePath          = self::getPathFileUpgrade(self::VERSION_BIN_FILENAME);
+            $additionFilePath     = self::getPathFileUpgrade(self::VERSION_ADDITIONAL_FILENAME);
+            $changelogFilePath    = self::getPathFileUpgrade(self::VERSION_CHANGELOG_FILENAME);
+            $readmeFilePath       = self::getPathFileUpgrade(self::VERSION_README_FILENAME);
+            $updateScriptFilePath = self::getPathFileUpgrade(self::VERSION_UPDATE_SCRIPT_FILENAME);
 
-            $binFileBuffer       = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_DATA_UPGRADE));
-            $changelogFileBuffer = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_CHANGELOG));
-            $readmeFileBuffer    = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_README));
+            $binFileBuffer          = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_DATA_UPGRADE));
+            $additionalFileBuffer   = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_ADDITIONAL_UPDATE));
+            $changelogFileBuffer    = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_CHANGELOG));
+            $readmeFileBuffer       = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_README));
+            $updateScriptFileBuffer = self::decodeCompress($this->getJsonArrayValue(self::ARRAY_DATA_KEY_UPDATE_SCRIPT));
 
-            if ($binFileBuffer === false) {
-                $errorWriteInfo = self::ERROR_DECODE_COMPRESS_DATA;
+            if ($this->updateStatus === self::RESULT_VERSION_IS_OLD) {
+                if ($binFileBuffer === false) {
+                    $errorWriteInfo = self::ERROR_DECODE_COMPRESS_DATA;
+                    return false;
+                } else if (FileInfo::fileWriteContents($binFilePath, $binFileBuffer) == false) {
+                    $errorWriteInfo = self::ERROR_WRITE_DATA_UPGRADE;
+                    return false;
+                } else if (strcmp(@md5_file($binFilePath), $this->getJsonArrayValue(self::ARRAY_DATA_KEY_MD5_BIN_CHECK)) !== 0) {
+                    $errorWriteInfo = self::ERROR_MD5_BIN_CHECK;
+                    return false;
+                }
+            } else if ($this->updateStatus === self::RESULT_HAS_ADDITIONAL) {
+                if ($additionalFileBuffer === false) {
+                    $errorWriteInfo = self::ERROR_DECODE_COMPRESS_ADDITIONAL_UPDATE;
+                    return false;
+                } else if (FileInfo::fileWriteContents($additionFilePath, $additionalFileBuffer) == false) {
+                    $errorWriteInfo = self::ERROR_WRITE_ADDITIONAL_UPDATE;
+                    return false;
+                } else if (strcmp(@md5_file($additionFilePath), $this->getJsonArrayValue(self::ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK)) !== 0) {
+                    $errorWriteInfo = self::ERROR_MD5_ADDITIONAL_UPDATE_CHECK;
+                    return false;
+                }
+            } else {
+                $errorWriteInfo = self::ERROR_WRITE_UNKNOWN;
                 return false;
-            } else if (FileInfo::fileWriteContents($binFilePath, $binFileBuffer) == false) {
-                $errorWriteInfo = self::ERROR_WRITE_DATA_UPGRADE;
+            }
+
+            if ($updateScriptFileBuffer === false) {
+                $errorWriteInfo = self::ERROR_DECODE_COMPRESS_UPDATE_SCRIPT;
                 return false;
-            } else if (strcmp(@md5_file($binFilePath), $this->getJsonArrayValue(self::ARRAY_DATA_KEY_MD5_BIN_CHECK)) !== 0) {
-                $errorWriteInfo = self::ERROR_MD5_BIN_CHECK;
+            } else if (FileInfo::fileWriteContents($updateScriptFilePath, $updateScriptFileBuffer) == false) {
+                $errorWriteInfo = self::ERROR_WRITE_UPDATE_SCRIPT;
                 return false;
             }
 
@@ -279,6 +334,11 @@
             return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_VERSION);
         }
 
+        public function getBuildUpdate()
+        {
+            return $this->getJsonArrayValue(self::ARRAY_DATA_KEY_BUILD_LAST);
+        }
+
         public static function getPathFileUpgrade($filenameEntry, $pathDirectorysCustom = null)
         {
             if ($pathDirectorysCustom !== null)
@@ -302,7 +362,10 @@
                 self::ARRAY_DATA_KEY_README,
                 self::ARRAY_DATA_KEY_BUILD_LAST,
                 self::ARRAY_DATA_KEY_DATA_UPGRADE,
+                self::ARRAY_DATA_KEY_ADDITIONAL_UPDATE,
+                self::ARRAY_DATA_KEY_UPDATE_SCRIPT,
                 self::ARRAY_DATA_KEY_MD5_BIN_CHECK,
+                self::ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK,
                 self::ARRAY_DATA_KEY_ENTRY_IGONE_REMOVE
             ];
 
@@ -359,6 +422,22 @@
             }
 
             return false;
+        }
+
+        public static function cleanUpgrade()
+        {
+            $files = [
+                self::getPathFileUpgrade(self::VERSION_BIN_FILENAME),
+                self::getPathFileUpgrade(self::VERSION_ADDITIONAL_FILENAME),
+                self::getPathFileUpgrade(self::VERSION_CHANGELOG_FILENAME),
+                self::getPathFileUpgrade(self::VERSION_README_FILENAME),
+                self::getPathFileUpgrade(self::VERSION_UPDATE_SCRIPT_FILENAME)
+            ];
+
+            foreach ($files AS $path) {
+                if (FileInfo::isTypeFile($path))
+                    FileInfo::unlink($path);
+            }
         }
 
     }

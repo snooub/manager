@@ -18,20 +18,28 @@
         private $appAboutConfig;
         private $appUpgradeConfig;
         private $isHasUpgradeLocal;
+        private $typeBinInstall;
 
-        const LOG_FILENAME_UPGRADE = 'upgrade.log';
+        const LOG_FILENAME_UPGRADE    = 'upgrade.log';
+        const LOG_FILENAME_ADDITIONAL = 'additional.log';
 
-        const ERROR_ZIP_NONE     = 0;
-        const ERROR_ZIP_NOT_OPEN = 1;
-        const ERROR_ZIP_EXTRACT  = 2;
+        const ERROR_ZIP_NOT_OPEN_FILE_UPGRADE    = 1;
+        const ERROR_ZIP_EXTRACT_FILE_UPGRADE     = 2;
+        const ERROR_ZIP_NOT_OPEN_FILE_ADDITIONAL = 3;
+        const ERROR_ZIP_EXTRACT_FILE_ADDITIONAL  = 4;
 
-        const ERROR_UPGRADE_NONE             = 0;
         const ERROR_UPGRADE_NOT_LIST_FILE_APP = 1;
 
-        const ERROR_CHECK_UPGRADE_NONE             = 0;
-        const ERROR_CHECK_UPGRADE_FILE_NOT_FOUND   = 1;
-        const ERROR_CHECK_UPGRADE_FILE_DATA_ERROR  = 2;
-        const ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED = 3;
+        const ERROR_CHECK_UPGRADE_NONE                               = 0;
+        const ERROR_CHECK_UPGRADE_FILE_NOT_FOUND                     = 1;
+        const ERROR_CHECK_UPGRADE_ADDITIONAL_UPDATE_NOT_FOUND        = 2;
+        const ERROR_CHECK_UPGRADE_FILE_DATA_ERROR                    = 3;
+        const ERROR_CHECK_UPGRADE_FILE_DATA_ADDITIONAL_UPDATE_ERROR  = 4;
+        const ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED                   = 5;
+        const ERROR_CHECK_UPGRADE_MD5_ADDITIONAL_UPDATE_CHECK_FAILED = 6;
+
+        const TYPE_BIN_INSTALL_UPGRADE    = 1;
+        const TYPE_BIN_INSTALL_ADDITIONAL = 2;
 
         public function __construct(Boot $boot, $appAboutConfig = null, $appUpgradeConfig = null)
         {
@@ -50,48 +58,72 @@
 
         public function checkHasUpgradeLocal(&$errorCheckUpgrade = null)
         {
-            $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_NONE;
-
             if ($this->appUpgradeConfig->hasEntryConfigArrayAny() == false)
                 return false;
 
             $versionUpdate  = $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION);
-            $versionCurrent = $this->appAboutConfig->get('version');
+            $versionCurrent = $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION);
+            $buildUpdate    = $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_BUILD_LAST);
+            $buildCurrent   = $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_BUILD_AT);
 
             if (AppUpdate::validateVersionValue($versionCurrent, $versionCurrentMatches) == false)
                 return false;
 
             if (AppUpdate::validateVersionValue($versionUpdate, $versionUpdateMatches) == false) {
-                if (FileInfo::fileExists($this->appUpgradeConfig->getPathConfigSystem()))
+                if (FileInfo::fileExists($this->appUpgradeConfig->getPathConfigSystem())) {
+                    AppUpdate::cleanUpgrade();
                     FileInfo::unlink($this->appUpgradeConfig->getPathConfigSystem());
+                }
 
                 return false;
             }
 
-            $binFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
+            if (AppUpdate::versionCurrentIsOld($versionCurrent, $versionUpdate)) {
+                $binFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
 
-            if (FileInfo::isTypeFile($binFilePath) == false) {
-                $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_FILE_NOT_FOUND;
-                return false;
-            }
+                if (FileInfo::isTypeFile($binFilePath) == false) {
+                    $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_FILE_NOT_FOUND;
+                    return false;
+                }
 
-            if (FileInfo::fileSize($binFilePath) <= 0) {
-                $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_FILE_DATA_ERROR;
-                return false;
-            }
+                if (FileInfo::fileSize($binFilePath) <= 0) {
+                    $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_FILE_DATA_ERROR;
+                    return false;
+                }
 
-            if ($this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK) !== @md5_file($binFilePath)) {
-                $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED;
-                return false;
-            }
+                if (strcmp($this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK), @md5_file($binFilePath)) !== 0) {
+                    $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED;
+                    return false;
+                }
 
-            if (AppUpdate::versionCurrentIsOLd($versionCurrentMatches, $versionUpdateMatches))
+                $this->typeBinInstall = self::TYPE_BIN_INSTALL_UPGRADE;
                 return true;
+            } else if ($buildUpdate > $buildCurrent) {
+                $additionalFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_ADDITIONAL_FILENAME);
+
+                if (FileInfo::isTypeFile($additionalFilePath) == false) {
+                    $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_FILE_ADDITIONAL_UPDATE_ERROR;
+                    return false;
+                }
+
+                if (FileInfo::fileSize($additionalFilePath) <= 0) {
+                    $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_FILE_DATA_ADDITIONAL_UPDATE_ERROR;
+                    return false;
+                }
+
+                if (strcmp($this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK), @md5_file($additionalFilePath)) !== 0) {
+                    $errorCheckUpgrade = self::ERROR_CHECK_UPGRADE_MD5_ADDITIONAL_UPDATE_CHECK_FAILED;
+                    return false;
+                }
+
+                $this->typeBinInstall = self::TYPE_BIN_INSTALL_ADDITIONAL;
+                return true;
+            }
 
             return false;
         }
 
-        public function upgradeNow($checkHasUpgradeLocal = false, &$errorZipExtract = null, &$errorUpgrade = null)
+        public function installUpgradeNow($checkHasUpgradeLocal = false, &$errorZipExtract = null, &$errorUpgrade = null)
         {
             if ($checkHasUpgradeLocal && $this->checkHasUpgradeLocal() == false)
                 return false;
@@ -100,13 +132,10 @@
             $binFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
             $pclZip      = new PclZip($binFilePath);
 
-            $errorZipExtract = self::ERROR_ZIP_NONE;
-            $errorUpgrade    = self::ERROR_UPGRADE_NONE;
-
-            FileInfo::fileWrite($logHandle, "Info: Open file zip begin\n");
+            FileInfo::fileWrite($logHandle, "Info: Open file upgrade zip begin\n");
 
             if ($pclZip === false) {
-                $errorZipExtract = self::ERROR_ZIP_NOT_OPEN;
+                $errorZipExtract = self::ERROR_ZIP_NOT_OPEN_FILE_UPGRADE;
 
                 FileInfo::fileWrite($logHandle, $pclZip->errorInfo(true) . "\n");
                 FileInfo::fileClose($logHandle);
@@ -114,7 +143,7 @@
                 return false;
             }
 
-            FileInfo::fileWrite($logHandle, "Info: Open file zip end\n");
+            FileInfo::fileWrite($logHandle, "Info: Open file upgrade zip end\n");
             FileInfo::fileWrite($logHandle, "Info: Get list content in zip begin\n");
             $listContent = $pclZip->listContent();
 
@@ -143,7 +172,7 @@
                 return false;
             }
 
-            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::filterPaths($appPath), PCLZIP_CB_PRE_EXTRACT, 'upgradeCallbackExtractZip') != false) {
+        if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::filterPaths($appPath), PCLZIP_CB_PRE_EXTRACT, 'installUpgradeCallbackExtractZip') != false) {
                 FileInfo::fileWrite($logHandle, "Info: Extract upgrade success\n");
                 FileInfo::fileWrite($logHandle, "Info: Check file recycle in app begin\n");
 
@@ -204,57 +233,105 @@
                 FileInfo::fileWrite($logHandle, "Info: Check directory empty in app end\n");
                 FileInfo::fileWrite($logHandle, "Info: Clone and remove file upgrade begin\n");
 
-                $binFilePath       = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
-                $changelogFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME);
-                $readmeFilePath    = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME);
-                $resourceDirectory = env('app.path.resource');
-
-                if (FileInfo::isTypeFile($binFilePath) && FileInfo::unlink($binFilePath))
-                    FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $binFilePath . "\n");
-                else
-                    FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $binFilePath . "\n");
-
-                if (FileInfo::isTypeFile($changelogFilePath)) {
-                    FileInfo::copySystem($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME, $resourceDirectory));
-
-                    if (FileInfo::unlink($changelogFilePath))
-                        FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $changelogFilePath . "\n");
-                    else
-                        FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $changelogFilePath . "\n");
-                }
-
-                if (FileInfo::isTypeFile($readmeFilePath)) {
-                    FileInfo::copySystem($readmeFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME, $resourceDirectory));
-
-                    if (FileInfo::unlink($readmeFilePath))
-                        FileInfo::fileWrite($logHandle, "Success: Remove file upgrade: " . $readmeFilePath . "\n");
-                    else
-                        FileInfo::fileWrite($logHandle, "Failed: Remove file upgrade: " . $readmeFilePath . "\n");
-                }
-
-                if (FileInfo::isTypeFile(env('resource.config.upgrade')))
-                    FileInfo::unlink(env('resource.config.upgrade'));
-
-                FileInfo::fileWrite($logHandle, "Info: Clone and remove file upgrade end\n");
-                FileInfo::fileWrite($logHandle, "Info: Update about upgrade begin\n");
-
-                $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_VERSION,    $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION));
-                $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT,   $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT));
-                $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_UPGRADE_AT, time());
-                $this->appAboutConfig->write();
-
-                FileInfo::fileWrite($logHandle, "Info: Update about upgrade end\n");
-                FileInfo::fileWrite($logHandle, "Info: Upgrade success");
-                FileInfo::fileClose($logHandle);
-                return true;
+                return $this->installEnd($logHandle, $binFilePath);
             } else {
-                $errorZipExtract = self::ERROR_ZIP_EXTRACT;
+                $errorZipExtract = self::ERROR_ZIP_EXTRACT_FILE_UPGRADE;
 
                 FileInfo::fileWrite($logHandle, $pclZip->errorInfo(true) . "\n");
                 FileInfo::fileClose($logHandle);
             }
 
             return false;
+        }
+
+        public function installAdditionalNow($checkHasUpgradeLocal = false, &$errorZipExtract = null, &$errorUpgrade = null)
+        {
+            if ($checkHasUpgradeLocal && $this->checkHasUpgradeLocal() == false)
+                return false;
+
+            $logHandle          = FileInfo::fileOpen(AppUpdate::getPathFileUpgrade(self::LOG_FILENAME_ADDITIONAL), 'wa+');
+            $additionalFilePath = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME);
+            $pclZip             = new PclZip($additionalFilePath);
+            $appPath            = env('app.path.root');
+
+            FileInfo::fileWrite($logHandle, "Info: Open file additional zip begin\n");
+
+            if ($pclZip === false) {
+                $errorZipExtract = self::ERROR_ZIP_NOT_OPEN_FILE_ADDITIONAL;
+
+                FileInfo::fileWrite($logHandle, $pclZip->errorInfo(true) . "\n");
+                FileInfo::fileClose($logHandle);
+
+                return false;
+            }
+
+            FileInfo::fileWrite($logHandle, "Info: Open file additional zip end\n");
+
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::filterPaths($appPath), PCLZIP_CB_PRE_EXTRACT, 'installAdditionalCallbackExtractZip') != false) {
+                FileInfo::fileWrite($logHandle, "Info: Extract additional update success\n");
+                return $this->installEnd($logHandle, $additionalFilePath);
+            } else {
+                $errorZipExtract = self::ERROR_ZIP_EXTRACT_FILE_UPGRADE;
+
+                FileInfo::fileWrite($logHandle, $pclZip->errorInfo(true) . "\n");
+                FileInfo::fileClose($logHandle);
+            }
+
+            return false;
+        }
+
+        private function installEnd($logHandle, $fileUpdatePath)
+        {
+            $changelogFilePath  = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME);
+            $readmeFilePath     = AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME);
+            $resourceDirectory  = env('app.path.resource');
+
+            FileInfo::fileWrite($logHandle, "Info: Clone and remove file update begin\n");
+
+            if (FileInfo::isTypeFile($fileUpdatePath) && FileInfo::unlink($fileUpdatePath))
+                FileInfo::fileWrite($logHandle, "Success: Remove file: " . $fileUpdatePath . "\n");
+            else
+                FileInfo::fileWrite($logHandle, "Failed: Remove file: " . $fileUpdatePath . "\n");
+
+            if (FileInfo::isTypeFile($changelogFilePath)) {
+                FileInfo::copySystem($changelogFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME, $resourceDirectory));
+
+                if (FileInfo::unlink($changelogFilePath))
+                    FileInfo::fileWrite($logHandle, "Success: Remove file: " . $changelogFilePath . "\n");
+                else
+                    FileInfo::fileWrite($logHandle, "Failed: Remove file: " . $changelogFilePath . "\n");
+            }
+
+            if (FileInfo::isTypeFile($readmeFilePath)) {
+                FileInfo::copySystem($readmeFilePath, AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME, $resourceDirectory));
+
+                if (FileInfo::unlink($readmeFilePath))
+                    FileInfo::fileWrite($logHandle, "Success: Remove file: " . $readmeFilePath . "\n");
+                else
+                    FileInfo::fileWrite($logHandle, "Failed: Remove file: " . $readmeFilePath . "\n");
+            }
+
+            if (FileInfo::isTypeFile(env('resource.config.upgrade')))
+                FileInfo::unlink(env('resource.config.upgrade'));
+
+            FileInfo::fileWrite($logHandle, "Info: Clone and remove file update end\n");
+            FileInfo::fileWrite($logHandle, "Info: Update about update begin\n");
+
+            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_VERSION,    $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION));
+            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT,   $this->appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT));
+            $this->appAboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_UPGRADE_AT, time());
+            $this->appAboutConfig->write();
+
+            FileInfo::fileWrite($logHandle, "Info: Update about update end\n");
+
+            if ($this->typeBinInstall === self::TYPE_BIN_INSTALL_UPGRADE)
+                FileInfo::fileWrite($logHandle, "Info: Install upgrade success");
+            else
+                FileInfo::fileWrite($logHandle, "Info: Install additional update success");
+
+            FileInfo::fileClose($logHandle);
+
+            return true;
         }
 
         public function getAppAboutConfig()
@@ -273,6 +350,11 @@
                 return null;
 
             return $this->appUpgradeConfig->get(AppUpdate::ARRAY_DATA_KEY_VERSION);
+        }
+
+        public function getTypeBinInstall()
+        {
+            return $this->typeBinInstall;
         }
 
     }

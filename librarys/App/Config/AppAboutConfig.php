@@ -23,6 +23,7 @@
         const ARRAY_KEY_CREATE_AT  = 'create_at';
         const ARRAY_KEY_UPGRADE_AT = 'upgrade_at';
         const ARRAY_KEY_CHECK_AT   = 'check_at';
+        const ARRAY_KEY_BUILD_AT   = 'build_at';
 
         public function __construct(Boot $boot)
         {

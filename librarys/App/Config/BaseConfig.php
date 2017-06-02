@@ -84,7 +84,7 @@
         }
 
         public function hasEntryConfigArray()
-        { bug($this->configSystemArray);
+        {
             return is_array($this->configArray) && count($this->configArray) > 0;
         }
 

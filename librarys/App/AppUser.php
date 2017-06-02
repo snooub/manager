@@ -38,6 +38,8 @@
         const USERNAME_CREATE_FIRST = 'Admin';
         const PASSWORD_CREATE_FIRST = '12345';
 
+        const TIME_SHOW_WARNING_PASSWORD_DEFAULT = 30;
+
         public function __construct(Boot $boot)
         {
             $this->boot   = $boot;
@@ -145,25 +147,28 @@
                 return false;
 
             $timeNow   = time();
-            $timeShow  = 60;
-            $checkTime = $timeNow;
-            $timeLogin = intval($this->config->get($this->id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT));
+            $timeShow  = self::TIME_SHOW_WARNING_PASSWORD_DEFAULT;
+            $checkTime = 0;
 
-            if ($timeNow - $timeLogin < $timeShow)
-                return false;
-
-            if (isset($_SESSION[env('app.login.session_check_password_name')]))
+            if (isset($_SESSION[env('app.login.session_check_password_name')])) {
                 $checkTime = intval($_SESSION[env('app.login.session_check_password_name')]);
-            else
-                $_SESSION[env('app.login.session_check_password_name')] = $timeNow;
+                $_SESSION[env('app.login.session_check_password_name')] = $checkTime + 1;
+            } else {
+                $_SESSION[env('app.login.session_check_password_name')] = 0;
+            }
 
-            if ($checkTime >= $timeShow && $timeNow - $checkTime >= $timeShow)
+            if ($timeNow + $checkTime >= $timeNow + $timeShow)
                 return false;
 
             $password        = $this->config->get($this->id . '.' . AppUserConfig::ARRAY_KEY_PASSWORD, null);
             $passwordDefault = self::PASSWORD_CREATE_FIRST;
 
-            return $this->checkPassword($password, $passwordDefault);
+            if ($this->checkPassword($password, $passwordDefault) == false) {
+                $checkTime = $timeShow;
+                return false;
+            }
+
+            return true;
         }
 
         public function get($key)

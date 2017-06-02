@@ -51,6 +51,8 @@
                         $appAlert->danger(lng('app.check_update.alert.error_not_found_list_version_in_server', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_PARAMETER_VERSION_GUEST)
                         $appAlert->danger(lng('app.check_update.alert.error_not_found_parameter_guest', 'url', $errorUrl));
+                    else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_PARAMETER_VERSION_BUILD)
+                        $appAlert->danger(lng('app.check_update.alert.error_not_found_parameter_build', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_VERSION_GUEST_NOT_VALIDATE)
                         $appAlert->danger(lng('app.check_update.alert.error_version_guest_not_validate', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_VERSION_SERVER_NOT_VALIDATE)
@@ -63,10 +65,20 @@
                         $appAlert->danger(lng('app.check_update.alert.error_mkdir_save_data_upgrade', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_DECODE_COMPRESS_DATA)
                         $appAlert->danger(lng('app.check_update.alert.error_decode_compress_data', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_DECODE_COMPRESS_ADDITIONAL_UPDATE)
+                        $appAlert->danger(lng('app.check_update.alert.error_decode_compress_additional_update', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_DECODE_COMPRESS_UPDATE_SCRIPT)
+                        $appAlert->danger(lng('app.check_update.alert.error_decode_compress_update_script', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_DATA_UPGRADE)
                         $appAlert->danger(lng('app.check_update.alert.error_write_data_upgrade', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_ADDITIONAL_UPDATE)
+                        $appAlert->danger(lng('app.check_update.alert.error_write_additional_update', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_MD5_BIN_CHECK)
                         $appAlert->danger(lng('app.check_update.alert.error_md5_bin_check', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_MD5_ADDITIONAL_UPDATE_CHECK)
+                        $appAlert->danger(lng('app.check_update.alert.error_md5_additional_update_check', 'url', $errorUrl));
+                    else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_UPDATE_SCRIPT)
+                        $appAlert->danger(lng('app.check_update.alert.error_write_update_script', 'url', $errorUrl));
                     else
                         $appAlert->danger(lng('app.check_update.alert.error_unknown', 'url', $errorUrl));
                 }
@@ -75,14 +87,16 @@
             $updateStatus = $appUpdate->getUpdateStatus();
 
             if ($updateStatus === AppUpdate::RESULT_VERSION_IS_OLD)
-                $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get('version'), 'version_update', $appUpdate->getVersionUpdate()), ALERT_APP_UPGRADE_APP, 'upgrade_app.php');
+                $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpdate->getVersionUpdate()), ALERT_APP_UPGRADE_APP, 'upgrade_app.php');
+            else if ($updateStatus === AppUpdate::RESULT_HAS_ADDITIONAL)
+                $appAlert->success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_UPGRADE_APP, 'upgrade_app.php');
             else
-                $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get('version')));
+                $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
         }
 
-        gotoURL('check_update.php');
+        //gotoURL('check_update.php');
     } else if ($hasUpgrade && $appAlert->hasAlertDisplay() == false) {
-        $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get('version'), 'version_update', $appUpgrade->getVersionUpgrade()));
+        $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
     }
 ?>
 
@@ -110,19 +124,19 @@
 
             <li class="value">
                 <ul>
-                    <?php if ($config->get('check_at') <= 0) { ?>
+                    <?php if ($config->get(AppAboutConfig::ARRAY_KEY_CHECK_AT) <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_check_update'); ?></span></li>
                     <?php } else { ?>
                         <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get('check_at'))); ?></span></li>
                     <?php } ?>
 
-                    <?php if ($config->get('upgrade_at') <= 0) { ?>
+                    <?php if ($config->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT) <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_upgrade'); ?></span></li>
                     <?php } else { ?>
                         <li><span><?php echo date('d.m.Y - H:i:s', intval($config->get('upgrade_at'))); ?></span></li>
                     <?php } ?>
 
-                    <li><span><?php echo $config->get('version'); ?> <?php if ($config->get('is_beta')) echo 'beta'; ?></span></li>
+                    <li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_VERSION); ?> <?php if ($config->get('is_beta')) echo 'beta'; ?></span></li>
 
                     <?php if (is_array($servers)) { ?>
                         <?php foreach ($servers AS $server) { ?>

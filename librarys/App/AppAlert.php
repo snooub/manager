@@ -7,6 +7,7 @@
 
     use Librarys\Boot;
     use Librarys\File\FileInfo;
+    use Librarys\App\AppUser;
 
     final class AppAlert
     {
@@ -76,6 +77,11 @@
 
         public function display()
         {
+            global $appUser;
+
+            if ($appUser->checkUserIsUsePasswordDefault())
+                $this->warning(lng('home.alert.password_user_is_equal_default', 'time', AppUser::TIME_SHOW_WARNING_PASSWORD_DEFAULT));
+
             if ($this->id != null && isset($_SESSION[self::SESSION_NAME_PREFIX . $this->id]) && count($_SESSION[self::SESSION_NAME_PREFIX . $this->id]) > 0) {
                 $array  = $_SESSION[self::SESSION_NAME_PREFIX . $this->id];
                 $buffer = '<ul class="alert">';

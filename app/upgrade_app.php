@@ -7,7 +7,7 @@
     use Librarys\Parse\MarkdownParse;
 
     define('LOADED',                1);
-    define('PARAMETER_UPGRADE_URL', 'upgrade');
+    define('PARAMETER_INSTALL_URL', 'install');
 
     require_once('global.php');
 
@@ -23,26 +23,34 @@
     $hasUpgrade = $appUpgrade->checkHasUpgradeLocal($errorCheckUpgrade);
 
     if ($hasUpgrade == false && $errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_NONE)
-        $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get('version')), ALERT_APP_ABOUT, 'about.php');
+        $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_ABOUT, 'about.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_NOT_FOUND)
         $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_file_not_found'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+    else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_ADDITIONAL_UPDATE_NOT_FOUND)
+        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_additional_update_not_found'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_DATA_ERROR)
         $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_file_data_error'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+    else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_DATA_ADDITIONAL_UPDATE_ERROR)
+        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_file_data_additional_update_error'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED)
         $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_md5_check_failed'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+    else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_MD5_ADDITIONAL_UPDATE_CHECK_FAILED)
+        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_md5_additional_update_check_failed'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
 
-    if (isset($_GET[PARAMETER_UPGRADE_URL])) {
+    if (isset($_GET[PARAMETER_INSTALL_URL])) {
         $errorZipExtract = null;
 
-        if ($appUpgrade->upgradeNow(false, $errorZipExtract, $errorUpgrade) == false) {
-            if ($errorZipExtract === AppUpgrade::ERROR_ZIP_NOT_OPEN)
-                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_not_open'));
-            else if ($errorZipExtract === AppUpgrade::ERROR_ZIP_EXTRACT)
-                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_extract'));
+        if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE && $appUpgrade->installUpgradeNow(false, $errorZipExtract, $errorUpgrade) == false) {
+            if ($errorZipExtract === AppUpgrade::ERROR_ZIP_NOT_OPEN_FILE_UPGRADE)
+                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_not_open_file_upgrade'));
+            else if ($errorZipExtract === AppUpgrade::ERROR_ZIP_EXTRACT_FILE_UPGRADE)
+                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_extract_file_upgrade'));
             else if ($errorUpgrade === AppUpgrade::ERROR_UPGRADE_NOT_LIST_FILE_APP)
                 $appAlert->danger(lng('app.upgrade_app.alert.error_upgrade_not_list_file_app'));
             else
                 $appAlert->danger(lng('app.upgrade_app.alert.error_unknown'));
+        } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) {
+
         } else {
             $appAlert->success(lng('app.upgrade_app.alert.upgrade_app_success', 'version', $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         }
@@ -62,6 +70,7 @@
                     <li><span><?php echo lng('app.upgrade_app.info.label_server_name'); ?></span></li>
                     <li><span><?php echo lng('app.upgrade_app.info.label_version'); ?></span></li>
                     <li><span><?php echo lng('app.upgrade_app.info.label_build_last'); ?></span></li>
+                    <li><span><?php echo lng('app.upgrade_app.info.label_type_bin'); ?></span></li>
                     <li><span><?php echo lng('app.upgrade_app.info.label_md5_bin_check'); ?></span></li>
                     <li><span><?php echo lng('app.upgrade_app.info.label_data_length'); ?></span></li>
                 </ul>
@@ -72,8 +81,16 @@
                     <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_SERVER_NAME); ?></span></li>
                     <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION); ?></span></li>
                     <li><span><?php echo date('d.m.Y - H:i:s', intval($appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_BUILD_LAST))); ?></span></li>
-                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK); ?></span></li>
-                    <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME), true); ?></span></li>
+
+                    <?php if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) { ?>
+                        <li><span><?php echo lng('app.upgrade_app.info.value_type_bin_install_upgrdae'); ?></span></li>
+                        <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK); ?></span></li>
+                        <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME), true); ?></span></li>
+                    <?php } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) { ?>
+                        <li><span><?php echo lng('app.upgrade_app.info.value_type_bin_install_additional'); ?></span></li>
+                        <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK); ?></span></li>
+                        <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_ADDITIONAL_FILENAME), true); ?></span></li>
+                    <?php } ?>
                 </ul>
             </li>
 
@@ -97,8 +114,12 @@
         </ul>
 
         <div class="about-button-check button-action-box center">
-            <a href="upgrade_app.php?<?php echo PARAMETER_UPGRADE_URL; ?>">
-                <span><?php echo lng('app.upgrade_app.form.button.upgrade'); ?></span>
+            <a href="upgrade_app.php?<?php echo PARAMETER_INSTALL_URL; ?>">
+                <?php if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) { ?>
+                    <span><?php echo lng('app.upgrade_app.form.button.upgrade'); ?></span>
+                <?php } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) { ?>
+                    <span><?php echo lng('app.upgrade_app.form.button.additional'); ?></span>
+                <?php } ?>
             </a>
         </div>
     </div>
