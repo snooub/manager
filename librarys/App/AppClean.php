@@ -159,13 +159,16 @@
                     return false;
 
                 foreach ($handle AS $idDirectory) {
-                    $userPath = FileInfo::filterPaths($directory . SP . $idDirectory);
+                    if ($idDirectory != '.' && $idDirectory != '..') {
+                        $userPath = FileInfo::filterPaths($directory . SP . $idDirectory);
 
-                    if (array_key_exists($idDirectory, $arrays) === false) {
-                        if (FileInfo::isTypeDirectory($userPath))
-                            FileInfo::rrmdir($userPath);
-                        else
-                            FileInfo::unlink($userPath);
+                        if (array_key_exists($idDirectory, $arrays) === false) {
+
+                            if (FileInfo::isTypeDirectory($userPath))
+                                FileInfo::rrmdirSystem($userPath);
+                            else
+                                FileInfo::unlink($userPath);
+                        }
                     }
                 }
             }

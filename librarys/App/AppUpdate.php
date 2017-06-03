@@ -105,7 +105,10 @@
 
         public function checkUpdate()
         {
-            global $appConfig;
+            global $appConfig, $appUser;
+
+            if ($appUser->isPositionAdminstrator() == false)
+                return false;
 
             if (is_array($this->servers) == false)
                 return false;
@@ -187,6 +190,9 @@
                 $this->updateStatus = self::RESULT_HAS_ADDITIONAL;
             else
                 $this->updateStatus = self::RESULT_VERSION_IS_LATEST;
+
+            $this->aboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT, time());
+            $this->aboutConfig->write();
 
             return true;
         }
@@ -279,9 +285,6 @@
 
             if ($readmeFileBuffer !== false)
                 FileInfo::fileWriteContents($readmeFilePath, htmlspecialchars($readmeFileBuffer));
-
-            $this->aboutConfig->setSystem(AppAboutConfig::ARRAY_KEY_CHECK_AT, time());
-            $this->aboutConfig->write();
 
             return true;
         }

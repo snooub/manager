@@ -1,11 +1,11 @@
 div#about {
     background-color: #ffffff;
 
-    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
 
     text-align: center;
     padding: 5px;

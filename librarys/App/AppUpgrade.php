@@ -58,6 +58,11 @@
 
         public function checkHasUpgradeLocal(&$errorCheckUpgrade = null)
         {
+            global $appUser;
+
+            if ($appUser->isPositionAdminstrator() == false)
+                return false;
+
             if ($this->appUpgradeConfig->hasEntryConfigArrayAny() == false)
                 return false;
 
@@ -125,6 +130,11 @@
 
         public function installUpgradeNow($checkHasUpgradeLocal = false, &$errorZipExtract = null, &$errorUpgrade = null)
         {
+            global $appUser;
+
+            if ($appUser->isPositionAdminstrator() == false)
+                return false;
+
             if ($checkHasUpgradeLocal && $this->checkHasUpgradeLocal() == false)
                 return false;
 
@@ -246,6 +256,11 @@
 
         public function installAdditionalNow($checkHasUpgradeLocal = false, &$errorZipExtract = null, &$errorUpgrade = null)
         {
+            global $appUser;
+
+            if ($appUser->isPositionAdminstrator() == false)
+                return false;
+
             if ($checkHasUpgradeLocal && $this->checkHasUpgradeLocal() == false)
                 return false;
 

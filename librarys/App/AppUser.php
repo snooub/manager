@@ -8,7 +8,8 @@
     use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\CFSR\CFSRToken;
-    use Librarys\Encryption\PasswordCrypt;
+    use Librarys\Detection\SimpleDetect;
+    use Librarys\Encryption\StringCrypt;
     use Librarys\App\Config\AppUserConfig;
 
     final class AppUser
@@ -18,8 +19,12 @@
         private $config;
 
         private $id;
+        private $userInfos;
         private $tokenValue;
         private $tokenUserAgent;
+        private $tokenUserDevice;
+        private $tokenUserOS;
+        private $tokenUserBrowser;
         private $tokenUserIp;
         private $tokenUserLive;
         private $isLogin;
@@ -31,12 +36,18 @@
 
         const USERNAME_VALIDATE = '\\/:*?"<>|\'';
 
-        const TOKEN_ARRAY_KEY_USER_AGENT = 'user_agent';
-        const TOKEN_ARRAY_KEY_USER_IP    = 'ip';
-        const TOKEN_ARRAY_KEY_USER_LIVE  = 'live';
+        const TOKEN_ARRAY_KEY_USER_AGENT   = 'user_agent';
+        const TOKEN_ARRAY_KEY_USER_DEVICE  = 'user_device';
+        const TOKEN_ARRAY_KEY_USER_OS      = 'user_os';
+        const TOKEN_ARRAY_KEY_USER_BROWSER = 'user_browser';
+        const TOKEN_ARRAY_KEY_USER_IP      = 'user_ip';
+        const TOKEN_ARRAY_KEY_USER_LIVE    = 'user_live';
 
         const USERNAME_CREATE_FIRST = 'Admin';
         const PASSWORD_CREATE_FIRST = '12345';
+
+        const USER_DEVICE_MOBILE  = 'mobile';
+        const USER_DEVICE_TABLET  = 'tablet';
 
         const TIME_SHOW_WARNING_PASSWORD_DEFAULT = 10;
 
@@ -62,7 +73,7 @@
                 return false;
 
             $username = self::USERNAME_CREATE_FIRST;
-            $password = self::createPasswordCrypt(self::PASSWORD_CREATE_FIRST);
+            $password = self::createPassword(self::PASSWORD_CREATE_FIRST);
             $position = self::POSTION_ADMINSTRATOR;
             $idUser   = md5(base64_encode(time() . rand(100000, 999999)));
             $symbol   = '.';
@@ -117,11 +128,15 @@
             $userIp    = takeIP();
             $userLive  = time();
 
-            $this->id             = $id;
-            $this->tokenValue     = $token;
-            $this->tokenUserAgent = $tokenArray[self::TOKEN_ARRAY_KEY_USER_AGENT];
-            $this->tokenUserIp    = $tokenArray[self::TOKEN_ARRAY_KEY_USER_IP];
-            $this->tokenUserLive  = $tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE];
+            $this->id               = $id;
+            $this->userInfos        = $arrays[$id];
+            $this->tokenValue       = $token;
+            $this->tokenUserAgent   = $tokenArray[self::TOKEN_ARRAY_KEY_USER_AGENT];
+            $this->tokenUserDevice  = $tokenArray[self::TOKEN_ARRAY_KEY_USER_DEVICE];
+            $this->tokenUserOS      = $tokenArray[self::TOKEN_ARRAY_KEY_USER_OS];
+            $this->tokenUserBrowser = $tokenArray[self::TOKEN_ARRAY_KEY_USER_BROWSER];
+            $this->tokenUserIp      = $tokenArray[self::TOKEN_ARRAY_KEY_USER_IP];
+            $this->tokenUserLive    = $tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE];
 
             if (strcmp($userAgent, $tokenArray[self::TOKEN_ARRAY_KEY_USER_AGENT]) !== 0)
                 return false;
@@ -203,9 +218,62 @@
             return true;
         }
 
+        public function getUserInfoKey($key)
+        {
+            if ($this->userInfos === null || is_array($this->userInfos) == false || isset($this->userInfos[$key]) == false)
+                return null;
+
+            return $this->userInfos[$key];
+        }
+
         public function getId()
         {
             return $this->id;
+        }
+
+        public function getUsername()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_USERNAME);
+        }
+
+        public function getPassword()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_PASSWORD);
+        }
+
+        public function getEmail()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_EMAIL);
+        }
+
+        public function getPosition()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_POSITION);
+        }
+
+        public function getCreateAt()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_CREATE_AT);
+        }
+
+        public function getModifyAt()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_MODIFY_AT);
+        }
+
+        public function getLoginAt()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_LOGIN_AT);
+        }
+
+        public function getBandAt()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_BAND_AT);
+        }
+
+        public function getBandOf()
+        {
+            return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_BAND_OF);
         }
 
         public function getTokenValue()
@@ -231,6 +299,21 @@
         public function isLogin()
         {
             return $this->isLogin;
+        }
+
+        public function isPositionUser()
+        {
+            return $this->getPosition() === self::POSITION_USER;
+        }
+
+        public function isPositionAdmin()
+        {
+            return $this->getPosition() === self::POSITION_ADMIN;
+        }
+
+        public function isPositionAdminstrator()
+        {
+            return $this->getPosition() === self::POSTION_ADMINSTRATOR;
         }
 
         public function isUser($username, $password)
@@ -293,10 +376,21 @@
                     break;
             }
 
+            $mobileDetect = new SimpleDetect();
+            $userAgent    = takeUserAgent();
+            $userDevice   = $mobileDetect->getDeviceType();
+            $userOS       = $mobileDetect->getOS();
+            $userBrowser  = $mobileDetect->getBrowser();
+            $userIP       = takeIP();
+            $userLive     = time();
+
             $tokenBuffer = @serialize([
-                self::TOKEN_ARRAY_KEY_USER_AGENT => takeUserAgent(),
-                self::TOKEN_ARRAY_KEY_USER_IP    => takeIP(),
-                self::TOKEN_ARRAY_KEY_USER_LIVE  => time()
+                self::TOKEN_ARRAY_KEY_USER_AGENT   => $userAgent,
+                self::TOKEN_ARRAY_KEY_USER_DEVICE  => $userDevice,
+                self::TOKEN_ARRAY_KEY_USER_OS      => $userOS,
+                self::TOKEN_ARRAY_KEY_USER_BROWSER => $userBrowser,
+                self::TOKEN_ARRAY_KEY_USER_IP      => $userIP,
+                self::TOKEN_ARRAY_KEY_USER_LIVE    => $userLive,
             ]);
 
             if (FileInfo::fileWriteContents($tokenPath, $tokenBuffer));
@@ -330,14 +424,14 @@
             return @session_destroy();
         }
 
-        public static function createPasswordCrypt($password, $salt = null)
+        public static function createPassword($password, $salt = null)
         {
-            return PasswordCrypt::createCrypt($password, $salt);
+            return StringCrypt::createCrypt($password, $salt);
         }
 
         public static function checkPassword($passwordUser, $passwrodCheck)
         {
-            return PasswordCrypt::hashEqualsPassword($passwordUser, $passwrodCheck);
+            return StringCrypt::hashEqualsPassword($passwordUser, $passwrodCheck);
         }
     }
 

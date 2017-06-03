@@ -12,16 +12,21 @@
     $title      = lng('app.about.title_page');
     $themes     = [ env('resource.filename.theme.about') ];
     $config     = new AppAboutConfig($boot);
-    $appUpgrade = new AppUpgrade($boot, $config);
-    $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
+    $appUpgrade = null;
+    $hasUpgrade = false;
     $appAlert->setID(ALERT_APP_ABOUT);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
-    if ($hasUpgrade && $appAlert->hasAlertDisplay() == false) {
-        if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
-            $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
-        else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
-            $appAlert->success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+    if ($appUser->isPositionAdminstrator()) {
+        $appUpgrade = new AppUpgrade($boot, $config);
+        $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
+
+        if ($hasUpgrade && $appAlert->hasAlertDisplay() == false) {
+            if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
+                $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+            else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
+                $appAlert->success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+        }
     }
 
 ?>
@@ -75,20 +80,22 @@
 
     <?php if ($appUser->isLogin()) { ?>
         <ul class="menu-action">
-            <li>
-                <a href="check_update.php">
-                    <span class="icomoon icon-update"></span>
-                    <span><?php echo lng('app.about.menu_action.check_update'); ?></span>
-                </a>
-            </li>
-
-            <?php if ($hasUpgrade) { ?>
+            <?php if ($appUser->isPositionAdminstrator()) { ?>
                 <li>
-                    <a href="upgrade_app.php">
+                    <a href="check_update.php">
                         <span class="icomoon icon-update"></span>
-                        <span><?php echo lng('app.about.menu_action.upgrade_app'); ?></span>
+                        <span><?php echo lng('app.about.menu_action.check_update'); ?></span>
                     </a>
                 </li>
+
+                <?php if ($hasUpgrade) { ?>
+                    <li>
+                        <a href="upgrade_app.php">
+                            <span class="icomoon icon-update"></span>
+                            <span><?php echo lng('app.about.menu_action.upgrade_app'); ?></span>
+                        </a>
+                    </li>
+                <?php } ?>
             <?php } ?>
 
             <li>

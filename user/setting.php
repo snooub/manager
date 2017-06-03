@@ -66,7 +66,7 @@
                 $appAlert->danger(lng('user.setting.alert.change_config_info_failed'));
             } else if (
                 empty($forms['password_new']) == false &&
-                $appUser->setConfig(AppUserConfig::ARRAY_KEY_PASSWORD, AppUser::createPasswordCrypt($forms['password_new'])) == false
+                $appUser->setConfig(AppUserConfig::ARRAY_KEY_PASSWORD, AppUser::createPassword($forms['password_new'])) == false
             ) {
                 $appAlert->danger(lng('user.setting.alert.change_config_password_failed'));
             } else if ($appUser->writeConfig(true) == false) {

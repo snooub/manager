@@ -11,6 +11,9 @@
 
     require_once('global.php');
 
+    if ($appUser->isPositionAdminstrator() == false)
+        $appAlert->danger(lng('user.default.alert.not_permission_access_feature'), ALERT_INDEX, env('app.http.host'));
+
     $title      = lng('app.check_update.title_page');
     $themes     = [ env('resource.filename.theme.about') ];
     $config     = new AppAboutConfig($boot);

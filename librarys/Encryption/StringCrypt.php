@@ -5,7 +5,7 @@
     if (defined('LOADED') == false)
         exit;
 
-    class PasswordCrypt
+    class StringCrypt
     {
 
         public static function randomToken($length = 32)

@@ -10,11 +10,11 @@ ul.location-path {
     background-color: #ffffff;
     display: block;
 
-    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
 
     margin-bottom: 15px;
     padding-left: 10px;
@@ -22,7 +22,7 @@ ul.location-path {
 }
 
 ul.location-path li {
-    height: 35px;
+    height: 45px;
     max-width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -32,7 +32,8 @@ ul.location-path li {
 ul.location-path li span {
     color: #505050;
     font-weight: bold;
-    line-height: 35px;
+    font-size: 15px;
+    line-height: 45px;
 }
 
 ul.location-path li a:hover span,
@@ -53,11 +54,11 @@ ul.file-list > li {
 ul.file-list {
     background-color: #ffffff;
 
-    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
 
     margin: 0;
     margin-bottom: 15px;
@@ -281,11 +282,11 @@ ul.file-info {
     background-color: #ffffff;
     margin-bottom: 15px;
 
-    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+       -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+        -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+         -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
 
 	width: 100%;
 	text-align: left;

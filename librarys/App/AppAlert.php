@@ -85,7 +85,7 @@
             if ($appUser->checkUserIsUsePasswordDefault())
                 $this->warning(lng('home.alert.password_user_is_equal_default', 'time', AppUser::TIME_SHOW_WARNING_PASSWORD_DEFAULT));
 
-            if (defined('DISABLE_ALERT_HAS_UPDATE') == false && $this->hasAlertDisplay() == false && $appConfig->get('check_update.enable', false) == true) {
+            if ($appUser->isPositionAdminstrator() && defined('DISABLE_ALERT_HAS_UPDATE') == false && $this->hasAlertDisplay() == false && $appConfig->get('check_update.enable', false) == true) {
                 $appAboutConfig = new AppAboutConfig($this->boot);
                 $timeCurrent    = time();
                 $timeShow       = 300;
