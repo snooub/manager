@@ -383,6 +383,7 @@
             $userBrowser  = $mobileDetect->getBrowser();
             $userIP       = takeIP();
             $userLive     = time();
+            $userPassword = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_PASSWORD);
 
             $tokenBuffer = @serialize([
                 self::TOKEN_ARRAY_KEY_USER_AGENT   => $userAgent,
@@ -393,7 +394,7 @@
                 self::TOKEN_ARRAY_KEY_USER_LIVE    => $userLive,
             ]);
 
-            if (FileInfo::fileWriteContents($tokenPath, $tokenBuffer));
+            if (FileInfo::fileWriteContents($tokenPath, $tokenBuffer, $userPassword));
 
             if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false || $this->config->write() == false)
                 return false;
@@ -431,7 +432,7 @@
 
         public static function checkPassword($passwordUser, $passwrodCheck)
         {
-            return StringCrypt::hashEqualsPassword($passwordUser, $passwrodCheck);
+            return StringCrypt::hashEqualsString($passwordUser, $passwrodCheck);
         }
     }
 

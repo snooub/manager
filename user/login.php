@@ -104,6 +104,7 @@
     }
 
     $appAlert->display();
+
 ?>
 
     <?php if ($isLockCountStatus == false) { ?>
