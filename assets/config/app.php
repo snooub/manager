@@ -100,12 +100,13 @@
 
             'filename' => [
                 'theme' => [
-                    'app'     => 'theme.css',
-                    'about'   => 'about.css',
-                    'login'   => 'login.css',
-                    'file'    => 'file.css',
-                    'mysql'   => 'mysql.css',
-                    'icomoon' => 'style.css'
+                    'app'      => 'theme.css',
+                    'about'    => 'about.css',
+                    'login'    => 'login.css',
+                    'file'     => 'file.css',
+                    'mysql'    => 'mysql.css',
+                    'icomoon'  => 'style.css',
+                    'markdown' => 'markdown.css'
                 ],
 
                 'javascript' => [
@@ -132,12 +133,6 @@
                     'upgrade'        => 'upgrade.php',
                     'env_theme'      => 'env.php',
                     'env_javascript' => 'env.php'
-                ]
-            ],
-
-            'theme' => [
-                'path' => [
-                    'default' => '${app.http.theme}/default'
                 ]
             ]
         ]
