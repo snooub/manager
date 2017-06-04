@@ -30,16 +30,16 @@ div#about > h5 {
     font-variant: normal;
 }
 
-div#about ul,
+div#about > ul,
 ul.about-list {
 	width: 100%;
 	text-align: left;
 }
 
-div#about ul,
-div#about ul > li,
-div#about ul > li > ul,
-div#about ul > li > ul > li,
+div#about > ul,
+div#about > ul > li,
+div#about > ul > li > ul,
+div#about > ul > li > ul > li,
 
 ul.about-list,
 ul.about-list > li,
@@ -62,21 +62,21 @@ ul.about-list {
     padding-bottom: 10px;
 }
 
-div#about ul > li.label,
-div#about ul > li.value,
+div#about > ul > li.label,
+div#about > ul > li.value,
 
 ul.about-list > li.label,
 ul.about-list > li.value {
 	display: inline-block;
 }
 
-div#about ul > li li,
-ul.about-list > li li {
+div#about > ul > li > li,
+ul.about-list > li > li {
 	height: 30px;
 }
 
-div#about ul > li li span,
-ul.about-list > li li span {
+div#about ul > li > ul > li span,
+ul.about-list > li > ul > li span {
 	line-height: 30px;
 }
 
@@ -97,8 +97,8 @@ ul.about-list > li.value li span {
 	color: #707070;
 }
 
-div#about ul > li.value li,
-ul.about-list > li.value li {
+div#about ul > li.value > li,
+ul.about-list > li.value > li {
 	max-width: 100%;
 }
 
