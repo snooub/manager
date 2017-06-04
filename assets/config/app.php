@@ -16,7 +16,7 @@
             ],
 
             'dev' => [
-                'enable' => true
+                'enable' => false
             ],
 
             'date' => [

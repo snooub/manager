@@ -195,7 +195,12 @@
                     if (FileInfo::isTypeFile($filepath))
                         $fileResourceTime = FileInfo::fileMTime($filepath);
 
+
                     if ($fileResourceTime >= $cacheFiletime || $timeNow - $cacheFiletime >= $cacheLifetime) {
+                        header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+                        header('Last-Modified: ' . gmdate('D, d M Y H:i:s ', $fileResourceTime) . 'GMT');
+                        header('Etag: "' . md5(time()) . '"');
+
                         if ($writeCache == false || FileInfo::fileWriteContents($cacheFilepath, $this->buffer) == false)
                             return false;
                     } else {
