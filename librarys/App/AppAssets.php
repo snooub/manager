@@ -57,7 +57,7 @@
             $buffer  .= '&' . ASSET_PARAMETER_CSS_URL          . '=' . $filename;
             $buffer  .= '&' . $boot->getCFSRToken()->getName() . '=' . $boot->getCFSRToken()->getToken();
 
-            if (env('dev.enable'))
+            if (env('app.dev.enable'))
                 $buffer  .= '&' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
 
             return $buffer;
@@ -72,7 +72,7 @@
             $buffer .= '?' . ASSET_PARAMETER_JS_URL           . '=' . $filename;
             $buffer .= '&' . $boot->getCFSRToken()->getName() . '=' . $boot->getCFSRToken()->getToken();
 
-            if (env('dev.enable'))
+            if (env('app.dev.enable'))
                 $buffer  .= '&' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
 
             return $buffer;
