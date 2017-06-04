@@ -173,10 +173,6 @@
             }
 
             if ($cacheEnable) {
-                header("Cache-Control: max-age={$cacheLifetime}, immutable, public");
-                header('Date:    ' . gmdate('D, d M Y H:i:s ', time()) . 'GMT');
-                header('Expires: ' . gmdate('D, d M Y H:i:s ', time() + $cacheLifetime) . 'GMT');
-
                 $timeNow              = time();
                 $cacheDirectory       = env('app.path.cache');
                 $cacheFilename        = md5($this->filename);
@@ -184,6 +180,7 @@
                 $cacheFiletime        = 0;
                 $fileResourceTime     = 0;
                 $cacheDirectoryExists = true;
+                $isRemoveCache        = false;
 
                 if (FileInfo::isTypeDirectory($cacheDirectory) == false && FileInfo::mkdir($cacheDirectory, true) == false)
                     $cacheDirectoryExists = false;
@@ -195,9 +192,12 @@
                     if (FileInfo::isTypeFile($filepath))
                         $fileResourceTime = FileInfo::fileMTime($filepath);
 
+
                     if ($fileResourceTime >= $cacheFiletime || $timeNow - $cacheFiletime >= $cacheLifetime) {
                         if ($writeCache == false || FileInfo::fileWriteContents($cacheFilepath, $this->buffer) == false)
                             return false;
+
+                        $isRemoveCache = true;
                     } else {
                         $this->buffer = FileInfo::fileReadContents($cacheFilepath);
                     }
@@ -206,7 +206,19 @@
                 return false;
             }
 
-            header('ContentLength: ' . strlen($this->buffer));
+            if ($isRemoveCache) {
+                header('Cache-Control: private, max-age=0, no-cache, no-store, must-revalidate');
+                header('Cache-Control: post-check=0, pre-check=0', false);
+                header('Pragma: no-cache');
+                header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s ', time()) . 'GMT');
+                header('Etag: "' . md5(time()) . '"');
+            } else {
+                header("Cache-Control: max-age={$cacheLifetime}, public");
+                header('Date:    ' . gmdate('D, d M Y H:i:s ', time()) . 'GMT');
+                header('Expires: ' . gmdate('D, d M Y H:i:s ', time() + $cacheLifetime) . 'GMT');
+                header('ContentLength: ' . strlen($this->buffer));
+            }
 
             return true;
         }

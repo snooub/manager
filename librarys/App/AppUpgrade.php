@@ -357,6 +357,7 @@
 
             FileInfo::fileClose($logHandle);
             AppUpdate::cleanUpgrade();
+            AppClean::scanAutoClean(true);
 
             return true;
         }

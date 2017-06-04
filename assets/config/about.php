@@ -15,9 +15,9 @@
         'git_title' => 'IzeroCs/Manager',
         'phone' => '+841685929323',
         'create_at' => 1434468025,
-        'upgrade_at' => 0,
-        'check_at' => 1496509585,
-        'build_at' => 1496509585,
+        'upgrade_at' => 1496595751,
+        'check_at' => 1496600922,
+        'build_at' => 1396595420,
     ];
 
 ?>
