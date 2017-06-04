@@ -44,8 +44,10 @@
             $this->cache('server.request_scheme', $requestScheme);
             $this->cache('server.http_host',      env('server.request_scheme', $requestScheme) . '://' . env('SERVER.HTTP_HOST', '/'));
 
-            $this->cache('dev.enable', false);
-            $this->cache('dev.rand',   intval($_SERVER['REQUEST_TIME']));
+            if (Boot::isRunLocal() == false)
+                $this->setCache('app.dev.enable', false);
+
+            $this->cache('app.dev.rand',   intval($_SERVER['REQUEST_TIME']));
 
             $this->cache('app.date.timezone', 'Asia/Ho_Chi_Minh');
 
@@ -144,9 +146,17 @@
             return (self::$instance->cache[$name] = urlSeparatorMatches(self::$instance->get($name, $default)));
         }
 
-        private function cache($name, $default = null)
+        private function cache($name, $default = null, $recache = false)
         {
+            if ($recache && array_key_exists($name, self::$instance->cache))
+                unset(self::$instance->cache[$name]);
+
             self::$instance->cache[$name] = self::env($name, $default);
+        }
+
+        private function setCache($name, $value)
+        {
+            self::$instance->cache[$name] = $value;
         }
 
         private function get($key, $default = null, $array = null)

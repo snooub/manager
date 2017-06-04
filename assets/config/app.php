@@ -9,8 +9,6 @@
         ],
 
         'app' => [
-            'sleep_time_redirect' => 3,
-
             'server_app' => [
                 'localhost',
                 'izerocs.net',
