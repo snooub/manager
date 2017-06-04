@@ -16,7 +16,7 @@
         $appAlert->danger(lng('user.default.alert.not_permission_access_feature'), ALERT_INDEX, env('app.http.host'));
 
     $title      = lng('app.upgrade_app.title_page');
-    $themes     = [ env('resource.filename.theme.about') ];
+    $themes     = [ env('resource.filename.theme.about'), env('resource.filename.theme.markdown') ];
     $config     = new AppAboutConfig($boot);
     $appUpdate  = new AppUpdate($boot, $config);
     $appUpgrade = new AppUpgrade($boot, $config);
@@ -112,14 +112,14 @@
             <?php if ($readmeContent !== false && $readmeContent !== null && empty($readmeContent) == false) { ?>
                 <li class="message">
                     <div><span><?php echo lng('app.upgrade_app.info.label_readme'); ?></span></div>
-                    <div><span><?php echo $markdownParse->text($readmeContent); ?></span></div>
+                    <div class="markdown"><?php echo $markdownParse->text($readmeContent); ?></div>
                 </li>
             <?php } ?>
 
             <?php if ($changelogContent !== false && $changelogContent !== null && empty($changelogContent) == false) { ?>
                 <li class="message">
                     <div><span><?php echo lng('app.upgrade_app.info.label_changelog'); ?></span></div>
-                    <div><span><?php echo $markdownParse->text($changelogContent); ?></span></div>
+                    <div class="markdown"><?php echo $markdownParse->text($changelogContent); ?></div>
                 </li>
             <?php } ?>
         </ul>
