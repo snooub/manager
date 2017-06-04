@@ -74,19 +74,9 @@
                 <?php if ($imageSize === false) { ?>
                     <span><?php echo lng('file_info.alert.image_error'); ?></span>
                 <?php } else { ?>
-                    <?php $imageClass = null; ?>
-                    <?php $imageClassSize = [ 100, 200, 300, 400, 500, 600, 700, 800, 900 ]; ?>
-
-                    <?php foreach ($imageClassSize AS $classSize) { ?>
-                        <?php if ($imageSize[0] <= $classSize) { ?>
-                            <?php $imageClassSize = 'image-' . $classSize; ?>
-                        <?php } ?>
-                    <?php } ?>
-
                     <img
                         src="image.php<?php echo $appParameter->toString(); ?>"
                         alt="<?php echo $fileInfo->getFileName(); ?>"
-                        width="<?php if ($imageSize[0] > 200) echo 200; else echo $imageSize[0]; ?>px"
                         height="auto"
                         class="<?php echo $imageClass; ?>"/>
                 <?php } ?>
