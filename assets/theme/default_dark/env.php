@@ -4,8 +4,8 @@
         exit;
 
     return [
-        'directory' => 'default',
-        'http'      => env('app.http.theme') . '/default'
+        'directory' => 'default_dark',
+        'http'      => env('app.http.theme') . '/default_dark'
     ];
 
 ?>
