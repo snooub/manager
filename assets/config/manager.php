@@ -39,13 +39,13 @@
         'cache' => [
             'css' => [
                 'enable' => true,
-                'minify' => true,
+                'minify' => false,
                 'lifetime' => 31536000,
             ],
 
             'js' => [
                 'enable' => true,
-                'minify' => true,
+                'minify' => false,
                 'lifetime' => 31536000,
             ],
 
@@ -57,7 +57,7 @@
         ],
 
         'theme' => [
-            'directory' => 'default',
+            'directory' => 'default_dark',
         ],
 
         'check_update' => [
