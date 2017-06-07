@@ -1,5 +1,5 @@
 body {
-    background-color: #efefef;
+    background-color: #303030;
     font-family: Geneva,Tahoma,Verdana,sans-serif;
     font-size: 14px;
     margin: 0;
@@ -9,7 +9,7 @@ body {
 
 a:link,
 a:visited {
-    color: #505050;
+    color: #ffffff;
     text-decoration: none;
 }
 
@@ -21,7 +21,7 @@ a:hover p,
 a:focus span,
 a:focus strong.
 a:focus p {
-    color: #909090;
+    color: #c0c0c0;
     text-decoration: none;
 }
 
@@ -47,7 +47,7 @@ select {
             box-sizing: border-box;
 
     border: 0;
-    border-bottom: 2px solid #e0e0e0;
+    border-bottom: 2px solid #505050;
     padding: 10px;
     width: 100%;
     height: 50px;
@@ -67,7 +67,7 @@ input[type=file]:disabled + label,
 
 textarea:disabled,
 select:disabled {
-    background-color: #f0f0f0;
+    background-color: #4a4a4a;
 }
 
 input[type=file] + label {
@@ -159,8 +159,8 @@ textarea:disabled,
 textarea:disabled,
 select:disabled,
 select:disabled {
-    color: #707070;
-    border-bottom-color: #c0c0c0;
+    color: #505050;
+    border-bottom-color: #4f4f4f;
 }
 
 input[type=text]:enabled:hover,
@@ -181,15 +181,15 @@ select:enabled:focus,
 
 div.select:hover::before,
 div.select:focus::before {
-    color: #505050;
-    border-bottom-color: #a0a0a0;
+    color: #ffffff;
+    border-bottom-color: #707070;
 }
 
 input:enabled:not(.none):invalid,
 input:enabled:not(.none):invalid:hover,
 input:enabled:not(.none):invalid:focus {
-    color: #ef5350;
-    border-bottom-color: #ef5350;
+    color: #f44336;
+    border-bottom-color: #f44336;
 }
 
 input[type=checkbox]:not(.none),
@@ -229,7 +229,7 @@ input[type=radio].radio-entry-list + label::before {
 
 input[type=checkbox]:checked + label::before,
 input[type=radio].radio-entry-list:checked + label::before {
-    color: #00a99b;
+    color: #8bc34a;
     content: "\e928";
 }
 
@@ -239,7 +239,7 @@ input[type=radio].radio-entry-list:checked + label::before {
 
 input[type=checkbox]:checked:hover + label::before,
 input[type=radio].radio-entry-list:checked:hover + label::before {
-    color: #00c9bb;
+    color: #c0c0c0;
 }
 
 input[type=checkbox]:disabled + label::before,
@@ -250,7 +250,7 @@ input[type=radio].radio-entry-list:disabled + label::before {
 
 input[type=checkbox] + label span,
 input[type=radio].radio-entry-list + label span {
-    color: #707070;
+    color: #e0e0e0;
     margin-left: 5px;
     line-height: 15px;
     font-size: 15px;
@@ -259,17 +259,17 @@ input[type=radio].radio-entry-list + label span {
 
 input[type=checkbox]:hover + label span,
 input[type=radio].radio-entry-list:hover + label span {
-    color: #909090;
+    color: #f0f0f0;
 }
 
 input[type=checkbox]:checked + label span,
 input[type=radio].radio-entry-list:checked + label span {
-    color: #505050;
+    color: #ffffff;
 }
 
 input[type=checkbox]:checked:hover + label span,
 input[type=radio].radio-entry-list:checked:hover + label span {
-    color: #707070;
+    color: #e0e0e0;
 }
 
 input[type=checkbox]:disabled + label span,
@@ -366,7 +366,7 @@ ul.radio-choose-tab > li input {
 
 ul.radio-choose-tab > li input + label {
     display: block;
-    background-color: #f0f0f0;
+    background-color: #505050;
     width: 100%;
     cursor: pointer;
 }
@@ -376,22 +376,22 @@ ul.radio-choose-tab > li input:enabled:checked + label {
 }
 
 ul.radio-choose-tab > li input + label span {
-    color: #505050;
+    color: #f0f0f0;
     line-height: 40px;
     font-size: 14px;
 }
 
 ul.radio-choose-tab > li input:disabled + label span {
-    color: #c0c0c0;
+    color: #555555;
 }
 
 ul.radio-choose-tab > li input:enabled:checked + label,
 ul.radio-choose-tab > li input:enabled:checked + label:hover {
-    background-color: #00897b;
+    background-color: #8bc34a;
 }
 
 ul.radio-choose-tab > li input:enabled + label:hover {
-    background-color: #e0e0e0;
+    background-color: #707070;
 }
 
 ul.radio-choose-tab > li input:enabled:checked + label span,
@@ -400,7 +400,7 @@ ul.radio-choose-tab > li input:enabled:checked + label:hover span {
 }
 
 ul.radio-choose-tab > li input + label:enabled:hover span {
-    color:  #00897b;
+    color:  #8bc34a;
 }
 
 div#container {
@@ -412,7 +412,7 @@ div#container {
 }
 
 div#header {
-    background-color: #00897b;
+    background-color: #558b2f;
 
     -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
        -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
@@ -537,7 +537,7 @@ div#header ul#action li a:focus span {
 
 div#footer {
     border: 0;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid #292929;
     position: relative;
     left: 0;
     right: 0;
@@ -554,7 +554,7 @@ div#footer {
 
 div#footer::after {
     content: '';
-    background-color: #ffffff;
+    background-color: #404040;
     position: absolute;
     top: 0;
     left: 0;
@@ -564,9 +564,9 @@ div#footer::after {
 
 div#footer,
 div#footer span {
-    color: #c0c0c0;
+    color: #454545;
     font-size: 14px;
-    text-shadow: 1px 1px #ffffff;
+    text-shadow: 1px 1px #202020;
 }
 
 div#content {
@@ -591,7 +591,7 @@ ul.alert {
 
 ul.alert li {
     font-size: 14px;
-    background-color: #ffffff;
+    background-color: #454545;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
        -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
@@ -611,35 +611,35 @@ ul.alert li:last-child {
 
 ul.alert li,
 ul.alert li * {
-    color: #505050;
+    color: #ffffff;
 }
 
 ul.alert li a:hover {
-    color: #707070;
+    color: #c0c0c0;
 }
 
 ul.alert li.danger,
 ul.alert li.danger * {
-    color: #bf1c1c;
-    background-color: #ffcdd2;
+    color: #b71c1c;
+    background-color: #e57373;
 }
 
 ul.alert li.success,
 ul.alert li.success * {
     color: #33691e;
-    background-color: #dcedc8;
+    background-color: #aed581;
 }
 
 ul.alert li.warning,
 ul.alert li.warning * {
-    color: #ef6c00;
-    background-color: #ffe0b2;
+    color: #e65100;
+    background-color: #ffb74d;
 }
 
 ul.alert li.info,
 ul.alert li.info * {
     color: #006064;
-    background-color: #b2ebf2;
+    background-color: #4dd0e1;
 }
 
 ul.alert li.info a:hover,
@@ -657,7 +657,7 @@ ul.menu-action li {
 }
 
 ul.menu-action {
-    background-color: #ffffff;
+    background-color: #454545;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
        -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
@@ -725,16 +725,20 @@ ul.menu-action li a span.icomoon {
 }
 
 ul.menu-action li a span {
-    color: #505050;
     line-height: 45px;
     vertical-align: middle;
+}
+
+ul.menu-action li,
+ul.menu-action li a span {
+    color: #ffffff;
 }
 
 ul.menu-action li a:hover span,
 ul.menu-action li a:hover strong,
 ul.menu-action li a:focus span,
 ul.menu-action li a:focus strong {
-    color:  #707070;
+    color:  #c0c0c0;
     vertical-align: middle;
 }
 
@@ -771,12 +775,12 @@ ul.paging li {
 
 ul.paging li.current strong {
     color: #ffffff;
-    background-color: #00897b;
+    background-color: #8bc34a;
     padding: 5px;
 }
 
 ul.paging li.other span {
-    color: #00897b;
+    color: #8bc34a;
     background-color: #f0f0f0;
     padding: 5px;
 }
@@ -791,11 +795,11 @@ ul.paging li.other a:hover span {
 }
 
 ul.paging li.jump a:hover span {
-    color: #00897b;
+    color: #8bc34a;
 }
 
 div.form-action {
-    background-color: #ffffff;
+    background-color: #454545;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
        -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
@@ -815,7 +819,7 @@ div.form-action > div.title {
 }
 
 div.form-action > div.title span {
-    color: #505050;
+    color: #ffffff;
     font-weight: normal;
     font-size: 17px;
 }
@@ -899,7 +903,7 @@ div.form-action ul.form-element > li.textarea span,
 div.form-action ul.form-element > li.select span,
 div.form-action ul.form-element > li.checkbox > span:first-child,
 div.form-action ul.form-element > li.radio > span:first-child {
-    color: #00897b;
+    color: #8bc34a;
     font-size: 14px;
     font-weight: normal;
 }
@@ -965,7 +969,7 @@ div.form-action ul.form-element > li.input-chmod ul li:nth-child(1),
 div.form-action ul.form-element > li.input-chmod ul li:nth-child(2),
 div.form-action ul.form-element > li.input-chmod ul li:nth-child(3) {
     color: #ffffff;
-    background-color: #00897b;
+    background-color: #55872f;
     font-weight: bold;
     padding-left: 10px;
     padding-right: 10px;
@@ -977,14 +981,14 @@ div.form-action ul.form-element > li.input-chmod ul li:nth-child(3) {
 div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label {
     cursor: pointer;
     display: block;
-    background-color: #f8f8f8;
+    background-color: #505050;
     width: 100%;
     height: 40px;
     white-space: nowrap;
 }
 
 div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label span {
-    color: #e0e0e0;
+    color: #c0c0c0;
     margin-left: 10px;
     margin-right: 10px;
 }
@@ -998,20 +1002,24 @@ div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label sp
     margin-right: 2px;
 }
 
+div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label:hover {
+    background-color: #5a5a5a;
+}
+
 div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label:hover span {
-    color: #c0c0c0;
+    color: #ffffff;
 }
 
 div.form-action ul.form-element > li.input-chmod input[type=checkbox]:checked + label {
-    background-color: #e0e0e0;
+    background-color: #707070;
 }
 
 div.form-action ul.form-element > li.input-chmod input[type=checkbox]:checked + label span {
-    color: #505050;
+    color: #ffffff;
 }
 
 div.form-action ul.form-element > li.input-chmod input[type=checkbox]:checked + label:hover {
-    background-color: #eaeaea;
+    background-color: #6a6a6a;
 }
 
 div.form-action ul.form-element > li.radio-choose {
@@ -1022,7 +1030,7 @@ div.form-action ul.form-element > li.radio-choose {
 }
 
 div.form-action ul.form-element > li.radio-choose > span:first-child {
-    color: #00897b;
+    color: #8bc34a;
     display:block;
     font-size: 14px;
     font-weight: normal;
@@ -1094,7 +1102,7 @@ li.button-action-box button {
 div.form-action ul.form-element > li.button button span,
 div.button-action-box button span,
 li.button-action-box button span {
-    color: #00897b;
+    color: #8bc34a;
     font-size: 14px;
     font-weight: normal;
 }
@@ -1102,7 +1110,7 @@ li.button-action-box button span {
 div.form-action ul.form-element > li.button button:hover span,
 div.button-action-box button:hover span,
 li.button-action-box button:hover span {
-    color: #00a99b;
+    color: #9ccc65;
 }
 
 div.form-action ul.form-element > li.button > a,
@@ -1123,13 +1131,13 @@ div.button-action-box button:hover,
 div.button-action-box > a:hover,
 li.button-action-box button:hover,
 li.button-action-box > a:hover {
-    background-color: #f0f0f0;
+    background-color: #4a4a4a;
 }
 
 div.form-action ul.form-element > li.button > a span,
 div.button-action-box > a span,
 li.button-action-box > a span {
-    color: #404040;
+    color: #ffffff;
     font-weight: normal;
     font-size: 14px;
     line-height: 30px;
@@ -1138,7 +1146,7 @@ li.button-action-box > a span {
 div.form-action ul.form-element > li.button > a:hover span,
 div.button-action-box > a:hover span,
 li.button-action-box > a:hover span {
-    color: #00897b;
+    color: #8bc34a;
 }
 
 div.form-action ul.form-element > li.button.center,
@@ -1158,7 +1166,7 @@ ul.action-multi li {
 }
 
 ul.action-multi {
-    background-color: #ffffff;
+    background-color: #454545;
 
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
        -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.20);
@@ -1192,7 +1200,7 @@ ul.action-multi li span.icomoon {
 
 ul.action-multi li span,
 ul.action-multi li button {
-    color: #505050;
+    color: #ffffff;
     vertical-align: middle;
 }
 
@@ -1200,7 +1208,7 @@ ul.action-multi li button:hover,
 ul.action-multi li button:focus,
 ul.action-multi li button:hover span,
 ul.action-multi li button:focus span {
-    color: #707070;
+    color: #c0c0c0;
 }
 
 ul.action-multi li:first-child:nth-last-child(2),
