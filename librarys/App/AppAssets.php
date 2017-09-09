@@ -2,6 +2,7 @@
 
     namespace Librarys\App;
 
+    use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\App\Config\AppAssetsConfig;
     use Librarys\Minify\Css as MinifyCss;
@@ -57,7 +58,7 @@
             $buffer  .= '&' . ASSET_PARAMETER_CSS_URL          . '=' . $filename;
             $buffer  .= '&' . $boot->getCFSRToken()->getName() . '=' . $boot->getCFSRToken()->getToken();
 
-            if (env('app.dev.enable'))
+            if (env('app.dev.enable') || Boot::isRunLocal())
                 $buffer  .= '&' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
 
             return $buffer;
@@ -175,7 +176,7 @@
             if ($cacheEnable) {
                 $timeNow              = time();
                 $cacheDirectory       = env('app.path.cache');
-                $cacheFilename        = md5($this->filename);
+                $cacheFilename        = md5($this->pathDirectory . SP . $this->filename);
                 $cacheFilepath        = FileInfo::filterPaths($cacheDirectory . SP . $cacheFilename . '.' . $cacheMime);
                 $cacheFiletime        = 0;
                 $fileResourceTime     = 0;

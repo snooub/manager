@@ -111,8 +111,8 @@
         <div id="login">
             <form action="login.php" method="post" id="login-form">
                 <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
-                <input type="text" name="username" value="<?php echo stripslashes($username); ?>" placeholder="<?php echo lng('user.login.form.input_username_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
-                <input type="password" name="password" value="<?php echo stripslashes($password); ?>" placeholder="<?php echo lng('user.login.form.input_password_placeholder'); ?>"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
+                <input type="text" name="username" value="<?php echo stripslashes(htmlspecialchars($username)); ?>" placeholder="<?php echo lng('user.login.form.input_username_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
+                <input type="password" name="password" value="<?php echo stripslashes(htmlspecialchars($password)); ?>" placeholder="<?php echo lng('user.login.form.input_password_placeholder'); ?>"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
                 <div id="login-form-action">
                     <?php if ($appConfig->get('user.login.enable_forgot_password')) { ?>
                         <a href="forgot_password.php" id="forgot-password">

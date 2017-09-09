@@ -74,7 +74,7 @@
             }
         }
 
-        $forms['chmod'] = stripslashes($forms['chmod']);
+        $forms['chmod'] = stripslashes(htmlspecialchars($forms['chmod']));
     }
 ?>
 

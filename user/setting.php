@@ -75,6 +75,12 @@
                 $appAlert->success(lng('user.setting.alert.save_change_config_success'), ALERT_USER_LOGIN, 'login.php');
             }
         }
+
+        $forms['username']        = stripslashes(htmlspecialchars($forms['username']));
+        $forms['email']           = stripslashes(htmlspecialchars($forms['email']));
+        $forms['password_old']    = stripslashes(htmlspecialchars($forms['password_old']));
+        $forms['password_new']    = stripslashes(htmlspecialchars($forms['password_new']));
+        $forms['password_verify'] = stripslashes(htmlspecialchars($forms['password_verify']));
     }
 ?>
 

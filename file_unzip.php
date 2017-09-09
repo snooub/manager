@@ -175,7 +175,7 @@
             <ul class="form-element">
                 <li class="input">
                     <span><?php echo lng('file_unzip.form.input.path_unzip'); ?></span>
-                    <input type="text" name="path" value="<?php echo $forms['path']; ?>" placeholder="<?php echo lng('file_unzip.form.placeholder.input_path_unzip'); ?>"/>
+                    <input type="text" name="path" value="<?php echo htmlspecialchars($forms['path']); ?>" placeholder="<?php echo lng('file_unzip.form.placeholder.input_path_unzip'); ?>"/>
                 </li>
                 <li class="radio-choose">
                     <span><?php echo lng('file_unzip.form.input.if_has_entry_is_exists'); ?></span>

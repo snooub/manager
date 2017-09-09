@@ -88,7 +88,7 @@
             }
         }
 
-        $forms['name'] = stripslashes($forms['name']);
+        $forms['name'] = stripslashes(htmlspecialchars($forms['name']));
     }
 ?>
 

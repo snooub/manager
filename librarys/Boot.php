@@ -169,8 +169,9 @@
         public static function isRunLocal()
         {
             $host = env('SERVER.HTTP_HOST');
+            $ip   = takeIP();
 
-            if (preg_match('/(localhost|127\.0\.0\.1|izerocs\.mobi)(:8080)?/i', $host))
+            if (preg_match('/(localhost|127\.0\.0\.1|izerocs\.mobi)(:8080)?/i', $host) || preg_match('/127\.0\.0\.1/i', $ip))
                 return true;
         }
 
