@@ -13,30 +13,6 @@
 
     define('PARAMETER_CHECK_CHANGE_CONFIG_URL', 'check_change_config');
 
-    $directory = realpath(ROOT);
-
-    require_once(
-        $directory . SP .
-        'librarys' . SP .
-        'Boot.php'
-    );
-
-    $boot = new Librarys\Boot(
-        require_once(
-            $directory . SP .
-            'assets'   . SP .
-            'config'   . SP .
-            'app.php'
-        ),
-
-        defined('ENABLE_CUSTOM_HEADER')
-    );
-
-    if (isValidateIP(($ip = takeIP())) == false)
-        die(lng('default.global.ip_not_validate', 'ip', $ip));
-    else
-        unset($ip);
-
     use Librarys\App\AppUser;
     use Librarys\App\AppAlert;
     use Librarys\App\AppClean;
@@ -44,75 +20,86 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\Config\AppConfig;
     use Librarys\App\Mysql\AppMysqlConfig;
+    use Librarys\Http\Request;
+    use Librarys\Http\Validate;
+    use Librarys\Http\Secure\CFSRToken;
+    use Librarys\Exception\RuntimeException;
 
-    $appChecker      = new AppChecker    ($boot);
-    $appConfig       = new AppConfig     ($boot);
-    $appUser         = new AppUser       ($boot);
-    $appAlert        = new AppAlert      ($boot);
-    $appDirectory    = new AppDirectory  ($boot);
-    $appMysqlConfig  = new AppMysqlConfig($boot);
+    $directory = realpath(ROOT);
+
+    require_once(
+        $directory . SP .
+        'librarys' . SP .
+        'Bootstrap.php'
+    );
+
+    Librarys\Bootstrap::execute($directory . SP . 'assets' . SP . 'config' . SP . 'app.php');
+
+    if (Validate::ip(($ip = Request::ip())) == false)
+        throw new RuntimeException(lng('default.global.ip_not_validate', 'ip', $ip));
 
     unset($directory);
 
-    if ($appChecker->execute()->isAccept() == false) {
-        if ($appChecker->isInstallDirectory() == false)
-            die(lng('default.global.app_is_install_root'));
-        else if ($appChecker->isDirectoryPermissionExecute() == false)
-            die(lng('default.global.host_is_not_premission'));
-        else if ($appChecker->isConfigValidate() == false)
-            die(lng('default.global.config_app_not_found'));
+    if (AppChecker::getInstance()->execute()->isAccept() == false) {
+        if (AppChecker::getInstance()->isInstallDirectory() == false)
+            throw new RuntimeException(lng('default.global.app_is_install_root'));
+        else if (AppChecker::getInstance()->isDirectoryPermissionExecute() == false)
+            throw new RuntimeException(lng('default.global.host_is_not_premission'));
+        else if (AppChecker::getInstance()->isConfigValidate() == false)
+            throw new RuntimeException(lng('default.global.config_app_not_found'));
         else
-            die(lng('default.global.unknown_error_app'));
+            throw new RuntimeException(lng('default.global.unknown_error_app'));
     }
 
     // Get config system
-    $appConfig->execute();
-    $appUser->execute();
+    AppConfig::getInstance()->execute();
+    AppUser::getInstance()->execute();
+    AppAlert::getInstance()->execute();
 
     // Get config user
-    $appConfig->execute($appUser);
-    $appConfig->requireEnvProtected(env('resource.config.manager_dis'));
+    AppConfig::getInstance()->execute(AppUser::getInstance());
+    AppConfig::getInstance()->requireEnvProtected(env('resource.config.manager_dis'));
 
-    if ($boot->getCFSRToken()->validatePost() !== true)
-        die(lng('default.global.cfsr_not_validate'));
+    if (CFSRToken::getInstance()->validatePost() !== true)
+        throw new RuntimeException(lng('default.global.cfsr_not_validate'));
 
-    $appDirectory->execute();
-    $appMysqlConfig->execute($appUser);
+    AppDirectory::getInstance()->execute();
+    AppMysqlConfig::getInstance()->execute(AppUser::getInstance());
 
     $httpHostApp    = env('app.http.host');
-    $httpHostConfig = $appConfig->get('http_host');
+    $httpHostConfig = AppConfig::getInstance()->get('http_host');
 
     if (strcmp($httpHostApp, $httpHostConfig) !== 0) {
-        if ($appConfig->setSystem('http_host', $httpHostApp) == false || $appConfig->write(true) == false)
-            die(lng('default.global.change_config_failed'));
+        if (AppConfig::getInstance()->setSystem('http_host', $httpHostApp) == false || AppConfig::getInstance()->write(true) == false)
+            throw new RuntimeException(lng('default.global.change_config_failed'));
 
         if (isset($_GET[PARAMETER_CHECK_CHANGE_CONFIG_URL]))
-            die(lng('default.global.change_config_failed'));
+            throw new RuntimeException(lng('default.global.change_config_failed'));
 
         if (AppClean::scanAutoClean(true))
-            gotoURL($httpHostApp . '?' . PARAMETER_CHECK_CHANGE_CONFIG_URL);
+            Request::redirect($httpHostApp . '?' . PARAMETER_CHECK_CHANGE_CONFIG_URL);
     } else {
         AppClean::scanAutoClean();
 
         if (isset($_GET[PARAMETER_CHECK_CHANGE_CONFIG_URL]))
-            $appAlert->success(lng('default.global.change_config_success'), $appUser->isLogin() ? ALERT_INDEX : ALERT_USER_LOGIN, $httpHostApp);
+            AppAlert::success(lng('default.global.change_config_success'), AppUser::getInstance()->isLogin() ? ALERT_INDEX : ALERT_USER_LOGIN, $httpHostApp);
     }
 
-    if ($appUser->getConfig()->hasEntryConfigArraySystem() == false) {
+    if (AppUser::getInstance()->getConfig()->hasEntryConfigArraySystem() == false) {
         $idAlert = ALERT_USER_LOGIN;
         $urlGoto = $httpHostApp . '/user/login.php';
 
-        if ($appUser->createFirstUser())
-            $appAlert->success(lng('default.global.create_first_user_success', 'username', AppUser::USERNAME_CREATE_FIRST, 'password', AppUser::PASSWORD_CREATE_FIRST), $idAlert, $urlGoto);
+        if (AppUser::getInstance()->createFirstUser())
+            AppAlert::success(lng('default.global.create_first_user_success', 'username', AppUser::USERNAME_CREATE_FIRST, 'password', AppUser::PASSWORD_CREATE_FIRST), $idAlert, $urlGoto);
         else
-            $appAlert->danger(lng('default.global.create_first_user_failed'), $idAlert, $urlGoto);
+            AppAlert::danger(lng('default.global.create_first_user_failed'), $idAlert, $urlGoto);
     }
 
     if (defined('DISABLE_CHECK_LOGIN') == false) {
-        if ($appUser->isLogin() == false)
-            $appAlert->danger(lng('user.login.alert.not_login'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
-        else if ($appUser->isUserBand())
-            $appAlert->danger(lng('user.login.alert.user_is_band'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
+        if (AppUser::getInstance()->isLogin() == false)
+            AppAlert::danger(lng('user.login.alert.not_login'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
+        else if (AppUser::getInstance()->isUserBand())
+            AppAlert::danger(lng('user.login.alert.user_is_band'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
     }
 
     unset($httpHostApp);

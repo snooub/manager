@@ -5,14 +5,12 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
-
     final class AppAssetsConfig extends BaseConfig
     {
 
-        public function __construct(Boot $boot, $pathThemeEnv)
+        public function __construct($pathThemeEnv)
         {
-            parent::__construct($boot, $pathThemeEnv);
+            parent::__construct($pathThemeEnv);
             parent::parse(true);
         }
 

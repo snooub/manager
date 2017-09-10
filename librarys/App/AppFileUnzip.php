@@ -6,6 +6,7 @@
         exit;
 
     use Librarys\File\FileInfo;
+    use Librarys\Http\Request;
 
     final class AppFileUnzip
     {
@@ -24,8 +25,8 @@
 
         public function __construct()
         {
-            if (isset($_SESSION[self::SESSION_KEY])) {
-                $array = $_SESSION[self::SESSION_KEY];
+            if (Request::session()->has(self::SESSION_KEY)) {
+                $array = Request::session()->get(self::SESSION_KEY);
 
                 if (isset($array[self::ARRAY_KEY_DIRECTORY]) && isset($array[self::ARRAY_KEY_NAME])) {
                     $this->setDirectory($array[self::ARRAY_KEY_DIRECTORY]);
@@ -62,17 +63,17 @@
 
         public function flushSession()
         {
-            $_SESSION[self::SESSION_KEY] = [
+            Request::session()->put(self::SESSION_KEY, [
                 self::ARRAY_KEY_DIRECTORY   => $this->directory,
                 self::ARRAY_KEY_NAME        => $this->name,
                 self::ARRAY_KEY_PATH        => $this->path,
                 self::ARRAY_KEY_EXISTS_FUNC => $this->existsFunc
-            ];
+            ]);
         }
 
         public function clearSession()
         {
-            unset($_SESSION[self::SESSION_KEY]);
+            Request::session()->remove(self::SESSION_KEY);
         }
 
         public function setDirectory($directory)

@@ -5,13 +5,13 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
     use Librarys\File\FileInfo;
 
     final class AppDirectory
     {
 
-        private $boot;
+        private static $instance;
+
         private $directory;
         private $name;
         private $aliasName;
@@ -27,9 +27,27 @@
         const PARAMETER_ALIAS_NAME_URL = 'alias_name';
         const PARAMETER_PAGE_URL       = 'pager';
 
-        public function __construct(Boot $boot)
+        protected function __construct()
         {
-            $this->boot = $boot;
+
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new AppDirectory();
+
+            return self::$instance;
         }
 
         public function execute()

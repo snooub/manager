@@ -1,9 +1,11 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
-    use Librarys\File\FileInfo;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\Database\DatabaseBackupRestore;
+    use Librarys\File\FileInfo;
 
     define('LOADED',               1);
     define('DATABASE_CHECK_MYSQL', 1);
@@ -14,13 +16,13 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $title   = lng('mysql.restore_upload.title_page');
     $themes  = [ env('resource.filename.theme.mysql') ];
     $scripts = [ env('resource.filename.javascript.custom_input_file') ];
-    $appAlert->setID(ALERT_MYSQL_RESTORE_UPLOAD);
+    AppAlert::setID(ALERT_MYSQL_RESTORE_UPLOAD);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
     requireDefine('mysql_restore_manager');
 
@@ -42,15 +44,15 @@
         $forms['func_upload'] = intval(addslashes($_POST['func_upload']));
 
         if (empty($forms['file']['name'])) {
-            $appAlert->danger(lng('mysql.restore_upload.alert.empty_file_upload'));
+            AppAlert::danger(lng('mysql.restore_upload.alert.empty_file_upload'));
         } else if ($forms['func_upload'] !== FUNC_STORE_FILE && $forms['func_upload'] !== FUNC_RESTORE && $forms['func_upload'] !== FUNC_STORE_AND_RESTORE) {
-            $appAlert->danger(lng('mysql.restore_upload.alert.func_upload_not_validate'));
+            AppAlert::danger(lng('mysql.restore_upload.alert.func_upload_not_validate'));
         } else if ($forms['file']['error'] === UPLOAD_ERR_INI_SIZE) {
-            $appAlert->danger(lng('mysql.restore_upload.alert.file_upload_error_size', 'name', $forms['file']['name']));
+            AppAlert::danger(lng('mysql.restore_upload.alert.file_upload_error_size', 'name', $forms['file']['name']));
         } else if (DatabaseBackupRestore::isFilenameValidate($forms['file']['name']) == false) {
-            $appAlert->danger(lng('mysql.restore_upload.alert.file_upload_not_validate', 'name', $forms['file']['name']));
+            AppAlert::danger(lng('mysql.restore_upload.alert.file_upload_not_validate', 'name', $forms['file']['name']));
         } else if ($forms['func_upload'] !== FUNC_RESTORE && empty($forms['name_store']) == false && DatabaseBackupRestore::isFilenameValidate($forms['name_store']) == false) {
-            $appAlert->danger(lng('mysql.restore_upload.alert.file_name_store_not_validate', 'name', $forms['name_store']));
+            AppAlert::danger(lng('mysql.restore_upload.alert.file_name_store_not_validate', 'name', $forms['name_store']));
         } else {
             $nameStore      = basename($forms['file']['name']);
             $pathStore      = $forms['file']['tmp_name'];
@@ -85,20 +87,20 @@
                 }
 
                 if (FileInfo::copyFile($forms['file']['tmp_name'], $pathStore) == false) {
-                    $appAlert->danger(lng('mysql.restore_upload.alert.store_file_failed', 'name', $forms['file']['name']));
+                    AppAlert::danger(lng('mysql.restore_upload.alert.store_file_failed', 'name', $forms['file']['name']));
                     $isStoreSuccess = false;
                 } else if ($forms['func_upload'] === FUNC_STORE_FILE) {
-                    $appAlert->success(lng('mysql.restore_upload.alert.store_file_success', 'name', $forms['file']['name']), ALERT_MYSQL_RESTORE_MANAGER, 'restore_manager.php' . $appParameter->toString());
+                    AppAlert::success(lng('mysql.restore_upload.alert.store_file_success', 'name', $forms['file']['name']), ALERT_MYSQL_RESTORE_MANAGER, 'restore_manager.php' . $appParameter->toString());
                 }
             }
 
             if ($forms['func_upload'] !== FUNC_STORE_FILE && $isStoreSuccess) {
                 if ($databaseBackupRestore->restore($pathStore) == false)
-                    $appAlert->danger(lng('mysql.restore_upload.alert.restore_record_failed', 'name', $nameStore), 'error', $appMysqlConnect->error());
+                    AppAlert::danger(lng('mysql.restore_upload.alert.restore_record_failed', 'name', $nameStore), 'error', $appMysqlConnect->error());
                 else if ($forms['func_upload'] === FUNC_RESTORE)
-                    $appAlert->success(lng('mysql.restore_upload.alert.restore_record_success', 'name', $nameStore, 'size', FileInfo::sizeToString($forms['file']['size'])), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+                    AppAlert::success(lng('mysql.restore_upload.alert.restore_record_success', 'name', $nameStore, 'size', FileInfo::sizeToString($forms['file']['size'])), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
                 else if ($forms['func_upload'] === FUNC_STORE_AND_RESTORE)
-                    $appAlert->success(lng('mysql.restore_upload.alert.store_and_restore_record_success', 'name', $nameStore, 'size', FileInfo::fileSize($pathStore, true)), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+                    AppAlert::success(lng('mysql.restore_upload.alert.store_and_restore_record_success', 'name', $nameStore, 'size', FileInfo::fileSize($pathStore, true)), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
             }
         }
 
@@ -106,14 +108,14 @@
     }
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.restore_upload.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
         <form action="restore_upload.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database-backup" enctype="multipart/form-data">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input-file" id="input-file">

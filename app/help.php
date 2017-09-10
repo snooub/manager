@@ -6,7 +6,7 @@
     require_once('global.php');
 
     $title      = lng('app.help.title_page');
-    $appUpgrade = new AppUpgrade($boot);
+    $appUpgrade = new AppUpgrade();
     $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 ?>

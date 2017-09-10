@@ -1,11 +1,11 @@
 <?php
 
-    namespace Librarys\Encryption;
+    namespace Librarys\Text\Encryption;
 
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Encryption\Services_JSON_Error;
+    use Librarys\Text\Encryption\Exception\Services_JSON_Error;
 
 /**
 * Marker constant for Services_JSON::decode(), used to flag stack state

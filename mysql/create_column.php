@@ -1,7 +1,9 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\File\FileInfo;
 
     use Librarys\App\Mysql\AppMysqlDataType;
@@ -16,8 +18,8 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
@@ -25,7 +27,7 @@
 
     $title  = lng('mysql.create_column.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_CREATE_COLUMN);
+    AppAlert::setID(ALERT_MYSQL_CREATE_COLUMN);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $forms = [
@@ -63,15 +65,15 @@
             $forms['auto_increment'] = boolval(addslashes($_POST['auto_increment']));
 
         if (empty($forms['column_name'])) {
-            $appAlert->danger(lng('mysql.create_column.alert.not_input_column_name'));
+            AppAlert::danger(lng('mysql.create_column.alert.not_input_column_name'));
         } else if ($forms['collection'] != AppMysqlCollection::COLLECTION_NONE && AppMysqlCollection::isValidate($forms['collection'], $charset, $collate) == false) {
-            $appAlert->danger(lng('mysql.create_column.alert.collection_not_validate'));
+            AppAlert::danger(lng('mysql.create_column.alert.collection_not_validate'));
         } else if (empty($forms['length_value']) == false && $appMysqlConnect->isLengthDataValidate($forms['length_value']) == false) {
-            $appAlert->danger(lng('mysql.create_column.alert.length_data_not_validate'));
+            AppAlert::danger(lng('mysql.create_column.alert.length_data_not_validate'));
         } else if (($positionResult = AppMysqlColumnPosition::isPositionValidate($forms['position'])) === false) {
-            $appAlert->danger(lng('mysql.create_column.alert.position_not_validate'));
+            AppAlert::danger(lng('mysql.create_column.alert.position_not_validate'));
         } else if ($appMysqlConnect->isColumnNameExists($appMysqlConnect->getTableCurrent(), $forms['column_name'])) {
-            $appAlert->danger(lng('mysql.create_column.alert.column_name_is_exists'));
+            AppAlert::danger(lng('mysql.create_column.alert.column_name_is_exists'));
         } else {
             $dataTypeBuffer      = $forms['data_type'];
             $collectionBuffer    = null;
@@ -135,7 +137,7 @@
                 $mysqlStr .= ' ' . $positionBuffer;
 
             if ($appMysqlConnect->query($mysqlStr) == false) {
-                $appAlert->danger(lng('mysql.create_column.alert.create_column_failed', 'error', $appMysqlConnect->error()));
+                AppAlert::danger(lng('mysql.create_column.alert.create_column_failed', 'error', $appMysqlConnect->error()));
             } else {
                 $idAlert = null;
                 $urlGoto = null;
@@ -145,7 +147,7 @@
                     $idAlert = ALERT_MYSQL_LIST_COLUMN;
                 }
 
-                $appAlert->success(lng('mysql.create_column.alert.create_column_success', 'name', $forms['column_name']), $idAlert, $urlGoto);
+                AppAlert::success(lng('mysql.create_column.alert.create_column_success', 'name', $forms['column_name']), $idAlert, $urlGoto);
             }
 
             $forms['column_name']    = null;
@@ -162,14 +164,14 @@
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.create_column.title_page'); ?></span>
         </div>
         <form action="create_column.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input">

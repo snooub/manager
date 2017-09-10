@@ -1,7 +1,9 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\File\FileInfo;
 
     use Librarys\App\Mysql\AppMysqlDataType;
@@ -18,12 +20,12 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $title  = lng('mysql.create_table.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_CREATE_TABLE);
+    AppAlert::setID(ALERT_MYSQL_CREATE_TABLE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $appParameter = new AppParameter();
@@ -61,15 +63,15 @@
             $forms['auto_increment'] = boolval(addslashes($_POST['auto_increment']));
 
         if (empty($forms['table_name'])) {
-            $appAlert->danger(lng('mysql.create_table.alert.not_input_table_name'));
+            AppAlert::danger(lng('mysql.create_table.alert.not_input_table_name'));
         } else if (empty($forms['column_name'])) {
-            $appAlert->danger(lng('mysql.create_table.alert.not_input_column_name'));
+            AppAlert::danger(lng('mysql.create_table.alert.not_input_column_name'));
         } else if ($forms['collection'] != AppMysqlCollection::COLLECTION_NONE && AppMysqlCollection::isValidate($forms['collection'], $charset, $collate) == false) {
-            $appAlert->danger(lng('mysql.create_table.alert.collection_not_validate'));
+            AppAlert::danger(lng('mysql.create_table.alert.collection_not_validate'));
         } else if (empty($forms['length_value']) == false && $appMysqlConnect->isLengthDataValidate($forms['length_value']) == false) {
-            $appAlert->danger(lng('mysql.create_table.alert.length_data_not_validate'));
+            AppAlert::danger(lng('mysql.create_table.alert.length_data_not_validate'));
         } else if ($appMysqlConnect->isTableNameExists($forms['table_name'])) {
-            $appAlert->danger(lng('mysql.create_table.alert.table_name_is_exists'));
+            AppAlert::danger(lng('mysql.create_table.alert.table_name_is_exists'));
         } else {
             $dataTypeBuffer      = $forms['data_type'];
             $collectionBuffer    = null;
@@ -127,9 +129,9 @@
                 $mysqlStr .= ' ' . $autoIncrementBuffer . '=1';
 
             if ($appMysqlConnect->query($mysqlStr) == false)
-                $appAlert->danger(lng('mysql.create_table.alert.create_table_failed', 'error', $appMysqlConnect->error()));
+                AppAlert::danger(lng('mysql.create_table.alert.create_table_failed', 'error', $appMysqlConnect->error()));
             else
-                $appAlert->success(lng('mysql.create_table.alert.create_table_success', 'name', $forms['table_name']), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+                AppAlert::success(lng('mysql.create_table.alert.create_table_success', 'name', $forms['table_name']), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
 
             $forms['table_name']     = stripslashes($forms['table_name']);
             $forms['column_name']    = stripslashes($forms['column_name']);
@@ -147,14 +149,14 @@
     $databaseBackupRestore = new DatabaseBackupRestore($appMysqlConnect);
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.create_table.title_page'); ?></span>
         </div>
         <form action="create_table.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input">

@@ -1,6 +1,8 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
+    use Librarys\App\Config\AppConfig;
     use Librarys\App\Mysql\AppMysqlCollection;
 
     define('LOADED', 1);
@@ -8,7 +10,7 @@
 
     $title  = lng('mysql.create_database.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_CREATE_DATABASE);
+    AppAlert::setID(ALERT_MYSQL_CREATE_DATABASE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $forms = [
@@ -21,29 +23,29 @@
         $forms['collection'] = addslashes($_POST['collection']);
 
         if (empty($forms['name'])) {
-            $appAlert->danger(lng('mysql.create_database.alert.not_input_database_name'));
+            AppAlert::danger(lng('mysql.create_database.alert.not_input_database_name'));
         } else if ($appMysqlConnect->isDatabaseNameExists($forms['name'], null, true)) {
-            $appAlert->danger(lng('mysql.create_database.alert.database_name_is_exists'));
+            AppAlert::danger(lng('mysql.create_database.alert.database_name_is_exists'));
         } else if ($forms['collection'] == AppMysqlCollection::COLLECTION_NONE && $appMysqlConnect->query('CREATE DATABASE `' . $forms['name'] . '`') == false) {
-            $appAlert->danger(lng('mysql.create_database.alert.create_database_failed_error', 'error', $appMysqlConnect->error()));
+            AppAlert::danger(lng('mysql.create_database.alert.create_database_failed_error', 'error', $appMysqlConnect->error()));
         } else if ($forms['collection'] != AppMysqlCollection::COLLECTION_NONE) {
             if (AppMysqlCollection::isValidate($forms['collection'], $charset, $collate) == false) {
-                $appAlert->danger(lng('mysql.create_database.alert.collection_not_validate'));
+                AppAlert::danger(lng('mysql.create_database.alert.collection_not_validate'));
             } else if ($appMysqlConnect->query('CREATE DATABASE `' . $forms['name'] . '` CHARACTER SET ' . $charset . ' COLLATE ' . $collate) == false) {
-                $appAlert->danger(lng('mysql.create_database.alert.create_database_failed_error', 'error', $appMysqlConnect->error()));
+                AppAlert::danger(lng('mysql.create_database.alert.create_database_failed_error', 'error', $appMysqlConnect->error()));
             } else {
                 $idAlert = ALERT_MYSQL_LIST_DATABASE;
                 $urlGoto = 'list_database.php';
 
-                if ($appConfig->get('auto_redirect.create_database')) {
+                if (AppConfig::getInstance()->get('auto_redirect.create_database')) {
                     $idAlert = ALERT_MYSQL_LIST_TABLE;
                     $urlGoto = 'list_table.php?' . PARAMETER_DATABASE_URL . '=' . AppDirectory::rawEncode($forms['name']);
                 }
 
-                $appAlert->success(lng('mysql.create_database.alert.create_database_success', 'name', $forms['name']), $idAlert, $urlGoto);
+                AppAlert::success(lng('mysql.create_database.alert.create_database_success', 'name', $forms['name']), $idAlert, $urlGoto);
             }
         } else {
-            $appAlert->danger(lng('mysql.create_database.alert.create_database_failed'));
+            AppAlert::danger(lng('mysql.create_database.alert.create_database_failed'));
         }
 
         $forms['name']       = stripslashes($forms['name']);
@@ -51,14 +53,14 @@
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.create_database.title_page'); ?></span>
         </div>
         <form action="create_database.php" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input">

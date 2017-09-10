@@ -3,6 +3,8 @@
     if (defined('LOADED') == false)
         exit;
 
+    use Librarys\Error\ErrorHandler;
+
     return [
         'server' => [
             'document_root' => dirname(dirname(dirname(__DIR__))),
@@ -16,16 +18,29 @@
             ],
 
             'dev' => [
-                'enable' => true
+                'enable' => true,
+
+                'error_reported' => [
+                    'enable'           => true,
+                    'enable_producted' => true,
+                    'level'            => ErrorHandler::EU_ALL,
+
+                    'tpl'              => '${app.path.error}${SP}handler.php'
+                ]
             ],
 
             'date' => [
                 'timezone' => 'Asia/Ho_Chi_Minh'
             ],
 
-            'autoload' => [
-                'prefix_namespace' => 'Librarys',
-                'prefix_class_mime' => '.php'
+            'captcha' => [
+                'width'  => 100,
+                'height' => 45,
+
+                'font'   => [
+                    'size' => 17,
+                    'path' => 'captcha.ttf'
+                ]
             ],
 
             'session' => [
@@ -34,13 +49,19 @@
                 'cookie_lifetime' => 86400 * 7,
                 'cookie_path'     => '/${app.directory_absolute_http}/',
                 'cache_limiter'   => 'private',
-                'cache_expire'    => 0
+                'cache_expire'    => 180
+            ],
+
+            'autoload' => [
+                'prefix_namespace' => 'Librarys',
+                'prefix_class_mime' => '.php'
             ],
 
             'path' => [
                 'root'            => dirname(dirname(__DIR__)),
                 'librarys'        => '${app.path.root}${SP}librarys',
                 'resource'        => '${app.path.root}${SP}assets',
+                'error'           => '${app.path.resource}${SP}error',
                 'theme'           => '${app.path.resource}${SP}theme',
                 'icon'            => '${app.path.resource}${SP}icon',
                 'javascript'      => '${app.path.resource}${SP}javascript',
@@ -101,6 +122,7 @@
             'filename' => [
                 'theme' => [
                     'app'      => 'theme.css',
+                    'app_pc'   => 'theme_pc.css',
                     'about'    => 'about.css',
                     'login'    => 'login.css',
                     'file'     => 'file.css',

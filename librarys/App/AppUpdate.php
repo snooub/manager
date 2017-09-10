@@ -5,17 +5,18 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileCurl;
+    use Librarys\App\AppUser;
     use Librarys\App\AppParameter;
+    use Librarys\App\Config\AppConfig;
     use Librarys\App\Config\AppAboutConfig;
     use Librarys\App\Config\AppUpgradeConfig;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileCurl;
+    use Librarys\Http\Request;
 
     final class AppUpdate
     {
 
-        private $boot;
         private $aboutConfig;
         private $servers;
         private $serverErrors = array();
@@ -91,13 +92,12 @@
         const TYPE_BIN_UPGRDAE    = 1;
         const TYPE_BIN_ADDITIONAL = 2;
 
-        public function __construct(Boot $boot, AppAboutConfig $about)
+        public function __construct(AppAboutConfig $about)
         {
-            $this->boot        = $boot;
             $this->aboutConfig = $about;
             $this->servers     = env('app.server_app');
 
-            if (Boot::isRunLocal())
+            if (Request::isLocal())
                 $this->path = 'app/ManagerServer/check_update.php';
             else
                 $this->path = 'app/manager/check_update.php';
@@ -105,9 +105,7 @@
 
         public function checkUpdate()
         {
-            global $appConfig, $appUser;
-
-            if ($appUser->isPositionAdminstrator() == false)
+            if (AppUser::getInstance()->isPositionAdminstrator() == false)
                 return false;
 
             if (is_array($this->servers) == false)
@@ -118,9 +116,7 @@
             $languageCurrent = 'en';
             $countSuccess    = count($this->servers);
             $appParameter    = new AppParameter();
-
-            if ($appConfig != null)
-                $languageCurrent = $appConfig->get('language');
+            $languageCurrent = AppConfig::getInstance()->get('language');
 
             $appParameter->add(self::PARAMETER_VERSION_GUEST_URL,  AppDirectory::rawEncode($this->aboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
             $appParameter->add(self::PARAMETER_VERSION_BUILD_URL,  AppDirectory::rawEncode($this->aboutConfig->get(AppAboutConfig::ARRAY_KEY_BUILD_AT)));

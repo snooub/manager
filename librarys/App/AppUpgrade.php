@@ -5,16 +5,15 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
-    use Librarys\File\FileInfo;
-    use Librarys\Zip\PclZip;
+    use Librarys\App\AppUser;
     use Librarys\App\Config\AppAboutConfig;
     use Librarys\App\Config\AppUpgradeConfig;
+    use Librarys\File\FileInfo;
+    use Librarys\Zip\PclZip;
 
     final class AppUpgrade
     {
 
-        private $boot;
         private $appAboutConfig;
         private $appUpgradeConfig;
         private $isHasUpgradeLocal;
@@ -41,26 +40,22 @@
         const TYPE_BIN_INSTALL_UPGRADE    = 1;
         const TYPE_BIN_INSTALL_ADDITIONAL = 2;
 
-        public function __construct(Boot $boot, $appAboutConfig = null, $appUpgradeConfig = null)
+        public function __construct($appAboutConfig = null, $appUpgradeConfig = null)
         {
-            $this->boot = $boot;
-
             if ($appAboutConfig == null)
-                $this->appAboutConfig = new AppAboutConfig($boot);
+                $this->appAboutConfig = new AppAboutConfig();
             else
                 $this->appAboutConfig = $appAboutConfig;
 
             if ($appUpgradeConfig == null)
-                $this->appUpgradeConfig = new AppUpgradeConfig($boot);
+                $this->appUpgradeConfig = new AppUpgradeConfig();
             else
                 $this->appUpgradeConfig = $appUpgradeConfig;
         }
 
         public function checkHasUpgradeLocal(&$errorCheckUpgrade = null)
         {
-            global $appUser;
-
-            if ($appUser->isPositionAdminstrator() == false)
+            if (AppUser::getInstance()->isPositionAdminstrator() == false)
                 return false;
 
             if ($this->appUpgradeConfig->hasEntryConfigArrayAny() == false)
@@ -130,9 +125,7 @@
 
         public function installUpgradeNow($checkHasUpgradeLocal = false, &$errorZipExtract = null, &$errorUpgrade = null)
         {
-            global $appUser;
-
-            if ($appUser->isPositionAdminstrator() == false)
+            if (AppUser::getInstance()->isPositionAdminstrator() == false)
                 return false;
 
             if ($checkHasUpgradeLocal && $this->checkHasUpgradeLocal() == false)
@@ -256,9 +249,7 @@
 
         public function installAdditionalNow($checkHasUpgradeLocal = false, &$errorZipExtract = null, &$errorUpgrade = null)
         {
-            global $appUser;
-
-            if ($appUser->isPositionAdminstrator() == false)
+            if (AppUser::getInstance()->isPositionAdminstrator() == false)
                 return false;
 
             if ($checkHasUpgradeLocal && $this->checkHasUpgradeLocal() == false)

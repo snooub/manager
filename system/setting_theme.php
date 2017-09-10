@@ -1,12 +1,13 @@
 <?php
 
     use Librarys\App\AppUser;
+    use Librarys\App\AppAlert;
 
     define('LOADED', 1);
     require_once('global.php');
 
     $title = lng('system.setting_theme.title_page');
-    $appAlert->setID(ALERT_SYSTEM_SETTING_THEME);
+    AppAlert::setID(ALERT_SYSTEM_SETTING_THEME);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 ?>
 

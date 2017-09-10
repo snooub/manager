@@ -1,11 +1,9 @@
 <?php
 
-    namespace Librarys\CFSR;
+    namespace Librarys\Http\Secure;
 
-    if (defined('LOADED') == false)
-        exit;
-
-    use Librarys\Encryption\StringCrypt;
+    use Librarys\Http\Request;
+    use Librarys\Text\Encryption\StringEncryption;
 
     final class CFSRToken
     {
@@ -16,11 +14,12 @@
         private $path;
 
         private $isTokenUpdate;
+        private static $instance;
 
         const TOKEN_NAME_NOT_FOUND = 1;
         const TOKEN_NOT_EQUAL      = 2;
 
-        public function __construct()
+        private function __construct()
         {
             if (env('app.cfsr.use_token') == false)
                 return;
@@ -40,16 +39,34 @@
             setcookie($this->name, $this->token, env('SERVER.REQUEST_TIME') + $this->time, $this->path);
         }
 
+        private function __wakeup()
+        {
+
+        }
+
+        private function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new CFSRToken();
+
+            return self::$instance;
+        }
+
         public static function generator()
         {
             return ('token' .
                 md5(
                     base64_encode(
-                        takeIP()             .
-                        takeUserAgent() .
+                        Request::ip()             .
+                        Request::userAgent() .
                         time()              .
 
-                        StringCrypt::randomSalt()
+                        StringEncryption::randomSalt()
                     )
                 )
             );
@@ -57,7 +74,7 @@
 
         public function validatePost()
         {
-            if (env('app.cfsr.use_token') == false || env('app.cfsr.validate_post') == false)
+            if (env('http.cfsr.use_token') == false || env('http.cfsr.validate_post') == false)
                 return true;
 
             if (env('SERVER.REQUEST_METHOD') == 'POST') {
@@ -72,7 +89,7 @@
 
         public function validateGet()
         {
-            if (env('app.cfsr.use_token') == false || env('app.cfsr.validate_get') == false)
+            if (env('http.cfsr.use_token') == false || env('http.cfsr.validate_get') == false)
                 return true;
 
             if (env('SERVER.REQUEST_METHOD') == 'GET') {
@@ -106,5 +123,3 @@
         }
 
     }
-
-?>

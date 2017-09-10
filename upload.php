@@ -1,9 +1,10 @@
 <?php
 
-    use Librarys\File\FileInfo;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\File\FileInfo;
 
     define('LOADED',               1);
     define('EXISTS_FUNC_OVERRIDE', 1);
@@ -16,20 +17,20 @@
     $title   = lng('upload.title_page');
     $themes  = [ env('resource.filename.theme.file') ];
     $scripts = [ env('resource.filename.javascript.custom_input_file') ];
-    $appAlert->setID(ALERT_UPLOAD);
+    AppAlert::setID(ALERT_UPLOAD);
     require_once('incfiles' . SP . 'header.php');
 
-    if ($appDirectory->isDirectoryExists() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath())
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isDirectoryExists() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath())
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectory()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'upload.php');
+    $appLocationPath = new AppLocationPath('upload.php');
     $appLocationPath->setIsPrintLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
 
     $forms = [
         'files'       => null,
@@ -42,9 +43,9 @@
         $forms['exists_func'] = intval($_POST['exists_func']);
 
         if (isset($_FILES['files']) == false || isset($_FILES['files']['name']) == false) {
-            $appAlert->danger(lng('upload.alert.data_empty_or_not_validate'));
+            AppAlert::danger(lng('upload.alert.data_empty_or_not_validate'));
         } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP && $forms['exists_func'] !== EXISTS_FUNC_RENAME) {
-            $appAlert->danger(lng('upload.alert.exists_func_not_validate'));
+            AppAlert::danger(lng('upload.alert.exists_func_not_validate'));
         } else {
             $forms['is_empty']    = true;
             $forms['files_count'] = count($_FILES['files']['name']);
@@ -64,30 +65,30 @@
             }
 
             if ($forms['is_empty']) {
-                $appAlert->danger(lng('upload.alert.not_choose_file'));
+                AppAlert::danger(lng('upload.alert.not_choose_file'));
             } else {
                 foreach ($forms['files'] AS $index => $file) {
                     if ($file['error'] == UPLOAD_ERR_INI_SIZE) {
-                        $appAlert->danger(lng('upload.alert.file_error_max_size', 'filemame', $file['name']));
+                        AppAlert::danger(lng('upload.alert.file_error_max_size', 'filemame', $file['name']));
                     } else {
-                        $path        = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $file['name']);
+                        $path        = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $file['name']);
                         $isDirectory = FileInfo::isTypeDirectory($path);
                         $isFile      = FileInfo::isTypeFile($path);
                         $fileSizeStr = FileInfo::sizeToString($file['size']);
 
                         if ($isDirectory && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
-                            $appAlert->danger(lng('upload.alert.path_file_error_is_directory', 'filename', $file['name']));
+                            AppAlert::danger(lng('upload.alert.path_file_error_is_directory', 'filename', $file['name']));
                         } else if ($isFile && $forms['exists_func'] === EXISTS_FUNC_SKIP) {
-                            $appAlert->info(lng('upload.alert.path_file_is_exists_and_skip', 'filename', $file['name']));
+                            AppAlert::info(lng('upload.alert.path_file_is_exists_and_skip', 'filename', $file['name']));
                         } else if ($isFile && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
                             if (FileInfo::unlink($path)) {
 
                                 if (FileInfo::copy($file['tmp_name'], $path))
-                                    $appAlert->success(lng('upload.alert.upload_file_exists_override_is_success', 'filename', $file['name'], 'size', $fileSizeStr));
+                                    AppAlert::success(lng('upload.alert.upload_file_exists_override_is_success', 'filename', $file['name'], 'size', $fileSizeStr));
                                 else
-                                    $appAlert->danger(lng('upload.alert.upload_file_exists_override_is_failed', 'filename', $file['name']));
+                                    AppAlert::danger(lng('upload.alert.upload_file_exists_override_is_failed', 'filename', $file['name']));
                             } else {
-                                $appAlert->danger(lng('upload.alert.error_delete_file_exists', 'filename', $file['name']));
+                                AppAlert::danger(lng('upload.alert.error_delete_file_exists', 'filename', $file['name']));
                             }
                         } else if ($isFile && $forms['exists_func'] === EXISTS_FUNC_RENAME) {
                             $fileRename = null;
@@ -95,7 +96,7 @@
 
                             for ($i = 0; $i < 50; ++$i) {
                                 $fileRename = rand(10000, 99999) . '_' . $file['name'];
-                                $pathRename = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $fileRename);
+                                $pathRename = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $fileRename);
 
                                 if (FileInfo::fileExists($pathRename) == false) {
                                     break;
@@ -106,15 +107,15 @@
                             }
 
                             if ($fileRename == null || $pathRename == null)
-                                $appAlert->danger(lng('upload.alert.create_new_filename_exists_rename_is_failed', 'filename', $file['name']));
+                                AppAlert::danger(lng('upload.alert.create_new_filename_exists_rename_is_failed', 'filename', $file['name']));
                             else if (FileInfo::copy($file['tmp_name'], $pathRename))
-                                $appAlert->success(lng('upload.alert.upload_file_exists_rename_is_success', 'filename', $fileRename, 'size', $fileSizeStr));
+                                AppAlert::success(lng('upload.alert.upload_file_exists_rename_is_success', 'filename', $fileRename, 'size', $fileSizeStr));
                             else
-                                $appAlert->danger(lng('upload.alert.upload_file_exists_rename_is_failed', 'filename', $fileRename));
+                                AppAlert::danger(lng('upload.alert.upload_file_exists_rename_is_failed', 'filename', $fileRename));
                         } else if ($isFile || FileInfo::copy($file['tmp_name'], $path) == false) {
-                            $appAlert->danger(lng('upload.alert.upload_file_is_failed', 'filename', $file['name']));
+                            AppAlert::danger(lng('upload.alert.upload_file_is_failed', 'filename', $file['name']));
                         } else {
-                            $appAlert->success(lng('upload.alert.upload_file_is_success', 'filename', $file['name'], 'size', $fileSizeStr));
+                            AppAlert::success(lng('upload.alert.upload_file_is_success', 'filename', $file['name'], 'size', $fileSizeStr));
                         }
                     }
                 }
@@ -126,7 +127,7 @@
         $forms['files_count']++;
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
     <div class="form-action">
@@ -134,7 +135,7 @@
             <span><?php echo lng('upload.title_page'); ?></span>
         </div>
         <form action="upload.php<?php echo $appParameter->toString(); ?>" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <?php for ($i = 0; $i < $forms['files_count']; ++$i) { ?>

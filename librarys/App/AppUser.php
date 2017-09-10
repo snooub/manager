@@ -5,17 +5,19 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
-    use Librarys\File\FileInfo;
-    use Librarys\CFSR\CFSRToken;
-    use Librarys\Detection\SimpleDetect;
-    use Librarys\Encryption\StringCrypt;
+    use Librarys\App\Config\AppConfig;
     use Librarys\App\Config\AppUserConfig;
+    use Librarys\Detection\SimpleDetect;
+    use Librarys\File\FileInfo;
+    use Librarys\Http\Request;
+    use Librarys\Http\Secure\CFSRToken;
+    use Librarys\Text\Encryption\StringEncryption;
 
     final class AppUser
     {
 
-        private $boot;
+        private static $instance;
+
         private $config;
 
         private $id;
@@ -51,19 +53,34 @@
 
         const TIME_SHOW_WARNING_PASSWORD_DEFAULT = 10;
 
-        public function __construct(Boot $boot)
+        protected function __construct()
         {
-            $this->boot   = $boot;
-            $this->config = new AppUserConfig($boot);
+            $this->config = new AppUserConfig();
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new AppUser();
+
+            return self::$instance;
         }
 
         public function execute()
         {
             $this->isLogin = false;
 
-            if ($this->checkUserLogin() == false)
-                $this->exitSession();
-            else
+            if ($this->checkUserLogin())
                 $this->isLogin = true;
         }
 
@@ -100,13 +117,11 @@
 
         private function checkUserLogin()
         {
-            global $appConfig;
-
-            if (isset($_SESSION[env('app.login.session_login_name')]) == false || isset($_SESSION[env('app.login.session_token_name')]) == false)
+            if (Request::session()->has(env('app.login.session_login_name')) == false || Request::session()->get(env('app.login.session_token_name')) == false)
                 return false;
 
-            $id     = addslashes($_SESSION[env('app.login.session_login_name')]);
-            $token  = addslashes($_SESSION[env('app.login.session_token_name')]);
+            $id     = addslashes(Request::session()->get(env('app.login.session_login_name')));
+            $token  = addslashes(Request::session()->get(env('app.login.session_token_name')));
             $arrays = $this->config->getConfigArraySystem();
 
             if (is_array($arrays) == false || isset($arrays[$id]) == false)
@@ -124,8 +139,8 @@
             if ($tokenArray === false)
                 return false;
 
-            $userAgent = takeUserAgent();
-            $userIp    = takeIP();
+            $userAgent = Request::userAgent();
+            $userIp    = Request::ip();
             $userLive  = time();
 
             $this->id               = $id;
@@ -144,7 +159,7 @@
             if (strcmp($userIp, $tokenArray[self::TOKEN_ARRAY_KEY_USER_IP]) !== 0)
                 return false;
 
-            if ($userLive - intval($tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE]) >= $appConfig->get('login.time_login', 3600))
+            if ($userLive - intval($tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE]) >= AppConfig::getInstance()->get('login.time_login', 3600))
                 return false;
 
             $tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE] = $userLive;
@@ -167,9 +182,9 @@
 
             if (isset($_SESSION[env('app.login.session_check_password_name')])) {
                 $checkTime = intval($_SESSION[env('app.login.session_check_password_name')]);
-                $_SESSION[env('app.login.session_check_password_name')] = $checkTime + 1;
+                Request::session()->put(env('app.login.session_check_password_name'), $checkTime + 1);
             } else {
-                $_SESSION[env('app.login.session_check_password_name')] = 0;
+                Request::session()->put(env('app.login.session_check_password_name'), 0);
             }
 
             if ($timeNow + $checkTime >= $timeNow + $timeShow)
@@ -377,11 +392,11 @@
             }
 
             $mobileDetect = new SimpleDetect();
-            $userAgent    = takeUserAgent();
+            $userAgent    = Request::userAgent();
             $userDevice   = $mobileDetect->getDeviceType();
             $userOS       = $mobileDetect->getOS();
             $userBrowser  = $mobileDetect->getBrowser();
-            $userIP       = takeIP();
+            $userIP       = Request::ip();
             $userLive     = time();
             $userPassword = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_PASSWORD);
 
@@ -399,10 +414,8 @@
             if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false || $this->config->write() == false)
                 return false;
 
-            $this->boot->sessionInitializing();
-
-            $_SESSION[env('app.login.session_login_name')] = $id;
-            $_SESSION[env('app.login.session_token_name')] = $tokenGenerator;
+            Request::session()->put(env('app.login.session_login_name'), $id);
+            Request::session()->put(env('app.login.session_token_name'), $tokenGenerator);
 
             return true;
         }
@@ -422,17 +435,17 @@
                     FileInfo::unlink($tokenPath);
             }
 
-            return @session_destroy();
+            return Request::session()->destroy();
         }
 
         public static function createPassword($password, $salt = null)
         {
-            return StringCrypt::createCrypt($password, $salt);
+            return StringEncryption::createCrypt($password, $salt);
         }
 
         public static function checkPassword($passwordUser, $passwrodCheck)
         {
-            return StringCrypt::hashEqualsString($passwordUser, $passwrodCheck);
+            return StringEncryption::hashEqualsString($passwordUser, $passwrodCheck);
         }
     }
 

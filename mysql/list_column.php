@@ -1,7 +1,9 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\File\FileInfo;
 
     define('LOADED',               1);
@@ -11,8 +13,8 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
@@ -20,7 +22,7 @@
 
     $title  = lng('mysql.list_column.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_LIST_COLUMN);
+    AppAlert::setID(ALERT_MYSQL_LIST_COLUMN);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $mysqlStr   = 'SHOW COLUMNS FROM `' . addslashes($appMysqlConnect->getTableCurrent()) . '`';
@@ -28,7 +30,7 @@
     $mysqlNums  = $appMysqlConnect->numRows($mysqlQuery);
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
 
     <div class="mysql-query-string">
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>

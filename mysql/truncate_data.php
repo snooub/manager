@@ -1,8 +1,10 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
     use Librarys\File\FileInfo;
+    use Librarys\App\Mysql\AppMysqlConfig;
 
     define('LOADED',               1);
     define('DATABASE_CHECK_MYSQL', 1);
@@ -10,8 +12,8 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
@@ -19,25 +21,25 @@
 
     $title  = lng('mysql.truncate_data.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_TRUNCATE_DATA);
+    AppAlert::setID(ALERT_MYSQL_TRUNCATE_DATA);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     if (isset($_POST['truncate'])) {
         if ($appMysqlConnect->query('TRUNCATE TABLE `' . addslashes($appMysqlConnect->getTableCurrent())) == false)
-            $appAlert->danger(lng('mysql.truncate_data.alert.truncate_data_failed', 'name', $appMysqlConnect->getTableCurrent(), 'error', $appMysqlConnect->error()));
+            AppAlert::danger(lng('mysql.truncate_data.alert.truncate_data_failed', 'name', $appMysqlConnect->getTableCurrent(), 'error', $appMysqlConnect->error()));
         else
-            $appAlert->success(lng('mysql.truncate_data.alert.truncate_data_success', 'name', $appMysqlConnect->getTableCurrent()), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
+            AppAlert::success(lng('mysql.truncate_data.alert.truncate_data_success', 'name', $appMysqlConnect->getTableCurrent()), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.truncate_data.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
         <form action="truncate_data.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="accept">

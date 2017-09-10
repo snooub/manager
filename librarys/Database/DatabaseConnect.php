@@ -6,12 +6,13 @@
         exit;
 
 	use Librarys\Boot;
+    use Librarys\Autoload;
+    use Librarys\Http\Request;
     use Librarys\Database\Extension\DatabaseExtensionInterface;
 
 	class DatabaseConnect
 	{
 
-		private $boot;
 		private $resource;
 		private $query;
 
@@ -33,9 +34,8 @@
 
         const TABLE_SCHEMATA_INFORMATION = 'schemata';
 
-		public function __construct(Boot $boot)
+		public function __construct()
 		{
-			$this->boot   = $boot;
 			$this->query  = array();
 		}
 
@@ -44,7 +44,7 @@
             if ($this->extensionDefault == null && $this->extensionRuntime == null)
                 trigger_error('Extension Database is null');
 
-            $autoload = $this->boot->getAutoload();
+            $autoload = Autoload::getInstance();
 
             if ($autoload->isFileLibrarys($this->extensionRuntime)) {
                 $this->extensionObject = new $this->extensionRuntime($this);
@@ -77,7 +77,7 @@
                 $this->prefix   = env('mysql.prefix');
                 $this->encoding = env('mysql.encoding');
 
-    			if (env('mysql.auto_local', false) && $this->boot->isRunLocal()) {
+    			if (env('mysql.auto_local', false) && Request::isLocal()) {
     				$this->host     = env('mysql.local.host');
     				$this->username = env('mysql.local.username');
     				$this->password = env('mysql.local.password');

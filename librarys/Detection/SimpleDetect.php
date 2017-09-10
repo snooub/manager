@@ -2,6 +2,8 @@
 
     namespace Librarys\Detection;
 
+    use Librarys\Http\Request;
+
     class SimpleDetect
     {
 
@@ -28,7 +30,7 @@
 
         private function getIp()
         {
-            $this->ipAddress = takeIP();
+            $this->ipAddress = Request::ip();
 
             if (in_array($this->ipAddress, array('::1', '127.0.0.1', 'localhost'))) {
                 $this->ipAddress = 'localhost';

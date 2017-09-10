@@ -8,8 +8,6 @@
     final class AppLocationPath
     {
 
-        private $appDirectory;
-
         private $entrys;
         private $urlBegin;
         private $urlEnd;
@@ -21,14 +19,12 @@
 
         /**
          * [__construct Init object]
-         * @param AppDirectory $appDirectory [Object AppDirectory]
          * @param [string]       $urlBegin     [Url begin custom]
          * @param [string]       $urlEnd       [Url end custom]
          */
-        public function __construct(AppDirectory $appDirectory, $urlBegin = null, $urlEnd = null)
+        public function __construct($urlBegin = null, $urlEnd = null)
         {
-            $this->appDirectory = $appDirectory;
-            $this->entrys       = array();
+            $this->entrys = array();
 
             $this->setUrlBegin($urlBegin);
             $this->setUrlEnd($urlEnd);
@@ -126,15 +122,15 @@
         {
             $buffer = null;
 
-            if ($this->appDirectory->getDirectory() != SP && strpos($this->appDirectory->getDirectory(), SP) !== false) {
+            if (AppDirectory::getInstance()->getDirectory() != SP && strpos(AppDirectory::getInstance()->getDirectory(), SP) !== false) {
                 $locationSP    = SP;
 
                 if ($locationSP == '\\')
                     $locationSP = SP . SP;
 
-                $locationArray           = explode(SP, preg_replace('|^' . $locationSP . '(.*?)$|', '\1', $this->appDirectory->getDirectory()));
+                $locationArray           = explode(SP, preg_replace('|^' . $locationSP . '(.*?)$|', '\1', AppDirectory::getInstance()->getDirectory()));
                 $locationCount           = count($locationArray);
-                $locationIsSeparatorFist = strpos($this->appDirectory->getDirectory(), SP) === 0;
+                $locationIsSeparatorFist = strpos(AppDirectory::getInstance()->getDirectory(), SP) === 0;
                 $locationEntry           = null;
                 $locationUrl             = null;
                 $locationParameter       = new AppParameter();
@@ -155,7 +151,7 @@
                     if ($locationKey === 0) {
                         $locationSeparator = null;
 
-                        if (preg_match('|^' . $locationSP . '(.*?)$|', $this->appDirectory->getDirectory()) !== false)
+                        if (preg_match('|^' . $locationSP . '(.*?)$|', AppDirectory::getInstance()->getDirectory()) !== false)
                             $locationSeparator = SP;
 
                         if ($locationIsSeparatorFist)
@@ -174,7 +170,7 @@
 
                         $locationParameter->clear();
                         $locationParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::rawEncode($locationUrl . $locationEntry), true);
-                        $locationParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $this->appDirectory->getPage(), $this->appDirectory->getPage() > 1 && $this->appDirectory->getDirectory() == $locationUrl . $locationEntry);
+                        $locationParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(), AppDirectory::getInstance()->getPage() > 1 && AppDirectory::getInstance()->getDirectory() == $locationUrl . $locationEntry);
 
                         $buffer .= '<a href="' . $this->urlBegin . $locationParameter->toString(true) . $this->urlEnd . '">';
                         $buffer .= '<span>';

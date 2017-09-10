@@ -1,7 +1,9 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\App\Mysql\AppMysqlCollection;
     use Librarys\Database\DatabaseConnect;
 
@@ -11,12 +13,12 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $title  = lng('mysql.rename_table.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_RENAME_TABLE);
+    AppAlert::setID(ALERT_MYSQL_RENAME_TABLE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $appParameter = new AppParameter();
@@ -46,26 +48,26 @@
         $forms['collection'] = addslashes($_POST['collection']);
 
         if (empty($forms['name'])) {
-            $appAlert->danger(lng('mysql.rename_table.alert.not_input_table_name'));
+            AppAlert::danger(lng('mysql.rename_table.alert.not_input_table_name'));
         } else if ($appMysqlConnect->isTableNameExists($forms['name'], $appMysqlConnect->getTableCurrent(), true)) {
-            $appAlert->danger(lng('mysql.rename_table.alert.table_name_is_exists'));
+            AppAlert::danger(lng('mysql.rename_table.alert.table_name_is_exists'));
         } else if ($forms['collection'] != AppMysqlCollection::COLLECTION_NONE && AppMysqlCollection::isValidate($forms['collection'], $charset, $collate) == false) {
-            $appAlert->danger(lng('mysql.rename_table.alert.collection_not_validate'));
+            AppAlert::danger(lng('mysql.rename_table.alert.collection_not_validate'));
         } else {
             if ($forms['name'] == $appMysqlConnect->getTableCurrent()) {
                 if ($forms['collection'] == $forms['collection_table']) {
-                    $appAlert->danger(lng('mysql.rename_table.alert.has_not_changed'));
+                    AppAlert::danger(lng('mysql.rename_table.alert.has_not_changed'));
                 } else if ($forms['collection'] == AppMysqlCollection::COLLECTION_NONE) {
-                    $appAlert->warning(lng('mysql.rename_table.alert.not_set_collection_to_none'));
+                    AppAlert::warning(lng('mysql.rename_table.alert.not_set_collection_to_none'));
                 } else {
                     $mysqlQueryAlterTable = 'ALTER TABLE `' . addslashes($appMysqlConnect->getTableCurrent()) . '` ' .
                                             'CONVERT TO CHARACTER SET ' . $charset . ' ' .
                                             'COLLATE                  ' . $collate;
 
                     if ($appMysqlConnect->query($mysqlQueryAlterTable) == false)
-                        $appAlert->danger(lng('mysql.rename_table.alert.change_collection_failed', 'error', $appMysqlConnect->error()));
+                        AppAlert::danger(lng('mysql.rename_table.alert.change_collection_failed', 'error', $appMysqlConnect->error()));
                     else
-                        $appAlert->success(lng('mysql.rename_table.alert.change_collection_success', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
+                        AppAlert::success(lng('mysql.rename_table.alert.change_collection_success', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
                 }
             } else {
                 $mysqlQueryRenameTable = 'RENAME TABLE `' . addslashes($appMysqlConnect->getTableCurrent()) . '` ' .
@@ -76,12 +78,12 @@
                                                    'COLLATE                  ' . $collate;
 
                 if ($appMysqlConnect->query($mysqlQueryAlterChangeCollection) == false || $appMysqlConnect->query($mysqlQueryRenameTable) == false) {
-                    $appAlert->danger(lng('mysql.rename_table.alert.rename_table_failed', 'name', $appMysqlConnect->getTableCurrent(), 'error', $appMysqlConnect->error()));
+                    AppAlert::danger(lng('mysql.rename_table.alert.rename_table_failed', 'name', $appMysqlConnect->getTableCurrent(), 'error', $appMysqlConnect->error()));
                 } else {
                     $appParameter->set(PARAMETER_TABLE_URL, AppDirectory::rawEncode($forms['name']));
                     $appParameter->toString(true);
 
-                    $appAlert->success(lng('mysql.rename_table.alert.rename_table_success', 'name', $appMysqlConnect->getTableCurrent()), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
+                    AppAlert::success(lng('mysql.rename_table.alert.rename_table_success', 'name', $appMysqlConnect->getTableCurrent()), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
                 }
             }
         }
@@ -92,14 +94,14 @@
 
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.rename_table.title_page'); ?></span>
         </div>
         <form action="rename_table.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input">

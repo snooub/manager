@@ -24,15 +24,15 @@
             @ini_set('zlib.output_compression', 'Off');
         }
 
-        public function setFileOnAppDirectory(AppDirectory $appDirectory)
+        public function setFileOnAppDirectory()
         {
-            $this->fileNameAlias = $appDirectory->getAliasName();
-            $this->fileInfo      = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+            $this->fileNameAlias = AppDirectory::getInstance()->getAliasName();
+            $this->fileInfo      = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
             $this->fileSize      = $this->fileInfo->getFileSize();
             $this->isDirectory   = $this->fileInfo->isDirectory();
 
             if ($this->fileNameAlias == null || empty($this->fileNameAlias))
-                $this->fileNameAlias = $appDirectory->getName();
+                $this->fileNameAlias = AppDirectory::getInstance()->getName();
 
             return true;
         }

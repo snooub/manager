@@ -1,7 +1,9 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\File\FileInfo;
 
     use Librarys\App\Mysql\AppMysqlDataType;
@@ -13,8 +15,8 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
@@ -22,7 +24,7 @@
 
     $title  = lng('mysql.create_data.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_CREATE_DATA);
+    AppAlert::setID(ALERT_MYSQL_CREATE_DATA);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $mysqlStrColumns     = 'SHOW COLUMNS FROM `' . addslashes($appMysqlConnect->getTableCurrent()) . '`';
@@ -30,7 +32,7 @@
     $mysqlNumRowsColumns = $appMysqlConnect->numRows($mysqlQueryColumns);
 
     if ($mysqlNumRowsColumns <= 0)
-        $appAlert->warning(lng('mysql.create_data.alert.columns_in_table_is_zero', 'name', $appMysqlConnect->getTableCurrent()), ALERT_MYSQL_CREATE_COLUMN, 'create_column.php' . $appParameter->toString());
+        AppAlert::warning(lng('mysql.create_data.alert.columns_in_table_is_zero', 'name', $appMysqlConnect->getTableCurrent()), ALERT_MYSQL_CREATE_COLUMN, 'create_column.php' . $appParameter->toString());
 
     $listFields = array();
     $listDatas  = array();
@@ -51,7 +53,7 @@
         $mysqlQuery = $mysqlQuery->query();
 
         if ($mysqlQuery == false) {
-            $appAlert->danger(lng('mysql.create_data.alert.create_data_failed', 'error', $appMysqlConnect->error()));
+            AppAlert::danger(lng('mysql.create_data.alert.create_data_failed', 'error', $appMysqlConnect->error()));
         } else {
             $idAlert = null;
             $urlGoto = null;
@@ -61,7 +63,7 @@
                 $urlGoto = 'list_data.php' . $appParameter->toString();
             }
 
-            $appAlert->success(lng('mysql.create_data.alert.create_data_success'), $idAlert, $urlGoto);
+            AppAlert::success(lng('mysql.create_data.alert.create_data_success'), $idAlert, $urlGoto);
 
         }
 
@@ -74,14 +76,14 @@
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.create_data.title_page'); ?></span>
         </div>
         <form action="create_data.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <?php foreach ($listFields AS $fieldKey => $fieldAssoc) { ?>

@@ -1,10 +1,12 @@
 <?php
 
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileMime;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
 
     define('LOADED',      1);
     define('TYPE_FOLDER', 1);
@@ -14,20 +16,20 @@
 
     $title  = lng('create.title_page');
     $themes = [ env('resource.filename.theme.file') ];
-    $appAlert->setID(ALERT_CREATE);
+    AppAlert::setID(ALERT_CREATE);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'header.php');
 
-    if ($appDirectory->isDirectoryExists() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath())
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isDirectoryExists() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath())
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectory()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'create.php');
+    $appLocationPath = new AppLocationPath('create.php');
     $appLocationPath->setIsPrintLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
 
     $forms = [
         'name' => null,
@@ -41,51 +43,51 @@
 
         if (empty($forms['name'])) {
             if ($forms['type'] === TYPE_FOLDER)
-                $appAlert->danger(lng('create.alert.not_input_name_directory'));
+                AppAlert::danger(lng('create.alert.not_input_name_directory'));
             else if ($forms['type'] === TYPE_FILE)
-                $appAlert->danger(lng('create.alert.not_input_name_file'));
+                AppAlert::danger(lng('create.alert.not_input_name_file'));
             else
-                $appAlert->danger(lng('create.alert.not_choose_type'));
+                AppAlert::danger(lng('create.alert.not_choose_type'));
         } else if ($forms['type'] != null && $forms['type'] !== TYPE_FOLDER && $forms['type'] !== TYPE_FILE) {
-            $appAlert->danger(lng('create.alert.not_choose_type'));
+            AppAlert::danger(lng('create.alert.not_choose_type'));
         } else if (FileInfo::isNameValidate($forms['name']) == false) {
             if ($forms['type'] === TYPE_FOLDER)
-                $appAlert->danger(lng('create.alert.name_not_validate_type_directory', 'validate', FileInfo::FILENAME_VALIDATE));
+                AppAlert::danger(lng('create.alert.name_not_validate_type_directory', 'validate', FileInfo::FILENAME_VALIDATE));
             else if ($forms['type'] === TYPE_FILE)
-                $appAlert->danger(lng('create.alert.name_not_validate_type_file', 'validate', FileInfo::FILENAME_VALIDATE));
+                AppAlert::danger(lng('create.alert.name_not_validate_type_file', 'validate', FileInfo::FILENAME_VALIDATE));
         } else {
-            $forms['path'] = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $forms['name']);
+            $forms['path'] = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $forms['name']);
 
             if (FileInfo::fileExists($forms['path'])) {
                 if (FileInfo::isTypeDirectory($forms['path']))
-                    $appAlert->danger(lng('create.alert.name_is_exists_type_directory'));
+                    AppAlert::danger(lng('create.alert.name_is_exists_type_directory'));
                 else
-                    $appAlert->danger(lng('create.alert.name_is_exists_type_file'));
+                    AppAlert::danger(lng('create.alert.name_is_exists_type_file'));
             } else {
                 if ($forms['type'] === TYPE_FOLDER) {
                     if (FileInfo::mkdir($forms['path']) == false) {
-                        $appAlert->danger(lng('create.alert.create_directory_failed', 'filename', $forms['name']));
+                        AppAlert::danger(lng('create.alert.create_directory_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
-                        if ($appConfig->get('auto_redirect.create_directory')) {
-                            $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::rawEncode($appDirectory->getDirectory() . SP . $forms['name']));
+                        if (AppConfig::getInstance()->get('auto_redirect.create_directory')) {
+                            $appParameter->set(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::rawEncode(AppDirectory::getInstance()->getDirectory() . SP . $forms['name']));
                             $appParameter->remove(AppDirectory::PARAMETER_PAGE_URL);
                             $appParameter->toString(true);
                         }
 
-                        $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                        AppAlert::success(lng('create.alert.create_directory_success', 'filename', $forms['name']), ALERT_INDEX, 'index.php' . $appParameter->toString());
                     } else {
-                        $appAlert->success(lng('create.alert.create_directory_success', 'filename', $forms['name']));
+                        AppAlert::success(lng('create.alert.create_directory_success', 'filename', $forms['name']));
                         $forms['name'] = null;
                     }
                 } else if ($forms['type'] === TYPE_FILE) {
                     if (FileInfo::fileWriteContents($forms['path'], '#') === false) {
-                        $appAlert->danger(lng('create.alert.create_file_failed', 'filename', $forms['name']));
+                        AppAlert::danger(lng('create.alert.create_file_failed', 'filename', $forms['name']));
                     } else if (isset($_POST['create_and_continue']) == false) {
                         $urlGoto = 'index.php';
                         $idAlert = ALERT_INDEX;
 
-                        if ($appConfig->get('auto_redirect.create_file')) {
-                            $fileInfo = new FileInfo($appDirectory->getDirectory() . SP . $forms['name']);
+                        if (AppConfig::getInstance()->get('auto_redirect.create_file')) {
+                            $fileInfo = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . $forms['name']);
                             $fileMime = new FileMime($fileInfo);
 
                             if ($fileMime->isFormatTextEdit() && $fileMime->isFormatTextAsEdit() == false) {
@@ -100,20 +102,20 @@
                             $appParameter->toString(true);
                         }
 
-                        $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']), $idAlert, $urlGoto . $appParameter->toString());
+                        AppAlert::success(lng('create.alert.create_file_success', 'filename', $forms['name']), $idAlert, $urlGoto . $appParameter->toString());
                     } else {
-                        $appAlert->success(lng('create.alert.create_file_success', 'filename', $forms['name']));
+                        AppAlert::success(lng('create.alert.create_file_success', 'filename', $forms['name']));
                         $forms['name'] = null;
                     }
                 } else {
-                    $appAlert->danger(lng('create.alert.not_choose_type'));
+                    AppAlert::danger(lng('create.alert.not_choose_type'));
                 }
             }
         }
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
     <div class="form-action">
@@ -121,7 +123,7 @@
             <span><?php echo lng('create.title_page'); ?></span>
         </div>
         <form action="create.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input">

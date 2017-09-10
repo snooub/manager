@@ -3,7 +3,10 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
     use Librarys\App\AppPaging;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\File\FileInfo;
+    use Librarys\Http\Request;
 
     define('LOADED',               1);
     define('MYSQL_LIST_DATA',      1);
@@ -18,8 +21,10 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    use Librarys\App\AppAlert;
+
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
@@ -35,13 +40,13 @@
         $mysqlNums = $appMysqlConnect->numRows('SELECT * FROM `' . $mysqlTable . '`');
 
     if ($mysqlNums <= 0 && isset($_SERVER['HTTP_REFERER']) && stripos( $_SERVER['HTTP_REFERER'], 'list_table.php') !== false)
-        gotoURL('list_column.php' . $appParameter->toString());
+        Request::redirect('list_column.php' . $appParameter->toString());
     else if ($mysqlNums <= 0)
-        $appAlert->warning(lng('mysql.list_data.alert.data_is_empty_not_view'), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
+        AppAlert::warning(lng('mysql.list_data.alert.data_is_empty_not_view'), ALERT_MYSQL_LIST_COLUMN, 'list_column.php' . $appParameter->toString());
 
     $title  = lng('mysql.list_data.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_LIST_DATA);
+    AppAlert::setID(ALERT_MYSQL_LIST_DATA);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $orders = [
@@ -55,7 +60,7 @@
         'begin_query' => 0,
         'end_query'   => $mysqlNums,
         'row_on_page' => $mysqlNums,
-        'max'         => $appConfig->get('paging.mysql_list_data', 0)
+        'max'         => AppConfig::getInstance()->get('paging.mysql_list_data', 0)
     ];
 
     if (isset($_GET[PARAMETER_ORDER_DATA_URL]) && empty($_GET[PARAMETER_ORDER_DATA_URL]) == false) {
@@ -104,7 +109,7 @@
     $mysqlQuery = $appMysqlConnect->query($mysqlStr);
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
 
     <div class="mysql-query-string">
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>

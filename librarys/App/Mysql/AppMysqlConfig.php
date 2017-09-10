@@ -2,16 +2,35 @@
 
     namespace Librarys\App\Mysql;
 
-    use Librarys\Boot;
     use Librarys\App\Config\BaseConfig;
 
     final class AppMysqlConfig extends BaseConfig
     {
 
-        public function __construct(Boot $boot)
+        private static $instance;
+
+        protected function __construct()
         {
-            parent::__construct($boot, env('resource.config.mysql'), env('resource.filename.config.mysql'));
+            parent::__construct(env('resource.config.mysql'), env('resource.filename.config.mysql'));
             parent::parse(true);
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new AppMysqlConfig();
+
+            return self::$instance;
         }
 
         public function callbackPreWrite()

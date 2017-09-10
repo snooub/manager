@@ -1,29 +1,31 @@
 <?php
 
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileMime;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
     use Librarys\Zip\PclZip;
 
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appDirectory->isDirectoryExists() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath())
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isDirectoryExists() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath())
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectory()), ALERT_INDEX, env('app.http.host'));
 
     requireDefine('file_action');
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath = new AppLocationPath('index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
 
     $listEntrys  = array();
     $countEntrys = 0;
@@ -36,7 +38,7 @@
     }
 
     if ($countEntrys <= 0)
-        $appAlert->danger(lng('file_action.alert.not_file_select'), ALERT_INDEX, 'index.php');
+        AppAlert::danger(lng('file_action.alert.not_file_select'), ALERT_INDEX, 'index.php');
 
     $listEntrys = AppDirectory::rawDecodes($listEntrys);
     $nameAction = null;
@@ -55,11 +57,11 @@
     else if ($nameAction == FILE_ACTION_CHMOD_MULTI)
         $title = 'chmod';
     else
-        $appAlert->danger(lng('file_action.alert.action_not_validate'), ALERT_INDEX, 'index.php');
+        AppAlert::danger(lng('file_action.alert.action_not_validate'), ALERT_INDEX, 'index.php');
 
     $themes  = [ env('resource.filename.theme.file') ];
     $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
-    $appAlert->setID(ALERT_FILE_ACTION);
+    AppAlert::setID(ALERT_FILE_ACTION);
 
     $forms = [
         'rename' => [
@@ -68,13 +70,13 @@
         ],
 
         'copy' => [
-            'path_copy'   => $appDirectory->getDirectory(),
+            'path_copy'   => AppDirectory::getInstance()->getDirectory(),
             'mode'        => FILE_ACTION_COPY_MULTI_MODE_COPY,
             'exists_func' => FILE_ACTION_COPY_MULTI_EXISTS_FUNC_OVERRIDE
         ],
 
         'zip' => [
-            'path_create_zip' => $appDirectory->getDirectory(),
+            'path_create_zip' => AppDirectory::getInstance()->getDirectory(),
             'name_zip'        => 'archive.zip',
             'delete_source'   => false,
             'override_zip'    => true
@@ -101,21 +103,21 @@
 
                     if (isset($forms['rename']['modifier_entrys'][$entryFilenameRawEncode])) {
                         $entryFilenameModifier = $forms['rename']['modifier_entrys'][$entryFilenameRawEncode];
-                        $entryPathOdd          = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
+                        $entryPathOdd          = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename);
                         $entryIsTypeDirectory  = FileInfo::isTypeDirectory($entryPathOdd);
 
                         if (empty($entryFilenameModifier)) {
                             $isFailed = true;
 
                             if ($entryIsTypeDirectory)
-                                $appAlert->danger(lng('file_action.alert.rename.name_directory_not_set_null', 'name', $entryFilename));
+                                AppAlert::danger(lng('file_action.alert.rename.name_directory_not_set_null', 'name', $entryFilename));
                             else
-                                $appAlert->danger(lng('file_action.alert.rename.name_file_not_set_null', 'name', $entryFilename));
+                                AppAlert::danger(lng('file_action.alert.rename.name_file_not_set_null', 'name', $entryFilename));
 
                             break;
                         }
 
-                        $entryPathNew = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilenameModifier);
+                        $entryPathNew = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilenameModifier);
 
                         if ($entryFilename != $entryFilenameModifier)
                             $isHasModifier = true;
@@ -124,9 +126,9 @@
                             $isFailed = true;
 
                             if ($entryIsTypeDirectory)
-                                $appAlert->danger(lng('file_action.alert.rename.name_directory_is_error', 'name', $entryFilenameModifier, 'validate', FileInfo::FILENAME_VALIDATE));
+                                AppAlert::danger(lng('file_action.alert.rename.name_directory_is_error', 'name', $entryFilenameModifier, 'validate', FileInfo::FILENAME_VALIDATE));
                             else
-                                $appAlert->danger(lng('file_action.alert.rename.name_file_is_error', 'name', $entryFilenameModifier, 'validate', FileInfo::FILENAME_VALIDATE));
+                                AppAlert::danger(lng('file_action.alert.rename.name_file_is_error', 'name', $entryFilenameModifier, 'validate', FileInfo::FILENAME_VALIDATE));
 
                             break;
                         }
@@ -135,9 +137,9 @@
                             $isFailed = true;
 
                             if ($entryIsTypeDirectory)
-                                $appAlert->danger(lng('file_action.alert.rename.name_directory_is_exists_in_input_other', 'name', $entryFilenameModifier));
+                                AppAlert::danger(lng('file_action.alert.rename.name_directory_is_exists_in_input_other', 'name', $entryFilenameModifier));
                             else
-                                $appAlert->danger(lng('file_action.alert.rename.name_file_is_exists_in_input_other', 'name', $entryFilenameModifier));
+                                AppAlert::danger(lng('file_action.alert.rename.name_file_is_exists_in_input_other', 'name', $entryFilenameModifier));
 
                             break;
                         }
@@ -146,9 +148,9 @@
                             $isFailed = true;
 
                             if ($entryIsTypeDirectory)
-                                $appAlert->danger(lng('file_action.alert.rename.name_directory_is_exists', 'name', $entryFilenameModifier));
+                                AppAlert::danger(lng('file_action.alert.rename.name_directory_is_exists', 'name', $entryFilenameModifier));
                             else
-                                $appAlert->danger(lng('file_action.alert.rename.name_file_is_exists', 'name', $entryFilenameModifier));
+                                AppAlert::danger(lng('file_action.alert.rename.name_file_is_exists', 'name', $entryFilenameModifier));
 
                             break;
                         }
@@ -156,15 +158,15 @@
                 }
 
                 if ($isHasModifier == false) {
-                    $appAlert->danger(lng('file_action.alert.rename.nothing_changes'));
+                    AppAlert::danger(lng('file_action.alert.rename.nothing_changes'));
                 } else if ($isFailed == false) {
                     $isFailed = true;
                     $symbol   = '_';
-                    $rand     = md5(rand(10000, 99999) . $symbol . $appDirectory->getDirectory());
+                    $rand     = md5(rand(10000, 99999) . $symbol . AppDirectory::getInstance()->getDirectory());
                     $rand     = substr($rand, 0, strlen($rand) >> 1);
 
                     foreach ($listEntrys AS $entryFilename) {
-                        $entryPath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
+                        $entryPath = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename);
                         FileInfo::rename($entryPath, $entryPath . $symbol . $rand);
                     }
 
@@ -172,8 +174,8 @@
 
                     foreach ($listEntrys AS $entryFilename) {
                         $entryFilenameRawEncode = AppDirectory::rawEncode($entryFilename);
-                        $entryPath              = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename . $symbol . $rand);
-                        $entryPathRename        = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $forms['rename']['modifier_entrys'][$entryFilenameRawEncode]);
+                        $entryPath              = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename . $symbol . $rand);
+                        $entryPathRename        = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $forms['rename']['modifier_entrys'][$entryFilenameRawEncode]);
                         $entryIsTypeDirectory   = FileInfo::isTypeDirectory($entryPath);
                         $entryAlertMessage      = null;
 
@@ -185,22 +187,22 @@
                             else
                                 $entryAlertMessage = 'rename_file_failed';
 
-                            $appAlert->danger(lng('file_action.alert.rename.' . $entryAlertMessage, 'name', $entryFilename));
+                            AppAlert::danger(lng('file_action.alert.rename.' . $entryAlertMessage, 'name', $entryFilename));
                         }
                     }
 
                     if ($isFailed == false)
-                        $appAlert->success(lng('file_action.alert.rename.rename_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                        AppAlert::success(lng('file_action.alert.rename.rename_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
                     else
                         $forms['rename']['modifier_entrys'] = stripslashesArray($forms['rename']['modifier_entrys']);
                 } else {
-                    $appAlert->danger(lng('file_action.alert.rename.list_entrys_modifier_is_zero'));
+                    AppAlert::danger(lng('file_action.alert.rename.list_entrys_modifier_is_zero'));
                 }
             } else {
-                $appAlert->danger(lng('file_action.alert.rename.list_entrys_modifier_is_zero'));
+                AppAlert::danger(lng('file_action.alert.rename.list_entrys_modifier_is_zero'));
             }
         } else {
-            $appAlert->danger(lng('file_action.alert.rename.list_entrys_modifier_is_zero'));
+            AppAlert::danger(lng('file_action.alert.rename.list_entrys_modifier_is_zero'));
         }
     } else if (isset($_POST['copy_button'])) {
         $forms['copy']['path_copy']   = addslashes($_POST['path_copy']);
@@ -208,24 +210,24 @@
         $forms['copy']['exists_func'] = intval(addslashes($_POST['exists_func']));
 
         if (empty($forms['copy']['path_copy'])) {
-            $appAlert->danger(lng('file_action.alert.copy.not_input_path_copy'));
+            AppAlert::danger(lng('file_action.alert.copy.not_input_path_copy'));
         } else if ($forms['copy']['mode'] !== FILE_ACTION_COPY_MULTI_MODE_COPY && $forms['copy']['mode'] !== FILE_ACTION_COPY_MULTI_MODE_MOVE) {
-            $appAlert->danger(lng('file_action.alert.copy.mode_not_validate'));
+            AppAlert::danger(lng('file_action.alert.copy.mode_not_validate'));
         } else if ($forms['copy']['exists_func'] !== FILE_ACTION_COPY_MULTI_EXISTS_FUNC_OVERRIDE &&
                    $forms['copy']['exists_func'] !== FILE_ACTION_COPY_MULTI_EXISTS_FUNC_SKIP     &&
                    $forms['copy']['exists_func'] !== FILE_ACTION_COPY_MULTI_EXISTS_FUNC_RENAME)
         {
-            $appAlert->danger(lng('file_action.alert.copy.exists_func_not_validate'));
+            AppAlert::danger(lng('file_action.alert.copy.exists_func_not_validate'));
         } else {
             $forms['copy']['path_copy'] = FileInfo::filterPaths($forms['copy']['path_copy']);
 
-            if ($forms['copy']['path_copy'] == $appDirectory->getDirectory()) {
+            if ($forms['copy']['path_copy'] == AppDirectory::getInstance()->getDirectory()) {
                 if ($forms['copy']['mode'] === FILE_ACTION_COPY_MULTI_MODE_COPY)
-                    $appAlert->danger(lng('file_action.alert.copy.path_copy_is_equal_path_current'));
+                    AppAlert::danger(lng('file_action.alert.copy.path_copy_is_equal_path_current'));
                 else
-                    $appAlert->danger(lng('file_action.alert.copy.path_move_is_equal_path_current'));
+                    AppAlert::danger(lng('file_action.alert.copy.path_move_is_equal_path_current'));
             } else if (FileInfo::permissionDenyPath($forms['copy']['path_copy'])) {
-                $appAlert->danger(lng('file_action.alert.copy.not_copy_file_to_directory_app'));
+                AppAlert::danger(lng('file_action.alert.copy.not_copy_file_to_directory_app'));
             } else {
                 $isHasFileAppPermission = false;
 
@@ -258,15 +260,15 @@
                 $countSuccess = $countEntrys;
 
                 foreach ($listEntrys AS $entryFilename) {
-                    $entryPath            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
+                    $entryPath            = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename);
                     $entryPathCopy        = FileInfo::filterPaths($forms['copy']['path_copy']   . SP . $entryFilename);
                     $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
                     if (FileInfo::copy($entryPath, $entryPathCopy, true, $forms['copy']['mode'] === FILE_ACTION_COPY_MULTI_MODE_MOVE, $isHasFileAppPermission, $callbackFileExists) == false) {
                         if ($entryIsTypeDirectory)
-                            $appAlert->danger(lng('file_action.alert.copy.copy_directory_failed', 'name', $entryFilename));
+                            AppAlert::danger(lng('file_action.alert.copy.copy_directory_failed', 'name', $entryFilename));
                         else
-                            $appAlert->danger(lng('file_action.alert.copy.copy_file_failed', 'name', $entryFilename));
+                            AppAlert::danger(lng('file_action.alert.copy.copy_file_failed', 'name', $entryFilename));
 
                         $isFailed = true;
                         $countSuccess--;
@@ -275,15 +277,15 @@
 
                 if ($isFailed == false) {
                     if ($isHasFileAppPermission)
-                        $appAlert->warning(lng('file_action.alert.copy.has_file_app_not_permission_copy'), ALERT_INDEX);
+                        AppAlert::warning(lng('file_action.alert.copy.has_file_app_not_permission_copy'), ALERT_INDEX);
 
-                    $appAlert->success(lng('file_action.alert.copy.copy_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                    AppAlert::success(lng('file_action.alert.copy.copy_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
                 } else {
                     if ($isHasFileAppPermission)
-                        $appAlert->warning(lng('file_action.alert.copy.has_file_app_not_permission_copy'));
+                        AppAlert::warning(lng('file_action.alert.copy.has_file_app_not_permission_copy'));
 
                     if ($countEntrys > 1 && $countSuccess > 0)
-                        $appAlert->success(lng('file_action.alert.copy.copy_some_items_success'));
+                        AppAlert::success(lng('file_action.alert.copy.copy_some_items_success'));
                 }
             }
         }
@@ -295,7 +297,7 @@
         $isHasFileAppPermission = false;
 
         foreach ($listEntrys AS $entryFilename) {
-            $entryPath            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
+            $entryPath            = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename);
             $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
             if (FileInfo::permissionDenyPath($entryPath)) {
@@ -304,26 +306,26 @@
                 if (FileInfo::rrmdir($entryPath, null, $isHasFileAppPermission) == false) {
                     $isFailed = true;
                     $countSuccess--;
-                    $appAlert->danger(lng('file_action.alert.delete.delete_directory_failed', 'name', $entryFilename));
+                    AppAlert::danger(lng('file_action.alert.delete.delete_directory_failed', 'name', $entryFilename));
                 }
             } else if (FileInfo::unlink($entryPath) == false) {
                 $isFailed = true;
                 $countSuccess--;
-                $appAlert->danger(lng('file_action.alert.delete.delete_file_failed', 'name', $entryFilename));
+                AppAlert::danger(lng('file_action.alert.delete.delete_file_failed', 'name', $entryFilename));
             }
         }
 
         if ($isFailed == false) {
             if ($isHasFileAppPermission)
-                $appAlert->warning(lng('file_action.alert.delete.not_delete_file_app'), ALERT_INDEX);
+                AppAlert::warning(lng('file_action.alert.delete.not_delete_file_app'), ALERT_INDEX);
 
-            $appAlert->success(lng('file_action.alert.delete.delete_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+            AppAlert::success(lng('file_action.alert.delete.delete_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
         } else {
             if ($isHasFileAppPermission)
-                $appAlert->warning(lng('file_action.alert.delete.not_delete_file_app'));
+                AppAlert::warning(lng('file_action.alert.delete.not_delete_file_app'));
 
             if ($countEntrys > 1 && $countSuccess > 0)
-                $appAlert->success(lng('file_action.alert.delete.delete_success'));
+                AppAlert::success(lng('file_action.alert.delete.delete_success'));
         }
     } else if (isset($_POST['zip_button'])) {
         $forms['zip']['path_create_zip'] = addslashes($_POST['path_create_zip']);
@@ -338,11 +340,11 @@
             $forms['zip']['override_zip'] = false;
 
         if (empty($forms['zip']['path_create_zip'])) {
-            $appAlert->danger(lng('file_action.alert.zip.not_input_path_create_zip'));
+            AppAlert::danger(lng('file_action.alert.zip.not_input_path_create_zip'));
         } else if (empty($forms['zip']['name_zip'])) {
-            $appAlert->danger(lng('file_action.alert.zip.not_input_name_zip'));
+            AppAlert::danger(lng('file_action.alert.zip.not_input_name_zip'));
         } else if (FileInfo::isNameValidate($forms['zip']['name_zip']) == false) {
-            $appAlert->danger(lng('file_action.alert.zip.name_zip_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
+            AppAlert::danger(lng('file_action.alert.zip.name_zip_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
         } else {
             $isFailed                        = false;
             $forms['zip']['path_create_zip'] = FileInfo::filterPaths($forms['zip']['path_create_zip']);
@@ -350,27 +352,27 @@
 
             if (FileInfo::permissionDenyPath($forms['zip']['path_create_zip'])) {
                 $isFailed = true;
-                $appAlert->danger(lng('file_action.alert.zip.not_create_zip_to_path_app'));
+                AppAlert::danger(lng('file_action.alert.zip.not_create_zip_to_path_app'));
             } else if ($forms['zip']['delete_source'] == true) {
                 foreach ($listEntrys AS $entryFilename) {
-                    $entryPath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
+                    $entryPath = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename);
 
                     if (FileInfo::isTypeDirectory($entryPath) && $entryPath == $forms['zip']['path_create_zip']) {
                         $isFailed = true;
-                        $appAlert->danger(lng('file_action.alert.zip.path_create_zip_is_delete_source', 'path', $entryPath));
+                        AppAlert::danger(lng('file_action.alert.zip.path_create_zip_is_delete_source', 'path', $entryPath));
 
                         break;
                     }
                 }
             } else if ($forms['zip']['override_zip'] == false && FileInfo::isTypeFile($pathFileZip)) {
                 $isFailed = true;
-                $appAlert->danger(lng('file_action.alert.zip.path_file_zip_is_exists', 'path', $pathFileZip));
+                AppAlert::danger(lng('file_action.alert.zip.path_file_zip_is_exists', 'path', $pathFileZip));
             } else if (FileInfo::isTypeDirectory($pathFileZip)) {
                 $isFailed = true;
-                $appAlert->danger(lng('file_action.alert.zip.path_file_zip_is_exists_type_directory', 'path', $pathFileZip));
+                AppAlert::danger(lng('file_action.alert.zip.path_file_zip_is_exists_type_directory', 'path', $pathFileZip));
             } else if ($forms['zip']['override_zip'] && FileInfo::isTypeFile($pathFileZip) && FileInfo::unlink($pathFileZip) == false) {
                 $isFailed = true;
-                $appAlert->danger(lng('file_action.alert.zip.delete_file_zip_old_failed', 'path', $pathFileZip));
+                AppAlert::danger(lng('file_action.alert.zip.delete_file_zip_old_failed', 'path', $pathFileZip));
             }
 
             if ($isFailed == false) {
@@ -390,32 +392,32 @@
                 $countSuccess = $countEntrys;
 
                 foreach ($listEntrys AS $entryFilename) {
-                    $entryPath            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
+                    $entryPath            = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename);
                     $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
-                    if ($pclZip->add($entryPath, PCLZIP_OPT_REMOVE_PATH, $appDirectory->getDirectory(), PCLZIP_CB_PRE_ADD, 'callbackPreAdd') == false) {
+                    if ($pclZip->add($entryPath, PCLZIP_OPT_REMOVE_PATH, AppDirectory::getInstance()->getDirectory(), PCLZIP_CB_PRE_ADD, 'callbackPreAdd') == false) {
                         $isFailed = true;
                         $countSuccess--;
 
                         if ($isTypeDirectory)
-                            $appAlert->danger(lng('file_action.alert.zip.zip_directory_failed', 'error', $pclZip->errorInfo(true)));
+                            AppAlert::danger(lng('file_action.alert.zip.zip_directory_failed', 'error', $pclZip->errorInfo(true)));
                     }
                 }
 
                 if ($forms['zip']['delete_source'])
-                    FileInfo::rrmdir($listEntrys, $appDirectory->getDirectory(), $isHasFileAppPermission);
+                    FileInfo::rrmdir($listEntrys, AppDirectory::getInstance()->getDirectory(), $isHasFileAppPermission);
 
                 if ($isFailed == false) {
                     if ($isHasFileAppPermission)
-                        $appAlert->warning(lng('file_action.alert.zip.has_file_app_not_permission_zip'), ALERT_INDEX);
+                        AppAlert::warning(lng('file_action.alert.zip.has_file_app_not_permission_zip'), ALERT_INDEX);
 
-                    $appAlert->success(lng('file_action.alert.zip.zip_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                    AppAlert::success(lng('file_action.alert.zip.zip_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
                 } else {
                     if ($isHasFileAppPermission)
-                        $appAlert->warning(lng('file_action.alert.zip.has_file_app_not_permission_zip'));
+                        AppAlert::warning(lng('file_action.alert.zip.has_file_app_not_permission_zip'));
 
                     if ($countEntrys > 1 && $countSuccess > 0)
-                        $appAlert->success(lng('file_action.alert.zip.zip_success'));
+                        AppAlert::success(lng('file_action.alert.zip.zip_success'));
                 }
             }
         }
@@ -427,9 +429,9 @@
         $forms['chmod']['file']      = addslashes($_POST['chmod_file']);
 
         if (empty($forms['chmod']['directory'])) {
-            $appAlert->danger(lng('file_action.alert.chmod.not_input_chmod_directory'));
+            AppAlert::danger(lng('file_action.alert.chmod.not_input_chmod_directory'));
         } else if (empty($forms['chmod']['file'])) {
-            $appAlert->danger(lng('file_action.alert.chmod.not_input_chmod_file'));
+            AppAlert::danger(lng('file_action.alert.chmod.not_input_chmod_file'));
         } else {
             $isFailed       = false;
             $countSuccess   = $countEntrys;
@@ -437,24 +439,24 @@
             $chmodFile      = intval($forms['chmod']['file'],      8);
 
             foreach ($listEntrys AS $entryFilename) {
-                $entryPath            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename);
+                $entryPath            = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename);
                 $entryIsTypeDirectory = FileInfo::isTypeDirectory($entryPath);
 
                 if ($entryIsTypeDirectory && FileInfo::chmod($entryPath, $chmodDirectory) == false) {
                     $isFailed = true;
                     $countSuccess--;
-                    $appAlert->danger(lng('file_action.alert.chmod.chmod_directory_failed', 'name', $entryFilename));
+                    AppAlert::danger(lng('file_action.alert.chmod.chmod_directory_failed', 'name', $entryFilename));
                 } else if ($entryIsTypeDirectory == false && FileInfo::chmod($entryPath, $chmodFile) == false) {
                     $isFailed = true;
                     $countSuccess--;
-                    $appAlert->danger(lng('file_action.alert.chmod.chmod_file_failed', 'name', $entryFilename));
+                    AppAlert::danger(lng('file_action.alert.chmod.chmod_file_failed', 'name', $entryFilename));
                 }
             }
 
             if ($isFailed == false)
-                $appAlert->success(lng('file_action.alert.chmod.chmod_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                AppAlert::success(lng('file_action.alert.chmod.chmod_success'), ALERT_INDEX, 'index.php' . $appParameter->toString());
             else if ($countEntrys > 1 && $countSuccess > 0)
-                $appAlert->success(lng('file_action.alert.chmod.chmod_success'));
+                AppAlert::success(lng('file_action.alert.chmod.chmod_success'));
         }
     }
 
@@ -462,11 +464,11 @@
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'header.php');
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
     <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-file">
-        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+        <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
         <input type="hidden" name="action" value="<?php echo $nameAction; ?>"/>
 
         <div class="form-action">
@@ -479,7 +481,7 @@
                 <?php $countLoopEntry = 0; ?>
 
                 <?php foreach ($listEntrys AS $entryFilename) { ?>
-                    <?php $entryPath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename); ?>
+                    <?php $entryPath = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename); ?>
 
                     <?php if (FileInfo::permissionDenyPath($entryPath)) { ?>
 
@@ -496,7 +498,7 @@
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entryFilename); ?>"
                                         checked="checked"
-                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <a href="file_info.php?<?php echo $urlEntryDirectory; ?>">
@@ -520,7 +522,7 @@
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entryFilename); ?>"
                                         checked="checked"
-                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <span class="icomoon icon-file"></span>
@@ -537,14 +539,14 @@
                 <?php } ?>
 
                 <?php if ($countLoopEntry <= 0) { ?>
-                    <?php $appAlert->danger(lng('file_action.alert.no_item_selected_exists'), ALERT_INDEX, 'index.php' . $appParameter->toString()); ?>
+                    <?php AppAlert::danger(lng('file_action.alert.no_item_selected_exists'), ALERT_INDEX, 'index.php' . $appParameter->toString()); ?>
                 <?php } ?>
 
                 <li class="checkbox-all">
                     <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();" checked="checked"/>
                     <label for="checked-all-entry">
                         <span><?php echo lng('home.checkbox_all_entry'); ?></span>
-                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?>
+                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?>
                             <span id="checkall-count"></span>
                             <script type="text/javascript">
                                 OnLoad.add(function() {
@@ -559,7 +561,7 @@
             <ul class="form-element">
                 <?php if ($nameAction == FILE_ACTION_RENAME_MULTI) { ?>
                     <?php foreach ($listEntrys AS $entryFilename) { ?>
-                        <?php $entryPath = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entryFilename); ?>
+                        <?php $entryPath = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entryFilename); ?>
 
                         <li class="input">
                             <?php $valueModifierRename = $entryFilename; ?>

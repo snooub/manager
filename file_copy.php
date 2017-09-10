@@ -1,11 +1,13 @@
 <?php
 
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileMime;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
     use Librarys\App\AppFileCopy;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
+    use Librarys\Http\Request;
 
     define('LOADED',               1);
     define('ACTION_COPY',          1);
@@ -16,22 +18,22 @@
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appDirectory->isFileExistsDirectorySeparatorName() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isFileExistsDirectorySeparatorName() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath(AppDirectory::getInstance()->getDirectory()))
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
     $appFileCopy     = new AppFileCopy();
-    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath = new AppLocationPath('index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
-    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::getInstance()->getNameEncode(),      true);
 
-    $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $fileInfo    = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
     $fileMime    = new FileMime($fileInfo);
     $isDirectory = $fileInfo->isDirectory();
 
@@ -41,11 +43,11 @@
         $title = lng('file_copy.title_page_file');
 
     $themes  = [ env('resource.filename.theme.file') ];
-    $appAlert->setID(ALERT_FILE_COPY);
+    AppAlert::setID(ALERT_FILE_COPY);
     require_once('incfiles' . SP . 'header.php');
 
     $forms = [
-        'path'        => $appDirectory->getDirectory(),
+        'path'        => AppDirectory::getInstance()->getDirectory(),
         'action'      => ACTION_COPY,
         'exists_func' => EXISTS_FUNC_OVERRIDE
     ];
@@ -56,14 +58,14 @@
         $forms['exists_func'] = intval($_POST['exists_func']);
 
         if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
-            $appAlert->danger(lng('file_copy.alert.action_not_validate'));
+            AppAlert::danger(lng('file_copy.alert.action_not_validate'));
         } else {
-            $appFileCopy->setSession($appDirectory->getDirectory(), $appDirectory->getName(), $forms['action'] === ACTION_MOVE, $forms['exists_func']);
+            $appFileCopy->setSession(AppDirectory::getInstance()->getDirectory(), AppDirectory::getInstance()->getName(), $forms['action'] === ACTION_MOVE, $forms['exists_func']);
 
             $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
             $appParameter->toString(true);
 
-            $appAlert->gotoURL('index.php' . $appParameter->toString());
+            Request::redirect('index.php' . $appParameter->toString());
         }
     } else if (isset($_POST['copy'])) {
         $forms['path']        = $_POST['path'];
@@ -73,26 +75,26 @@
         $appFileCopy->clearSession();
 
         if (empty($forms['path'])) {
-            $appAlert->danger(lng('file_copy.alert.not_input_path_copy'));
+            AppAlert::danger(lng('file_copy.alert.not_input_path_copy'));
         } else if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
-            $appAlert->danger(lng('file_copy.alert.action_not_validate'));
+            AppAlert::danger(lng('file_copy.alert.action_not_validate'));
         } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE &&
                    $forms['exists_func'] !== EXISTS_FUNC_SKIP     &&
                    $forms['exists_func'] !== EXISTS_FUNC_RENAME)
         {
-            $appAlert->danger(lng('file_copy.alert.exists_func_not_validate'));
-        } else if (FileInfo::filterPaths($forms['path'] . SP . $appDirectory->getName()) == FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
+            AppAlert::danger(lng('file_copy.alert.exists_func_not_validate'));
+        } else if (FileInfo::filterPaths($forms['path'] . SP . AppDirectory::getInstance()->getName()) == FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName())) {
             if ($forms['action'] === ACTION_COPY)
-                $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
+                AppAlert::danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
             else
-                $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'));
+                AppAlert::danger(lng('file_copy.alert.path_move_is_equal_path_current'));
         } else if (FileInfo::isTypeDirectory(FileInfo::filterPaths($forms['path'])) == false) {
-            $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'));
+            AppAlert::danger(lng('file_copy.alert.path_copy_not_exists'));
         } else if (FileInfo::permissionDenyPath($forms['path'])) {
-            $appAlert->danger(lng('file_copy.alert.not_copy_file_to_directory_app'));
+            AppAlert::danger(lng('file_copy.alert.not_copy_file_to_directory_app'));
         } else {
-            $filePathOld            = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName());
-            $filePathNew            = FileInfo::filterPaths($forms['path'] . SP . $appDirectory->getName());
+            $filePathOld            = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
+            $filePathNew            = FileInfo::filterPaths($forms['path'] . SP . AppDirectory::getInstance()->getName());
             $isHasFileAppPermission = false;
 
             $callbackFileExists = function($directory, $filename, $isDirectory) {
@@ -122,20 +124,20 @@
 
             if (FileInfo::copy($filePathOld, $filePathNew, true, $forms['action'] === ACTION_MOVE, $isHasFileAppPermission, $callbackFileExists) == false) {
                 if ($isDirectory)
-                    $appAlert->danger(lng('file_copy.alert.copy_directory_failed', 'filename', $appDirectory->getName()));
+                    AppAlert::danger(lng('file_copy.alert.copy_directory_failed', 'filename', AppDirectory::getInstance()->getName()));
                 else
-                    $appAlert->danger(lng('file_copy.alert.copy_file_failed', 'filename', $appDirectory->getName()));
+                    AppAlert::danger(lng('file_copy.alert.copy_file_failed', 'filename', AppDirectory::getInstance()->getName()));
             } else {
                 if ($isHasFileAppPermission)
-                    $appAlert->warning(lng('file_copy.alert.has_file_app_not_permission_copy'), ALERT_INDEX);
+                    AppAlert::warning(lng('file_copy.alert.has_file_app_not_permission_copy'), ALERT_INDEX);
 
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
                 $appParameter->toString(true);
 
                 if ($isDirectory)
-                    $appAlert->success(lng('file_copy.alert.copy_directory_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                    AppAlert::success(lng('file_copy.alert.copy_directory_success', 'filename', AppDirectory::getInstance()->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
                 else
-                    $appAlert->success(lng('file_copy.alert.copy_file_success', 'filename', $appDirectory->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
+                    AppAlert::success(lng('file_copy.alert.copy_file_success', 'filename', AppDirectory::getInstance()->getName()), ALERT_INDEX, 'index.php' . $appParameter->toString());
             }
         }
     }
@@ -145,20 +147,20 @@
         $appFileCopyPathDest         = FileInfo::filterPaths($appFileCopy->getPath()      . SP . $appFileCopy->getName());
         $isChooseDirectoryPathFailed = true;
 
-        if ($appFileCopyPathSrc == FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName())) {
+        if ($appFileCopyPathSrc == FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName())) {
             $idAlert = null;
 
             if (isset($_SERVER['HTTP_REFERER']) && strpos(strtolower($_SERVER['HTTP_REFERER']), 'index.php') !== false)
                 $idAlert = ALERT_INDEX;
 
             if (FileInfo::isTypeDirectory($appFileCopy->getPath()) == false) {
-                $appAlert->danger(lng('file_copy.alert.path_copy_not_exists'), $idAlert);
+                AppAlert::danger(lng('file_copy.alert.path_copy_not_exists'), $idAlert);
             } else if ($appFileCopyPathSrc == $appFileCopyPathDest) {
                 if ($idAlert !== ALERT_INDEX) {
                     if ($appFileCopy->isMove() == false)
-                        $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
+                        AppAlert::danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
                     else
-                        $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'));
+                        AppAlert::danger(lng('file_copy.alert.path_move_is_equal_path_current'));
                 }
 
                 $isChooseDirectoryPathFailed = true;
@@ -171,7 +173,7 @@
                 if ($appFileCopy->isMove())
                     $forms['action'] = ACTION_MOVE;
 
-                $appAlert->success(lng('file_copy.alert.directory_path_choose_is_validate', 'path', $appFileCopy->getPath()));
+                AppAlert::success(lng('file_copy.alert.directory_path_choose_is_validate', 'path', $appFileCopy->getPath()));
             }
 
             if ($isChooseDirectoryPathFailed)
@@ -181,25 +183,25 @@
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
                 $appParameter->toString(true);
 
-                $appAlert->gotoURL('index.php' . $appParameter->toString());
+                Request::redirect('index.php' . $appParameter->toString());
             }
         }
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
     <div class="form-action">
         <div class="title">
             <?php if ($isDirectory) { ?>
-                <span><?php echo lng('file_copy.title_page_directory'); ?>: <?php echo $appDirectory->getName(); ?></span>
+                <span><?php echo lng('file_copy.title_page_directory'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } else { ?>
-                <span><?php echo lng('file_copy.title_page_file'); ?>: <?php echo $appDirectory->getName(); ?></span>
+                <span><?php echo lng('file_copy.title_page_file'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } ?>
         </div>
         <form action="file_copy.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input">

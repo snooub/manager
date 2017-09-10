@@ -8,15 +8,17 @@
         exit;
 
     use Librarys\File\FileInfo;
+    use Librarys\Http\Request;
 
     class Environment
     {
 
-        private $cache;
-        private $array;
         private static $instance;
 
-        public function __construct(array $config)
+        private $cache;
+        private $array;
+
+        protected function __construct(array $config)
         {
             global $_SERVER, $_POST, $_GET, $_REQUEST, $_COOKIE, $_SESSION;
 
@@ -24,6 +26,24 @@
             $this->array    = $config;
 
             self::$instance = $this;
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance(array $config)
+        {
+            if (null === self::$instance)
+                self::$instance = new Environment($config);
+
+            return self::$instance;
         }
 
         public function execute()
@@ -44,7 +64,7 @@
             $this->cache('server.request_scheme', $requestScheme);
             $this->cache('server.http_host',      env('server.request_scheme', $requestScheme) . '://' . env('SERVER.HTTP_HOST', '/'));
 
-            if (Boot::isRunLocal() == false)
+            if (Request::isLocal() == false)
                 $this->setCache('app.dev.enable', false);
 
             $this->cache('app.dev.rand',   intval($_SERVER['REQUEST_TIME']));
@@ -58,7 +78,7 @@
             $this->cache('app.path.librarys',   env('app.path.root') . SP . 'librarys');
             $this->cache('app.path.error',      env('app.path.root') . SP . 'error');
             $this->cache('app.path.resource',   env('app.path.root') . SP . 'resource');
-            $this->cache('app.path.them',       env('app.path.resource') . SP . 'theme');
+            $this->cache('app.path.theme',      env('app.path.resource') . SP . 'theme');
             $this->cache('app.path.icon',       env('app.path.resource') . SP . 'icon');
             $this->cache('app.path.javascript', env('app.path.resource') . SP . 'javascript');
 

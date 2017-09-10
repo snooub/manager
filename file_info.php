@@ -1,29 +1,30 @@
 <?php
 
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileMime;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
 
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appDirectory->isFileExistsDirectorySeparatorName() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isFileExistsDirectorySeparatorName() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath(AppDirectory::getInstance()->getDirectory()))
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath = new AppLocationPath('index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
-    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::getInstance()->getNameEncode(),      true);
 
-    $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $fileInfo    = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
     $fileMime    = new FileMime($fileInfo);
     $isDirectory = $fileInfo->isDirectory();
 
@@ -33,7 +34,7 @@
         $title = lng('file_info.title_page_file');
 
     $themes = [ env('resource.filename.theme.file') ];
-    $appAlert->setID(ALERT_FILE_INFO);
+    AppAlert::setID(ALERT_FILE_INFO);
     require_once('incfiles' . SP . 'header.php');
 
     $chownOwner = null;
@@ -55,7 +56,7 @@
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
     <?php $imageSize = null; ?>
 

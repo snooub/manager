@@ -8,32 +8,53 @@
     if (defined('LOADED') == false)
         exit;
 
-    require_once('File' . SP . 'FileInfo.php');
+    use Exception;
 
-    use Librarys\File\FileInfo;
-
-    final class Autoload
+    class Autoload
     {
 
-        private $boot;
+        private static $instance;
+
+        private $prefixNamespace;
+        private $preifxClassMime;
         private $prefixs;
 
-        public function __construct(Boot $boot)
+        const PREFIX_NAMESPACE_DEFAULT  = 'Librarys';
+        const PREFIX_CLASS_MIME_DEFAULT = '.php';
+
+        protected function __construct($prefixNamespace, $preifxClassMime)
         {
-            $this->boot    = $boot;
-            $this->prefixs = array();
+            $this->prefixNamespace = $prefixNamespace;
+            $this->preifxClassMime = $preifxClassMime;
+            $this->prefixs         = array();
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance($prefixNamespace = self::PREFIX_NAMESPACE_DEFAULT, $preifxClassMime = self::PREFIX_CLASS_MIME_DEFAULT)
+        {
+            if (null === self::$instance)
+                self::$instance = new Autoload($prefixNamespace, $preifxClassMime);
+
+            return self::$instance;
         }
 
         public function execute($classes = null)
         {
             if ($classes == false) {
-                $prefixNamespace = env('app.autoload.prefix_namespace');
-
-                if ($prefixNamespace != null) {
-                    $array = explode('\\', $prefixNamespace);
+                if ($this->prefixNamespace != null) {
+                    $array = explode('\\', $this->prefixNamespace);
 
                     if (is_array($array) == false)
-                        $array = array($prefixNamespace);
+                        $array = array($this->prefixNamespace);
 
                     $this->prefixs = $array;
                 }
@@ -44,7 +65,7 @@
             if (($path = $this->isFileLibrarys($classes)) !== false)
                 require_once($path);
             else
-                die('Class ' . $classes . ' not require');
+                throw new Exception('Class ' . $classes . ' not require');
         }
 
         public function isFileLibrarys($classes)
@@ -71,10 +92,10 @@
                 }
             }
 
-            $absolute = $path . env('app.autoload.prefix_class_mime');
+            $absolute = $path . $this->preifxClassMime;
 
-            if (FileInfo::isTypeFile(env('app.path.librarys') . SP . $absolute))
-                return env('app.path.librarys') . SP . $absolute;
+            if (@is_file(__DIR__ . SP . $absolute))
+                return __DIR__ . SP . $absolute;
 
             return false;
         }

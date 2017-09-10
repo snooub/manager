@@ -1,8 +1,10 @@
 <?php
 
-    use Librarys\App\Config\AppAboutConfig;
+    use Librarys\App\AppAlert;
+    use Librarys\App\AppUser;
     use Librarys\App\AppUpdate;
     use Librarys\App\AppUpgrade;
+    use Librarys\App\Config\AppAboutConfig;
     use Librarys\File\FileInfo;
     use Librarys\Parse\MarkdownParse;
 
@@ -12,63 +14,63 @@
 
     require_once('global.php');
 
-    if ($appUser->isPositionAdminstrator() == false)
-        $appAlert->danger(lng('user.default.alert.not_permission_access_feature'), ALERT_INDEX, env('app.http.host'));
+    if (AppUser::getInstance()->isPositionAdminstrator() == false)
+        AppAlert::danger(lng('user.default.alert.not_permission_access_feature'), ALERT_INDEX, env('app.http.host'));
 
     $title      = lng('app.upgrade_app.title_page');
     $themes     = [ env('resource.filename.theme.about'), env('resource.filename.theme.markdown') ];
-    $config     = new AppAboutConfig($boot);
-    $appUpdate  = new AppUpdate($boot, $config);
-    $appUpgrade = new AppUpgrade($boot, $config);
+    $config     = new AppAboutConfig();
+    $appUpdate  = new AppUpdate($config);
+    $appUpgrade = new AppUpgrade($config);
     $servers    = $appUpdate->getServers();
-    $appAlert->setID(ALERT_APP_UPGRADE_APP);
+    AppAlert::setID(ALERT_APP_UPGRADE_APP);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $hasUpgrade = $appUpgrade->checkHasUpgradeLocal($errorCheckUpgrade);
 
     if ($hasUpgrade == false && $errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_NONE)
-        $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_ABOUT, 'about.php');
+        AppAlert::info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_ABOUT, 'about.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_NOT_FOUND)
-        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_file_not_found'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+        AppAlert::danger(lng('app.upgrade_app.alert.error_check_upgrade_file_not_found'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_ADDITIONAL_UPDATE_NOT_FOUND)
-        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_additional_update_not_found'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+        AppAlert::danger(lng('app.upgrade_app.alert.error_check_upgrade_additional_update_not_found'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_DATA_ERROR)
-        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_file_data_error'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+        AppAlert::danger(lng('app.upgrade_app.alert.error_check_upgrade_file_data_error'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_DATA_ADDITIONAL_UPDATE_ERROR)
-        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_file_data_additional_update_error'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+        AppAlert::danger(lng('app.upgrade_app.alert.error_check_upgrade_file_data_additional_update_error'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_MD5_CHECK_FAILED)
-        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_md5_check_failed'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+        AppAlert::danger(lng('app.upgrade_app.alert.error_check_upgrade_md5_check_failed'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_MD5_ADDITIONAL_UPDATE_CHECK_FAILED)
-        $appAlert->danger(lng('app.upgrade_app.alert.error_check_upgrade_md5_additional_update_check_failed'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+        AppAlert::danger(lng('app.upgrade_app.alert.error_check_upgrade_md5_additional_update_check_failed'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
 
     if (isset($_GET[PARAMETER_INSTALL_URL])) {
         $errorZipExtract = null;
 
         if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE && $appUpgrade->installUpgradeNow(false, $errorZipExtract, $errorUpgrade) == false) {
             if ($errorZipExtract === AppUpgrade::ERROR_ZIP_NOT_OPEN_FILE_UPGRADE)
-                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_not_open_file_upgrade'));
+                AppAlert::danger(lng('app.upgrade_app.alert.error_zip_not_open_file_upgrade'));
             else if ($errorZipExtract === AppUpgrade::ERROR_ZIP_EXTRACT_FILE_UPGRADE)
-                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_extract_file_upgrade'));
+                AppAlert::danger(lng('app.upgrade_app.alert.error_zip_extract_file_upgrade'));
             else if ($errorUpgrade === AppUpgrade::ERROR_UPGRADE_NOT_LIST_FILE_APP)
-                $appAlert->danger(lng('app.upgrade_app.alert.error_upgrade_not_list_file_app'));
+                AppAlert::danger(lng('app.upgrade_app.alert.error_upgrade_not_list_file_app'));
             else
-                $appAlert->danger(lng('app.upgrade_app.alert.error_unknown'));
+                AppAlert::danger(lng('app.upgrade_app.alert.error_unknown'));
         } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL && $appUpgrade->installAdditionalNow(false, $errorZipExtract) == false) {
             if ($errorZipExtract === AppUpgrade::ERROR_ZIP_NOT_OPEN_FILE_ADDITIONAL)
-                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_not_open_file_additional'));
+                AppAlert::danger(lng('app.upgrade_app.alert.error_zip_not_open_file_additional'));
             else if ($errorZipExtract === AppUpgrade::ERROR_ZIP_EXTRACT_FILE_ADDITIONAL)
-                $appAlert->danger(lng('app.upgrade_app.alert.error_zip_extract_file_additional'));
+                AppAlert::danger(lng('app.upgrade_app.alert.error_zip_extract_file_additional'));
             else
-                $appAlert->danger(lng('app.upgrade_app.alert.error_unknown'));
+                AppAlert::danger(lng('app.upgrade_app.alert.error_unknown'));
         } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) {
-            $appAlert->success(lng('app.upgrade_app.alert.install_upgrade_app_success', 'version', $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+            AppAlert::success(lng('app.upgrade_app.alert.install_upgrade_app_success', 'version', $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) {
-            $appAlert->success(lng('app.upgrade_app.alert.install_additional_app_success', 'version', $appUpgrade->getAppAboutConfig()->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+            AppAlert::success(lng('app.upgrade_app.alert.install_additional_app_success', 'version', $appUpgrade->getAppAboutConfig()->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         }
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">

@@ -3,13 +3,14 @@
     namespace Librarys\App\Mysql;
 
     use Librarys\App\Base\BaseConfigWrite;
+    use Librarys\App\Mysql\AppMysqlConfig;
 
     final class AppMysqlConfigWrite extends BaseConfigWrite
     {
 
-        public function __construct(AppMysqlConfig $appMysqlConfig)
+        public function __construct()
         {
-            parent::__construct($appMysqlConfig, $appMysqlConfig->getPathConfig());
+            parent::__construct(AppMysqlConfig::getInstance(), AppMysqlConfig::getInstance()->getPathConfig());
         }
 
         public function callbackPreWrite()

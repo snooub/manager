@@ -1,24 +1,27 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
     use Librarys\App\AppFileDownload;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\App\Mysql\AppMysqlConfig;
+    use Librarys\Database\DatabaseBackupRestore;
     use Librarys\File\FileInfo;
     use Librarys\Zip\PclZip;
-    use Librarys\Database\DatabaseBackupRestore;
 
     define('LOADED',               1);
     define('DATABASE_CHECK_MYSQL', 1);
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $title   = lng('mysql.restore_manager.title_page');
     $themes  = [ env('resource.filename.theme.mysql') ];
     $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
-    $appAlert->setID(ALERT_MYSQL_RESTORE_MANAGER);
+    AppAlert::setID(ALERT_MYSQL_RESTORE_MANAGER);
     requireDefine('mysql_restore_manager');
 
     $listRecords  = array();
@@ -44,7 +47,7 @@
         $isAction = false;
 
     if ($isAction && $countRecords <= 0)
-        $appAlert->danger(lng('mysql.restore_manager.alert.not_record_select'));
+        AppAlert::danger(lng('mysql.restore_manager.alert.not_record_select'));
 
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
@@ -73,19 +76,19 @@
             if (FileInfo::unlink($recordPath) == false) {
                 $isFailed = true;
                 $countSuccess--;
-                $appAlert->danger(lng('mysql.restore_manager.alert.delete.delete_record_failed', 'name', $recordFilename));
+                AppAlert::danger(lng('mysql.restore_manager.alert.delete.delete_record_failed', 'name', $recordFilename));
             }
         }
 
         if ($isFailed == false)
-            $appAlert->success(lng('mysql.restore_manager.alert.delete.delete_success'), null, 'restore_manager.php' . $appParameter->toString());
+            AppAlert::success(lng('mysql.restore_manager.alert.delete.delete_success'), null, 'restore_manager.php' . $appParameter->toString());
         else if ($countRecords > 1 && $countSuccess > 0)
-            $appAlert->success(lng('mysql.restore_manager.delete_success'));
+            AppAlert::success(lng('mysql.restore_manager.delete_success'));
     } else if ($nameAction == MYSQL_RESTORE_MANAGER_ACTION_DOWNLOAD_MULTI || isset($_POST['download_button'])) {
         $pathDirectoryTmp = env('app.path.tmp');
 
         if (FileInfo::mkdir($pathDirectoryTmp, true) == false)
-            $appAlert->danger(lng('mysql.restore_manager.alert.download.download_failed'));
+            AppAlert::danger(lng('mysql.restore_manager.alert.download.download_failed'));
 
         $pathFile     = FileInfo::filterPaths($pathDirectoryTmp . SP . md5(time()));
         $pclZip       = new PclZip($pathFile);
@@ -98,7 +101,7 @@
             if ($pclZip->add($recordPath, PCLZIP_OPT_REMOVE_PATH, $databaseBackupRestore->getPathDirectoryDatabaseBackup()) == false) {
                 $isFailed = true;
                 $countSuccess--;
-                $appAlert->danger(lng('mysql.restore_manager.alert.download.download_record_failed', 'name', $recordFilename, 'error', $pclZip->errorInfo(true)));
+                AppAlert::danger(lng('mysql.restore_manager.alert.download.download_record_failed', 'name', $recordFilename, 'error', $pclZip->errorInfo(true)));
             }
         }
 
@@ -117,7 +120,7 @@
                 $appFileDownload->reponseHeader() == false ||
                 $appFileDownload->download() == false
             ) {
-                $appAlert->danger(lng('mysql.restore_manager.alert.download.download_failed'));
+                AppAlert::danger(lng('mysql.restore_manager.alert.download.download_failed'));
             }
         }
     }
@@ -125,10 +128,10 @@
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
 
     <form action="restore_manager.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database-backup">
-        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+        <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
         <?php if ($isAction) { ?>
             <input type="hidden" name="action" value="<?php echo $nameAction; ?>"/>
@@ -164,7 +167,7 @@
                                     id="<?php echo $id; ?>"
                                     value="<?php echo $entryFilename; ?>"
                                     <?php if ($isChecked) { ?>checked="checked"<?php } ?>
-                                    <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                    <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <span class="icomoon icon-backup"></span>
@@ -192,7 +195,7 @@
 
                         <label for="checked-all-entry">
                             <span><?php echo lng('mysql.restore_manager.form.input.checkbox_all_entry'); ?></span>
-                            <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
+                            <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
                                 <span id="checkall-count"></span>
                                  <script type="text/javascript">
                                     OnLoad.add(function() {

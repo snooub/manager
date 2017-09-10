@@ -8,23 +8,39 @@
     use Librarys\Environment;
     use Librarys\File\FileInfo;
 
-    final class Language
+    class Language
     {
 
-        private $boot;
         private $lang;
         private $cache;
 
         private static $instance;
         private static $params;
 
-        public function __construct(Boot $boot)
+        protected function __construct()
         {
-            $this->boot  = $boot;
             $this->lang  = array();
             $this->cache = array();
 
             self::$instance = $this;
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new Language();
+
+            return self::$instance;
         }
 
         public function execute()

@@ -5,14 +5,12 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
-
     final class AppUpgradeConfig extends BaseConfig
     {
 
-        public function __construct(Boot $boot)
+        public function __construct()
         {
-            parent::__construct($boot, env('resource.config.upgrade'), env('resource.filename.config.upgrade'));
+            parent::__construct(env('resource.config.upgrade'), env('resource.filename.config.upgrade'));
             parent::parse(true);
         }
 

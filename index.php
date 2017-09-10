@@ -5,7 +5,8 @@
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
     use Librarys\App\AppFileCopy;
-
+    use Librarys\App\AppAlert;
+    use Librarys\App\Config\AppConfig;
     use Librarys\File\FileInfo;
     use Librarys\File\FileMime;
 
@@ -16,30 +17,30 @@
     $title   = lng('home.title_page_root');
     $themes  = [ env('resource.filename.theme.file') ];
     $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
-    $appAlert->setID(ALERT_INDEX);
+    AppAlert::setID(ALERT_INDEX);
 
     require_once('incfiles' . SP . 'header.php');
 
     $handler              = null;
-    $isPermissionDenyPath = $appDirectory->isPermissionDenyPath();
+    $isPermissionDenyPath = AppDirectory::getInstance()->isPermissionDenyPath();
 
     if ($isPermissionDenyPath)
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()));
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectory()));
 
-    if ($isPermissionDenyPath || FileInfo::isReadable($appDirectory->getDirectory()) == false || FileInfo::isTypeDirectory($appDirectory->getDirectory()) == false) {
-        $appDirectory->setDirectory(env('SERVER.DOCUMENT_ROOT'));
-        $handler = FileInfo::scanDirectory($appDirectory->getDirectory());
+    if ($isPermissionDenyPath || FileInfo::isReadable(AppDirectory::getInstance()->getDirectory()) == false || FileInfo::isTypeDirectory(AppDirectory::getInstance()->getDirectory()) == false) {
+        AppDirectory::getInstance()->setDirectory(env('SERVER.DOCUMENT_ROOT'));
+        $handler = FileInfo::scanDirectory(AppDirectory::getInstance()->getDirectory());
 
         if ($isPermissionDenyPath == false)
-            $appAlert->danger(lng('home.alert.path_not_exists'));
+            AppAlert::danger(lng('home.alert.path_not_exists'));
     } else {
-        $handler = FileInfo::scanDirectory($appDirectory->getDirectory());
+        $handler = FileInfo::scanDirectory(AppDirectory::getInstance()->getDirectory());
     }
 
     if ($handler === false || $handler == null) {
-        $appDirectory->setDirectory(env('SERVER.DOCUMENT_ROOT'));
-        $handler = FileInfo::scanDirectory($appDirectory->getDirectory());
-        $appAlert->danger(lng('home.alert.path_not_receiver_list'));
+        AppDirectory::getInstance()->setDirectory(env('SERVER.DOCUMENT_ROOT'));
+        $handler = FileInfo::scanDirectory(AppDirectory::getInstance()->getDirectory());
+        AppAlert::danger(lng('home.alert.path_not_receiver_list'));
     }
 
     if (is_array($handler) == false)
@@ -53,9 +54,9 @@
 
     foreach ($handler AS $entry) {
         if ($entry != '.' && $entry != '..') {
-            if ($entry == env('application.directory') && $appDirectory->isAccessParentPath())
+            if ($entry == env('application.directory') && AppDirectory::getInstance()->isAccessParentPath())
                 ;
-            else if (FileInfo::isTypeDirectory($appDirectory->getDirectory() . SP . $entry))
+            else if (FileInfo::isTypeDirectory(AppDirectory::getInstance()->getDirectory() . SP . $entry))
                 $arrayFolder[] = $entry;
             else
                 $arrayFile[] = $entry;
@@ -79,12 +80,12 @@
     $handlerIsOdd = false;
     $handlerCount = count($handlerList);
     $handlerPage  = array(
-        'current'       => $appDirectory->getPage(),
+        'current'       => AppDirectory::getInstance()->getPage(),
         'begin'         => 0,
         'end'           => $handlerCount,
         'total'         => 0,
         'entry_on_page' => $handlerCount,
-        'list_max'      => $appConfig->get('paging.file_home_list')
+        'list_max'      => AppConfig::getInstance()->get('paging.file_home_list')
     );
 
     if ($handlerCount > 0 && $handlerPage['list_max'] > 0 && $handlerCount > $handlerPage['list_max']) {
@@ -110,19 +111,19 @@
 
     $bufferBack = null;
 
-    if (preg_replace('|[a-zA-Z]+:|', '', FileInfo::filterPaths($appDirectory->getDirectory())) != SP) {
-        $backPath      = strrchr($appDirectory->getDirectory(), SP);
+    if (preg_replace('|[a-zA-Z]+:|', '', FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory())) != SP) {
+        $backPath      = strrchr(AppDirectory::getInstance()->getDirectory(), SP);
         $backDirectory = $backPath;
 
         if ($backPath !== false) {
-            $backPath = substr($appDirectory->getDirectory(), 0, strlen($appDirectory->getDirectory()) - strlen($backPath));
+            $backPath = substr(AppDirectory::getInstance()->getDirectory(), 0, strlen(AppDirectory::getInstance()->getDirectory()) - strlen($backPath));
             $backPath = 'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($backPath);
 
             if (strpos($backDirectory, SP) !== false)
                 $backDirectory = str_replace(SP, null, $backDirectory);
         } else {
             $backPath      = 'index.php';
-            $backDirectory = $appDirectory->getDirectory();
+            $backDirectory = AppDirectory::getInstance()->getDirectory();
         }
 
         $bufferBack .= '<li class="back">';
@@ -133,16 +134,16 @@
         $bufferBack .= '</li>';
     }
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath = new AppLocationPath('index.php');
     $pagePaging      = new AppPaging(
-        'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . $appDirectory->getDirectoryEncode(),
+        'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::getInstance()->getDirectoryEncode(),
 
-        'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . $appDirectory->getDirectoryEncode() .
+        'index.php?' . AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::getInstance()->getDirectoryEncode() .
                  '&' . AppDirectory::PARAMETER_PAGE_URL      . '='
     );
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
     $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],            $handlerPage['current'] > 1);
 
     $appFileCopy = new AppFileCopy();
@@ -157,31 +158,31 @@
 
                 if ($isDirectoryCopy) {
                     if ($appFileCopy->isMove() == false)
-                        $appAlert->setLangMsg('file_copy.alert.cancel_copy_directory_success', 'filename', $appFileCopy->getName());
+                        AppAlert::setLangMsg('file_copy.alert.cancel_copy_directory_success', 'filename', $appFileCopy->getName());
                     else
-                        $appAlert->setLangMsg('file_copy.alert.cancel_move_directory_success', 'filename', $appFileCopy->getName());
+                        AppAlert::setLangMsg('file_copy.alert.cancel_move_directory_success', 'filename', $appFileCopy->getName());
                 } else {
                     if ($appFileCopy->isMove() == false)
-                        $appAlert->setLangMsg('file_copy.alert.cancel_copy_file_success', 'filename', $appFileCopy->getName());
+                        AppAlert::setLangMsg('file_copy.alert.cancel_copy_file_success', 'filename', $appFileCopy->getName());
                     else
-                        $appAlert->setLangMsg('file_copy.alert.cancel_move_file_success', 'filename', $appFileCopy->getName());
+                        AppAlert::setLangMsg('file_copy.alert.cancel_move_file_success', 'filename', $appFileCopy->getName());
                 }
 
-                $appAlert->success(null, ALERT_INDEX, 'index.php' . $appParameter->toString());
+                AppAlert::success(null, ALERT_INDEX, 'index.php' . $appParameter->toString());
             } else {
                 if ($isDirectoryCopy) {
                     if ($appFileCopy->isMove() == false)
-                        $appAlert->setLangMsg('file_copy.alert.cancel_copy_directory_failed', 'filename', $appFileCopy->getName());
+                        AppAlert::setLangMsg('file_copy.alert.cancel_copy_directory_failed', 'filename', $appFileCopy->getName());
                     else
-                        $appAlert->setLangMsg('file_copy.alert.cancel_move_directory_failed', 'filename', $appFileCopy->getName());
+                        AppAlert::setLangMsg('file_copy.alert.cancel_move_directory_failed', 'filename', $appFileCopy->getName());
                 } else {
                     if ($appFileCopy->isMove() == false)
-                        $appAlert->setLangMsg('file_copy.alert.cancel_copy_file_failed', 'filename', $appFileCopy->getName());
+                        AppAlert::setLangMsg('file_copy.alert.cancel_copy_file_failed', 'filename', $appFileCopy->getName());
                     else
-                        $appAlert->setLangMsg('file_copy.alert.cancel_move_file_failed', 'filename', $appFileCopy->getName());
+                        AppAlert::setLangMsg('file_copy.alert.cancel_move_file_failed', 'filename', $appFileCopy->getName());
                 }
 
-                $appAlert->danger(null);
+                AppAlert::danger(null);
             }
         }
 
@@ -190,11 +191,11 @@
         $appFileCopyHrefParamater->add(AppDirectory::PARAMETER_NAME_URL,      $appFileCopy->getName(),      true);
         $appFileCopyHref = 'file_copy.php' . $appFileCopyHrefParamater->toString(true);
 
-        if (FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appFileCopy->getName()) == FileInfo::filterPaths($appFileCopy->getDirectory() . SP . $appFileCopy->getName())) {
+        if (FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $appFileCopy->getName()) == FileInfo::filterPaths($appFileCopy->getDirectory() . SP . $appFileCopy->getName())) {
             if ($appFileCopy->isMove() == false)
-                $appAlert->danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
+                AppAlert::danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
             else
-                $appAlert->danger(lng('file_copy.alert.path_move_is_equal_path_current'));
+                AppAlert::danger(lng('file_copy.alert.path_move_is_equal_path_current'));
 
             $isDirectoryCurrentEqual = true;
         }
@@ -205,27 +206,27 @@
         if ($appFileCopy->isMove() == false) {
             if ($isDirectoryCurrentEqual) {
                 if ($isDirectoryCopy)
-                    $appAlert->info(lng(
+                    AppAlert::info(lng(
                         'file_copy.alert.choose_directory_path_for_copy_directory_cancel',
                         'filename', $appFileCopy->getName(),
                         'href_cancel', $appFileCopyHrefCancel
                     ), ALERT_INDEX);
                 else
-                    $appAlert->info(lng(
+                    AppAlert::info(lng(
                         'file_copy.alert.choose_directory_path_for_copy_file_cancel',
                         'filename', $appFileCopy->getName(),
                         'href_cancel', $appFileCopyHrefCancel
                     ), ALERT_INDEX);
             } else {
                 if ($isDirectoryCopy)
-                    $appAlert->info(lng(
+                    AppAlert::info(lng(
                         'file_copy.alert.choose_directory_path_for_copy_directory_href',
                         'filename', $appFileCopy->getName(),
                         'href', $appFileCopyHref,
                         'href_cancel', $appFileCopyHrefCancel
                     ), ALERT_INDEX);
                 else
-                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_copy_file_href',
+                    AppAlert::info(lng('file_copy.alert.choose_directory_path_for_copy_file_href',
                         'filename', $appFileCopy->getName(),
                         'href', $appFileCopyHref,
                         'href_cancel', $appFileCopyHrefCancel
@@ -234,24 +235,24 @@
         } else {
             if ($isDirectoryCurrentEqual) {
                 if ($isDirectoryCopy)
-                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_move_directory_href',
+                    AppAlert::info(lng('file_copy.alert.choose_directory_path_for_move_directory_href',
                         'filename', $appFileCopy->getName(),
                         'href_cancel', $appFileCopyHrefCancel
                     ), ALERT_INDEX);
                 else
-                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_move_file_href',
+                    AppAlert::info(lng('file_copy.alert.choose_directory_path_for_move_file_href',
                         'filename', $appFileCopy->getName(),
                         'href_cancel', $appFileCopyHrefCancel
                     ), ALERT_INDEX);
             } else {
                 if ($isDirectoryCopy)
-                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_move_directory_href',
+                    AppAlert::info(lng('file_copy.alert.choose_directory_path_for_move_directory_href',
                         'filename', $appFileCopy->getName(),
                         'href', $appFileCopyHref,
                         'href_cancel', $appFileCopyHrefCancel
                     ), ALERT_INDEX);
                 else
-                    $appAlert->info(lng('file_copy.alert.choose_directory_path_for_move_file_href',
+                    AppAlert::info(lng('file_copy.alert.choose_directory_path_for_move_file_href',
                         'filename', $appFileCopy->getName(),
                         'href', $appFileCopyHref,
                         'href_cancel', $appFileCopyHrefCancel
@@ -262,16 +263,17 @@
         $appParameter->remove('cancel_copy_move');
         $appParameter->toString(true);
 
-        $appFileCopy->setPath($appDirectory->getDirectory());
+        $appFileCopy->setPath(AppDirectory::getInstance()->getDirectory());
         $appFileCopy->flushSession();
     }
+
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
     <?php echo $appLocationPath->display(); ?>
 
     <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-file-home">
-        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+        <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
         <ul class="file-list">
             <?php echo $bufferBack; ?>
@@ -279,7 +281,7 @@
             <?php if ($handlerCount > 0) { ?>
                 <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
                     <?php $entry        = $handlerList[$i]; ?>
-                    <?php $entryPath    = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $entry['name']); ?>
+                    <?php $entryPath    = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entry['name']); ?>
                     <?php $chmodPerms   = FileInfo::getChmodPermission($entryPath); ?>
                     <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
 
@@ -293,7 +295,7 @@
                                         name="entrys[]"
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entry['name']); ?>"
-                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <a href="file_info.php<?php echo $urlParameter; ?>">
@@ -359,7 +361,7 @@
                                         name="entrys[]"
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entry['name']); ?>"
-                                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
 
@@ -384,7 +386,7 @@
                     <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
                     <label for="checked-all-entry">
                         <span><?php echo lng('home.checkbox_all_entry'); ?></span>
-                        <?php if ($appConfig->get('enable_disable.count_checkbox_file_javascript')) { ?>
+                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?>
                             <span id="checkall-count"></span>
                             <script type="text/javascript">
                                 OnLoad.add(function() {
@@ -395,7 +397,7 @@
                     </label>
                 </li>
 
-                <?php if ($appConfig->get('paging.file_home_list') > 0 && $handlerPage['total'] > 1) { ?>
+                <?php if (AppConfig::getInstance()->get('paging.file_home_list') > 0 && $handlerPage['total'] > 1) { ?>
                     <li class="paging">
                         <?php echo $pagePaging->display($handlerPage['current'], $handlerPage['total']); ?>
                     </li>

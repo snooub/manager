@@ -5,13 +5,12 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
     use Librarys\File\FileInfo;
 
-    final class AppChecker
+    class AppChecker
     {
 
-        private $boot;
+        private static $instance;
 
         private $isAccept;
         private $isInstallDirectory;
@@ -32,15 +31,31 @@
         private $configError;
         private $configUpdate;
 
-        public function __construct(Boot $boot)
+        protected function __construct()
         {
-            $this->boot = $boot;
-
             $this->isAccept                     = true;
             $this->isInstallDirectory           = true;
             $this->isDirectoryPermissionExecute = true;
             $this->isConfigValidate             = true;
             $this->isUserValidate               = true;
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new AppChecker();
+
+            return self::$instance;
         }
 
         public function execute()

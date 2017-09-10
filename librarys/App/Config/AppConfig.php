@@ -5,16 +5,35 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
     use Librarys\File\FileInfo;
 
-    final class AppConfig extends BaseConfig
+    class AppConfig extends BaseConfig
     {
 
-        public function __construct(Boot $boot)
+        private static $instance;
+
+        protected function __construct()
         {
-            parent::__construct($boot, env('resource.config.manager'), env('resource.filename.config.manager'));
+            parent::__construct(env('resource.config.manager'), env('resource.filename.config.manager'));
             parent::parse(true);
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new AppConfig();
+
+            return self::$instance;
         }
 
         public function callbackPreWrite()

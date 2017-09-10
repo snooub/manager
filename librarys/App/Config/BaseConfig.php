@@ -5,14 +5,11 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
     use Librarys\App\AppUser;
     use Librarys\File\FileInfo;
 
     abstract class BaseConfig
     {
-
-        protected $boot;
 
         protected $pathConfig;
         protected $pathConfigSystem;
@@ -27,7 +24,7 @@
 
         protected $spacingWrite;
 
-        public function __construct(Boot $boot, $pathConfigSystem, $fileConfigName = null)
+        protected function __construct($pathConfigSystem, $fileConfigName = null)
         {
             $this->configArray       = array();
             $this->configSystemArray = array();

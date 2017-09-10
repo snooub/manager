@@ -1,8 +1,10 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppPaging;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\App\Mysql\AppMysqlConfigWrite;
 
     define('LOADED',     1);
@@ -12,16 +14,16 @@
 
     $title  = lng('mysql.home.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_HOME);
+    AppAlert::setID(ALERT_MYSQL_HOME);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $forms = [
-        'mysql_host'     => $appMysqlConfig->get('mysql_host'),
-        'mysql_username' => $appMysqlConfig->get('mysql_username'),
-        'mysql_password' => $appMysqlConfig->get('mysql_password'),
-        'mysql_name'     => $appMysqlConfig->get('mysql_name'),
-        'mysql_port'     => $appMysqlConfig->get('mysql_port'),
-        'mysql_encoding' => $appMysqlConfig->get('mysql_encoding')
+        'mysql_host'     => AppMysqlConfig::getInstance()->get('mysql_host'),
+        'mysql_username' => AppMysqlConfig::getInstance()->get('mysql_username'),
+        'mysql_password' => AppMysqlConfig::getInstance()->get('mysql_password'),
+        'mysql_name'     => AppMysqlConfig::getInstance()->get('mysql_name'),
+        'mysql_port'     => AppMysqlConfig::getInstance()->get('mysql_port'),
+        'mysql_encoding' => AppMysqlConfig::getInstance()->get('mysql_encoding')
     ];
 
     if (isset($_POST['connect'])) {
@@ -31,9 +33,9 @@
         $forms['mysql_name']     = addslashes($_POST['mysql_name']);
 
         if (empty($forms['mysql_host'])) {
-            $appAlert->danger(lng('mysql.home.alert.not_input_mysql_host'));
+            AppAlert::danger(lng('mysql.home.alert.not_input_mysql_host'));
         } else if (empty($forms['mysql_username'])) {
-            $appAlert->danger(lng('mysql.home.alert.not_input_mysql_username'));
+            AppAlert::danger(lng('mysql.home.alert.not_input_mysql_username'));
         } else {
             $appMysqlConnect->setHost    ($forms['mysql_host']);
             $appMysqlConnect->setUsername($forms['mysql_username']);
@@ -45,32 +47,32 @@
             $isFailed = false;
 
             foreach ($forms AS $envKey => $envValue) {
-                if ($appMysqlConfig->set($envKey, $envValue) == false) {
+                if (AppMysqlConfig::getInstance()->set($envKey, $envValue) == false) {
                     $isFailed = true;
-                    $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
+                    AppAlert::danger(lng('mysql.home.alert.mysql_write_config_failed'));
 
                     break;
                 }
             }
 
             if ($isFailed == false) {
-                if ($appMysqlConfig->write()) {
+                if (AppMysqlConfig::getInstance()->write()) {
                     if ($appMysqlConnect->openConnect(false)) {
-                        $appMysqlConfig->set('mysql_is_connect', true);
+                        AppMysqlConfig::getInstance()->set('mysql_is_connect', true);
 
-                        if ($appMysqlConfig->write() == false) {
-                            $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
+                        if (AppMysqlConfig::getInstance()->write() == false) {
+                            AppAlert::danger(lng('mysql.home.alert.mysql_write_config_failed'));
                         } else {
                             if (empty($forms['mysql_name']))
-                                $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+                                AppAlert::success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
                             else
-                                $appAlert->success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
+                                AppAlert::success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
                         }
                     } else {
-                        $appAlert->danger(lng('mysql.home.alert.mysql_connect_failed', 'error', $appMysqlConnect->errorConnect()));
+                        AppAlert::danger(lng('mysql.home.alert.mysql_connect_failed', 'error', $appMysqlConnect->errorConnect()));
                     }
                 } else {
-                    $appAlert->danger(lng('mysql.home.alert.mysql_write_config_failed'));
+                    AppAlert::danger(lng('mysql.home.alert.mysql_write_config_failed'));
                 }
             }
         }
@@ -80,14 +82,14 @@
     }
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.home.title_page'); ?></span>
         </div>
         <form action="index.php" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input">

@@ -5,6 +5,8 @@
     if (defined('LOADED') == false)
         exit;
 
+    use Librarys\Http\Validate;
+
     final class FileCurl
     {
 
@@ -416,7 +418,7 @@
                             $this->ref = $this->url;
                             $this->url = $location;
 
-                            if (isValidateURL($this->url) == false)
+                            if (Validate::url($this->url) == false)
                                 $this->url = addPrefixHttpURL($this->hostInfo . $location);
 
                             if ($this->curl())
@@ -449,7 +451,7 @@
                     $this->ref = $this->url;
                     $this->url = trim($matches[1]);
 
-                    if (isValidateURL($this->url) == false)
+                    if (Validate::url($this->url) == false)
                         $this->url = addPrefixHttpURL($this->hostInfo . $location);
 
                     return $this->curl();

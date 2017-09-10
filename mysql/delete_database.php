@@ -1,5 +1,6 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
 
     define('LOADED', 1);
@@ -7,25 +8,25 @@
 
     $title  = lng('mysql.delete_database.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_DELETE_DATABASE);
+    AppAlert::setID(ALERT_MYSQL_DELETE_DATABASE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     if (isset($_POST['delete'])) {
         if ($appMysqlConnect->query('DROP DATABASE `' . addslashes($appMysqlConnect->getName())) == false)
-            $appAlert->danger(lng('mysql.delete_database.alert.delete_database_failed', 'name', $appMysqlConnect->getName(), 'error', $appMysqlConnect->error()));
+            AppAlert::danger(lng('mysql.delete_database.alert.delete_database_failed', 'name', $appMysqlConnect->getName(), 'error', $appMysqlConnect->error()));
         else
-            $appAlert->success(lng('mysql.delete_database.alert.delete_database_success', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+            AppAlert::success(lng('mysql.delete_database.alert.delete_database_success', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.delete_database.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
         <form action="delete_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="accept">

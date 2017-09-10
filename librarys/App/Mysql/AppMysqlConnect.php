@@ -14,9 +14,9 @@
         private $isDatabaseNameCustom;
         private $mysqlQueryStringCurrent;
 
-        public function __construct(Boot $boot)
+        public function __construct()
         {
-            parent::__construct($boot);
+            parent::__construct();
         }
 
         public function setTableCurrent($table)

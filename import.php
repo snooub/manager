@@ -1,10 +1,12 @@
 <?php
 
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileCurl;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileCurl;
+    use Librarys\Http\Validate;
 
     define('LOADED',               1);
     define('EXISTS_FUNC_OVERRIDE', 1);
@@ -18,20 +20,20 @@
     $title   = lng('import.title_page');
     $themes  = [ env('resource.filename.theme.file') ];
     $scripts = [ env('resource.filename.javascript.more_input_url') ];
-    $appAlert->setID(ALERT_IMPORT);
+    AppAlert::setID(ALERT_IMPORT);
     require_once('incfiles' . SP . 'header.php');
 
-    if ($appDirectory->isDirectoryExists() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath())
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectory()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isDirectoryExists() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath())
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectory()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'import.php');
+    $appLocationPath = new AppLocationPath('import.php');
     $appLocationPath->setIsPrintLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
 
     $forms = [
         'urls'        => null,
@@ -47,11 +49,11 @@
         $forms['mode_import'] = intval($_POST['mode_import']);
 
         if (isset($_POST['urls']) == false || is_array($_POST['urls']) == false) {
-            $appAlert->danger(lng('import.alert.data_empty_or_not_validate'));
+            AppAlert::danger(lng('import.alert.data_empty_or_not_validate'));
         } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE && $forms['exists_func'] !== EXISTS_FUNC_SKIP && $forms['exists_func'] !== EXISTS_FUNC_RENAME) {
-            $appAlert->danger(lng('import.alert.exists_func_not_validate'));
+            AppAlert::danger(lng('import.alert.exists_func_not_validate'));
         } else if ($forms['mode_import'] !== MODE_IMPORT_CURL && $forms['mode_import'] !== MODE_IMPORT_SOCKET) {
-            $appAlert->danger(lng('import.alert.mode_import_not_validate'));
+            AppAlert::danger(lng('import.alert.mode_import_not_validate'));
         } else {
             $isFailed            = false;
             $forms['is_empty']   = true;
@@ -62,9 +64,9 @@
                     $forms['is_empty'] = false;
                     $forms['urls'][$index] = addslashes($_POST['urls'][$index]);
 
-                    if (isValidateURL($forms['urls'][$index]) == false) {
+                    if (Validate::url($forms['urls'][$index]) == false) {
                         $isFailed = true;
-                        $appAlert->danger(lng('import.alert.url_import_not_validate', 'url', $url));
+                        AppAlert::danger(lng('import.alert.url_import_not_validate', 'url', $url));
                     }
                 }
 
@@ -72,12 +74,12 @@
                     $forms['filenames'][$index] = addslashes($_POST['filenames'][$index]);
 
                     if ($isFailed == false && empty($url) == false && empty($forms['filenames'][$index]) == false && FileInfo::isNameValidate($forms['filenames'][$index]) == false)
-                        $appAlert->danger(lng('import.alert.name_url_import_not_validate', 'name', $forms['filenames'][$index], 'validate', FileInfo::FILENAME_VALIDATE));
+                        AppAlert::danger(lng('import.alert.name_url_import_not_validate', 'name', $forms['filenames'][$index], 'validate', FileInfo::FILENAME_VALIDATE));
                 }
             }
 
             if ($forms['is_empty']) {
-                $appAlert->danger(lng('import.alert.not_input_urls'));
+                AppAlert::danger(lng('import.alert.not_input_urls'));
             } else if ($isFailed == false) {
                 for ($i = 0; $i < $forms['urls_count']; ++$i) {
                     $url       = null;
@@ -98,15 +100,15 @@
                             $errorInt = $curl->getErrorInt();
 
                             if ($errorInt === FileCurl::ERROR_URL_NOT_FOUND)
-                                $appAlert->danger(lng('import.alert.address_not_found', 'url', $url));
+                                AppAlert::danger(lng('import.alert.address_not_found', 'url', $url));
                             else if ($errorInt === FileCurl::ERROR_FILE_NOT_FOUND)
-                                $appAlert->danger(lng('import.alert.file_not_found', 'url', $url));
+                                AppAlert::danger(lng('import.alert.file_not_found', 'url', $url));
                             else if ($errorInt === FileCurl::ERROR_AUTO_REDIRECT)
-                                $appAlert->danger(lng('import.alert.auto_redirect_url_failed', 'url', $url));
+                                AppAlert::danger(lng('import.alert.auto_redirect_url_failed', 'url', $url));
                             else if ($errorInt === FileCurl::ERROR_CONNECT_FAILED)
-                                $appAlert->danger(lng('import.alert.connect_url_failed', 'url', $url));
+                                AppAlert::danger(lng('import.alert.connect_url_failed', 'url', $url));
                             else
-                                $appAlert->danger(lng('import.alert.error_unknown', 'url', $url));
+                                AppAlert::danger(lng('import.alert.error_unknown', 'url', $url));
                         } else {
                             if (empty($filename))
                                 $filename = baseNameURL($curl->getURL());
@@ -115,7 +117,7 @@
                                 $filename = removePrefixHttpURL($curl->getURL());
 
                             $filename             = FileInfo::fileNameFix($filename);
-                            $fileWritePath        = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $filename);
+                            $fileWritePath        = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $filename);
                             $fileWriteIsDirectory = FileInfo::isTypeDirectory($fileWritePath);
                             $fileWriteIsFile      = FileInfo::isTypeFile($fileWritePath);
                             $fileSizeStr          = FileInfo::sizeToString($curl->getBufferLength());
@@ -135,20 +137,20 @@
                             }
 
                             if ($fileWriteIsDirectory && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
-                                $appAlert->danger(lng('import.alert.path_file_error_is_directory', 'filename', $filename));
+                                AppAlert::danger(lng('import.alert.path_file_error_is_directory', 'filename', $filename));
                             } else if ($fileWriteIsFile && $forms['exists_func'] === EXISTS_FUNC_SKIP) {
-                                $appAlert->info(lng('import.alert.path_file_is_exists_and_skip', 'filename', $filename));
+                                AppAlert::info(lng('import.alert.path_file_is_exists_and_skip', 'filename', $filename));
                             } else if ($fileWriteIsFile && $forms['exists_func'] === EXISTS_FUNC_OVERRIDE) {
                                 if (FileInfo::unlink($fileWritePath)) {
 
                                     if (FileInfo::fileWriteContents($fileWritePath, $curl->getBuffer()) == true) {
-                                        $appAlert->success(lng('import.alert.import_file_exists_override_is_success', 'filename', $filename, 'size', $fileSizeStr, 'time', $timeImport));
+                                        AppAlert::success(lng('import.alert.import_file_exists_override_is_success', 'filename', $filename, 'size', $fileSizeStr, 'time', $timeImport));
                                         $isSuccess = true;
                                     } else {
-                                        $appAlert->danger(lng('import.alert.import_file_exists_override_is_failed', 'filename', $filename));
+                                        AppAlert::danger(lng('import.alert.import_file_exists_override_is_failed', 'filename', $filename));
                                     }
                                 } else {
-                                    $appAlert->danger(lng('import.alert.error_delete_file_exists', 'filename', $filename));
+                                    AppAlert::danger(lng('import.alert.error_delete_file_exists', 'filename', $filename));
                                 }
                             } else if ($fileWriteIsFile && $forms['exists_func'] === EXISTS_FUNC_RENAME) {
                                 $fileRename = null;
@@ -156,7 +158,7 @@
 
                                 for ($i = 0; $i < 50; ++$i) {
                                     $fileRename = rand(10000, 99999) . '_' . $filename;
-                                    $pathRename = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $fileRename);
+                                    $pathRename = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $fileRename);
 
                                     if (FileInfo::fileExists($pathRename) == false) {
                                         break;
@@ -167,17 +169,17 @@
                                 }
 
                                 if ($fileRename == null || $pathRename == null) {
-                                    $appAlert->danger(lng('import.alert.create_new_filename_exists_rename_is_failed', 'filename', $filename));
+                                    AppAlert::danger(lng('import.alert.create_new_filename_exists_rename_is_failed', 'filename', $filename));
                                 } else if (FileInfo::fileWriteContents($pathRename, $curl->getBuffer())) {
-                                    $appAlert->success(lng('import.alert.import_file_exists_rename_is_success', 'filename', $fileRename, 'size', $fileSizeStr, 'time', $timeImport));
+                                    AppAlert::success(lng('import.alert.import_file_exists_rename_is_success', 'filename', $fileRename, 'size', $fileSizeStr, 'time', $timeImport));
                                     $isSuccess = true;
                                 } else {
-                                    $appAlert->danger(lng('import.alert.import_file_exists_rename_is_failed', 'filename', $fileRename));
+                                    AppAlert::danger(lng('import.alert.import_file_exists_rename_is_failed', 'filename', $fileRename));
                                 }
                             } else if ($fileWriteIsFile || FileInfo::fileWriteContents($fileWritePath, $curl->getBuffer()) == false) {
-                                $appAlert->danger(lng('import.alert.import_file_is_failed', 'filename', $filename));
+                                AppAlert::danger(lng('import.alert.import_file_is_failed', 'filename', $filename));
                             } else {
-                                $appAlert->success(lng('import.alert.import_file_is_success', 'filename', $filename, 'size', $fileSizeStr, 'time', $timeImport));
+                                AppAlert::success(lng('import.alert.import_file_is_success', 'filename', $filename, 'size', $fileSizeStr, 'time', $timeImport));
                                 $isSuccess = true;
                             }
                         }
@@ -199,7 +201,7 @@
         $forms['urls_count'] = 1;
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
     <div class="form-action">
@@ -207,7 +209,7 @@
             <span><?php echo lng('import.title_page'); ?></span>
         </div>
         <form action="import.php<?php echo $appParameter->toString(); ?>" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <?php for ($i = 0; $i < $forms['urls_count']; ++$i) { ?>

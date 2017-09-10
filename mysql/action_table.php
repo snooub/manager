@@ -1,21 +1,24 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
-    use Librarys\File\FileInfo;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\Database\DatabaseBackupRestore;
+    use Librarys\File\FileInfo;
 
     define('LOADED',               1);
     define('DATABASE_CHECK_MYSQL', 1);
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $themes  = [ env('resource.filename.theme.mysql') ];
     $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
-    $appAlert->setID(ALERT_MYSQL_ACTION_TABLE);
+    AppAlert::setID(ALERT_MYSQL_ACTION_TABLE);
     requireDefine('mysql_action_table');
 
     $appParameter = new AppParameter();
@@ -30,7 +33,7 @@
     }
 
     if ($countTables <= 0)
-        $appAlert->danger(lng('mysql.action_table.alert.not_table_select'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+        AppAlert::danger(lng('mysql.action_table.alert.not_table_select'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
 
     $listEntrys = AppDirectory::rawDecodes($listTables);
     $nameAction = null;
@@ -45,7 +48,7 @@
     else if ($nameAction == MYSQL_ACTION_TABLE_BACKUP_MULTI)
         $title = 'backup';
     else
-        $appAlert->danger(lng('mysql.action_table.alert.action_not_validate'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+        AppAlert::danger(lng('mysql.action_table.alert.action_not_validate'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
 
     $title = lng('mysql.action_table.title.' . $title);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
@@ -57,7 +60,7 @@
         $numsTables = $appMysqlConnect->numRows($queryTables);
 
         if ($numsTables <= 0)
-            $appAlert->danger(lng('mysql.action_table.alert.no_table'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+            AppAlert::danger(lng('mysql.action_table.alert.no_table'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
     }
 
     $forms = [
@@ -76,14 +79,14 @@
             if ($appMysqlConnect->query('DROP TABLE `' . addslashes($tableName)) == false) {
                 $isFailed = true;
                 $countSuccess--;
-                $appAlert->danger(lng('mysql.action_table.alert.DELETE.delete_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
+                AppAlert::danger(lng('mysql.action_table.alert.DELETE.delete_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
             }
         }
 
         if ($isFailed == false)
-            $appAlert->success(lng('mysql.action_table.alert.delete.delete_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+            AppAlert::success(lng('mysql.action_table.alert.delete.delete_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
         else if ($countTables > 1 && $countSuccess > 0)
-            $appAlert->success(lng('mysql.action_table.alert.delete.delete_success'));
+            AppAlert::success(lng('mysql.action_table.alert.delete.delete_success'));
     } else if (isset($_POST['truncate_button'])) {
         $isFailed     = false;
         $countSuccess = $countTables;
@@ -92,14 +95,14 @@
             if ($appMysqlConnect->query('TRUNCATE TABLE `' . addslashes($tableName)) == false) {
                 $isFailed = true;
                 $countSuccess--;
-                $appAlert->danger(lng('mysql.action_table.alert.truncate.truncate_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
+                AppAlert::danger(lng('mysql.action_table.alert.truncate.truncate_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
             }
         }
 
         if ($isFailed == false)
-            $appAlert->success(lng('mysql.action_table.alert.truncate.truncate_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+            AppAlert::success(lng('mysql.action_table.alert.truncate.truncate_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
         else if ($countTables > 1 && $countSuccess > 0)
-            $appAlert->success(lng('mysql.action_table.alert.truncate.truncate_success'));
+            AppAlert::success(lng('mysql.action_table.alert.truncate.truncate_success'));
     } else if (isset($_POST['backup_button'])) {
         $isFailed                    = false;
         $countSuccess                = $countTables;
@@ -107,37 +110,37 @@
         $databaseBackupRestore->setBackupFilename($forms['backup']['filename']);
 
         if (empty($forms['backup']['filename'])) {
-            $appAlert->danger(lng('mysql.action_table.alert.backup.not_input_filename'));
+            AppAlert::danger(lng('mysql.action_table.alert.backup.not_input_filename'));
         } else if (FileInfo::isNameValidate($forms['backup']['filename']) == false) {
-            $appAlert->danger(lng('mysql.action_table.alert.backup.filename_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
+            AppAlert::danger(lng('mysql.action_table.alert.backup.filename_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
         } else if (FileInfo::fileExists($databaseBackupRestore->getPathFileDatabaseBackup())) {
-            $appAlert->danger(lng('mysql.action_table.alert.backup.filename_is_exists', 'name', $forms['backup']['filename']));
+            AppAlert::danger(lng('mysql.action_table.alert.backup.filename_is_exists', 'name', $forms['backup']['filename']));
         } else if ($databaseBackupRestore->backupInfomation() == false) {
             $isFailed = true;
-            $appAlert->danger(lng('mysql.action_table.alert.backup.backup_infomation_failed', 'name', $appMysqlConnect->getName(), 'error', $appMysqlConnect->error()));
+            AppAlert::danger(lng('mysql.action_table.alert.backup.backup_infomation_failed', 'name', $appMysqlConnect->getName(), 'error', $appMysqlConnect->error()));
         } else {
             foreach ($listTables AS $tableName) {
                 if ($databaseBackupRestore->backupTable(addslashes($tableName)) == false) {
                     $isFailed = true;
                     $countSuccess--;
-                    $appAlert->danger(lng('mysql.action_table.alert.backup.backup_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
+                    AppAlert::danger(lng('mysql.action_table.alert.backup.backup_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
                 }
             }
 
             if ($isFailed == false)
-                $appAlert->success(lng('mysql.action_table.alert.backup.backup_success', 'name', $forms['backup']['filename'], 'size', FileInfo::fileSize($databaseBackupRestore->getPathFileDatabaseBackup($forms['backup']['filename']), true)), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+                AppAlert::success(lng('mysql.action_table.alert.backup.backup_success', 'name', $forms['backup']['filename'], 'size', FileInfo::fileSize($databaseBackupRestore->getPathFileDatabaseBackup($forms['backup']['filename']), true)), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
             else if ($countTables > 1 && $countSuccess > 0)
-                $appAlert->success(lng('mysql.action_table.alert.backup.backup_success', 'name', $forms['backup']['filename']));
+                AppAlert::success(lng('mysql.action_table.alert.backup.backup_success', 'name', $forms['backup']['filename']));
         }
 
         $forms['backup']['filename'] = stripslashes($forms['backup']['filename']);
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <form action="action_table.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database">
-        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+        <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
         <input type="hidden" name="action" value="<?php echo $nameAction; ?>"/>
 
         <div class="form-action">
@@ -163,7 +166,7 @@
                                 id="<?php echo $id; ?>"
                                 value="<?php echo $assocTable['Name']; ?>"
                                 <?php if (in_array($assocTable['Name'], $listTables)) { ?>checked="checked"<?php } ?>
-                                <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
                             <label for="<?php echo $id; ?>" class="not-content"></label>
                             <a href="info_table.php<?php echo $urlParameterTable; ?>">
                                 <span class="icomoon icon-table"></span>
@@ -179,7 +182,7 @@
                     <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();" checked="checked"/>
                     <label for="checked-all-entry">
                         <span><?php echo lng('mysql.action_table.form.input.checkbox_all_entry'); ?></span>
-                        <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
+                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
                             <span id="checkall-count"></span>
                             <script type="text/javascript">
                                 OnLoad.add(function() {

@@ -1,29 +1,31 @@
 <?php
 
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileMime;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\AppConfig;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
 
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appDirectory->isFileExistsDirectorySeparatorName() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath($appDirectory->getDirectory()))
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isFileExistsDirectorySeparatorName() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath(AppDirectory::getInstance()->getDirectory()))
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath = new AppLocationPath('index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
-    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::getInstance()->getNameEncode(),      true);
 
-    $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $fileInfo    = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
     $fileMime    = new FileMime($fileInfo);
     $isDirectory = $fileInfo->isDirectory();
 
@@ -33,11 +35,11 @@
         $title = lng('file_rename.title_page_file');
 
     $themes  = [ env('resource.filename.theme.file') ];
-    $appAlert->setID(ALERT_FILE_RENAME);
+    AppAlert::setID(ALERT_FILE_RENAME);
     require_once('incfiles' . SP . 'header.php');
 
     $forms = [
-        'name'     => $appDirectory->getName(),
+        'name'     => AppDirectory::getInstance()->getName(),
         'path_old' => null,
         'path_new' => null
     ];
@@ -47,30 +49,30 @@
 
         if (empty($forms['name'])) {
             if ($isDirectory)
-                $appAlert->danger(lng('file_rename.alert.not_input_name_directory'));
+                AppAlert::danger(lng('file_rename.alert.not_input_name_directory'));
             else
-                $appAlert->danger(lng('file_rename.alert.not_input_name_file'));
+                AppAlert::danger(lng('file_rename.alert.not_input_name_file'));
         } else if (FileInfo::isNameValidate($forms['name']) == false) {
             if ($isDirectory)
-                $appAlert->danger(lng('file_rename.alert.name_directory_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
+                AppAlert::danger(lng('file_rename.alert.name_directory_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
             else
-                $appAlert->danger(lng('file_rename.alert.name_file_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
-        } else if ($appDirectory->getName() == $forms['name']) {
-            $appAlert->danger(lng('file_rename.alert.name_not_change'));
+                AppAlert::danger(lng('file_rename.alert.name_file_not_validate', 'validate', FileInfo::FILENAME_VALIDATE));
+        } else if (AppDirectory::getInstance()->getName() == $forms['name']) {
+            AppAlert::danger(lng('file_rename.alert.name_not_change'));
         } else {
-            $forms['path_old'] = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $appDirectory->getName());
-            $forms['path_new'] = FileInfo::filterPaths($appDirectory->getDirectory() . SP . $forms['name']);
+            $forms['path_old'] = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
+            $forms['path_new'] = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $forms['name']);
 
             if (FileInfo::rename($forms['path_old'], $forms['path_new']) == false) {
                 if ($isDirectory)
-                    $appAlert->danger(lng('file_rename.alert.rename_directory_failed', 'filename', $appDirectory->getName()));
+                    AppAlert::danger(lng('file_rename.alert.rename_directory_failed', 'filename', AppDirectory::getInstance()->getName()));
                 else
-                    $appAlert->danger(lng('file_rename.alert.rename_file_failed', 'filename', $appDirectory->getName()));
+                    AppAlert::danger(lng('file_rename.alert.rename_file_failed', 'filename', AppDirectory::getInstance()->getName()));
             } else {
                 $idAlert = null;
                 $urlGoto = null;
 
-                if ($appConfig->get('auto_redirect.file_rename', true)) {
+                if (AppConfig::getInstance()->get('auto_redirect.file_rename', true)) {
                     $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
                     $appParameter->toString(true);
 
@@ -82,9 +84,9 @@
                 }
 
                 if ($isDirectory)
-                    $appAlert->success(lng('file_rename.alert.rename_directory_success', 'filename', $appDirectory->getName()), $idAlert, $urlGoto);
+                    AppAlert::success(lng('file_rename.alert.rename_directory_success', 'filename', AppDirectory::getInstance()->getName()), $idAlert, $urlGoto);
                 else
-                    $appAlert->success(lng('file_rename.alert.rename_file_success', 'filename', $appDirectory->getName()), $idAlert, $urlGoto);
+                    AppAlert::success(lng('file_rename.alert.rename_file_success', 'filename', AppDirectory::getInstance()->getName()), $idAlert, $urlGoto);
             }
         }
 
@@ -92,19 +94,19 @@
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
     <div class="form-action">
         <div class="title">
             <?php if ($isDirectory) { ?>
-                <span><?php echo lng('file_rename.title_page_directory'); ?>: <?php echo $appDirectory->getName(); ?></span>
+                <span><?php echo lng('file_rename.title_page_directory'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } else { ?>
-                <span><?php echo lng('file_rename.title_page_file'); ?>: <?php echo $appDirectory->getName(); ?></span>
+                <span><?php echo lng('file_rename.title_page_file'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } ?>
         </div>
         <form action="file_rename.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="input">

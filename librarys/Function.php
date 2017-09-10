@@ -6,14 +6,12 @@
     if (defined('LOADED') == false)
         exit;
 
-    require_once(__DIR__ . SP . 'Environment.php');
-    require_once(__DIR__ . SP . 'Language.php');
-    require_once(__DIR__ . SP . 'File' . SP . 'FileInfo.php');
-
     use Librarys\Environment;
     use Librarys\Language;
     use Librarys\File\FileInfo;
-    use Librarys\Encryption\Services_JSON;
+    use Librarys\Http\Validate;
+    use Librarys\Http\Secure\CFSRToken;
+    use Librarys\Text\Encryption\Services_JSON;
 
     function env($name, $default = null, $renew = false)
     {
@@ -71,97 +69,10 @@
 
     function urlSeparatorMatches($str)
     {
-        if (isValidateIP($str))
+        if (Validate::ip($str))
             $str = separator($str, '/');
 
         return $str;
-    }
-
-    function takeIP()
-    {
-        $arrayIP = array();
-
-        if (getenv('HTTP_X_FORWARDED_FOR') !== false) {
-            $forwarded = getenv('HTTP_X_FORWARDED_FOR');
-            $forwarded = array_reverse(explode(',', $forwarded));
-
-            if (is_array($forwarded)) {
-                foreach ($forwarded AS $entry) {
-                    $entry = trim($entry);
-
-                    if (isValidateIP($entry))
-                        $arrayIP[] = $entry;
-                }
-            }
-        }
-
-        if (getenv('HTTP_CLIENT_IP') !== false)
-            $arrayIP[] = trim(getenv('HTTP_CLIENT_IP'));
-
-        if (getenv('HTTP_PROXY_USER') !== false)
-            $arrayIp[] = trim(getenv('HTTP_PROXY_USER'));
-
-        if (getenv('REMOTE_ADDR') !== false)
-            $arrayIP[] = trim(getenv('REMOTE_ADDR'));
-
-        foreach ($arrayIP AS $ip) {
-            if (isValidateIP($ip))
-                return $ip;
-        }
-
-        return null;
-    }
-
-    function takeUserAgent()
-    {
-        if (getenv('HTTP_USER_AGENT') !== false)
-            return getenv('HTTP_USER_AGENT');
-
-        return null;
-    }
-
-    function isValidateIP($ip)
-    {
-        if ($ip === null || is_string($ip) == false)
-            return false;
-
-        if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip) != false)
-            return true;
-        else if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip) != false)
-            return true;
-
-        return false;
-    }
-
-    function isValidateURL($url)
-    {
-        if (empty($url))
-            return false;
-
-        $url = addPrefixHttpURL($url);
-
-        if (function_exists('filter_var')) {
-            if (filter_var($url, FILTER_VALIDATE_URL))
-                return true;
-        } else if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $url)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    function isValidateEmail($email) {
-        if (empty($email))
-            return false;
-
-        if (function_exists('filter_var') == false) {
-            if (filter_var($email, FILTER_VALIDATE_EMAIL))
-                return true;
-        } else if (preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/", $email)) {
-            return true;
-        }
-
-        return false;
     }
 
     function bug($var)
@@ -169,12 +80,6 @@
         echo('<pre>');
         var_dump($var);
         echo('</pre>');
-    }
-
-    function gotoURL($url)
-    {
-        header('Location:' . $url);
-        exit(0);
     }
 
     function stripcslashesResursive(&$value)
@@ -299,8 +204,6 @@
         if (function_exists('json_encode'))
             return @json_encode($var);
 
-        require_once(__DIR__. SP . 'Encryption' . SP . 'Services_JSON.php');
-
         $json   = new Services_JSON();
         $result = $json->encode($var);
 
@@ -312,12 +215,20 @@
         if (function_exists('json_decode'))
             return @json_decode($var, $assoc);
 
-        require_once(__DIR__. SP . 'Encryption' . SP . 'Services_JSON.php');
-
         $json = new Services_JSON($assoc ? SERVICES_JSON_LOOSE_TYPE : 0);
         $result = $json->decode($var);
 
         return $result;
+    }
+
+    function cfsrTokenName()
+    {
+        return CFSRToken::getInstance()->getName();
+    }
+
+    function cfsrTokenValue()
+    {
+        return CFSRToken::getInstance()->getToken();
     }
 
     function installUpgradeCallbackExtractZip($event, $header)

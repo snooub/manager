@@ -1,7 +1,9 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\File\FileInfo;
 
     define('LOADED',               1);
@@ -10,8 +12,8 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $appParameter = new AppParameter();
     $appParameter->add(PARAMETER_DATABASE_URL, AppDirectory::rawEncode($appMysqlConnect->getName()));
@@ -19,29 +21,29 @@
 
     $title  = lng('mysql.delete_table.title_page');
     $themes = [ env('resource.filename.theme.mysql') ];
-    $appAlert->setID(ALERT_MYSQL_DELETE_TABLE);
+    AppAlert::setID(ALERT_MYSQL_DELETE_TABLE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     if (isset($_POST['delete'])) {
         if ($appMysqlConnect->query('DROP TABLE `' . addslashes($appMysqlConnect->getTableCurrent())) == false) {
-            $appAlert->danger(lng('mysql.delete_table.alert.delete_table_failed', 'name', $appMysqlConnect->getTableCurrent(), 'error', $appMysqlConnect->error()));
+            AppAlert::danger(lng('mysql.delete_table.alert.delete_table_failed', 'name', $appMysqlConnect->getTableCurrent(), 'error', $appMysqlConnect->error()));
         } else {
             $appParameter->remove(PARAMETER_TABLE_URL);
             $appParameter->toString();
 
-            $appAlert->success(lng('mysql.delete_table.alert.delete_table_success', 'name', $appMysqlConnect->getTableCurrent()), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
+            AppAlert::success(lng('mysql.delete_table.alert.delete_table_success', 'name', $appMysqlConnect->getTableCurrent()), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
         }
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.delete_table.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
         <form action="delete_table.php<?php echo $appParameter->toString(); ?>" method="post">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="accept">

@@ -11,149 +11,56 @@
     error_reporting(E_ALL);
 
     require_once(__DIR__ . SP . 'Function.php');
-    require_once(__DIR__ . SP . 'Environment.php');
-    require_once(__DIR__ . SP . 'Autoload.php');
-    require_once(__DIR__ . SP . 'CFSR' . SP . 'CFSRToken.php');
 
-    use Librarys\Autoload;
-    use Librarys\CFSR\CFSRToken;
+    use Librarys\Http\Request;
+    use Librarys\Buffer\BufferOutput;
+    use Librarys\Error\ErrorHandler;
+    use Librarys\Http\Secure\CFSRToken;
 
-    final class Boot
+    class Boot
     {
 
-        private $environment;
-        private $language;
-        private $autoload;
-        private $cfsr;
-        private $isCustomHeader;
+        private static $instance;
 
-        public function __construct(array $config, $isCustomHeader = false)
+        protected function __construct(array $config, $isCustomHeader = false)
         {
-            $this->setCustomHeader($isCustomHeader);
-            $this->obBufferStart();
-            $this->obBufferEnd();
-            $this->fixMagicQuotesGpc();
+            BufferOutput::startBuffer($isCustomHeader);
+            BufferOutput::listenEndBuffer();
+            BufferOutput::fixMagicQuotesGpc();
 
-            $this->environment = new Environment($config);
-            $this->language    = new Language($this);
-            $this->autoload    = new Autoload($this);
+            Environment::getInstance($config)->execute();
+            Language::getInstance($this)->execute();
 
-            $this->environment->execute();
-            $this->dateInitializing();
+            $reported        = env('app.dev.error_reported.enable',         false);
+            $reportedProduct = env('app.dev.error_reported.enable_product', false);
 
-            $this->language->execute();
-            $this->autoload->execute();
-
-            if (env('app.session.init', false) == true)
-                $this->sessionInitializing();
-
-            $this->cfsr = new CFSRToken();
-        }
-
-        public function fixMagicQuotesGpc()
-        {
-            $_SERVER = filter_var_array($_SERVER, FILTER_SANITIZE_STRING);
-            $_GET    = filter_var_array($_GET,    FILTER_SANITIZE_STRING);
-
-            if (get_magic_quotes_gpc()) {
-                stripcslashesResursive($_GET);
-                stripcslashesResursive($_POST);
-                stripcslashesResursive($_REQUEST);
-                stripcslashesResursive($_COOKIE);
-            }
-        }
-
-        public function sessionInitializing()
-        {
-            $sessionStart = false;
-
-            if (version_compare(phpversion(), '5.4.0', '>='))
-                $sessionStart = session_status() === PHP_SESSION_ACTIVE;
+            if (($reported && Request::isLocal()) || $reportedProduct)
+                ErrorHandler::listenError(env('app.dev.error_reported.level'));
             else
-                $sessionStart = session_id() !== '';
+                ErrorHandler::disError();
 
-            if ($sessionStart == false) {
-                session_name         (env('app.session.name',          session_name()));
-                session_cache_limiter(env('app.session.cache_limiter', session_cache_limiter()));
-                session_cache_expire (env('app.session.cache_expire',  session_cache_expire()));
+            if (CFSRToken::getInstance()->validatePost() !== true)
+                die('CFSR Token not validate');
 
-                session_set_cookie_params(
-                    env('app.session.cookie_lifetime', ini_get('session.cookie_lifetime')),
-                    env('app.session.cookie_path',     ini_get('session.cookie_path'))
-                );
-
-                session_start();
-            }
-
-            return true;
-        }
-
-        public function dateInitializing()
-        {
             @date_default_timezone_set(env('app.date.timezone', 'Asia/Ho_Chi_Minh'));
         }
 
-        public function obBufferStart()
+        protected function __wakeup()
         {
-            if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
-                @ob_start('ob_gzhandler');
-            else
-                @ob_start();
 
-            if ($this->isCustomHeader == false) {
-                header('Cache-Control: private, max-age=0, no-cache, no-store, must-revalidate');
-                header('Pragma: no-cache');
-                header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
-                header('Last-Modified: ' . gmdate('D, d M Y H:i:s ', time()) . 'GMT');
-                header('Etag: "' . md5(time()) . '"');
-            }
         }
 
-        public function obBufferClean()
+        protected function __clone()
         {
-            @ob_clean();
-            @ob_end_clean();
+
         }
 
-        public function obBufferEnd()
+        public static function getInstance(array $config, $isCustomHeader = false)
         {
-            if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
-                return;
+            if (null === self::$instance)
+                self::$instance = new Boot($config, $isCustomHeader);
 
-            register_shutdown_function(function() {
-                @ob_flush();
-                @ob_end_flush();
-            });
-        }
-
-        public function getEnvironment()
-        {
-            return $this->environment;
-        }
-
-        public function getLanguage()
-        {
-            return $this->language;
-        }
-
-        public function getAutoload()
-        {
-            return $this->autoload;
-        }
-
-        public function getCFSRToken()
-        {
-            return $this->cfsr;
-        }
-
-        public function setCustomHeader($isCustomHeader)
-        {
-            $this->isCustomHeader = $isCustomHeader;
-        }
-
-        public function isCustomHeader()
-        {
-            return $this->isCustomHeader;
+            return self::$instance;
         }
 
         public function getMemoryUsageBegin()
@@ -164,15 +71,6 @@
         public function getMemoryUsageEnd()
         {
             return $this->memoryUsageEnd;
-        }
-
-        public static function isRunLocal()
-        {
-            $host = env('SERVER.HTTP_HOST');
-            $ip   = takeIP();
-
-            if (preg_match('/(localhost|127\.0\.0\.1|izerocs\.mobi)(:8080)?/i', $host) || preg_match('/127\.0\.0\.1/i', $ip))
-                return true;
         }
 
     }

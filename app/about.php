@@ -1,7 +1,9 @@
 <?php
 
-    use Librarys\App\Config\AppAboutConfig;
     use Librarys\App\AppUpgrade;
+    use Librarys\App\AppAlert;
+    use Librarys\App\AppUser;
+    use Librarys\App\Config\AppAboutConfig;
 
     define('LOADED',                   1);
     define('DISABLE_CHECK_LOGIN',      1);
@@ -11,27 +13,27 @@
 
     $title      = lng('app.about.title_page');
     $themes     = [ env('resource.filename.theme.about') ];
-    $config     = new AppAboutConfig($boot);
+    $config     = new AppAboutConfig();
     $appUpgrade = null;
     $hasUpgrade = false;
-    $appAlert->setID(ALERT_APP_ABOUT);
+    AppAlert::setID(ALERT_APP_ABOUT);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
-    if ($appUser->isPositionAdminstrator()) {
-        $appUpgrade = new AppUpgrade($boot, $config);
+    if (AppUser::getInstance()->isPositionAdminstrator()) {
+        $appUpgrade = new AppUpgrade($config);
         $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
 
-        if ($hasUpgrade && $appAlert->hasAlertDisplay() == false) {
+        if ($hasUpgrade && AppAlert::hasAlertDisplay() == false) {
             if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
-                $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+                AppAlert::success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
             else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
-                $appAlert->success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                AppAlert::success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
         }
     }
 
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div id="about">
         <h1><?php echo $config->get('name'); ?></h1>
@@ -78,9 +80,9 @@
         </ul>
     </div>
 
-    <?php if ($appUser->isLogin()) { ?>
+    <?php if (AppUser::getInstance()->isLogin()) { ?>
         <ul class="menu-action">
-            <?php if ($appUser->isPositionAdminstrator()) { ?>
+            <?php if (AppUser::getInstance()->isPositionAdminstrator()) { ?>
                 <li>
                     <a href="check_update.php">
                         <span class="icomoon icon-update"></span>

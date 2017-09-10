@@ -5,19 +5,20 @@
     if (defined('LOADED') == false)
         exit;
 
-    use Librarys\Boot;
     use Librarys\File\FileInfo;
     use Librarys\App\AppUser;
     use Librarys\App\AppUpdate;
     use Librarys\App\AppUpgrade;
+    use Librarys\App\Config\AppConfig;
     use Librarys\App\Config\AppAboutConfig;
+    use Librarys\Http\Request;
 
-    final class AppAlert
+    class AppAlert
     {
 
-        private $boot;
-        private $id;
-        private $langMsg;
+        private static $instance;
+        private static $id;
+        private static $langMsg;
 
         const SESSION_NAME_PREFIX = 'ALERT_';
 
@@ -27,98 +28,117 @@
         const INFO    = 'info';
         const NONE    = 'none';
 
-        public function __construct(Boot $boot)
+        protected function __construct()
         {
-            $this->boot = $boot;
-
             if (FileInfo::isTypeFile(env('resource.define.alert')))
                 require_once(env('resource.define.alert'));
         }
 
-        public function danger($message, $id = null, $urlGoto = null)
+        protected function __wakeup()
         {
-            $this->add($message, self::DANGER, $id, $urlGoto);
+
         }
 
-        public function success($message, $id = null, $urlGoto = null)
+        protected function __clone()
         {
-            $this->add($message, self::SUCCESS, $id, $urlGoto);
+
         }
 
-        public function warning($message, $id = null, $urlGoto = null)
+        public function execute()
         {
-            $this->add($message, self::WARNING, $id, $urlGoto);
+
         }
 
-        public function info($message, $id = null, $urlGoto = null)
+        public static function getInstance()
         {
-            $this->add($message, self::INFO, $id, $urlGoto);
+            if (null === self::$instance)
+                self::$instance = new AppAlert();
+
+            return self::$instance;
         }
 
-        public function add($message, $type = self::DANGER, $id = null, $urlGoto = null)
+        public static function danger($message, $id = null, $urlGoto = null)
         {
-        	$this->boot->sessionInitializing();
+            return self::add($message, self::DANGER, $id, $urlGoto);
+        }
 
+        public static function success($message, $id = null, $urlGoto = null)
+        {
+            return self::add($message, self::SUCCESS, $id, $urlGoto);
+        }
+
+        public static function warning($message, $id = null, $urlGoto = null)
+        {
+            return self::add($message, self::WARNING, $id, $urlGoto);
+        }
+
+        public static function info($message, $id = null, $urlGoto = null)
+        {
+            return self::add($message, self::INFO, $id, $urlGoto);
+        }
+
+        public static function add($message, $type = self::DANGER, $id = null, $urlGoto = null)
+        {
             if ($id == null) {
-                if ($this->id == null)
-                    $this->id = time();
+                if (self::$id == null)
+                    self::$id = time();
 
-                $id = $this->id;
+                $id = self::$id;
             }
 
-            if ($message == null && $this->langMsg != null)
-                $message = $this->langMsg;
+            if ($message == null && self::$langMsg != null)
+                $message = self::$langMsg;
 
-            $_SESSION[self::SESSION_NAME_PREFIX . $id][] = [
+            Request::session()->put(self::SESSION_NAME_PREFIX . $id, [
                 'message' => $message,
                 'type'    => $type
-            ];
+            ], true);
 
             if ($urlGoto !== null)
-                gotoURL($urlGoto);
+                Request::redirect($urlGoto);
+
+            return self::$instance;
         }
 
-        public function display()
+        public static function display()
         {
-            global $appUser, $appConfig;
+            if (AppUser::getInstance()->checkUserIsUsePasswordDefault())
+                self::warning(lng('home.alert.password_user_is_equal_default', 'time', AppUser::TIME_SHOW_WARNING_PASSWORD_DEFAULT));
 
-            if ($appUser->checkUserIsUsePasswordDefault())
-                $this->warning(lng('home.alert.password_user_is_equal_default', 'time', AppUser::TIME_SHOW_WARNING_PASSWORD_DEFAULT));
-
-            if ($appUser->isPositionAdminstrator() && defined('DISABLE_ALERT_HAS_UPDATE') == false && $this->hasAlertDisplay() == false && $appConfig->get('check_update.enable', false) == true) {
-                $appAboutConfig = new AppAboutConfig($this->boot);
+            if (AppUser::getInstance()->isPositionAdminstrator() && defined('DISABLE_ALERT_HAS_UPDATE') == false && self::hasAlertDisplay() == false && AppConfig::getInstance()->get('check_update.enable', false) == true) {
+                $appAboutConfig = new AppAboutConfig();
                 $timeCurrent    = time();
                 $timeShow       = 300;
-                $timeCheck      = $appConfig->get('check_update.time', 86400);
+                $timeCheck      = AppConfig::getInstance()->get('check_update.time', 86400);
                 $checkLast      = $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT, $timeCurrent);
 
                 if ($timeCurrent - $checkLast >= $timeCheck) {
-                    $appUpdate = new AppUpdate($this->boot, $appAboutConfig);
+                    $appUpdate = new AppUpdate($appAboutConfig);
 
                     if ($appUpdate->checkUpdate() === true) {
                         $updateStatus = $appUpdate->getUpdateStatus();
 
                         if ($updateStatus === AppUpdate::RESULT_VERSION_IS_OLD)
-                            $this->success(lng('app.check_update.alert.version_is_old', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpdate->getVersionUpdate()));
+                            self::success(lng('app.check_update.alert.version_is_old', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpdate->getVersionUpdate()));
                         else if ($updateStatus === AppUpdate::RESULT_HAS_ADDITIONAL)
-                            $this->success(lng('app.check_update.alert.has_additional', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                            self::success(lng('app.check_update.alert.has_additional', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
                         else
-                            $this->info(lng('app.check_update.alert.version_is_latest', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                            self::info(lng('app.check_update.alert.version_is_latest', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
                     }
                 } else {
-                    $appUpgrade = new AppUpgrade($this->boot, $appAboutConfig);
+                    $appUpgrade = new AppUpgrade($appAboutConfig);
 
                     if ($appUpgrade->checkHasUpgradeLocal()) {
                         if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
-                            $this->success(lng('app.check_update.alert.version_is_old', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+                            self::success(lng('app.check_update.alert.version_is_old', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
                         else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
-                            $this->success(lng('app.check_update.alert.has_additional', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                            self::success(lng('app.check_update.alert.has_additional', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
                     }
                 }
             }
 
-            if ($this->id != null && isset($_SESSION[self::SESSION_NAME_PREFIX . $this->id]) && count($_SESSION[self::SESSION_NAME_PREFIX . $this->id]) > 0) {
-                $array  = $_SESSION[self::SESSION_NAME_PREFIX . $this->id];
+            if (self::$id != null && Request::session()->has(self::SESSION_NAME_PREFIX . self::$id) && count(Request::session()->get(self::SESSION_NAME_PREFIX . self::$id)) > 0) {
+                $array  = Request::session()->get(self::SESSION_NAME_PREFIX . self::$id);
                 $buffer = '<ul class="alert">';
 
                 foreach ($array AS $index => $alert) {
@@ -135,16 +155,16 @@
                 $buffer .= '</ul>';
 
                 echo($buffer);
-                unset($_SESSION[self::SESSION_NAME_PREFIX . $this->id]);
+                Request::session()->remove(self::SESSION_NAME_PREFIX . self::$id);
             }
         }
 
-        public function setID($id)
+        public static function setID($id)
         {
-            $this->id = $id;
+            self::$id = $id;
         }
 
-        public function setLangMsg($key)
+        public static function setLangMsg($key)
         {
             $args = func_get_args();
             $nums = func_num_args();
@@ -154,44 +174,39 @@
             else
                 $args = array_splice($args, 1, $nums);
 
-            $this->langMsg = lng($key, $args);
+            self::$langMsg = lng($key, $args);
         }
 
-        public function removeLangMsg()
+        public static function removeLangMsg()
         {
-            $this->langMsg = null;
+            self::$langMsg = null;
         }
 
-        public function getLangMsg()
+        public static function getLangMsg()
         {
-            return $this->langMsg;
+            return self::$langMsg;
         }
 
-        public function clean($id = null)
+        public static function clean($id = null)
         {
             if ($id == null)
-                $id = $this->id;
+                $id = self::$id;
 
             if ($id == null)
                 return;
 
-            unset($_SESSION[self::SESSION_NAME_PREFIX . $id]);
+            Request::session()->remove(self::SESSION_NAME_PREFIX . $id);
         }
 
-        public function hasAlertDisplay($id = null)
+        public static function hasAlertDisplay($id = null)
         {
             if ($id == null)
-                $id = $this->id;
+                $id = self::$id;
 
             if ($id == null)
                 return false;
 
-            return isset($_SESSION[self::SESSION_NAME_PREFIX . $id]) && count($_SESSION[self::SESSION_NAME_PREFIX . $id]) > 0;
-        }
-
-        public function gotoURL($url)
-        {
-            gotoURL($url);
+            return Request::session()->has(self::SESSION_NAME_PREFIX . $id) && count(Request::session()->get(self::SESSION_NAME_PREFIX . $id)) > 0;
         }
 
     }

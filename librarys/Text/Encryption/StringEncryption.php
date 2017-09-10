@@ -1,11 +1,8 @@
 <?php
 
-    namespace Librarys\Encryption;
+    namespace Librarys\Text\Encryption;
 
-    if (defined('LOADED') == false)
-        exit;
-
-    class StringCrypt
+    class StringEncryption
     {
 
         public static function randomToken($length = 32)

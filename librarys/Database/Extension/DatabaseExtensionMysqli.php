@@ -140,7 +140,7 @@
 
         public function setCharset($charset)
         {
-            return @mysqli_set_charset($charset);
+            return true;
         }
 
         public function errorConnect()

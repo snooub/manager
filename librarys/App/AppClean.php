@@ -15,15 +15,10 @@
 
         public static function scanAutoClean($isCleanAllNotCheck = false)
         {
-            global $appConfig;
-
-            if ($appConfig == null)
-                return false;
-
-            self::scanAutoCleanTmp  ($appConfig, $isCleanAllNotCheck);
-            self::scanAutoCleanToken($appConfig, $isCleanAllNotCheck);
-            self::scanAutoCleanCache($appConfig, $isCleanAllNotCheck);
-            self::scanAutoCleanUser ($appConfig, $isCleanAllNotCheck);
+            self::scanAutoCleanTmp  (AppConfig::getInstance(), $isCleanAllNotCheck);
+            self::scanAutoCleanToken(AppConfig::getInstance(), $isCleanAllNotCheck);
+            self::scanAutoCleanCache(AppConfig::getInstance(), $isCleanAllNotCheck);
+            self::scanAutoCleanUser (AppConfig::getInstance(), $isCleanAllNotCheck);
 
             return true;
         }
@@ -34,8 +29,8 @@
 
             if (FileInfo::isTypeDirectory($directory)) {
                 $time     = time();
-                $lifetime = $appConfig->get('tmp.lifetime', 180);
-                $limit    = $appConfig->get('tmp.limit',    10);
+                $lifetime = AppConfig::getInstance()->get('tmp.lifetime', 180);
+                $limit    = AppConfig::getInstance()->get('tmp.limit',    10);
                 $handle   = FileInfo::scanDirectory($directory);
 
                 if ($handle === false)
@@ -75,13 +70,11 @@
 
         private static function scanAutoCleanToken($appConfig, $isCleanAllNotCheck)
         {
-            global $appUser;
-
             $directory  = env('app.path.token');
             $tokenIgone = null;
 
-            if ($appUser->isLogin())
-                $tokenIgone = $appUser->getTokenValue();
+            if (AppUser::getInstance()->isLogin())
+                $tokenIgone = AppUser::getInstance()->getTokenValue();
 
             if (FileInfo::isTypeDirectory($directory)) {
                 $time   = time();
@@ -90,7 +83,7 @@
                 if ($handle === false)
                     return false;
 
-                $tokenMaxLive = intval($appConfig->get('login.time_login'));
+                $tokenMaxLive = intval(AppConfig::getInstance()->get('login.time_login'));
 
                 foreach ($handle AS $filename) {
                     $filepath = FileInfo::filterPaths($directory . SP . $filename);
@@ -123,8 +116,8 @@
                 if ($handle === false)
                     return false;
 
-                $cacheLifetimeCss = $appConfig->get('cache.css.lifetime');
-                $cacheLifetimeJs  = $appConfig->get('cache.js.lifetime');
+                $cacheLifetimeCss = AppConfig::getInstance()->get('cache.css.lifetime');
+                $cacheLifetimeJs  = AppConfig::getInstance()->get('cache.js.lifetime');
 
                 foreach ($handle AS $filename) {
                     $filepath = FileInfo::filterPaths($directory . SP . $filename);
@@ -148,10 +141,8 @@
 
         private static function scanAutoCleanUser($appConfig, $isCleanAllNotCheck)
         {
-            global $appUser;
-
-            if ($appUser->getConfig()->hasEntryConfigArraySystem()) {
-                $arrays    = $appUser->getConfig()->getConfigArraySystem();
+            if (AppUser::getInstance()->getConfig()->hasEntryConfigArraySystem()) {
+                $arrays    = AppUser::getInstance()->getConfig()->getConfigArraySystem();
                 $directory = env('app.path.user');
                 $handle    = FileInfo::scanDirectory($directory);
 

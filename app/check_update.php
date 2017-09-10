@@ -1,9 +1,12 @@
 <?php
 
-    use Librarys\App\Config\AppAboutConfig;
+    use Librarys\App\AppAlert;
+    use Librarys\App\AppUser;
     use Librarys\App\AppUpdate;
     use Librarys\App\AppUpgrade;
+    use Librarys\App\Config\AppAboutConfig;
     use Librarys\File\FileCurl;
+    use Librarys\Http\Request;
 
     define('LOADED',                   1);
     define('DISABLE_ALERT_HAS_UPDATE', 1);
@@ -11,23 +14,23 @@
 
     require_once('global.php');
 
-    if ($appUser->isPositionAdminstrator() == false)
-        $appAlert->danger(lng('user.default.alert.not_permission_access_feature'), ALERT_INDEX, env('app.http.host'));
+    if (AppUser::getInstance()->isPositionAdminstrator() == false)
+        AppAlert::danger(lng('user.default.alert.not_permission_access_feature'), ALERT_INDEX, env('app.http.host'));
 
     $title      = lng('app.check_update.title_page');
     $themes     = [ env('resource.filename.theme.about') ];
-    $config     = new AppAboutConfig($boot);
-    $appUpdate  = new AppUpdate($boot, $config);
-    $appUpgrade = new AppUpgrade($boot, $config);
+    $config     = new AppAboutConfig();
+    $appUpdate  = new AppUpdate($config);
+    $appUpgrade = new AppUpgrade($config);
     $servers    = $appUpdate->getServers();
-    $appAlert->setID(ALERT_APP_CHECK_UPDATE);
+    AppAlert::setID(ALERT_APP_CHECK_UPDATE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
 
     if (isset($_GET[PARAMETER_CHECK_URL])) {
         if (count($servers) <= 0) {
-            $appAlert->danger(lng('app.check_update.alert.not_server_check'));
+            AppAlert::danger(lng('app.check_update.alert.not_server_check'));
         } else if ($appUpdate->checkUpdate() === false) {
             $serverErrors = $appUpdate->getServerErrors();
 
@@ -40,74 +43,74 @@
                     $errorWriteInfo = $errors[AppUpdate::ARRAY_KEY_ERROR_WRITE_INFO];
 
                     if ($errorInt === FileCurl::ERROR_URL_NOT_FOUND)
-                        $appAlert->danger(lng('app.check_update.alert.address_not_found', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.address_not_found', 'url', $errorUrl));
                     else if ($errorInt === FileCurl::ERROR_FILE_NOT_FOUND)
-                        $appAlert->danger(lng('app.check_update.alert.file_not_found', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.file_not_found', 'url', $errorUrl));
                     else if ($errorInt === FileCurl::ERROR_AUTO_REDIRECT)
-                        $appAlert->danger(lng('app.check_update.alert.auto_redirect_url_failed', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.auto_redirect_url_failed', 'url', $errorUrl));
                     else if ($errorInt === FileCurl::ERROR_CONNECT_FAILED)
-                        $appAlert->danger(lng('app.check_update.alert.connect_url_failed', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.connect_url_failed', 'url', $errorUrl));
                     else if ($errorCheck === AppUpdate::ERROR_CHECK_JSON_DATA)
-                        $appAlert->danger(lng('app.check_update.alert.error_json_data', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_json_data', 'url', $errorUrl));
                     else if ($errorCheck === AppUpdate::ERROR_CHECK_JSON_DATA_NOT_VALIDATE)
-                        $appAlert->danger(lng('app.check_update.alert.error_json_data_not_validate', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_json_data_not_validate', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_LIST_VERSION_IN_SERVER)
-                        $appAlert->danger(lng('app.check_update.alert.error_not_found_list_version_in_server', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_not_found_list_version_in_server', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_PARAMETER_VERSION_GUEST)
-                        $appAlert->danger(lng('app.check_update.alert.error_not_found_parameter_guest', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_not_found_parameter_guest', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_PARAMETER_VERSION_BUILD)
-                        $appAlert->danger(lng('app.check_update.alert.error_not_found_parameter_build', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_not_found_parameter_build', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_VERSION_GUEST_NOT_VALIDATE)
-                        $appAlert->danger(lng('app.check_update.alert.error_version_guest_not_validate', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_version_guest_not_validate', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_VERSION_SERVER_NOT_VALIDATE)
-                        $appAlert->danger(lng('app.check_update.alert.error_version_server_not_validate', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_version_server_not_validate', 'url', $errorUrl));
                     else if ($errorServer === AppUpdate::ERROR_SERVER_NOT_FOUND_VERSION_CURRENT_IN_SERVER)
-                        $appAlert->danger(lng('app.check_update.alert.error_not_found_version_current_in_server', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_not_found_version_current_in_server', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_INFO_FAILED)
-                        $appAlert->danger(lng('app.check_update.alert.error_write_info_failed', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_write_info_failed', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_MKDIR_SAVE_DATA_UPGRADE)
-                        $appAlert->danger(lng('app.check_update.alert.error_mkdir_save_data_upgrade', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_mkdir_save_data_upgrade', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_DECODE_COMPRESS_DATA)
-                        $appAlert->danger(lng('app.check_update.alert.error_decode_compress_data', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_decode_compress_data', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_DECODE_COMPRESS_ADDITIONAL_UPDATE)
-                        $appAlert->danger(lng('app.check_update.alert.error_decode_compress_additional_update', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_decode_compress_additional_update', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_DECODE_COMPRESS_UPDATE_SCRIPT)
-                        $appAlert->danger(lng('app.check_update.alert.error_decode_compress_update_script', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_decode_compress_update_script', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_DATA_UPGRADE)
-                        $appAlert->danger(lng('app.check_update.alert.error_write_data_upgrade', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_write_data_upgrade', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_ADDITIONAL_UPDATE)
-                        $appAlert->danger(lng('app.check_update.alert.error_write_additional_update', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_write_additional_update', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_MD5_BIN_CHECK)
-                        $appAlert->danger(lng('app.check_update.alert.error_md5_bin_check', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_md5_bin_check', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_MD5_ADDITIONAL_UPDATE_CHECK)
-                        $appAlert->danger(lng('app.check_update.alert.error_md5_additional_update_check', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_md5_additional_update_check', 'url', $errorUrl));
                     else if ($errorWriteInfo === AppUpdate::ERROR_WRITE_UPDATE_SCRIPT)
-                        $appAlert->danger(lng('app.check_update.alert.error_write_update_script', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_write_update_script', 'url', $errorUrl));
                     else
-                        $appAlert->danger(lng('app.check_update.alert.error_unknown', 'url', $errorUrl));
+                        AppAlert::danger(lng('app.check_update.alert.error_unknown', 'url', $errorUrl));
                 }
             }
         } else {
             $updateStatus = $appUpdate->getUpdateStatus();
 
             if ($updateStatus === AppUpdate::RESULT_VERSION_IS_OLD)
-                $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpdate->getVersionUpdate()), ALERT_APP_UPGRADE_APP, 'upgrade_app.php');
+                AppAlert::success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpdate->getVersionUpdate()), ALERT_APP_UPGRADE_APP, 'upgrade_app.php');
             else if ($updateStatus === AppUpdate::RESULT_HAS_ADDITIONAL)
-                $appAlert->success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_UPGRADE_APP, 'upgrade_app.php');
+                AppAlert::success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_UPGRADE_APP, 'upgrade_app.php');
             else
-                $appAlert->info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                AppAlert::info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
         }
 
-        gotoURL('check_update.php');
-    } else if ($hasUpgrade && $appAlert->hasAlertDisplay() == false) {
+        Request::redirect('check_update.php');
+    } else if ($hasUpgrade && AppAlert::hasAlertDisplay() == false) {
         if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
-            $appAlert->success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+            AppAlert::success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
         else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
-            $appAlert->success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+            AppAlert::success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">

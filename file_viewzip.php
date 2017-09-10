@@ -1,11 +1,13 @@
 <?php
 
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileMime;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
     use Librarys\App\AppPaging;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
     use Librarys\Zip\PclZip;
 
     define('LOADED',             1);
@@ -14,41 +16,41 @@
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appDirectory->isFileSeparatorNameExists() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath())
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isFileSeparatorNameExists() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath())
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath = new AppLocationPath('index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
-    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::getInstance()->getNameEncode(),      true);
 
-    $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $fileInfo    = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
     $fileMime    = new FileMime($fileInfo);
     $isDirectory = $fileInfo->isDirectory();
 
     if ($isDirectory) {
         $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, $appParameter->toString(true));
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, $appParameter->toString(true));
     }
 
     if ($fileMime->isFormatArchiveZip() == false) {
         $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-        $appAlert->danger(lng('file_viewzip.alert.file_is_not_format_archive_zip'), ALERT_INDEX, $appParameter->toString(true));
+        AppAlert::danger(lng('file_viewzip.alert.file_is_not_format_archive_zip'), ALERT_INDEX, $appParameter->toString(true));
     }
 
     $title   = lng('file_viewzip.title_page');
     $themes  = [ env('resource.filename.theme.file') ];
-    $appAlert->setID(ALERT_FILE_VIEWZIP);
+    AppAlert::setID(ALERT_FILE_VIEWZIP);
     require_once('incfiles' . SP . 'header.php');
 
 
-    $pclZip = new PclZip(FileInfo::filterPaths($appDirectory->getDirectoryAndName()));
+    $pclZip = new PclZip(FileInfo::filterPaths(AppDirectory::getInstance()->getDirectoryAndName()));
     $pclZipListContent = $pclZip->listContent();
     $pclZipSeparator   = '/';
 
@@ -125,7 +127,7 @@
 
     if ($pclZipDirectoryOrigin != null) {
         $pclZipLocationPath = explode($pclZipSeparator, $pclZipDirectoryOrigin);
-        $appLocationPath->addEntry($appDirectory->getName(), null);
+        $appLocationPath->addEntry(AppDirectory::getInstance()->getName(), null);
 
         if (is_array($pclZipLocationPath) && count($pclZipLocationPath) > 0)
             foreach ($pclZipLocationPath AS $pclZipLocation)
@@ -137,7 +139,7 @@
         'current'    => 0,
         'begin_loop' => 0,
         'end_loop'   => 0,
-        'max'        => $appConfig->get('paging.file_view_zip')
+        'max'        => AppConfig::getInstance()->get('paging.file_view_zip')
     ];
 
     if (isset($_GET[PARAMETER_ZIP_PAGE]) && empty($_GET[PARAMETER_ZIP_PAGE]) == false)
@@ -196,7 +198,7 @@
     }
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
     <ul class="file-list">

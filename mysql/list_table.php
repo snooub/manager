@@ -1,9 +1,12 @@
 <?php
 
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
-    use Librarys\File\FileInfo;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\Database\DatabaseBackupRestore;
+    use Librarys\File\FileInfo;
 
     define('LOADED',               1);
     define('MYSQL_LIST_TABLE',     1);
@@ -11,13 +14,13 @@
 
     require_once('global.php');
 
-    if ($appMysqlConfig->get('mysql_name') != null)
-        $appAlert->danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
+    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
+        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $title   = lng('mysql.list_table.title_page');
     $themes  = [ env('resource.filename.theme.mysql') ];
     $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
-    $appAlert->setID(ALERT_MYSQL_LIST_TABLE);
+    AppAlert::setID(ALERT_MYSQL_LIST_TABLE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
     requireDefine('mysql_action_table');
 
@@ -32,14 +35,14 @@
     $databaseBackupRestore->autoScanClean();
 ?>
 
-    <?php echo $appAlert->display(); ?>
+    <?php echo AppAlert::display(); ?>
 
     <div class="mysql-query-string">
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
     </div>
 
     <form action="action_table.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database">
-        <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+        <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
         <ul class="list-database">
             <?php if ($appMysqlConnect->isDatabaseNameCustom()) { ?>
@@ -76,7 +79,7 @@
                                 name="tables[]"
                                 id="<?php echo $id; ?>"
                                 value="<?php echo $mysqlAssoc['Name']; ?>"
-                                <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                             <label for="<?php echo $id; ?>" class="not-content"></label>
                             <a href="info_table.php<?php echo $urlParameterTable; ?>">
@@ -101,7 +104,7 @@
                     <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
                     <label for="checked-all-entry">
                         <span><?php echo lng('mysql.list_table.form.input.checkbox_all_entry'); ?></span>
-                        <?php if ($appConfig->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
+                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
                             <span id="checkall-count"></span>
                             <script type="text/javascript">
                                 OnLoad.add(function() {

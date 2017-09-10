@@ -1,43 +1,45 @@
 <?php
 
-    use Librarys\File\FileInfo;
-    use Librarys\File\FileMime;
+    use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
     use Librarys\App\AppPaging;
+    use Librarys\App\Config\AppConfig;
+    use Librarys\File\FileInfo;
+    use Librarys\File\FileMime;
 
     define('LOADED',              1);
     define('PARAMETER_PAGE_EDIT', 'page_edit_text');
 
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    if ($appDirectory->isFileSeparatorNameExists() == false)
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
-    else if ($appDirectory->isPermissionDenyPath())
-        $appAlert->danger(lng('home.alert.path_not_permission', 'path', $appDirectory->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
+    if (AppDirectory::getInstance()->isFileSeparatorNameExists() == false)
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, env('app.http.host'));
+    else if (AppDirectory::getInstance()->isPermissionDenyPath())
+        AppAlert::danger(lng('home.alert.path_not_permission', 'path', AppDirectory::getInstance()->getDirectoryAndName()), ALERT_INDEX, env('app.http.host'));
 
-    $appLocationPath = new AppLocationPath($appDirectory, 'index.php');
+    $appLocationPath = new AppLocationPath('index.php');
     $appLocationPath->setIsPrintLastEntry(true);
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
-    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appDirectory->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $appDirectory->getPage(),            $appDirectory->getPage() > 1);
-    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appDirectory->getNameEncode(),      true);
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
+    $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::getInstance()->getNameEncode(),      true);
 
-    $fileInfo    = new FileInfo($appDirectory->getDirectory() . SP . $appDirectory->getName());
+    $fileInfo    = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
     $fileMime    = new FileMime($fileInfo);
     $isDirectory = $fileInfo->isDirectory();
 
     if ($isDirectory) {
         $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-        $appAlert->danger(lng('home.alert.path_not_exists'), ALERT_INDEX, $appParameter->toString(true));
+        AppAlert::danger(lng('home.alert.path_not_exists'), ALERT_INDEX, $appParameter->toString(true));
     }
 
     if ($fileMime->isFormatTextEdit() == false) {
         $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
-        $appAlert->danger(lng('file_edit_text.alert.file_is_not_format_text_edit'), ALERT_INDEX, $appParameter->toString(true));
+        AppAlert::danger(lng('file_edit_text.alert.file_is_not_format_text_edit'), ALERT_INDEX, $appParameter->toString(true));
     }
 
     if ($fileMime->isFormatTextAsEdit() == false)
@@ -46,7 +48,7 @@
         $title = lng('file_edit_text.title_page_as');
 
     $themes = [ env('resource.filename.theme.file') ];
-    $appAlert->setID(ALERT_FILE_EDIT_TEXT);
+    AppAlert::setID(ALERT_FILE_EDIT_TEXT);
     require_once('incfiles' . SP . 'header.php');
 
     $edits = [
@@ -55,10 +57,10 @@
             'current'    => 0,
             'begin_loop' => 0,
             'end_loop'   => 0,
-            'max'        => $appConfig->get('paging.file_edit_text')
+            'max'        => AppConfig::getInstance()->get('paging.file_edit_text')
         ],
 
-        'path'    => FileInfo::filterPaths($appDirectory->getDirectoryAndName()),
+        'path'    => FileInfo::filterPaths(AppDirectory::getInstance()->getDirectoryAndName()),
         'content' => null,
 
         'content_lines'      => null,
@@ -116,9 +118,9 @@
         }
 
         if (FileInfo::fileWriteContents($edits['path'], $edits['content']) !== false)
-            $appAlert->success(lng('file_edit_text.alert.save_text_success'));
+            AppAlert::success(lng('file_edit_text.alert.save_text_success'));
         else
-            $appAlert->danger(lng('file_edit_text.alert.save_text_failed'));
+            AppAlert::danger(lng('file_edit_text.alert.save_text_failed'));
     }
 
     if ($edits['content'] != null && empty($edits['content']) == false && strlen($edits['content']) > 0) {
@@ -154,20 +156,20 @@
     );
 ?>
 
-    <?php $appAlert->display(); ?>
+    <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
     <div class="form-action">
         <div class="title">
             <?php if ($fileMime->isFormatTextAsEdit() == false) { ?>
-                <span><?php echo lng('file_edit_text.title_page'); ?>: <?php echo $appDirectory->getName(); ?></span>
+                <span><?php echo lng('file_edit_text.title_page'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } else { ?>
-                <span><?php echo lng('file_edit_text.title_page_as'); ?>: <?php echo $appDirectory->getName(); ?></span>
+                <span><?php echo lng('file_edit_text.title_page_as'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } ?>
         </div>
         <?php $appParameter->add(PARAMETER_PAGE_EDIT, $edits['page']['current'], $edits['page']['current'] > 1); ?>
         <form action="file_edit_text.php<?php echo $appParameter->toString(true); ?>" method="post" id="form-file-edit-javascript">
-            <input type="hidden" name="<?php echo $boot->getCFSRToken()->getName(); ?>" value="<?php echo $boot->getCFSRToken()->getToken(); ?>"/>
+            <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <li class="textarea">

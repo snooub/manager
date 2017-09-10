@@ -2,6 +2,7 @@
 
     use Librarys\File\FileInfo;
     use Librarys\App\AppAssets;
+    use Librarys\Http\Secure\CFSRToken;
 
     define('LOADED',               1);
     define('DISABLE_CHECK_LOGIN',  1);
@@ -10,7 +11,7 @@
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
     requireDefine('asset');
 
-    if ($boot->getCFSRToken()->validateGet() !== true)
+    if (CFSRToken::getInstance()->validateGet() !== true)
         die(lng('default.global.cfsr_token_not_validate'));
 
     if (
