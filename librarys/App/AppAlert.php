@@ -106,33 +106,32 @@
                 self::warning(lng('home.alert.password_user_is_equal_default', 'time', AppUser::TIME_SHOW_WARNING_PASSWORD_DEFAULT));
 
             if (AppUser::getInstance()->isPositionAdminstrator() && defined('DISABLE_ALERT_HAS_UPDATE') == false && self::hasAlertDisplay() == false && AppConfig::getInstance()->get('check_update.enable', false) == true) {
-                $appAboutConfig = new AppAboutConfig();
                 $timeCurrent    = time();
                 $timeShow       = 300;
                 $timeCheck      = AppConfig::getInstance()->get('check_update.time', 86400);
-                $checkLast      = $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_CHECK_AT, $timeCurrent);
+                $checkLast      = AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_CHECK_AT, $timeCurrent);
 
                 if ($timeCurrent - $checkLast >= $timeCheck) {
-                    $appUpdate = new AppUpdate($appAboutConfig);
+                    $appUpdate = new AppUpdate(AppAboutConfig::getInstance());
 
                     if ($appUpdate->checkUpdate() === true) {
                         $updateStatus = $appUpdate->getUpdateStatus();
 
                         if ($updateStatus === AppUpdate::RESULT_VERSION_IS_OLD)
-                            self::success(lng('app.check_update.alert.version_is_old', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpdate->getVersionUpdate()));
+                            self::success(lng('app.check_update.alert.version_is_old', 'version_current', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpdate->getVersionUpdate()));
                         else if ($updateStatus === AppUpdate::RESULT_HAS_ADDITIONAL)
-                            self::success(lng('app.check_update.alert.has_additional', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                            self::success(lng('app.check_update.alert.has_additional', 'version_current', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION)));
                         else
-                            self::info(lng('app.check_update.alert.version_is_latest', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                            self::info(lng('app.check_update.alert.version_is_latest', 'version_current', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION)));
                     }
                 } else {
-                    $appUpgrade = new AppUpgrade($appAboutConfig);
+                    $appUpgrade = new AppUpgrade(AppAboutConfig::getInstance());
 
                     if ($appUpgrade->checkHasUpgradeLocal()) {
                         if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
-                            self::success(lng('app.check_update.alert.version_is_old', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+                            self::success(lng('app.check_update.alert.version_is_old', 'version_current', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
                         else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
-                            self::success(lng('app.check_update.alert.has_additional', 'version_current', $appAboutConfig->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                            self::success(lng('app.check_update.alert.has_additional', 'version_current', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION)));
                     }
                 }
             }

@@ -174,7 +174,7 @@
             <ul class="form-element">
                 <li class="textarea">
                     <span><?php echo lng('file_edit_text.form.input.content_file'); ?></span>
-                    <textarea name="content" rows="20"><?php echo htmlspecialchars($edits['content']); ?></textarea>
+                    <textarea name="content" rows="20" wrap="off" autocorrect="off" autocomplete="false" autocapitalize="off" spellcheck="false"><?php echo htmlspecialchars($edits['content']); ?></textarea>
                 </li>
                 <?php if ($edits['page']['max'] > 0 && $edits['page']['total'] > 1) { ?>
                     <li class="paging">

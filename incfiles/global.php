@@ -19,6 +19,7 @@
     use Librarys\App\AppChecker;
     use Librarys\App\AppDirectory;
     use Librarys\App\Config\AppConfig;
+    use Librarys\App\Config\AppUserConfig;
     use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\Http\Request;
     use Librarys\Http\Validate;
@@ -85,7 +86,7 @@
             AppAlert::success(lng('default.global.change_config_success'), AppUser::getInstance()->isLogin() ? ALERT_INDEX : ALERT_USER_LOGIN, $httpHostApp);
     }
 
-    if (AppUser::getInstance()->getConfig()->hasEntryConfigArraySystem() == false) {
+    if (AppUserConfig::getInstance()->hasEntryConfigArraySystem() == false) {
         $idAlert = ALERT_USER_LOGIN;
         $urlGoto = $httpHostApp . '/user/login.php';
 

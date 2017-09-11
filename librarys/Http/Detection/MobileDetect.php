@@ -1,6 +1,6 @@
 <?php
 
-    namespace Librarys\Detection;
+    namespace Librarys\Http\Detection;
 
     /**
      * Mobile Detect Library

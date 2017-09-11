@@ -19,9 +19,8 @@
 
     $title      = lng('app.upgrade_app.title_page');
     $themes     = [ env('resource.filename.theme.about'), env('resource.filename.theme.markdown') ];
-    $config     = new AppAboutConfig();
-    $appUpdate  = new AppUpdate($config);
-    $appUpgrade = new AppUpgrade($config);
+    $appUpdate  = new AppUpdate(AppAboutConfig::getInstance());
+    $appUpgrade = new AppUpgrade(AppAboutConfig::getInstance());
     $servers    = $appUpdate->getServers();
     AppAlert::setID(ALERT_APP_UPGRADE_APP);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
@@ -29,7 +28,7 @@
     $hasUpgrade = $appUpgrade->checkHasUpgradeLocal($errorCheckUpgrade);
 
     if ($hasUpgrade == false && $errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_NONE)
-        AppAlert::info(lng('app.check_update.alert.version_is_latest', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_ABOUT, 'about.php');
+        AppAlert::info(lng('app.check_update.alert.version_is_latest', 'version_current', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_ABOUT, 'about.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_FILE_NOT_FOUND)
         AppAlert::danger(lng('app.upgrade_app.alert.error_check_upgrade_file_not_found'), ALERT_APP_CHECK_UPDATE, 'check_update.php');
     else if ($errorCheckUpgrade === AppUpgrade::ERROR_CHECK_UPGRADE_ADDITIONAL_UPDATE_NOT_FOUND)

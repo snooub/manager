@@ -9,6 +9,7 @@
     use Librarys\App\AppUser;
     use Librarys\App\AppAssets;
     use Librarys\App\Config\AppConfig;
+    use Librarys\App\Config\AppUserConfig;
 
     final class AppClean
     {
@@ -141,8 +142,8 @@
 
         private static function scanAutoCleanUser($appConfig, $isCleanAllNotCheck)
         {
-            if (AppUser::getInstance()->getConfig()->hasEntryConfigArraySystem()) {
-                $arrays    = AppUser::getInstance()->getConfig()->getConfigArraySystem();
+            if (AppUserConfig::getInstance()->hasEntryConfigArraySystem()) {
+                $arrays    = AppUserConfig::getInstance()->getConfigArraySystem();
                 $directory = env('app.path.user');
                 $handle    = FileInfo::scanDirectory($directory);
 

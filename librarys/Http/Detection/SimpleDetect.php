@@ -1,11 +1,13 @@
 <?php
 
-    namespace Librarys\Detection;
+    namespace Librarys\Http\Detection;
 
     use Librarys\Http\Request;
 
     class SimpleDetect
     {
+
+        private static $instance;
 
         private $detect         = null;
         private $ipAddress      = null;
@@ -21,11 +23,29 @@
         const DEVICE_TYPE_TABLET   = 'tablet';
         const DEVICE_TYPE_COMPUTER = 'computer';
 
-        public function __construct()
+        protected function __construct()
         {
             $this->detect = new MobileDetect();
             $this->detect->setDetectionType(MobileDetect::DETECTION_TYPE_EXTENDED);
             $this->getIp();
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new SimpleDetect();
+
+            return self::$instance;
         }
 
         private function getIp()

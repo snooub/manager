@@ -136,7 +136,7 @@
             else if ($loadType === self::LOAD_JS && AppConfig::getInstance()->get('cache.js.minify', true))
                 $minify = new MinifyJs($this->buffer);
 
-            if ($minify !== null)
+            if ($minify !== null && Request::isLocal() == false)
                 $this->buffer = $minify->minify();
 
             if ($this->loadCache($loadType, $filepath, true) && $this->buffer !== false)

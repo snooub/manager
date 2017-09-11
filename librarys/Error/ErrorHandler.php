@@ -2,43 +2,100 @@
 
     namespace Librarys\Error;
 
+    if (defined('E_ERROR') == false)
+        define('E_ERROR', 1);
+
+    if (defined('E_WARNING') == false)
+        define('E_WARNING', 2);
+
+    if (defined('E_PARSE') == false)
+        define('E_PARSE', 4);
+
+    if (defined('E_NOTICE') == false)
+        define('E_NOTICE', 8);
+
+    if (defined('E_CODE_ERROR') == false)
+        define('E_CODE_ERROR', 16);
+
+    if (defined('E_CODE_WARNING') == false)
+        define('E_CODE_WARNING', 32);
+
+    if (defined('E_COMPILE_ERROR') == false)
+        define('E_COMPILE_ERROR', 64);
+
+    if (defined('E_COMPILE_WARNING') == false)
+        define('E_COMPILE_WARNING', 128);
+
+    if (defined('E_USER_ERROR') == false)
+        define('E_USER_ERROR', 256);
+
+    if (defined('E_USER_WARNING') == false)
+        define('E_USER_WARNING', 512);
+
+    if (defined('E_USER_NOTICE') == false)
+        define('E_USER_NOTICE', 1024);
+
+    if (defined('E_STRICT') == false)
+        define('E_STRICT', 2048);
+
+    if (defined('E_RECOVERABLE_ERROR') == false)
+        define('E_RECOVERABLE_ERROR', 4069);
+
+    if (defined('EU_ALL') == false)
+        define('EU_ALL', E_ALL);
+
+    if (defined('EU_WARNING') == false)
+        define('EU_WARNING', E_WARNING | E_USER_WARNING | E_COMPILE_WARNING | E_RECOVERABLE_ERROR);
+
+    if (defined('EU_FATAL') == false)
+        define('EU_FATAL', E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR);
+
+    if (defined('EU_DEPRECATED') == false)
+        define('EU_DEPRECATED', E_DEPRECATED | E_USER_DEPRECATED);
+
+    if (defined('EU_NOTICE') == false)
+        define('EU_NOTICE', E_NOTICE | E_USER_NOTICE);
+
+    if (defined('EU_STRICT') == false)
+        define('EU_STRICT', E_STRICT);
+
     class ErrorHandler
     {
 
         private static $errorLists = [
             'fatal' => [
-                'mask'  => E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR,
+                'mask'  => EU_FATAL,
                 'label' => 'Fatal Error'
             ],
 
             'warning' => [
-                'mask'  => E_WARNING | E_USER_WARNING | E_COMPILE_WARNING | E_RECOVERABLE_ERROR,
+                'mask'  => EU_WARNING,
                 'label' => 'Warning'
             ],
 
             'notice' => [
-                'mask'  => E_NOTICE | E_USER_NOTICE,
+                'mask'  => EU_NOTICE,
                 'label' => 'Notice'
             ],
 
             'strict' => [
-                'mask'  => E_STRICT,
+                'mask'  => EU_STRICT,
                 'label' => 'Strict'
             ],
 
             'deprecated' => [
-                'mask'  => E_DEPRECATED | E_USER_DEPRECATED,
+                'mask'  => EU_DEPRECATED,
                 'label' => 'Deprecated'
             ]
         ];
 
         const EU_DISABLE    = 0;
-        const EU_ALL        = E_ALL;
-        const EU_WARNING    = E_WARNING | E_USER_WARNING | E_COMPILE_WARNING | E_RECOVERABLE_ERROR;
-        const EU_FATAL      = E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR;
-        const EU_DEPRECATED = E_DEPRECATED | E_USER_DEPRECATED;
-        const EU_NOTICE     = E_NOTICE | E_USER_NOTICE;
-        const EU_STRICT     = E_STRICT;
+        const EU_ALL        = EU_ALL;
+        const EU_WARNING    = EU_WARNING;
+        const EU_FATAL      = EU_FATAL;
+        const EU_DEPRECATED = EU_DEPRECATED;
+        const EU_NOTICE     = EU_STRICT;
+        const EU_STRICT     = EU_STRICT;
 
         private static $level = self::EU_ALL;
 

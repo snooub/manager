@@ -13,21 +13,20 @@
 
     $title      = lng('app.about.title_page');
     $themes     = [ env('resource.filename.theme.about') ];
-    $config     = new AppAboutConfig();
     $appUpgrade = null;
     $hasUpgrade = false;
     AppAlert::setID(ALERT_APP_ABOUT);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     if (AppUser::getInstance()->isPositionAdminstrator()) {
-        $appUpgrade = new AppUpgrade($config);
+        $appUpgrade = new AppUpgrade(AppAboutConfig::getInstance());
         $hasUpgrade = $appUpgrade->checkHasUpgradeLocal();
 
         if ($hasUpgrade && AppAlert::hasAlertDisplay() == false) {
             if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE)
-                AppAlert::success(lng('app.check_update.alert.version_is_old', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
+                AppAlert::success(lng('app.check_update.alert.version_is_old', 'version_current', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION), 'version_update', $appUpgrade->getVersionUpgrade()));
             else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL)
-                AppAlert::success(lng('app.check_update.alert.has_additional', 'version_current', $config->get(AppAboutConfig::ARRAY_KEY_VERSION)));
+                AppAlert::success(lng('app.check_update.alert.has_additional', 'version_current', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION)));
         }
     }
 
@@ -36,7 +35,7 @@
     <?php AppAlert::display(); ?>
 
     <div id="about">
-        <h1><?php echo $config->get('name'); ?></h1>
+        <h1><?php echo AppAboutConfig::getInstance()->get('name'); ?></h1>
         <ul>
         	<li class="label">
         		<ul>
@@ -54,27 +53,27 @@
         	</li>
         	<li class="value">
         		<ul>
-        			<li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_NAME); ?></span></li>
-        			<li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_VERSION); ?> <?php if ($config->get(AppAboutConfig::ARRAY_KEY_IS_BETA)) echo 'beta'; ?></span></li>
-        			<li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_EMAIL); ?></span></li>
-        			<li><span><a href="<?php echo $config->get(AppAboutConfig::ARRAY_KEY_GIT_LINK); ?>" target="_blank"><?php echo $config->get(AppAboutConfig::ARRAY_KEY_GIT_TITLE); ?></a></span></li>
-        			<li><span><a href="<?php echo $config->get(AppAboutConfig::ARRAY_KEY_FB_LINK); ?>" target="_blank"><?php echo $config->get(AppAboutConfig::ARRAY_KEY_FB_TITLE); ?></a></span></li>
-        			<li><span><?php echo $config->get(AppAboutConfig::ARRAY_KEY_PHONE); ?></span></li>
-        			<li><span><?php echo date('d.m.Y - H:i', $config->get(AppAboutConfig::ARRAY_KEY_CREATE_AT)); ?></span></li>
+        			<li><span><?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_NAME); ?></span></li>
+        			<li><span><?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION); ?> <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_IS_BETA)) echo 'beta'; ?></span></li>
+        			<li><span><?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_EMAIL); ?></span></li>
+        			<li><span><a href="<?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_GIT_LINK); ?>" target="_blank"><?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_GIT_TITLE); ?></a></span></li>
+        			<li><span><a href="<?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_FB_LINK); ?>" target="_blank"><?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_FB_TITLE); ?></a></span></li>
+        			<li><span><?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_PHONE); ?></span></li>
+        			<li><span><?php echo date('d.m.Y - H:i', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_CREATE_AT)); ?></span></li>
 
-                    <?php if ($config->get(AppAboutConfig::ARRAY_KEY_CHECK_AT) <= 0) { ?>
+                    <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_CHECK_AT) <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_check_update'); ?></span></li>
                     <?php } else { ?>
-                        <li><span><?php echo date('d.m.Y - H:i:s', $config->get(AppAboutConfig::ARRAY_KEY_CHECK_AT)); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_CHECK_AT)); ?></span></li>
                     <?php } ?>
 
-                    <?php if ($config->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT) <= 0) { ?>
+                    <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT) <= 0) { ?>
                         <li><span><?php echo lng('app.check_update.info.value.not_last_upgrade'); ?></span></li>
                     <?php } else { ?>
-                        <li><span><?php echo date('d.m.Y - H:i:s', $config->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT)); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT)); ?></span></li>
                     <?php } ?>
 
-                    <li><span><?php echo date('d.m.Y - H:i:s', $config->get(AppAboutConfig::ARRAY_KEY_BUILD_AT)); ?></span></li>
+                    <li><span><?php echo date('d.m.Y - H:i:s', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_BUILD_AT)); ?></span></li>
         		</ul>
         	</li>
         </ul>

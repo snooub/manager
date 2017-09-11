@@ -7,9 +7,9 @@
 
     use Librarys\App\Config\AppConfig;
     use Librarys\App\Config\AppUserConfig;
-    use Librarys\Detection\SimpleDetect;
     use Librarys\File\FileInfo;
     use Librarys\Http\Request;
+    use Librarys\Http\Detection\SimpleDetect;
     use Librarys\Http\Secure\CFSRToken;
     use Librarys\Text\Encryption\StringEncryption;
 
@@ -17,8 +17,6 @@
     {
 
         private static $instance;
-
-        private $config;
 
         private $id;
         private $userInfos;
@@ -55,7 +53,7 @@
 
         protected function __construct()
         {
-            $this->config = new AppUserConfig();
+
         }
 
         protected function __wakeup()
@@ -86,7 +84,7 @@
 
         public function createFirstUser()
         {
-            if ($this->config->hasEntryConfigArraySystem())
+            if (AppUserConfig::getInstance()->hasEntryConfigArraySystem())
                 return false;
 
             $username = self::USERNAME_CREATE_FIRST;
@@ -96,20 +94,20 @@
             $symbol   = '.';
 
             if (
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_USERNAME,  $username) == false ||
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_EMAIL,     null)      == false ||
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_PASSWORD,  $password) == false ||
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_POSITION,  $position) == false ||
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_CREATE_AT, time())    == false ||
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_MODIFY_AT, 0)         == false ||
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_LOGIN_AT,  0)         == false ||
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_BAND_AT,   0)         == false ||
-                    $this->config->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_BAND_OF,   null)      == false
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_USERNAME,  $username) == false ||
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_EMAIL,     null)      == false ||
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_PASSWORD,  $password) == false ||
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_POSITION,  $position) == false ||
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_CREATE_AT, time())    == false ||
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_MODIFY_AT, 0)         == false ||
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_LOGIN_AT,  0)         == false ||
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_BAND_AT,   0)         == false ||
+                    AppUserConfig::getInstance()->setSystem($idUser . $symbol . AppUserConfig::ARRAY_KEY_BAND_OF,   null)      == false
             ) {
                 return false;
             }
 
-            if ($this->config->write() == false)
+            if (AppUserConfig::getInstance()->write() == false)
                 return false;
 
             return true;
@@ -122,7 +120,7 @@
 
             $id     = addslashes(Request::session()->get(env('app.login.session_login_name')));
             $token  = addslashes(Request::session()->get(env('app.login.session_token_name')));
-            $arrays = $this->config->getConfigArraySystem();
+            $arrays = AppUserConfig::getInstance()->getConfigArraySystem();
 
             if (is_array($arrays) == false || isset($arrays[$id]) == false)
                 return false;
@@ -190,7 +188,7 @@
             if ($timeNow + $checkTime >= $timeNow + $timeShow)
                 return false;
 
-            $password        = $this->config->get($this->id . '.' . AppUserConfig::ARRAY_KEY_PASSWORD, null);
+            $password        = AppUserConfig::getInstance()->get($this->id . '.' . AppUserConfig::ARRAY_KEY_PASSWORD, null);
             $passwordDefault = self::PASSWORD_CREATE_FIRST;
 
             if ($this->checkPassword($password, $passwordDefault) == false) {
@@ -206,12 +204,7 @@
             if ($this->isLogin() == false)
                 return null;
 
-            return $this->config->get($this->id . '.' . $key);
-        }
-
-        public function getConfig()
-        {
-            return $this->config;
+            return AppUserConfig::getInstance()->get($this->id . '.' . $key);
         }
 
         public function setConfig($key, $value)
@@ -219,12 +212,12 @@
             if ($this->isLogin() == false)
                 return false;
 
-            return $this->config->setSystem($this->id . '.' . $key, $value);
+            return AppUserConfig::getInstance()->setSystem($this->id . '.' . $key, $value);
         }
 
         public function writeConfig($exitUser = false)
         {
-            if ($this->config->write() == false)
+            if (AppUserConfig::getInstance()->write() == false)
                 return false;
 
             if ($exitUser)
@@ -333,7 +326,7 @@
 
         public function isUser($username, $password)
         {
-            $arrays = $this->config->getConfigArraySystem();
+            $arrays = AppUserConfig::getInstance()->getConfigArraySystem();
 
             if (is_array($arrays) && count($arrays) > 0) {
                 $username = strtolower($username);
@@ -357,7 +350,7 @@
             if ($id == null || empty($id))
                 return false;
 
-            $position = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_POSITION, false);
+            $position = AppUserConfig::getInstance()->get($id . '.' . AppUserConfig::ARRAY_KEY_POSITION, false);
 
             if ($position === false || $position === 0) {
                 if ($exitUser)
@@ -391,14 +384,14 @@
                     break;
             }
 
-            $mobileDetect = new SimpleDetect();
+            $mobileDetect = SimpleDetect::getInstance();
             $userAgent    = Request::userAgent();
             $userDevice   = $mobileDetect->getDeviceType();
             $userOS       = $mobileDetect->getOS();
             $userBrowser  = $mobileDetect->getBrowser();
             $userIP       = Request::ip();
             $userLive     = time();
-            $userPassword = $this->config->get($id . '.' . AppUserConfig::ARRAY_KEY_PASSWORD);
+            $userPassword = AppUserConfig::getInstance()->get($id . '.' . AppUserConfig::ARRAY_KEY_PASSWORD);
 
             $tokenBuffer = @serialize([
                 self::TOKEN_ARRAY_KEY_USER_AGENT   => $userAgent,
@@ -411,7 +404,7 @@
 
             if (FileInfo::fileWriteContents($tokenPath, $tokenBuffer, $userPassword));
 
-            if ($this->config->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false || $this->config->write() == false)
+            if (AppUserConfig::getInstance()->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false || AppUserConfig::getInstance()->write() == false)
                 return false;
 
             Request::session()->put(env('app.login.session_login_name'), $id);
