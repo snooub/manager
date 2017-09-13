@@ -39,16 +39,13 @@
         'cache' => [
             'css' => [
                 'enable' => true,
-                'minify' => true,
                 'lifetime' => 31536000,
             ],
 
             'js' => [
                 'enable' => true,
-                'minify' => true,
                 'lifetime' => 31536000,
-            ],
-
+            ]
         ],
 
         'tmp' => [

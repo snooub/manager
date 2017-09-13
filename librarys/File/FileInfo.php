@@ -624,6 +624,9 @@
 
         public static function fileRead($handle, $length)
         {
+            if ($length <= 0)
+                return null;
+
             return @fread($handle, $length);
         }
 

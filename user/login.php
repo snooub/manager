@@ -16,7 +16,6 @@
         AppAlert::info(lng('user.login.alert.login_already'), ALERT_INDEX, env('app.http.host'));
 
     $title = lng('user.login.title_page');
-    $themes = [ env('resource.filename.theme.login') ];
     AppAlert::setID(ALERT_USER_LOGIN);
     require_once('..' . SP . 'incfiles' . SP . 'header.php');
 
@@ -108,28 +107,30 @@
         Request::session()->put(SESSION_NAME_LOCK_TIME,  intval(time()));
     }
 
-    AppAlert::display();
-
 ?>
 
-    <?php if ($isLockCountStatus == false) { ?>
-        <div id="login">
-            <form action="login.php" method="post" id="login-form">
-                <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
-                <input type="text" name="username" value="<?php echo stripslashes(htmlspecialchars($username)); ?>" placeholder="<?php echo lng('user.login.form.input_username_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
-                <input type="password" name="password" value="<?php echo stripslashes(htmlspecialchars($password)); ?>" placeholder="<?php echo lng('user.login.form.input_password_placeholder'); ?>"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
-                <div id="login-form-action">
-                    <?php if (AppConfig::getInstance()->get('user.login.enable_forgot_password')) { ?>
-                        <a href="forgot_password.php" id="forgot-password">
-                            <span><?php echo lng('user.login.form.forgot_password'); ?></span>
-                        </a>
-                    <?php } ?>
-                    <button type="submit" name="submit"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>>
-                        <span><?php echo lng('user.login.form.button_login'); ?></span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    <?php } ?>
+    <div id="container-login">
+        <?php AppAlert::display(); ?>
+
+        <?php if ($isLockCountStatus == false) { ?>
+            <div id="login">
+                <form action="login.php" method="post" id="login-form">
+                    <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
+                    <input type="text" name="username" value="<?php echo stripslashes(htmlspecialchars($username)); ?>" placeholder="<?php echo lng('user.login.form.input_username_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
+                    <input type="password" name="password" value="<?php echo stripslashes(htmlspecialchars($password)); ?>" placeholder="<?php echo lng('user.login.form.input_password_placeholder'); ?>"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
+                    <div id="login-form-action">
+                        <?php if (AppConfig::getInstance()->get('user.login.enable_forgot_password')) { ?>
+                            <a href="forgot_password.php" id="forgot-password">
+                                <span><?php echo lng('user.login.form.forgot_password'); ?></span>
+                            </a>
+                        <?php } ?>
+                        <button type="submit" name="submit"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>>
+                            <span><?php echo lng('user.login.form.button_login'); ?></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        <?php } ?>
+    </div>
 
 <?php require_once('..' .SP . 'incfiles' . SP . 'footer.php'); ?>

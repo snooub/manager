@@ -47,7 +47,6 @@
     else
         $title = lng('file_edit_text.title_page_as');
 
-    $themes = [ env('resource.filename.theme.file') ];
     AppAlert::setID(ALERT_FILE_EDIT_TEXT);
     require_once('incfiles' . SP . 'header.php');
 

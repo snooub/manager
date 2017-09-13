@@ -1,0 +1,55 @@
+ul.paging,
+ul.paging li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.paging {
+    background-color: transparent;
+    display: block;
+
+    @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
+
+    margin-bottom: 15px;
+    width: 100%;
+    height: 45px;
+    text-align: center;
+
+    li {
+        line-height: 45px;
+        padding-left: 3px;
+        padding-right: 3px;
+        width: auto !important;
+
+        &.current strong {
+            color: #ffffff;
+            background-color: #00897b;
+            padding: 5px;
+        }
+
+        &.other {
+            span {
+                color: #00897b;
+                background-color: #f0f0f0;
+                padding: 5px;
+            }
+
+            a:hover span {
+                color: #ffffff;
+                background-color: #303030;
+            }
+        }
+
+        &.jump {
+            span {
+                color: #707070;
+            }
+
+            a:hover span {
+                color: #00897b;
+            }
+        }
+    }
+}

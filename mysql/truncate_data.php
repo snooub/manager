@@ -20,7 +20,6 @@
     $appParameter->add(PARAMETER_TABLE_URL,    AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()));
 
     $title  = lng('mysql.truncate_data.title_page');
-    $themes = [ env('resource.filename.theme.mysql') ];
     AppAlert::setID(ALERT_MYSQL_TRUNCATE_DATA);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 

@@ -1,3 +1,5 @@
+node_modules
+
 assets/user/*
 assets/tmp/*
 assets/cache/*

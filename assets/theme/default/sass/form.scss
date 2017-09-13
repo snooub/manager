@@ -1,0 +1,374 @@
+input {
+    &:invalid {
+        box-shadow: none !important;
+    }
+
+    &::-webkit-input-placeholder {
+        color: #808080;
+    }
+
+    &:-ms-input-placeholder {
+        color: #808080;
+    }
+
+    &:-moz-placeholder {
+        color: #808080;
+    }
+
+    &::-moz-placeholder {
+        color: #808080;
+    }
+
+    &[type=number] {
+        -webkit-appearance: textfield;
+           -moz-appearance: textfield;
+            -ms-appearance: textfield;
+             -o-appearance: textfield;
+                appearance: textfield;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+           -moz-appearance: none;
+            -ms-appearance: none;
+             -o-appearance: none;
+                appearance: none;
+    }
+}
+
+input[type=text],
+input[type=email],
+input[type=number],
+input[type=password],
+input[type=file] + label,
+
+textarea,
+select {
+    color: #c0c0c0;
+    background-color: transparent;
+
+    @include box-sizing(border-box);
+
+    border: 0;
+    border-bottom: 2px solid #e0e0e0;
+    padding: 10px;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    outline: 0;
+}
+
+textarea {
+    line-height: 22px;
+}
+
+input[type=text]:disabled,
+input[type=email]:disabled,
+input[type=number]:disabled,
+input[type=password]:disabled,
+input[type=file]:disabled + label,
+
+textarea:disabled,
+select:disabled {
+    background-color: #f0f0f0;
+}
+
+input[type=file] + label {
+    cursor: pointer;
+}
+
+input[type=text],
+input[type=email],
+input[type=number],
+input[type=password],
+
+textarea,
+select {
+    font-size: 14px;
+}
+
+textarea {
+    height: auto;
+}
+
+select {
+    background-image: none;
+
+    -webkit-appearance:none;
+       -moz-appearance:none;
+        -ms-appearance:none;
+         -o-appearance:none;
+            appearance:none;
+}
+
+*.icomoon,
+div.select,
+input[type=checkbox] + label::before,
+input[type=radio].radio-entry-list + label::before  {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+div.select {
+    position: relative;
+    margin: 0;
+    padding: 0;
+
+    &::before {
+        content: "\e923";
+        color: #c0c0c0;
+        font-size: 18px;
+        line-height: 45px;
+        position: absolute;
+        top: 0;
+        right: 10px;
+        z-index: 1;
+    }
+}
+
+input[type=file] {
+    display: none;
+
+    & + label {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+input[type=text]:disabled,
+input[type=text]:disabled,
+input[type=email]:disabled,
+input[type=email]:disabled,
+input[type=number]:disabled,
+input[type=number]:disabled,
+input[type=password]:disabled,
+input[type=password]:disabled,
+input[type=file]:disabled + label,
+input[type=file]:disabled + label,
+
+textarea:disabled,
+textarea:disabled,
+select:disabled,
+select:disabled {
+    color: #707070;
+    border-bottom-color: #c0c0c0;
+}
+
+input[type=text]:enabled:hover,
+input[type=text]:enabled:focus,
+input[type=email]:enabled:hover,
+input[type=email]:enabled:focus,
+input[type=number]:enabled:hover,
+input[type=number]:enabled:focus,
+input[type=password]:enabled:hover,
+input[type=password]:enabled:focus,
+input[type=file]:enabled + label:hover,
+input[type=file]:enabled + label:focus,
+
+textarea:enabled:hover,
+textarea:enabled:focus,
+select:enabled:hover,
+select:enabled:focus,
+
+div.select:hover::before,
+div.select:focus::before {
+    color: #505050;
+    border-bottom-color: #a0a0a0;
+}
+
+input:enabled:not(.none):invalid,
+input:enabled:not(.none):invalid:hover,
+input:enabled:not(.none):invalid:focus {
+    color: #ef5350;
+    border-bottom-color: #ef5350;
+}
+
+input[type=checkbox],
+input[type=radio].radio-entry-list {
+    & + label::before {
+        color: #a0a0a0;
+        content: "\e927";
+        display: inline-block;
+        font-size: 20px;
+        line-height: 20px;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.2);
+        vertical-align: middle;
+    }
+
+    &:hover + label::before {
+        color: #c0c0c0;
+    }
+
+    &:checked + label::before {
+        color: #00a99b;
+        content: "\e928";
+    }
+
+    &:checked:hover + label::before {
+        color: #00c9bb;
+    }
+
+    &:disabled + label::before {
+        color: #c0c0c0;
+        background-color: #eaeaea;
+    }
+
+    & + label span {
+        color: #707070;
+        margin-left: 5px;
+        line-height: 15px;
+        font-size: 15px;
+        vertical-align: middle;
+    }
+
+    &:hover + label span {
+        color: #909090;
+    }
+
+    &:checked + label span {
+        color: #505050;
+    }
+
+    &:checked:hover + label span {
+        color: #707070;
+    }
+
+    &:disabled + label span {
+        color: #a0a0a0;
+    }
+}
+
+input[type=checkbox]:not(.none),
+input[type=radio].radio-entry-list {
+    display: none;
+}
+
+input[type=checkbox] + label.not-content {
+    background-color: transparent;
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+input[type=radio].radio-entry-list {
+    & + label::before {
+        content: "\e926";
+    }
+
+    &:checked + label::before {
+        content: "\e925";
+    }
+}
+
+button {
+    cursor: pointer;
+    outline: 0;
+}
+
+ul.radio-choose-tab,
+ul.radio-choose-tab > li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+ul.radio-choose-tab > li {
+    display: inline-block;
+    float: left;
+    width: 50%;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+ul.radio-choose-tab {
+    & li:first-child:nth-last-child(3),
+    & li:first-child:nth-last-child(3) ~ li {
+        width: 33.3%;
+    }
+
+    & li:first-child:nth-last-child(4),
+    & li:first-child:nth-last-child(4) ~ li {
+        width: 25%;
+    }
+
+    & li:first-child:nth-last-child(5),
+    & li:first-child:nth-last-child(5) ~ li {
+        width: 20%;
+    }
+
+    & li:first-child:nth-last-child(6),
+    & li:first-child:nth-last-child(6) ~ li {
+        width: 16.6%;
+    }
+
+    & li:first-child:nth-last-child(7),
+    & li:first-child:nth-last-child(7) ~ li {
+        width: 14.2%;
+    }
+
+    & > li {
+        input {
+            display: none;
+
+            & + label {
+                display: block;
+                background-color: #f0f0f0;
+                width: 100%;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+ul.radio-choose-tab > li input:enabled:checked + label {
+    cursor: default;
+}
+
+ul.radio-choose-tab > li input + label span {
+    color: #505050;
+    line-height: 40px;
+    font-size: 14px;
+}
+
+ul.radio-choose-tab > li input:disabled + label span {
+    color: #c0c0c0;
+}
+
+ul.radio-choose-tab > li input:enabled:checked + label,
+ul.radio-choose-tab > li input:enabled:checked + label:hover {
+    background-color: #00897b;
+}
+
+ul.radio-choose-tab > li input:enabled + label:hover {
+    background-color: #e0e0e0;
+}
+
+ul.radio-choose-tab > li input:enabled:checked + label span,
+ul.radio-choose-tab > li input:enabled:checked + label:hover span {
+    color: #ffffff;
+}
+
+ul.radio-choose-tab > li input + label:enabled:hover span {
+    color:  #00897b;
+}

@@ -20,7 +20,6 @@
     $appParameter->add(PARAMETER_TABLE_URL,    AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()));
 
     $title  = lng('mysql.delete_table.title_page');
-    $themes = [ env('resource.filename.theme.mysql') ];
     AppAlert::setID(ALERT_MYSQL_DELETE_TABLE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 

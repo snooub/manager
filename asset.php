@@ -1,7 +1,8 @@
 <?php
 
-    use Librarys\File\FileInfo;
     use Librarys\App\AppAssets;
+    use Librarys\App\AppDirectory;
+    use Librarys\File\FileInfo;
     use Librarys\Http\Secure\CFSRToken;
 
     define('LOADED',               1);
@@ -18,8 +19,8 @@
             isset($_GET[ASSET_PARAMETER_THEME_URL]) && empty($_GET[ASSET_PARAMETER_THEME_URL]) == false &&
             isset($_GET[ASSET_PARAMETER_CSS_URL])   && empty($_GET[ASSET_PARAMETER_CSS_URL]) == false
     ) {
-        $themeDirectory = addslashes(trim($_GET[ASSET_PARAMETER_THEME_URL]));
-        $themeFile      = addslashes(trim($_GET[ASSET_PARAMETER_CSS_URL]));
+        $themeDirectory = AppDirectory::rawDecode(addslashes(trim($_GET[ASSET_PARAMETER_THEME_URL])));
+        $themeFile      = AppDirectory::rawDecode(addslashes(trim($_GET[ASSET_PARAMETER_CSS_URL])));
         $themePath      = env('app.path.theme');
 
         $themePath = FileInfo::filterPaths($themePath . SP . $themeDirectory);
@@ -38,8 +39,14 @@
         else
             die(lng('default.resource.file_not_found'));
     } else if (isset($_GET[ASSET_PARAMETER_JS_URL]) && empty($_GET[ASSET_PARAMETER_JS_URL]) == false) {
-        $jsFile   = addslashes(trim($_GET[ASSET_PARAMETER_JS_URL]));
-        $jsPath   = env('app.path.javascript');
+        $jsDirectory = null;
+        $jsFile      = AppDirectory::rawDecode(addslashes(trim($_GET[ASSET_PARAMETER_JS_URL])));
+        $jsPath      = env('app.path.javascript');
+
+        if (isset($_GET[ASSET_PARAMETER_JS_DIR_URL])) {
+            $jsDirectory  = AppDirectory::rawDecode(addslashes(trim($_GET[ASSET_PARAMETER_JS_DIR_URL])));
+            $jsPath      .= SP . $jsDirectory;
+        }
 
         if (FileInfo::isTypeDirectory($jsPath) == false)
             die(lng('default.resource.directory_not_found'));

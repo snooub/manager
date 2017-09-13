@@ -75,7 +75,6 @@
                 'backup'          => '${app.path.resource}${SP}backup',
                 'upgrade'         => '${app.path.resource}${SP}upgrade',
                 'backup_mysql'    => '${app.path.backup}${SP}mysql',
-                'data_javascript' => '${app.path.javascript}${SP}minify'
             ],
 
             'http' => [
@@ -121,17 +120,23 @@
 
             'filename' => [
                 'theme' => [
-                    'app'      => 'theme.css',
-                    'app_pc'   => 'theme_pc.css',
-                    'about'    => 'about.css',
-                    'login'    => 'login.css',
-                    'file'     => 'file.css',
-                    'mysql'    => 'mysql.css',
-                    'icomoon'  => 'style.css',
-                    'markdown' => 'markdown.css'
+                    'app'         => 'theme.css',
+                    'app_desktop' => 'theme_desktop.css',
                 ],
 
                 'javascript' => [
+                    'desktop' => [
+                        'directory' => [
+                            'base' => 'desktop',
+                            'lib'  => '${resource.filename.javascript.desktop.directory.base}/lib'
+                        ],
+
+                        'file'      => [
+                            'require' => 'require.js',
+                            'bundle'  => 'bundle.js'
+                        ]
+                    ],
+
                     'onload'                    => 'onload.js',
                     'custom_input_file'         => 'custom_input_file.js',
                     'more_input_url'            => 'more_input_url.js',

@@ -1,0 +1,85 @@
+ul.menu-action,
+ul.menu-action li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+ul.menu-action {
+    background-color: #ffffff;
+
+    @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
+
+    margin-top: 15px;
+    margin-bottom: 15px;
+
+    li {
+        @include box-sizing(border-box);
+
+        height: 45px;
+        width: 50%;
+        padding-left: 10px;
+        padding-right: 10px;
+        float: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @media all and (min-width: 640px) {
+            & {
+                width: 33.3%;
+            }
+        }
+
+        @media all and (min-width: 960px) {
+            & {
+                width: 25%;
+            }
+        }
+
+        @media all and (min-width: 1040px) {
+            & {
+                width: 20%;
+            }
+
+            &:first-child:nth-last-child(4),
+            &:first-child:nth-last-child(4) ~ li {
+                width: 25%;
+            }
+        }
+
+        &:first-child:nth-last-child(2),
+        &:first-child:nth-last-child(2) ~ li {
+            width: 50%;
+        }
+
+        &:first-child:nth-last-child(3),
+        &:first-child:nth-last-child(3) ~ li {
+            width: 33.3%;
+        }
+
+        a {
+            span {
+                color: #505050;
+                line-height: 45px;
+                vertical-align: middle;
+            }
+
+            span.icomoon {
+                font-size: 17px;
+                margin-right: 3px;
+            }
+
+            &:hover,
+            &:focus {
+                span,
+                strong {
+                    color:  #707070;
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+}

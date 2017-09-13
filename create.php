@@ -15,7 +15,6 @@
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     $title  = lng('create.title_page');
-    $themes = [ env('resource.filename.theme.file') ];
     AppAlert::setID(ALERT_CREATE);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'header.php');
 

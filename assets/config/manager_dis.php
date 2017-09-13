@@ -19,10 +19,8 @@
         'cache.css'          => false,
         'cache.js'           => false,
         'cache.css.enable'   => false,
-        'cache.css.minify'   => false,
         'cache.css.lifetime' => false,
         'cache.js.enable'    => false,
-        'cache.js.minify'    => false,
         'cache.js.lifetime'  => false,
 
         'tmp'          => false,

@@ -7,7 +7,6 @@
     require_once('global.php');
 
     $title  = lng('mysql.delete_database.title_page');
-    $themes = [ env('resource.filename.theme.mysql') ];
     AppAlert::setID(ALERT_MYSQL_DELETE_DATABASE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 

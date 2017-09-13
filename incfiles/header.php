@@ -10,14 +10,8 @@
 
     requireDefine('asset');
 
-    if (isset($themes) == false || is_array($themes) == false)
-        $themes = array();
-
     if (isset($scripts) == false || is_array($scripts) == false)
         $scripts = array();
-
-    array_unshift($themes, env('resource.filename.theme.icomoon'));
-    array_unshift($themes, env('resource.filename.theme.app'));
 
     if (AppConfig::getInstance()->get('enable_disable.auto_focus_input_last') == true)
         array_unshift($scripts, env('resource.filename.javascript.auto_focus_input_last'));
@@ -38,11 +32,7 @@
         <meta http-equiv="Cache-Control" content="private, max-age=0, no-cache, no-store, must-revalidate"/>
         <meta http-equiv="Pragma" content="no-cache"/>
         <meta http-equiv="Expires" content="Thu, 01 Jan 1970 00:00:00 GMT">
-
-        <?php foreach ($themes AS $entry) { ?>
-            <link rel="stylesheet" type="text/css" href="<?php echo AppAssets::makeURLResourceTheme(AppConfig::getInstance()->get('theme.directory'), $entry); ?>" media="all,handheld" />
-        <?php } ?>
-        <?php unset($themes); ?>
+        <link rel="stylesheet" type="text/css" href="<?php echo AppAssets::makeURLResourceTheme(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.theme.app')); ?>" media="all,handheld" />
 
         <link rel="icon" type="image/png" href="<?php echo AppAssets::makeURLResourceIcon(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.icon.favicon_png')); ?>"/>
         <link rel="icon" type="image/x-icon" href="<?php echo AppAssets::makeURLResourceIcon(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.icon.favicon_ico')); ?>"/>

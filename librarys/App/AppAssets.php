@@ -2,12 +2,11 @@
 
     namespace Librarys\App;
 
+    use Librarys\App\AppDirectory;
     use Librarys\File\FileInfo;
     use Librarys\Http\Request;
     use Librarys\App\Config\AppConfig;
     use Librarys\App\Config\AppAssetsConfig;
-    use Librarys\Minify\Css as MinifyCss;
-    use Librarys\Minify\Js as MinifyJs;
 
     final class AppAssets
     {
@@ -53,9 +52,9 @@
         {
             $filename = str_ireplace('.css', null, basename($filename));
             $buffer   = env('app.http.host') . '/asset.php';
-            $buffer  .= '?' . ASSET_PARAMETER_THEME_URL        . '=' . $themeDirectory;
-            $buffer  .= '&' . ASSET_PARAMETER_CSS_URL          . '=' . $filename;
-            $buffer  .= '&' . cfsrTokenName()                  . '=' . cfsrTokenValue();
+            $buffer  .= '?' . ASSET_PARAMETER_THEME_URL . '=' . AppDirectory::rawEncode($themeDirectory);
+            $buffer  .= '&' . ASSET_PARAMETER_CSS_URL   . '=' . AppDirectory::rawEncode($filename);
+            $buffer  .= '&' . cfsrTokenName()           . '=' . cfsrTokenValue();
 
             if (env('app.dev.enable') || Request::isLocal())
                 $buffer  .= '&' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
@@ -63,12 +62,15 @@
             return $buffer;
         }
 
-        public static function makeURLResourceJavascript($filename)
+        public static function makeURLResourceJavascript($filename, $scriptDirectory = null)
         {
             $filename = str_ireplace('.js', null, basename($filename));
             $buffer  = env('app.http.host') . '/asset.php';
-            $buffer .= '?' . ASSET_PARAMETER_JS_URL           . '=' . $filename;
-            $buffer .= '&' . cfsrTokenName()                  . '=' . cfsrTokenValue();
+            $buffer .= '?' . ASSET_PARAMETER_JS_URL . '=' . AppDirectory::rawEncode($filename);
+            $buffer .= '&' . cfsrTokenName()        . '=' . cfsrTokenValue();
+
+            if ($scriptDirectory != null)
+                $buffer  .= '&' . ASSET_PARAMETER_JS_DIR_URL . '=' . AppDirectory::rawEncode($scriptDirectory);
 
             if (env('app.dev.enable'))
                 $buffer  .= '&' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
@@ -129,16 +131,6 @@
                 }
             }
 
-            $minify = null;
-
-            if ($loadType === self::LOAD_CSS && AppConfig::getInstance()->get('cache.css.minify', true))
-                $minify = new MinifyCss($this->buffer);
-            else if ($loadType === self::LOAD_JS && AppConfig::getInstance()->get('cache.js.minify', true))
-                $minify = new MinifyJs($this->buffer);
-
-            if ($minify !== null && Request::isLocal() == false)
-                $this->buffer = $minify->minify();
-
             if ($this->loadCache($loadType, $filepath, true) && $this->buffer !== false)
                 return true;
 
@@ -147,7 +139,6 @@
 
         private function loadCache($loadType, $filepath, $writeCache = false)
         {
-            $minify        = null;
             $cacheEnable   = true;
             $cacheLifetime = 86400;
             $cacheMime     = null;

@@ -1,0 +1,9 @@
+@include keyframes(spinnerFrames) {
+    from { @include transform(rotate(0deg)); }
+
+    to { @include transform(rotate(360deg)); }
+}
+
+.spinner-animation {
+    @include animation(spinnerFrames 1s linear infinite);
+}

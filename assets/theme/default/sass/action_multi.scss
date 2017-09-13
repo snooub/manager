@@ -1,0 +1,92 @@
+ul.action-multi,
+ul.action-multi li {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 45px;
+}
+
+ul.action-multi {
+    background-color: #ffffff;
+    margin-bottom: 15px;
+
+    @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
+
+    li {
+        display: inline-block;
+        float: left;
+        text-align: center;
+
+        button {
+            background-color: transparent;
+            border: 0;
+            outline: 0;
+            height: 45px;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            &:hover,
+            &:focus {
+                color: #707070;
+
+                span {
+                    color: #707070;
+                }
+            }
+        }
+
+        span.icomoon {
+            font-size: 18px;
+        }
+
+        span,
+        button {
+            color: #505050;
+            vertical-align: middle;
+        }
+
+        &:first-child:nth-last-child(2),
+        &:first-child:nth-last-child(2) ~ li {
+            width: 50%;
+        }
+
+        &:first-child:nth-last-child(3),
+        &:first-child:nth-last-child(3) ~ li {
+            width: 33.3%;
+        }
+
+        &:first-child:nth-last-child(4),
+        &:first-child:nth-last-child(4) ~ li {
+            width: 25%;
+        }
+
+        &:first-child:nth-last-child(5),
+        &:first-child:nth-last-child(5) ~ li {
+            width: 20%;
+        }
+
+        &:first-child:nth-last-child(6),
+        &:first-child:nth-last-child(6) ~ li {
+            width: 16.6%;
+        }
+
+        &:first-child:nth-last-child(7),
+        &:first-child:nth-last-child(7) ~ li {
+            width: 14.2%;
+        }
+    }
+
+    @media all and (max-width: 540px) {
+        span.label {
+            display: none;
+        }
+
+        span.icomoon {
+            display: block;
+        }
+    }
+}

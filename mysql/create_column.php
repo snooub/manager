@@ -26,7 +26,6 @@
     $appParameter->add(PARAMETER_TABLE_URL,    AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()));
 
     $title  = lng('mysql.create_column.title_page');
-    $themes = [ env('resource.filename.theme.mysql') ];
     AppAlert::setID(ALERT_MYSQL_CREATE_COLUMN);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 

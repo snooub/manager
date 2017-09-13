@@ -9,16 +9,20 @@
     use Librarys\App\Config\AppConfig;
     use Librarys\File\FileInfo;
     use Librarys\File\FileMime;
+    use Librarys\Http\Request;
     use Librarys\Http\Detection\SimpleDetect;
 
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
     requireDefine('file_action');
 
-    // if (SimpleDetect::getInstance()->getDeviceType() === SimpleDetect::DEVICE_TYPE_COMPUTER) {
-    //     require_once('index_desktop.php');
-    //     exit(255);
-    // }
+    if (SimpleDetect::getInstance()->getDeviceType() === SimpleDetect::DEVICE_TYPE_COMPUTER && (env('app.dev.enable_desktop') || Request::isLocal())) {
+        if (isset($_GET) && count($_GET) > 0)
+            Request::redirect(env('app.http.host'));
+
+        require_once('desktop.php');
+        exit(255);
+    }
 
     $title   = lng('home.title_page_root');
     $themes  = [ env('resource.filename.theme.file') ];

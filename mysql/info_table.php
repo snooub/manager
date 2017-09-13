@@ -17,7 +17,6 @@
         AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
 
     $title  = lng('mysql.info_table.title_page');
-    $themes = [ env('resource.filename.theme.mysql') ];
     AppAlert::setID(ALERT_MYSQL_INFO_TABLE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 

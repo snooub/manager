@@ -18,7 +18,6 @@
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     $title   = lng('import.title_page');
-    $themes  = [ env('resource.filename.theme.file') ];
     $scripts = [ env('resource.filename.javascript.more_input_url') ];
     AppAlert::setID(ALERT_IMPORT);
     require_once('incfiles' . SP . 'header.php');

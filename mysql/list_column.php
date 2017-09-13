@@ -21,7 +21,6 @@
     $appParameter->add(PARAMETER_TABLE_URL,    AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()));
 
     $title  = lng('mysql.list_column.title_page');
-    $themes = [ env('resource.filename.theme.mysql') ];
     AppAlert::setID(ALERT_MYSQL_LIST_COLUMN);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
