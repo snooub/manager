@@ -515,20 +515,44 @@ div#content {
 
 .scroll-wrapper {
     overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .scroll-wrapper .scroll-content {
     position: relative;
     overflow: auto;
-    padding-right: 20px;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    padding-right: 25px;
+    padding-bottom: 25px;
     margin-right: -25px;
+    margin-bottom: -25px;
+}
+
+.scroll-wrapper .scroll-vertical,
+  .scroll-wrapper .scroll-horizontal {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    -webkit-border-radius: 8px 8px;
+    -moz-border-radius: 8px 8px;
+    -ms-border-radius: 8px 8px;
+    -o-border-radius: 8px 8px;
+    border-radius: 8px 8px;
 }
 
 .scroll-wrapper .scroll-vertical {
-    background-color: red;
-    position: absolute;
+    width: 8px;
+    height: 10px;
+    top: 3px;
+    right: 3px;
+}
+
+.scroll-wrapper .scroll-horizontal {
     width: 10px;
-    height: 100px;
-    top: 0;
-    right: 0;
+    height: 8px;
+    bottom: 3px;
+    left: 3px;
 }
