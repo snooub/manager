@@ -449,6 +449,42 @@ div#header a:hover span#logo {
     color: #e0e0e0;
 }
 
+div#header ul#action,
+  div#header ul#action li {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    margin-right: 5px;
+    padding: 0;
+}
+
+div#header ul#action {
+    position: absolute;
+    top: 0;
+    left: 60px;
+    right: 0;
+    height: 55px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+div#header ul#action li {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+div#header ul#action li span {
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 55px;
+}
+
+div#header ul#action li a:hover span,
+      div#header ul#action li a:focus span {
+    color: #d0d0d0;
+}
+
 div#sidebar {
     display: none;
     background-color: #ffffff;
@@ -460,6 +496,7 @@ div#sidebar {
     width: 250px;
     height: 100vh;
     position: relative;
+    overflow: hidden;
     top: 0;
     left: 0;
     margin: 0;
@@ -474,4 +511,24 @@ div#content {
     width: 100vw;
     height: 100vh;
     z-index: 0;
+}
+
+.scroll-wrapper {
+    overflow: hidden;
+}
+
+.scroll-wrapper .scroll-content {
+    position: relative;
+    overflow: auto;
+    padding-right: 20px;
+    margin-right: -25px;
+}
+
+.scroll-wrapper .scroll-vertical {
+    background-color: red;
+    position: absolute;
+    width: 10px;
+    height: 100px;
+    top: 0;
+    right: 0;
 }

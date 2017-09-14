@@ -1,6 +1,8 @@
 define(function(require) {
     var jquery   = require("jquery");
+    var define   = require("define");
     var selector = require("selector");
+    var scroll   = require("scroll");
     var delay    = 1;
 
     return {
@@ -22,11 +24,15 @@ define(function(require) {
             // Fix height
             selector.container.css(cssFix);
             selector.sidebar.css(cssFix);
+            selector.sidebarFile.css(cssFix);
+            selector.sidebarDatabase.css(cssFix);
             selector.loading.css(cssFix);
             selector.content.css(cssFix);
             selector.content.css({ width: (windowWidth - sidebarWidth) + "px", left: sidebarWidth + "px" });
             selector.header.css({ display: "block" });
             selector.container.css({ top: headerHeight + "px" });
+
+            scroll.emulator(define.sidebarFileSelector);
 
             selector.loading.delay(100).fadeOut("slow", function() {
                 selector.loading.css({

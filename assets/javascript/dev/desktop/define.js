@@ -1,10 +1,13 @@
 define(function(require) {
     return {
-        container_full_selector: "div#container-full",
-        container_selector:      "div#container",
-        header_selector:         "div#header",
-        sidebar_selector:        "div#sidebar",
-        content_selector:        "div#content",
-        loading_selector:        "div#loading"
+        containerFullSelector: "div#container-full",
+        containerSelector:      "div#container",
+        headerSelector:         "div#header",
+        sidebarSelector:        "div#sidebar",
+        contentSelector:        "div#content",
+        loadingSelector:        "div#loading",
+
+        sidebarFileSelector:     "div#sidebar div.sidebar-file",
+        sidebarDatabaseSelector: "div#sidebar div.sidebar-database"
     };
 });

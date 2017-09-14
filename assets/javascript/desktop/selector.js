@@ -3,11 +3,14 @@ define(function(require) {
     var define = require("define");
 
     return {
-        container_full: jquery(define.container_full_selector),
-        container:      jquery(define.container_selector),
-        header:         jquery(define.header_selector),
-        sidebar:        jquery(define.sidebar_selector),
-        content:        jquery(define.content_selector),
-        loading:        jquery(define.loading_selector)
+        containerFull: jquery(define.containerFullSelector),
+        container:     jquery(define.containerSelector),
+        header:        jquery(define.headerSelector),
+        sidebar:       jquery(define.sidebarSelector),
+        content:       jquery(define.contentSelector),
+        loading:       jquery(define.loadingSelector),
+
+        sidebarFile:     jquery(define.sidebarFileSelector),
+        sidebarDatabase: jquery(define.sidebarDatabaseSelector)
     };
 });

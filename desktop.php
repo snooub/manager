@@ -51,14 +51,49 @@
     <body>
         <div id="container-full">
             <div id="header">
-
+                <div id="logo">
+                    <a href="<?php echo env('app.http.host'); ?>">
+                        <span id="logo" class="icomoon icon-home"></span>
+                    </a>
+                </div>
+                <ul id="action">
+                    <li>
+                        <a href="#">
+                            <span class="icomoon icon-search"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="icomoon icon-mysql"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="icomoon icon-config"></span>
+                        </a>
+                    </li>
+                    <li class="about">
+                        <a href="#">
+                            <span class="icomoon icon-about"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="icomoon icon-exit"></span>
+                        </a>
+                    </li>
+                </ul>
             </div>
             <div id="container">
                 <div id="sidebar">
-                    <div class="file">
-
+                    <div class="scroll-wrapper">
+                        <div class="sidebar-file scroll-content">
+                            <?php for ($i = 0; $i < 100; ++$i) { ?>
+                                <span style="word-wrap: nowrap; white-space: nowrap;">Test dfgdfgfgdgdfgdfgdfgdfg <?php echo $i; ?> hjdfihg uifhguidfhuighdfuihgdfuihfi</span><br>
+                            <?php } ?>
+                        </div>
                     </div>
-                    <div class="database">
+                    <div class="sidebar-database">
 
                     </div>
                 </div>
