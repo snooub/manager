@@ -88,7 +88,7 @@
                 <div id="sidebar">
                     <div class="scroll-wrapper">
                         <div class="sidebar-file scroll-content">
-                            <?php for ($i = 0; $i < 100; ++$i) { ?>
+                            <?php for ($i = 0; $i < 30; ++$i) { ?>
                                 <span style="word-wrap: nowrap; white-space: nowrap;">Test dfgdfgfgdgdfgdfgdfgdfg <?php echo $i; ?> hjdfihg uifhguidfhuighdfuihgdfuihfi</span><br>
                             <?php } ?>
                         </div>

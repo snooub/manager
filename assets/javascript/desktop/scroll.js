@@ -2,7 +2,7 @@ define(function(require) {
     var jquery = require("jquery");
 
     return {
-        scrollMargin: 11,
+        scrollMargin: 10,
         scrollMin:    30,
 
         emulator: function(selector) {
@@ -82,9 +82,10 @@ define(function(require) {
             var scrollVertical         = element.find("div.scroll-vertical");
             var scrollHorizontal       = element.find("div.scroll-horizontal");
             var scrollContent          = element.find("div.scroll-content");
-            var scrollContentWidth     = scrollContent.get(0);
-            var scrollContentHeight    = scrollContent.get(0);
+            var scrollContentEndLeft   = scrollContent.get(0);
+            var scrollContentEndTop    = scrollContent.get(0);
             var windowElement          = jquery(window);
+            var documentElement        = jquery(document);
             var windowPageXCurrent     = 0;
             var windowPageXPrev        = 0;
             var windowPageYCurrent     = 0;
@@ -101,16 +102,52 @@ define(function(require) {
             if (!scrollVertical || !scrollHorizontal)
                 this.addScrollThumb(element);
 
-            scrollContentWidth  = scrollContentWidth.scrollWidth   - elementWidth;
-            scrollContentHeight = scrollContentHeight.scrollHeight - elementHeight;
+            scrollContentEndLeft = scrollContentEndLeft.scrollWidth - scrollContent.outerWidth();
+            scrollContentEndTop  = scrollContentEndTop.scrollHeight - scrollContent.outerHeight();
+
+            jquery(window).resize(function(handler) {
+                elementWidth           = element.width();
+                elementHeight          = element.height();
+                scrollContentEndLeft   = scrollContent.get(0).scrollWidth  - elementWidth;
+                scrollContentEndTop    = scrollContent.get(0).scrollHeight - elementHeight;
+
+                scrollContent.scrollTop(0);
+                scrollContent.scrollLeft(0);
+                self.checkScroll(selector);
+            });
+
+            scrollContent.unbind("DOMSubtreeModified DOMNodeInserted DOMNodeRemoved").bind("DOMSubtreeModified DOMNodeInserted DOMNodeRemoved", function() {
+                elementWidth           = element.width();
+                elementHeight          = element.height();
+                scrollContentEndLeft   = scrollContent.get(0).scrollWidth  - elementWidth;
+                scrollContentEndTop    = scrollContent.get(0).scrollHeight - elementHeight;
+
+                self.checkScroll(selector);
+
+                if (scrollHorizontalDown == false) {
+                    var scrollHorizontalOffset = scrollContent.scrollLeft() / scrollContentEndLeft;
+                    var scrollHorizontalEnd    = elementWidth - scrollHorizontal.width() - (self.scrollMargin << 1);
+
+                    scrollHorizontal.css({ left: Math.floor(scrollHorizontalOffset * scrollHorizontalEnd + self.scrollMargin) + "px" });
+                }
+
+                if (scrollVerticalDown == false) {
+                    var scrollVerticalOffset = scrollContent.scrollTop() / scrollContentEndTop;
+                    var scrollVerticalEnd    = elementHeight - scrollVertical.height() - (self.scrollMargin << 1);
+
+                    scrollVertical.css({ top: Math.floor(scrollVerticalOffset * scrollVerticalEnd + self.scrollMargin) + "px" });
+                }
+            });
+
+            this.checkScroll(selector);
 
             scrollHorizontal.unbind("mousedown").bind("mousedown", function(e) {
                 e.preventDefault();
 
-                $(document).unbind("mouseup").bind("mouseup", function(e) {
+                documentElement.unbind("mouseup").bind("mouseup", function(e) {
                     e.preventDefault();
                     windowElement.unbind("mousemove");
-                    scrollHorizontal.unbind("mouseup");
+                    documentElement.unbind("mouseup");
 
                     windowPageXCurrent   = 0;
                     windowPageXPrev      = 0;
@@ -120,7 +157,6 @@ define(function(require) {
                 scrollHorizontalDown = true;
 
                 windowElement.unbind("mousemove").bind("mousemove", function(e) {
-
                     windowPageXCurrent     = e.pageX;
                     scrollHorizontalOffset = scrollHorizontal.css("left");
                     scrollHorizontalBegin  = self.scrollMargin;
@@ -146,7 +182,7 @@ define(function(require) {
                         scrollHorizontalOffset = scrollHorizontalEnd;
 
                     scrollHorizontal.css({ left: scrollHorizontalOffset + "px" });
-                    scrollContent.scrollLeft(((scrollHorizontalOffset - self.scrollMargin) / scrollHorizontalEnd) * scrollContentWidth);
+                    scrollContent.scrollLeft(((scrollHorizontalOffset - self.scrollMargin) / (scrollHorizontalEnd - self.scrollMargin)) * scrollContentEndLeft);
 
                     windowPageXPrev = windowPageXCurrent;
                 });
@@ -155,10 +191,10 @@ define(function(require) {
             scrollVertical.unbind("mousedown").bind("mousedown", function(e) {
                 e.preventDefault();
 
-                $(document).unbind("mouseup").bind("mouseup", function(e) {
+                documentElement.unbind("mouseup").bind("mouseup", function(e) {
                     e.preventDefault();
                     windowElement.unbind("mousemove");
-                    scrollVertical.unbind("mouseup");
+                    documentElement.unbind("mouseup");
 
                     windowPageYCurrent = 0;
                     windowPageYPrev    = 0;
@@ -193,7 +229,7 @@ define(function(require) {
                         scrollVerticalOffset = scrollVerticalEnd;
 
                     scrollVertical.css({ top: scrollVerticalOffset + "px" });
-                    scrollContent.scrollTop(((scrollVerticalOffset - self.scrollMargin) / scrollVerticalEnd) * scrollContentHeight);
+                    scrollContent.scrollTop(((scrollVerticalOffset - self.scrollMargin) / (scrollVerticalEnd - self.scrollMargin)) * scrollContentEndTop);
 
                     windowPageYPrev = windowPageYCurrent;
                 });
@@ -201,19 +237,41 @@ define(function(require) {
 
             scrollContent.scroll(function() {
                 if (scrollHorizontalDown == false) {
-                    var scrollHorizontalOffset    = scrollContent.scrollLeft() / scrollContentWidth;
-                    var scrollHorizontalEnd       = elementWidth - scrollHorizontal.width() - (self.scrollMargin << 1);
+                    var scrollHorizontalOffset = scrollContent.scrollLeft() / scrollContentEndLeft;
+                    var scrollHorizontalEnd    = elementWidth - scrollHorizontal.width() - (self.scrollMargin << 1);
 
-                    scrollHorizontal.css({ left: (scrollHorizontalOffset * scrollHorizontalEnd + self.scrollMargin) + "px" });
+                    scrollHorizontal.css({ left: Math.floor(scrollHorizontalOffset * scrollHorizontalEnd + self.scrollMargin) + "px" });
                 }
 
                 if (scrollVerticalDown == false) {
-                    var scrollVerticalOffset    = scrollContent.scrollTop() / scrollContentHeight;
-                    var scrollVerticalEnd       = elementHeight - scrollVertical.height() - (self.scrollMargin << 1);
+                    var scrollVerticalOffset = scrollContent.scrollTop() / scrollContentEndTop;
+                    var scrollVerticalEnd    = elementHeight - scrollVertical.height() - (self.scrollMargin << 1);
 
-                    scrollVertical.css({ top: (scrollVerticalOffset * scrollVerticalEnd + self.scrollMargin) + "px" });
+                    scrollVertical.css({ top: Math.floor(scrollVerticalOffset * scrollVerticalEnd + self.scrollMargin) + "px" });
                 }
             });
+        },
+
+        checkScroll: function(selector) {
+            var element = selector;
+
+            if (typeof element === "string")
+                element = jquery(element);
+
+            var self             = this;
+            var scrollVertical   = element.find("div.scroll-vertical");
+            var scrollHorizontal = element.find("div.scroll-horizontal");
+            var scrollContent    = element.find("div.scroll-content");
+
+            if (scrollContent.get(0).scrollWidth <= scrollContent.outerWidth())
+                scrollHorizontal.css({ opacity: 0 });
+            else
+                scrollHorizontal.css({ opacity: 1 });
+
+            if (scrollContent.get(0).scrollHeight <= scrollContent.outerHeight())
+                scrollVertical.css({ opacity: 0 });
+            else
+                scrollVertical.css({ opacity: 1 });
         }
     };
 });
