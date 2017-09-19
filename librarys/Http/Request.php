@@ -2,6 +2,8 @@
 
     namespace Librarys\Http;
 
+    use Librarys\Http\Detection\SimpleDetect;
+
     class Request
     {
 
@@ -63,6 +65,30 @@
 
             if (preg_match('/(localhost|127\.0\.0\.1)(:8080)?/i', $host) || preg_match('/^127\.0\.0\.1$/', $ip))
                 return true;
+        }
+
+        public static function isDesktop($checkMethod)
+        {
+            if (SimpleDetect::getInstance()->getDeviceType() !== SimpleDetect::DEVICE_TYPE_COMPUTER)
+                return false;
+
+            if (env('app.dev.enable_desktop') == false || Request::isLocal() == false)
+                return false;
+
+            if ($checkMethod && self::isMethodPost() == false)
+                return false;
+
+            return true;
+        }
+
+        public static function isMethodGet()
+        {
+            return strcasecmp($_SERVER['REQUEST_METHOD'], 'GET') === 0;
+        }
+
+        public static function isMethodPost()
+        {
+            return strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') === 0;
         }
 
         public static function redirect($url)
