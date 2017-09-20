@@ -6,6 +6,7 @@
     use Librarys\Http\Secure\CFSRToken;
 
     define('LOADED',               1);
+    define('INDEX',                1);
     define('DISABLE_CHECK_LOGIN',  1);
     define('ENABLE_CUSTOM_HEADER', 1);
 

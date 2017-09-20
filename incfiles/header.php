@@ -4,22 +4,24 @@
     use Librarys\App\AppUser;
     use Librarys\App\Config\AppConfig;
     use Librarys\App\Mysql\AppMysqlConfig;
+    use Librarys\Http\Request;
 
     if (!defined('LOADED'))
         exit(0);
 
-    requireDefine('asset');
+    if (Request::isDesktop(false) == false) {
+        requireDefine('asset');
 
-    if (isset($scripts) == false || is_array($scripts) == false)
-        $scripts = array();
+        if (isset($scripts) == false || is_array($scripts) == false)
+            $scripts = array();
 
-    if (AppConfig::getInstance()->get('enable_disable.auto_focus_input_last') == true)
-        array_unshift($scripts, env('resource.filename.javascript.auto_focus_input_last'));
+        if (AppConfig::getInstance()->get('enable_disable.auto_focus_input_last') == true)
+            array_unshift($scripts, env('resource.filename.javascript.auto_focus_input_last'));
 
-    if (AppConfig::getInstance()->get('enable_disable.button_save_on_javascript') == true)
-        array_unshift($scripts, env('resource.filename.javascript.button_save_on_javascript'));
+        if (AppConfig::getInstance()->get('enable_disable.button_save_on_javascript') == true)
+            array_unshift($scripts, env('resource.filename.javascript.button_save_on_javascript'));
 
-    array_unshift($scripts, env('resource.filename.javascript.onload'));
+        array_unshift($scripts, env('resource.filename.javascript.onload'));
 ?>
 
 <!DOCTYPE html>
@@ -113,3 +115,4 @@
                 </ul>
             </div>
             <div id="content">
+<?php } ?>

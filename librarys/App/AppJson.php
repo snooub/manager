@@ -23,8 +23,9 @@
             $this->datas = [
                 self::ARRAY_KEY_ALERT           => [],
                 self::ARRAY_KEY_RES_DATA        => [],
-                self::ARRAY_KEY_RES_CODE        => 0,
-                self::ARRAY_KEY_RES_CODE_SYSTEM => 0
+                self::ARRAY_KEY_RES_DATA_SYSTEM => [],
+                self::ARRAY_KEY_RES_CODE_SYSTEM => 0,
+                self::ARRAY_KEY_RES_CODE        => 0
             ];
         }
 

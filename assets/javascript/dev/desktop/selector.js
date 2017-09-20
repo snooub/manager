@@ -1,7 +1,10 @@
-define(function(require) {
-    var jquery = require("jquery");
-    var define = require("define");
-
+define([
+    "jquery",
+    "define"
+], function(
+    jquery,
+    define
+) {
     return {
         containerFull: jquery(define.containerFullSelector),
         container:     jquery(define.containerSelector),
@@ -9,6 +12,7 @@ define(function(require) {
         sidebar:       jquery(define.sidebarSelector),
         content:       jquery(define.contentSelector),
         loading:       jquery(define.loadingSelector),
+        login:         jquery(define.loginSelector),
 
         sidebarFile:     jquery(define.sidebarFileSelector),
         sidebarDatabase: jquery(define.sidebarDatabaseSelector)

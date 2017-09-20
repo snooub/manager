@@ -67,12 +67,12 @@
                 return true;
         }
 
-        public static function isDesktop($checkMethod)
+        public static function isDesktop($checkMethod = true)
         {
             if (SimpleDetect::getInstance()->getDeviceType() !== SimpleDetect::DEVICE_TYPE_COMPUTER)
                 return false;
 
-            if (env('app.dev.enable_desktop') == false || Request::isLocal() == false)
+            if (env('app.dev.enable_desktop') == false && Request::isLocal() == false)
                 return false;
 
             if ($checkMethod && self::isMethodPost() == false)

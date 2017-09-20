@@ -13,6 +13,7 @@
 
     define('PARAMETER_CHECK_CHANGE_CONFIG_URL', 'check_change_config');
 
+    use Librarys\App\AppJson;
     use Librarys\App\AppUser;
     use Librarys\App\AppAlert;
     use Librarys\App\AppClean;
@@ -51,6 +52,9 @@
         else
             throw new RuntimeException(lng('default.global.unknown_error_app'));
     }
+
+    if (Request::isDesktop(false))
+        requireDefine('desktop');
 
     // Get config system
     AppConfig::getInstance()->execute();
@@ -97,10 +101,26 @@
     }
 
     if (defined('DISABLE_CHECK_LOGIN') == false) {
+        $isLogin = false;
+
         if (AppUser::getInstance()->isLogin() == false)
             AppAlert::danger(lng('user.login.alert.not_login'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
         else if (AppUser::getInstance()->isUserBand())
             AppAlert::danger(lng('user.login.alert.user_is_band'), ALERT_USER_LOGIN, env('app.http.host') . '/user/login.php');
+        else
+            $isLogin = true;
+
+        if ($isLogin == false)
+            AppJson::getInstance()->setResponseCodeSystem(DESKTOP_CODE_IS_NOT_LOGIN);
+
+        AppJson::getInstance()->setResponseDataSystem([
+            'is_login' => $isLogin
+        ]);
+    }
+
+    if (defined('INDEX') == false && Request::isDesktop(false)) {
+        if (Request::isMethodPost() == false)
+            Request::redirect(env('app.http.host'));
     }
 
     unset($httpHostApp);

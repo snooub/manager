@@ -1,7 +1,10 @@
-define(function(require) {
-    var jquery   = require("jquery");
-    var selector = require("selector");
-
+define([
+    "jquery",
+    "selector"
+], function(
+    jquery,
+    selector
+) {
     return {
         maxShow: 5,
 

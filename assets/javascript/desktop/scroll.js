@@ -1,16 +1,25 @@
-define(function(require) {
-    var jquery = require("jquery");
-
+define([
+    "jquery"
+], function(
+    jquery
+) {
     return {
         scrollMargin: 10,
         scrollMin:    30,
 
         emulator: function(selector) {
-            var element = jquery(selector);
-            var parent  = element.parent();
+            var element = selector;
 
-            this.addScrollThumb(parent);
-            this.bindScrollThumb(parent);
+            if (typeof element === "string")
+                element = jquery(element);
+
+            if (element.attr("class").indexOf("scroll-wrapper") === 0)
+                element = element.find("scroll-wrapper");
+            else
+                element = element.parent();
+
+            this.addScrollThumb(element);
+            this.bindScrollThumb(element);
         },
 
         addScrollThumb: function(selector) {
@@ -43,12 +52,12 @@ define(function(require) {
             if (elementScrollWidth.scrollWidth)
                 elementScrollWidth = elementScrollWidth.scrollWidth;
             else
-                elementScrollWidth = scrollMin;
+                elementScrollWidth = this.scrollMin;
 
             if (elementScrollHeight.scrollHeight)
                 elementScrollHeight = elementScrollHeight.scrollHeight;
             else
-                elementScrollHeight = scrollMin;
+                elementScrollHeight = this.scrollMin;
 
             var elementWidth  = element.width()  || scrollContent.width();
             var elementHeight = element.height() || scrollContent.height();
@@ -263,12 +272,12 @@ define(function(require) {
             var scrollHorizontal = element.find("div.scroll-horizontal");
             var scrollContent    = element.find("div.scroll-content");
 
-            if (scrollContent.get(0).scrollWidth <= scrollContent.outerWidth())
+            if (scrollContent.get(0).scrollWidth <= element.outerWidth())
                 scrollHorizontal.css({ opacity: 0 });
             else
                 scrollHorizontal.css({ opacity: 1 });
 
-            if (scrollContent.get(0).scrollHeight <= scrollContent.outerHeight())
+            if (scrollContent.get(0).scrollHeight <= element.outerHeight())
                 scrollVertical.css({ opacity: 0 });
             else
                 scrollVertical.css({ opacity: 1 });

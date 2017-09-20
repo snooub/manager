@@ -100,6 +100,28 @@
                 <div id="content">
 
                 </div>
+                <div id="login">
+                    <form action="#" method="post" onsubmit="return false">
+                        <ul>
+                            <li class="input">
+                                <input type="text" name="username" value="" placeholder="Input username"/>
+                                <span class="icomoon icon-user"></span>
+                            </li>
+                            <li class="input">
+                                <input type="password" name="password" value="" placeholder="Input password"/>
+                                <span class="icomoon icon-key"></span>
+                            </li>
+                            <li class="button">
+                                <button type="submit" name="login">
+                                    <span>Login</span>
+                                </button>
+                                <a href="#">
+                                    <span>Forgot password</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
                 <div id="loading">
                     <span class="icomoon icon-spinner spinner-animation"></span>
                 </div>

@@ -5,6 +5,7 @@
     use Librarys\App\AppUpdate;
     use Librarys\App\AppUpgrade;
     use Librarys\App\Config\AppAboutConfig;
+    use Librarys\App\Config\AppUpgradeConfig;
     use Librarys\File\FileInfo;
     use Librarys\Parse\MarkdownParse;
 
@@ -62,9 +63,9 @@
             else
                 AppAlert::danger(lng('app.upgrade_app.alert.error_unknown'));
         } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) {
-            AppAlert::success(lng('app.upgrade_app.alert.install_upgrade_app_success', 'version', $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+            AppAlert::success(lng('app.upgrade_app.alert.install_upgrade_app_success', 'version', AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) {
-            AppAlert::success(lng('app.upgrade_app.alert.install_additional_app_success', 'version', $appUpgrade->getAppAboutConfig()->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
+            AppAlert::success(lng('app.upgrade_app.alert.install_additional_app_success', 'version', AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION)), ALERT_APP_CHECK_UPDATE, 'check_update.php');
         }
     }
 ?>
@@ -90,17 +91,17 @@
 
             <li class="value">
                 <ul>
-                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_SERVER_NAME); ?></span></li>
-                    <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_VERSION); ?></span></li>
-                    <li><span><?php echo date('d.m.Y - H:i:s', intval($appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_BUILD_LAST))); ?></span></li>
+                    <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_SERVER_NAME); ?></span></li>
+                    <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_VERSION); ?></span></li>
+                    <li><span><?php echo date('d.m.Y - H:i:s', intval(AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_BUILD_LAST))); ?></span></li>
 
                     <?php if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) { ?>
                         <li><span><?php echo lng('app.upgrade_app.info.value_type_bin_install_upgrdae'); ?></span></li>
-                        <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK); ?></span></li>
+                        <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK); ?></span></li>
                         <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME), true); ?></span></li>
                     <?php } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) { ?>
                         <li><span><?php echo lng('app.upgrade_app.info.value_type_bin_install_additional'); ?></span></li>
-                        <li><span><?php echo $appUpgrade->getAppUpgradeConfig()->get(AppUpdate::ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK); ?></span></li>
+                        <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK); ?></span></li>
                         <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_ADDITIONAL_FILENAME), true); ?></span></li>
                     <?php } ?>
                 </ul>

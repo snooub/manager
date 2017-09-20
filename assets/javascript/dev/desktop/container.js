@@ -1,10 +1,14 @@
-define(function(require) {
-    var jquery   = require("jquery");
-    var define   = require("define");
-    var selector = require("selector");
-    var scroll   = require("scroll");
-    var delay    = 1;
-
+define([
+    "jquery",
+    "define",
+    "selector",
+    "scroll"
+], function(
+    jquery,
+    define,
+    selector,
+    scroll
+) {
     return {
         fixSizeChild: function() {
             // Get window size
@@ -17,7 +21,7 @@ define(function(require) {
 
             // Css fix
             var cssFix = {
-                display: "block",
+                display: "none",
                 height: (windowHeight - headerHeight) + "px",
             };
 
@@ -30,15 +34,9 @@ define(function(require) {
             selector.content.css(cssFix);
             selector.content.css({ width: (windowWidth - sidebarWidth) + "px", left: sidebarWidth + "px" });
             selector.header.css({ display: "block" });
-            selector.container.css({ top: headerHeight + "px" });
+            selector.container.css({ display: "block", top: headerHeight + "px" });
 
             scroll.emulator(define.sidebarFileSelector);
-
-            selector.loading.delay(100).fadeOut("slow", function() {
-                selector.loading.css({
-                    display: "none"
-                });
-            });
         },
 
         registerWindowOnResize: function() {
@@ -46,6 +44,18 @@ define(function(require) {
 
             jquery(window).resize(function(handler) {
                 self.fixSizeChild();
+            });
+        },
+
+        startLoading: function() {
+            selector.loading.delay(100).css({ display: "bock", opacity: 0 }).fadeIn("slow");
+        },
+
+        stopLoading: function() {
+            selector.loading.delay(100).fadeOut("slow", function() {
+                selector.loading.css({
+                    display: "none"
+                });
             });
         }
     };

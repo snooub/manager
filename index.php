@@ -6,12 +6,15 @@
     use Librarys\App\AppParameter;
     use Librarys\App\AppFileCopy;
     use Librarys\App\AppAlert;
+    use Librarys\App\AppJson;
     use Librarys\App\Config\AppConfig;
     use Librarys\File\FileInfo;
     use Librarys\File\FileMime;
     use Librarys\Http\Request;
 
     define('LOADED', 1);
+    define('INDEX',  1);
+
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
     requireDefine('file_action');
 
@@ -84,6 +87,14 @@
 
         foreach ($arrayFile AS $entry)
             $handlerList[] = [ 'name' => $entry, 'is_directory' => false ];
+    }
+
+    if (Request::isDesktop()) {
+        AppJson::getInstance()->setResponseData([
+            'list' => $handlerList
+        ]);
+
+        AppJson::getInstance()->toResult();
     }
 
     $handlerIsOdd = false;

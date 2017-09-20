@@ -9,6 +9,7 @@
     use Librarys\App\AppUser;
     use Librarys\App\AppUpdate;
     use Librarys\App\AppUpgrade;
+    use Librarys\App\AppJson;
     use Librarys\App\Config\AppConfig;
     use Librarys\App\Config\AppAboutConfig;
     use Librarys\Http\Request;
@@ -88,6 +89,12 @@
 
             if ($message == null && self::$langMsg != null)
                 $message = self::$langMsg;
+
+            if (Request::isDesktop(false)) {
+                AppJson::getInstance()->addAlert($message, $type, $id);
+
+                return self::$instance;
+            }
 
             Request::session()->put(self::SESSION_NAME_PREFIX . $id, [
                 'message' => $message,

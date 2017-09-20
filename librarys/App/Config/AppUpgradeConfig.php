@@ -8,10 +8,30 @@
     final class AppUpgradeConfig extends BaseConfig
     {
 
-        public function __construct()
+        private static $instance;
+
+        protected function __construct()
         {
             parent::__construct(env('resource.config.upgrade'), env('resource.filename.config.upgrade'));
             parent::parse(true);
+        }
+
+        protected function __wakeup()
+        {
+
+        }
+
+        protected function __clone()
+        {
+
+        }
+
+        public static function getInstance()
+        {
+            if (null === self::$instance)
+                self::$instance = new AppUpgradeConfig();
+
+            return self::$instance;
         }
 
         public function callbackPreWrite()

@@ -9,6 +9,7 @@
 
     use Librarys\App\AppUser;
     use Librarys\App\AppAlert;
+    use Librarys\App\AppJson;
     use Librarys\App\Config\AppConfig;
     use Librarys\Http\Request;
 
@@ -107,6 +108,14 @@
         Request::session()->put(SESSION_NAME_LOCK_TIME,  intval(time()));
     }
 
+    if (Request::isDesktop()) {
+        AppJson::getInstance()->setResponseCodeSystem(DESKTOP_CODE_IS_NOT_LOGIN);
+        AppJson::getInstance()->setResponseDataSystem([
+            'is_login' => false
+        ]);
+
+        AppJson::getInstance()->toResult();
+    }
 ?>
 
     <div id="container-login">

@@ -18,7 +18,8 @@
             ],
 
             'dev' => [
-                'enable' => true,
+                'enable'         => true,
+                'enable_desktop' => true,
 
                 'error_reported' => [
                     'enable'           => true,

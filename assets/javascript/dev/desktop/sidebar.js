@@ -1,8 +1,12 @@
-define(function(require) {
-    var ajax     = require("ajax");
-    var jquery   = require("jquery");
-    var selector = require("selector");
-
+define([
+    "ajax",
+    "jquery",
+    "selector"
+], function(
+    ajax,
+    jquery,
+    selector
+) {
     return {
         initFile: function() {
             var request = ajax.open({
