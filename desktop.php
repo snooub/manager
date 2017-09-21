@@ -122,8 +122,14 @@
                         </ul>
                     </form>
                 </div>
+                <div id="alert">
+                    <ul></ul>
+                </div>
                 <div id="loading">
-                    <span class="icomoon icon-spinner spinner-animation"></span>
+                    <div id="box">
+                        <span class="icomoon icon-spinner spinner-animation"></span>
+                        <span class="notice"></span>
+                    </div>
                 </div>
             </div>
         </div>

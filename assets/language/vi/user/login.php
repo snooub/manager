@@ -25,6 +25,8 @@
             'login_already'                  => 'Bạn hiện đang ở trạng thái đăng nhập',
             'not_login'                      => 'Bạn chưa đăng nhập',
             'user_is_band'                   => 'Tài khoản của bạn đã bị khóa',
+            'loging'                         => 'Đang đăng nhập...',
+            'loging_check'                   => 'Đang kiểm tra đăng nhập...',
 
             'exit_session_failed'  => 'Đăng xuất thất bại',
             'exit_session_success' => 'Đăng xuất thành công'

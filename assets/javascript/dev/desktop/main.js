@@ -7,10 +7,15 @@ define([
     jquery,
     container,
     define,
-    lang,
-    login
+    lang
 ) {
-    container.fixSizeChild();
-    container.registerWindowOnResize();
-    lang.init();
+    return {
+        init: function() {
+            container.fixSizeChild();
+            container.registerWindowOnResize();
+            lang.init(this);
+
+            return this;
+        }
+    }.init();
 });

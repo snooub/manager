@@ -1,16 +1,20 @@
 define([
     "ajax",
+    "alert",
     "login"
 ], function(
     ajax,
+    alert,
     login
 ) {
     return {
+        main:   null,
         datas:  [],
         caches: [],
 
-        init: function() {
-            var self = this;
+        init: function(main) {
+            var self      = this;
+                this.main = main;
 
             ajax.open({
                 url: ajax.script.asset + "?lang",
@@ -23,7 +27,8 @@ define([
                     self.datas = data;
 
                     self.render();
-                    login.init();
+                    alert.init();
+                    login.init(self);
                 }
             });
         },

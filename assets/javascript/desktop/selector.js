@@ -12,6 +12,9 @@ define([
         sidebar:       jquery(define.sidebarSelector),
         content:       jquery(define.contentSelector),
         loading:       jquery(define.loadingSelector),
+        loadingNotice: jquery(define.loadingNoticeSelector),
+        alert:         jquery(define.alertSelector),
+        alertList:     jquery(define.alertListSelector),
         login:         jquery(define.loginSelector),
 
         sidebarFile:     jquery(define.sidebarFileSelector),

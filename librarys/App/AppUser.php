@@ -80,6 +80,8 @@
 
             if ($this->checkUserLogin())
                 $this->isLogin = true;
+
+            return true;
         }
 
         public function createFirstUser()
@@ -410,7 +412,10 @@
             Request::session()->put(env('app.login.session_login_name'), $id);
             Request::session()->put(env('app.login.session_token_name'), $tokenGenerator);
 
-            return true;
+            if ($this->execute())
+                return true;
+
+            return false;
         }
 
         public static function isValidateUsername($username)
