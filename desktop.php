@@ -108,7 +108,7 @@
                                 <span class="icomoon icon-user"></span>
                             </li>
                             <li class="input">
-                                <input type="password" name="password" value="" lng="user.login.input_password_placeholder"/>
+                                <input type="password" name="password" value="" lng="user.login.form.input_password_placeholder"/>
                                 <span class="icomoon icon-key"></span>
                             </li>
                             <li class="button">
