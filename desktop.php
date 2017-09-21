@@ -12,15 +12,15 @@
 
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <title>Manager </title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noindex, nofollow, noodp, nodir"/>
-        <meta http-equiv="Cache-Control" content="private, max-age=0, no-cache, no-store, must-revalidate"/>
-        <meta http-equiv="Pragma" content="no-cache"/>
-        <meta http-equiv="Expires" content="Thu, 01 Jan 1970 00:00:00 GMT">
+        <meta name="Cache-Control" content="private, max-age=0, no-cache, no-store, must-revalidate"/>
+        <meta name="Pragma" content="no-cache"/>
+        <meta name="Expires" content="Thu, 01 Jan 1970 00:00:00 GMT">
 
         <link
             rel="icon"
@@ -40,7 +40,7 @@
         <link
             rel="stylesheet"
             type="text/css"
-            media="all,handheld"
+            media="all"
             href="<?php echo AppAssets::makeURLResourceTheme(AppConfig::getInstance()->get('theme.directory'), 'theme_desktop'); ?>"/>
 
         <script
@@ -53,31 +53,31 @@
             <div id="header">
                 <div id="logo">
                     <a href="<?php echo env('app.http.host'); ?>">
-                        <span id="logo" class="icomoon icon-home"></span>
+                        <span class="icomoon icon-home"></span>
                     </a>
                 </div>
                 <ul id="action">
-                    <li>
+                    <li login="true">
                         <a href="#">
                             <span class="icomoon icon-search"></span>
                         </a>
                     </li>
-                    <li>
+                    <li login="true">
                         <a href="#">
                             <span class="icomoon icon-mysql"></span>
                         </a>
                     </li>
-                    <li>
+                    <li login="true">
                         <a href="#">
                             <span class="icomoon icon-config"></span>
                         </a>
                     </li>
-                    <li class="about">
+                    <li class="about" login="false">
                         <a href="#">
                             <span class="icomoon icon-about"></span>
                         </a>
                     </li>
-                    <li>
+                    <li login="true">
                         <a href="#">
                             <span class="icomoon icon-exit"></span>
                         </a>
@@ -86,29 +86,31 @@
             </div>
             <div id="container">
                 <div id="sidebar">
-                    <div class="scroll-wrapper">
-                        <div class="sidebar-file scroll-content">
+                    <div class="sidebar-file scroll-wrapper">
+                        <div class="scroll-content">
                             <?php for ($i = 0; $i < 30; ++$i) { ?>
                                 <span style="word-wrap: nowrap; white-space: nowrap;">Test dfgdfgfgdgdfgdfgdfgdfg <?php echo $i; ?> hjdfihg uifhguidfhuighdfuihgdfuihfi</span><br>
                             <?php } ?>
                         </div>
                     </div>
-                    <div class="sidebar-database">
+                    <div class="scroll-wrapper">
+                        <div class="sidebar-database">
 
+                        </div>
                     </div>
                 </div>
                 <div id="content">
 
                 </div>
                 <div id="login">
-                    <form action="#" method="post" onsubmit="return false">
+                    <form action="#" method="post" onsubmit="return false" autocomplete="off">
                         <ul>
                             <li class="input">
-                                <input type="text" name="username" value="" lng="user.login.form.input_username_placeholder"/>
+                                <input type="text" name="username" value="" lng="user.login.form.input_username_placeholder" autocomplete="off"/>
                                 <span class="icomoon icon-user"></span>
                             </li>
                             <li class="input">
-                                <input type="password" name="password" value="" lng="user.login.form.input_password_placeholder"/>
+                                <input type="password" name="password" value="" lng="user.login.form.input_password_placeholder" autocomplete="off"/>
                                 <span class="icomoon icon-key"></span>
                             </li>
                             <li class="button">

@@ -38,6 +38,17 @@ define([
             if (self.isInitFixSizeChild == false)
                 selector.loading.css(cssFix).css({ display: "block" });
 
+            selector.headerAction.find("li").each(function() {
+                var element = $(this);
+                var login   = element.attr("login");
+
+                if (typeof login === "string" && login === "true") {
+                    element.css({
+                        display: "none"
+                    });
+                }
+            });
+
             selector.content.css(cssFix);
             selector.content.css({ width: (windowWidth - sidebarWidth) + "px", left: sidebarWidth + "px" });
             selector.header.css({ display: "block" });
@@ -92,10 +103,20 @@ define([
             var css  = { display: "block", opacity: 0 };
             var anim = { opacity: 1 };
 
-            selector.sidebar.stop().css(css).animate(anim, define.time.time_show);
-            selector.sidebarFile.stop().css(css).animate(anim, define.time.time_show);
+            selector.sidebar        .stop().css(css).animate(anim, define.time.time_show);
+            selector.sidebarFile    .stop().css(css).animate(anim, define.time.time_show);
             selector.sidebarDatabase.stop().css(css).animate(anim, define.time.time_show);
-            selector.content.stop().css(css).animate(anim, define.time.time_show);
+            selector.content.stop() .css(css).animate(anim, define.time.time_show);
+
+            selector.headerAction.find("li").each(function() {
+                var element = $(this);
+                var login   = element.attr("login");
+
+                if (typeof login === "string" && login === "true")
+                    element.stop().css({
+                        display: "inline-block"
+                    }).animate(anim, define.time_show);
+            });
 
             scroll.emulator(define.sidebarFileSelector);
         },
@@ -118,6 +139,17 @@ define([
 
             selector.content.stop().animate(anim, define.time.time_show, function() {
                 $(this).css(css);
+            });
+
+            selector.headerAction.find("li").each(function() {
+                var element = $(this);
+                var login   = element.attr("login");
+
+                if (typeof login === "string" && login === "true") {
+                    element.css({
+                        display: "none"
+                    });
+                }
             });
         }
     };

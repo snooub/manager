@@ -9,6 +9,7 @@ define([
         containerFull: jquery(define.containerFullSelector),
         container:     jquery(define.containerSelector),
         header:        jquery(define.headerSelector),
+        headerAction:  jquery(define.headerActionSelector),
         sidebar:       jquery(define.sidebarSelector),
         content:       jquery(define.contentSelector),
         loading:       jquery(define.loadingSelector),

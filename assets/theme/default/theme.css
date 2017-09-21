@@ -301,6 +301,17 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
     appearance: none;
 }
 
+input,
+textarea {
+    outline: none;
+}
+
+input:focus, input:hover,
+  textarea:focus,
+  textarea:hover {
+    outline: none;
+}
+
 input[type=text],
 input[type=email],
 input[type=number],

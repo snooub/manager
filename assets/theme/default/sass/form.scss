@@ -37,6 +37,15 @@ input {
     }
 }
 
+input,
+textarea {
+    outline: none;
+
+    &:focus, &:hover {
+        outline: none;
+    }
+}
+
 input[type=text],
 input[type=email],
 input[type=number],

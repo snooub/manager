@@ -18,21 +18,21 @@ div#header {
         float: left;
         width: 50px;
         text-align: center;
-    }
 
-    span#logo {
-        color: #ffffff;
-        font-weight: normal;
-        font-variant: normal;
-        font-weight: 500;
-        font-size: 24px;
-        line-height: $header-height;
-        margin: 0;
-        padding: 0;
-    }
+        span {
+            color: #ffffff;
+            font-weight: normal;
+            font-variant: normal;
+            font-weight: 500;
+            font-size: 24px;
+            line-height: $header-height;
+            margin: 0;
+            padding: 0;
+        }
 
-    a:hover span#logo {
-        color: #e0e0e0;
+        a:hover span {
+            color: #e0e0e0;
+        }
     }
 
     ul#action,
@@ -67,6 +67,10 @@ div#header {
             a:hover span,
             a:focus span {
                 color: #d0d0d0;
+            }
+
+            &[login=true] {
+                display: none;
             }
         }
     }

@@ -266,6 +266,14 @@ a:focus p {
     text-decoration: none;
 }
 
+input, textarea {
+    outline: none;
+}
+
+input:hover, input:focus, textarea:hover, textarea:focus {
+    outline: none;
+}
+
 div#container-full {
     position: relative;
     width: 100vw;
@@ -448,7 +456,7 @@ div#header div#logo {
     text-align: center;
 }
 
-div#header span#logo {
+div#header div#logo span {
     color: #ffffff;
     font-weight: normal;
     font-variant: normal;
@@ -459,7 +467,7 @@ div#header span#logo {
     padding: 0;
 }
 
-div#header a:hover span#logo {
+div#header div#logo a:hover span {
     color: #e0e0e0;
 }
 
@@ -497,6 +505,10 @@ div#header ul#action li span {
 div#header ul#action li a:hover span,
       div#header ul#action li a:focus span {
     color: #d0d0d0;
+}
+
+div#header ul#action li[login=true] {
+    display: none;
 }
 
 div#sidebar {
@@ -678,11 +690,16 @@ div#container div#login > form {
     background-color: #ffffff;
     position: relative;
     padding: 0;
-    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
-    -ms-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
-    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15), -1px -1px 5px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15), -1px -1px 5px rgba(0, 0, 0, 0.15);
+    -ms-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15), -1px -1px 5px rgba(0, 0, 0, 0.15);
+    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15), -1px -1px 5px rgba(0, 0, 0, 0.15);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15), -1px -1px 5px rgba(0, 0, 0, 0.15);
+    -webkit-border-radius: 8px 8px;
+    -moz-border-radius: 8px 8px;
+    -ms-border-radius: 8px 8px;
+    -o-border-radius: 8px 8px;
+    border-radius: 8px 8px;
 }
 
 div#container div#login > form h2 {
@@ -719,6 +736,11 @@ div#container div#login > form > ul li.input input {
     -ms-box-sizing: border-box;
     -o-box-sizing: border-box;
     box-sizing: border-box;
+    -webkit-border-radius: 8px 8px;
+    -moz-border-radius: 8px 8px;
+    -ms-border-radius: 8px 8px;
+    -o-border-radius: 8px 8px;
+    border-radius: 8px 8px;
 }
 
 div#container div#login > form > ul li.input input + span.icomoon {
@@ -735,6 +757,7 @@ div#container div#login > form > ul li.input input + span.icomoon {
 
 div#container div#login > form > ul li.input input:hover, div#container div#login > form > ul li.input input:focus {
     color: #505050;
+    outline: none;
 }
 
 div#container div#login > form > ul li.input input:hover + span, div#container div#login > form > ul li.input input:focus + span {

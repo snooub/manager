@@ -14,6 +14,7 @@ define(function(require) {
         containerFullSelector: "div#container-full",
         containerSelector:     "div#container",
         headerSelector:        "div#header",
+        headerActionSelector:  "div#header ul#action",
         sidebarSelector:       "div#sidebar",
         contentSelector:       "div#content",
         loadingSelector:       "div#loading",

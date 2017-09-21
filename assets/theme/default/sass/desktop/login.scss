@@ -17,7 +17,8 @@ div#container {
             position: relative;
             padding: 0;
 
-            @include box-shadow(1px 1px 5px rgba(0, 0, 0, 0.2));
+            @include box-shadow(1px 1px 5px rgba(0, 0, 0, 0.15), -1px -1px 5px rgba(0, 0, 0, 0.15));
+            @include border-radius(8px 8px);
 
             h2 {
                 color: #505050;
@@ -52,6 +53,7 @@ div#container {
                         padding-right: $height_input / 2;
 
                         @include box-sizing(border-box);
+                        @include border-radius(8px 8px);
 
                         + span.icomoon {
                             color: $color_input;
@@ -67,6 +69,7 @@ div#container {
 
                         &:hover, &:focus {
                             color: $color_focus_input;
+                            outline: none;
 
                             + span {
                                 color: $color_focus_input;
