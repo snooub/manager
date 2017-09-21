@@ -104,19 +104,19 @@
                     <form action="#" method="post" onsubmit="return false">
                         <ul>
                             <li class="input">
-                                <input type="text" name="username" value="" placeholder="Input username"/>
+                                <input type="text" name="username" value="" lng="user.login.form.input_username_placeholder"/>
                                 <span class="icomoon icon-user"></span>
                             </li>
                             <li class="input">
-                                <input type="password" name="password" value="" placeholder="Input password"/>
+                                <input type="password" name="password" value="" lng="user.login.input_password_placeholder"/>
                                 <span class="icomoon icon-key"></span>
                             </li>
                             <li class="button">
                                 <button type="submit" name="login">
-                                    <span>Login</span>
+                                    <span lng="user.login.form.button_login"></span>
                                 </button>
                                 <a href="#">
-                                    <span>Forgot password</span>
+                                    <span lng="user.login.form.forgot_password"></span>
                                 </a>
                             </li>
                         </ul>

@@ -248,9 +248,67 @@
             return $str;
         }
 
-        public static function toJson()
+        public static function toJson($langs = false)
         {
+            $container = env('app.language.path');
+            $locale    = env('app.language.locale', 'en');
+            $mime      = env('app.language.mime', '.php');
+            $path      = FileInfo::filterPaths($container . SP . $locale);
+
+            if (FileInfo::isTypeDirectory($path) == false) {
+                if (strcasecmp($locale, 'en') === 0)
+                    return [];
+
+                $locale = 'en';
+                $path   = FileInfo::filterPaths($container . SP . $locale);
+
+                if (FileInfo::isTypeDirectory($path) == false)
+                    return [];
+            }
+
+            if (self::scanLoadLang($path) == false)
+                return false;
+
             return json_encode(self::$instance->lang);
+        }
+
+        private static function scanLoadLang($path, &$subarray = null, $container = null)
+        {
+            if (FileInfo::isTypeDirectory($path) == false)
+                return false;
+
+            $handle = FileInfo::scanDirectory($path);
+            $mime   = env('app.language.mime', '.php');
+
+            if ($subarray == null)
+                $subarray = &self::$instance->lang;
+
+            if (is_array($handle) == false)
+                return false;
+
+            foreach ($handle AS $filename) {
+                if ($filename != '.' && $filename != '..') {
+                    $filepath = FileInfo::filterPaths($path . SP . $filename);
+
+                    if (FileInfo::isTypeFile($filepath)) {
+                        $key     = substr($filename, 0, strlen($filename) - strlen($mime));
+                        $require = require_once($filepath);
+
+                        if ($container == null)
+                            $subarray[$key] = $require;
+                        else
+                            $subarray[$container][$key] = $require;
+                    } else {
+                        if (isset($subarray[$filename]) == false)
+                            $subarray[$filename] = null;
+
+                        if (self::scanLoadLang($filepath, $subarray[$filename], $filename) == false)
+                            return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
     }

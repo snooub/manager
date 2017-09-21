@@ -10,6 +10,7 @@ define([
     return {
         script: {
             index: "index.php",
+            asset: "asset.php",
             login: "user/login.php"
         },
 
@@ -67,7 +68,7 @@ define([
                 var dataCode     = data.code;
                 var dataCodeSys  = data.code_sys;
 
-                if (dataAlert.length > 0) {
+                if (dataAlert && dataAlert.length > 0) {
                     for (var i = 0; i < dataAlert.length; ++i)
                         alert.add(dataAlert[i].message, dataAlert[i].type);
                 }

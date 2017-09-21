@@ -19,7 +19,6 @@ define([
 
                 end: function(status, xhr) {
                     container.stopLoading();
-                    console.log(xhr);
                 },
 
                 success: function(data) {
@@ -44,7 +43,7 @@ define([
                 var password = form.find("input[name=password]");
 
                 form.unbind("submit").bind("submit", function() {
-                    console.log("submit");
+
                 });
             });
         },

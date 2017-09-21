@@ -8,5 +8,4 @@
     define('ASSET_PARAMETER_JS_URL',     'js');
     define('ASSET_PARAMETER_JS_DIR_URL', 'dir');
     define('ASSET_PARAMETER_RAND_URL',   'rand');
-
-?>
+    define('ASSET_PARAMETER_LOAD_LANG',  'lang');
