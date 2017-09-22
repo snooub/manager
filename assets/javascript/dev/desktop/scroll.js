@@ -60,7 +60,7 @@ define([
             var elementWidth  = element.width()  || scrollContent.width();
             var elementHeight = element.height() || scrollContent.outerHeight();
 
-            var scrollHorizontalRatio = elementScrollWidth  / (elementWidth - (this.scrollMargin << 1));
+            var scrollHorizontalRatio = elementScrollWidth  / (elementWidth  - (this.scrollMargin << 1));
             var scrollVerticalRatio   = elementScrollHeight / (elementHeight - (this.scrollMargin << 1));
 
             var scrollHorizontalThumb = Math.ceil(elementWidth  / scrollHorizontalRatio);
@@ -129,6 +129,7 @@ define([
                 scrollContentEndLeft   = scrollContent.get(0).scrollWidth  - elementWidth;
                 scrollContentEndTop    = scrollContent.get(0).scrollHeight - elementHeight;
 
+                self.addScrollThumb(element);
                 self.checkScroll(selector);
 
                 if (scrollHorizontalDown == false) {

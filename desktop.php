@@ -91,7 +91,7 @@
                         <div class="scroll-content">
                             <ul class="list-file">
                                 <li>
-                                    <p>
+                                    <p class="root">
                                         <span class="icomoon icon-folder"></span>
                                         <span><?php echo AppDirectory::getInstance()->getSuperRoot(); ?></span>
                                     </p>
@@ -287,7 +287,6 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="cursor-hover"></div>
                     </div>
                     <div class="sidebar-database scroll-wrapper">
                         <div class="scroll-content">
