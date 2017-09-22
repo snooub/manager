@@ -13,9 +13,9 @@ define([
             if (typeof element === "string")
                 element = jquery(element);
 
-            if (element.attr("class").indexOf("scroll-wrapper") === 0)
+            if (element.attr("class").indexOf("scroll-wrapper") === -1)
                 element = element.find("scroll-wrapper");
-            else
+            else if (element.parent().attr("class") && element.parent().attr("class").indexOf("scroll-wrapper") !== -1)
                 element = element.parent();
 
             this.addScrollThumb(element);
@@ -30,6 +30,10 @@ define([
 
             var scrollVertical   = element.find("div.scroll-vertical");
             var scrollHorizontal = element.find("div.scroll-horizontal");
+            var scrollContent    = element.find("div.scroll-content");
+
+            if (!scrollContent)
+                return false;
 
             if (!scrollVertical.length || scrollVertical.length <= 0)
                 element.append("<div class=\"scroll-vertical\"></div>");
@@ -39,12 +43,6 @@ define([
 
             var scrollVertical   = element.find("div.scroll-vertical");
             var scrollHorizontal = element.find("div.scroll-horizontal");
-
-            var scrollWrapper = element.find("div.scroll-wrapper");
-            var scrollContent = element.find("div.scroll-content");
-
-            if (!scrollContent)
-                return false;
 
             var elementScrollWidth  = scrollContent.get(0);
             var elementScrollHeight = scrollContent.get(0);
