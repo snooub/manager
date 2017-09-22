@@ -31,6 +31,13 @@
             'create' => 'Tạo mới',
             'upload' => 'Tải lên',
             'import' => 'Nhập khẩu'
+        ],
+
+        'sidebar' => [
+            'nav' => [
+                'file'     => 'Tập tin',
+                'database' => 'Cơ sở dữ liệu'
+            ]
         ]
     ];
 

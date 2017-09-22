@@ -17,7 +17,9 @@
         'resource' => [
             'directory_not_found' => 'Thư mục tài nguyên không tồn tại',
             'file_not_found'      => 'Tập tin tài nguyên không tồn tại'
-        ]
+        ],
+
+        'loading' => 'Đang tải...'
     ];
 
 ?>

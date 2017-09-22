@@ -195,6 +195,17 @@
             return $this->page;
         }
 
+        public function getSuperRoot()
+        {
+            $directory = $this->directory;
+            $indexSP   = strpos($directory, SP);
+
+            if ($indexSP === 0)
+                return SP;
+
+            return substr($directory, 0, $indexSP + 1);
+        }
+
         public function isPermissionDenyPath()
         {
             return $this->permissionDeny;

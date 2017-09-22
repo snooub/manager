@@ -4,6 +4,7 @@
         exit;
 
     use Librarys\App\AppAssets;
+    use Librarys\App\AppDirectory;
     use Librarys\App\Config\AppConfig;
 
     requireDefine('asset');
@@ -88,13 +89,207 @@
                 <div id="sidebar">
                     <div class="sidebar-file scroll-wrapper">
                         <div class="scroll-content">
-                            <?php for ($i = 0; $i < 30; ++$i) { ?>
-                                <span style="word-wrap: nowrap; white-space: nowrap;">Test dfgdfgfgdgdfgdfgdfgdfg <?php echo $i; ?> hjdfihg uifhguidfhuighdfuihgdfuihfi</span><br>
-                            <?php } ?>
+                            <ul class="list-file">
+                                <li>
+                                    <p>
+                                        <span class="icomoon icon-folder"></span>
+                                        <span><?php echo AppDirectory::getInstance()->getSuperRoot(); ?></span>
+                                    </p>
+
+                                    <ul>
+                                        <li>
+                                            <p>
+                                                <span class="icomoon icon-folder"></span>
+                                                <span>incfiles</span>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <span class="icomoon icon-folder"></span>
+                                                <span>system</span>
+                                            </p>
+
+                                            <ul>
+                                                <li>
+                                                    <p>
+                                                        <span class="icomoon icon-folder"></span>
+                                                        <span>incfiles</span>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <span class="icomoon icon-folder"></span>
+                                                        <span>system</span>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <span class="icomoon icon-folder"></span>
+                                                        <span>page</span>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <span class="icomoon icon-folder"></span>
+                                                <span>page</span>
+                                            </p>
+
+                                            <ul>
+                                                <li>
+                                                    <p>
+                                                        <span class="icomoon icon-folder"></span>
+                                                        <span>incfiles</span>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <span class="icomoon icon-folder"></span>
+                                                        <span>system</span>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <span class="icomoon icon-folder"></span>
+                                                        <span>page</span>
+                                                    </p>
+
+                                                    <ul>
+                                                        <li>
+                                                            <p>
+                                                                <span class="icomoon icon-folder"></span>
+                                                                <span>incfiles</span>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p>
+                                                                <span class="icomoon icon-folder"></span>
+                                                                <span>system</span>
+                                                            </p>
+
+                                                            <ul>
+                                                                <li>
+                                                                    <p>
+                                                                        <span class="icomoon icon-folder"></span>
+                                                                        <span>incfiles</span>
+                                                                    </p>
+
+                                                                    <ul>
+                                                                        <li>
+                                                                            <p>
+                                                                                <span class="icomoon icon-folder"></span>
+                                                                                <span>incfiles</span>
+                                                                            </p>
+                                                                        </li>
+                                                                        <li>
+                                                                            <p>
+                                                                                <span class="icomoon icon-folder"></span>
+                                                                                <span>system</span>
+                                                                            </p>
+                                                                        </li>
+                                                                        <li>
+                                                                            <p>
+                                                                                <span class="icomoon icon-folder"></span>
+                                                                                <span>page</span>
+                                                                            </p>
+                                                                        </li>
+                                                                        <li>
+                                                                            <p>
+                                                                                <span class="icomoon icon-file"></span>
+                                                                                <span>index.php</span>
+                                                                            </p>
+
+                                                                            <ul>
+                                                                                <li>
+                                                                                    <p>
+                                                                                        <span class="icomoon icon-folder"></span>
+                                                                                        <span>incfiles</span>
+                                                                                    </p>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <p>
+                                                                                        <span class="icomoon icon-folder"></span>
+                                                                                        <span>system</span>
+                                                                                    </p>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <p>
+                                                                                        <span class="icomoon icon-folder"></span>
+                                                                                        <span>page ijfgiojfdjgifjgijfidfgdfgfdgdfffffffffffffffffffffffffffffffffffg</span>
+                                                                                    </p>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <p>
+                                                                                        <span class="icomoon icon-file"></span>
+                                                                                        <span>index.php</span>
+                                                                                    </p>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+                                                                <li>
+                                                                    <p>
+                                                                        <span class="icomoon icon-folder"></span>
+                                                                        <span>system</span>
+                                                                    </p>
+                                                                </li>
+                                                                <li>
+                                                                    <p>
+                                                                        <span class="icomoon icon-folder"></span>
+                                                                        <span>page</span>
+                                                                    </p>
+                                                                </li>
+                                                                <li>
+                                                                    <p>
+                                                                        <span class="icomoon icon-file"></span>
+                                                                        <span>index.php</span>
+                                                                    </p>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                        <li>
+                                                            <p>
+                                                                <span class="icomoon icon-folder"></span>
+                                                                <span>page</span>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p>
+                                                                <span class="icomoon icon-file"></span>
+                                                                <span>index.php</span>
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <span class="icomoon icon-file"></span>
+                                                        <span>index.php</span>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <span class="icomoon icon-folder"></span>
+                                                <span>system</span>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <span class="icomoon icon-file"></span>
+                                                <span>index.php</span>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="scroll-wrapper">
-                        <div class="sidebar-database">
+                    <div class="sidebar-database scroll-wrapper">
+                        <div class="scroll-content">
 
                         </div>
                     </div>
@@ -130,7 +325,7 @@
                 <div id="loading">
                     <div id="box">
                         <span class="icomoon icon-spinner spinner-animation"></span>
-                        <span class="notice"></span>
+                        <span class="notice"><?php echo lng('default.loading'); ?></span>
                     </div>
                 </div>
             </div>
