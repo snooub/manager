@@ -18,6 +18,7 @@
         padding-bottom: 25px;
         margin-right: -25px;
         margin-bottom: -25px;
+        z-index: 1;
     }
 
     .scroll-vertical,
@@ -25,6 +26,7 @@
         background-color: rgba(0, 0, 0, 0.5);
         border: 0;
         position: absolute;
+        z-index: 100;
 
         @include border-radius(8px 8px);
     }

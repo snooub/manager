@@ -18,7 +18,9 @@ define([
         alertList:     jquery(define.alertListSelector),
         login:         jquery(define.loginSelector),
 
-        sidebarFile:     jquery(define.sidebarFileSelector),
-        sidebarDatabase: jquery(define.sidebarDatabaseSelector)
+        sidebarFile:          jquery(define.sidebarFileSelector),
+        sidebarFileListEntry: jquery(define.sidebarFileListEntrySelector),
+        sidebarFileCursor:    jquery(define.sidebarFileCursorSelector),
+        sidebarDatabase:      jquery(define.sidebarDatabaseSelector)
     };
 });

@@ -23,7 +23,9 @@ define(function(require) {
         alertListSelector:     "div#alert > ul",
         loginSelector:         "div#login",
 
-        sidebarFileSelector:     "div#sidebar div.sidebar-file",
-        sidebarDatabaseSelector: "div#sidebar div.sidebar-database"
+        sidebarFileSelector:          "div#sidebar div.sidebar-file",
+        sidebarFileListEntrySelector: "div#sidebar div.sidebar-file ul li",
+        sidebarFileCursorSelector:    "div#sidebar div.sidebar-file div.cursor-hover",
+        sidebarDatabaseSelector:      "div#sidebar div.sidebar-database",
     };
 });

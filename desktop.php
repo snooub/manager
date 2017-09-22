@@ -287,6 +287,7 @@
                                 </li>
                             </ul>
                         </div>
+                        <div class="cursor-hover"></div>
                     </div>
                     <div class="sidebar-database scroll-wrapper">
                         <div class="scroll-content">

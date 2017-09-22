@@ -4,14 +4,16 @@ define([
     "container",
     "define",
     "selector",
-    "alert"
+    "alert",
+    "sidebar"
 ], function(
     ajax,
     jquery,
     container,
     define,
     selector,
-    alert
+    alert,
+    sidebar
 ) {
     return {
         lang: null,
@@ -100,6 +102,7 @@ define([
 
         run: function() {
            container.show();
+           sidebar.initFile();
         }
     };
 });
