@@ -19,6 +19,7 @@ define([
         login:         jquery(define.loginSelector),
 
         sidebarFile:          jquery(define.sidebarFileSelector),
+        sidebarFileList:      jquery(define.sidebarFileListSelector),
         sidebarFileListEntry: jquery(define.sidebarFileListEntrySelector),
         sidebarFileCursor:    jquery(define.sidebarFileCursorSelector),
         sidebarDatabase:      jquery(define.sidebarDatabaseSelector)

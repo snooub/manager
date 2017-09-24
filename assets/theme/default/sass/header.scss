@@ -1,0 +1,78 @@
+div#header {
+    background-color: #00897b;
+
+    @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.4));
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: 1100px;
+    height: 55px;
+    margin: 0 auto;
+    padding: 0;
+    z-index: 9999;
+
+    div#logo {
+        float: left;
+        width: 50px;
+        text-align: center;
+    }
+
+    span#logo {
+        color: #ffffff;
+        font-weight: normal;
+        font-variant: normal;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 55px;
+        margin: 0;
+        padding: 0;
+    }
+
+    a:hover span#logo {
+        color: #e0e0e0;
+    }
+
+    ul#action,
+    ul#action li {
+        display: inline-block;
+        list-style: none;
+        margin: 0;
+        margin-right: 5px;
+        padding: 0;
+    }
+
+    ul#action {
+        position: absolute;
+        top: 0;
+        left: 60px;
+        right: 0;
+        height: 55px;
+        text-align: right;
+        white-space: nowrap;
+        overflow: hidden;
+
+        li {
+            padding-left: 5px;
+            padding-right: 5px;
+
+            span {
+                color:  #ffffff;
+                font-size: 20px;
+                line-height: 55px;
+            }
+
+            a:hover span,
+            a:focus span {
+                color: #d0d0d0;
+            }
+        }
+
+        @media all and (max-width: 260px) {
+            li.about {
+                display: none;
+            }
+        }
+    }
+}

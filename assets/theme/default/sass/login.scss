@@ -1,0 +1,130 @@
+div#container-login {
+    div#login,
+    ul.alert {
+        max-width: 320px;
+
+        @media all and (min-width: 560px) {
+            & {
+                max-width: 480px;
+            }
+        }
+
+        @media all and (min-width: 680px) {
+            & {
+                max-width: 560px;
+            }
+        }
+    }
+
+    ul.alert {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    div#login {
+        background-color: #ffffff;
+
+        @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
+
+        margin: 0 auto;
+        margin-bottom: 140px;
+        padding: 0;
+        position: relative;
+    }
+
+    form#login-form input {
+        color: #a0a0a0;
+        border: 0;
+
+        @include box-sizing(border-box);
+
+        display: block;
+        margin: 0;
+        padding: 15px;
+        width: 100%;
+        outline: 0;
+
+        &:focus {
+            color:  #303030;
+        }
+
+        &::-webkit-input-placeholder {
+            color: #707070;
+        }
+
+        &:-ms-input-placeholder {
+            color: #707070;
+        }
+
+        &:-moz-placeholder {
+            color: #707070;
+        }
+
+        &::-moz-placeholder {
+            color: #707070;
+        }
+    }
+
+    div#login-form-action {
+        position: absolute;
+        bottom: -80px;
+        left: 0;
+        right: 0;
+        height: 40px;
+        text-align: right;
+
+        a#forgot-password {
+            display: inline-block;
+            background-color: #ffffff;
+
+            @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
+
+            height: 40px;
+            margin-right: 10px;
+            padding-left: 8px;
+            padding-right: 8px;
+            text-decoration: none;
+
+            &:hover {
+                background-color: #efefef;
+            }
+
+            span {
+                color: #404040;
+                font-weight: normal;
+                font-variant: normal;
+                font-size: 14px;
+                line-height: 40px;
+            }
+        }
+
+        button {
+            background-color: #00897b;
+            display: inline-block;
+            float: right;
+
+            @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.5));
+
+            border: 0;
+            margin: 0;
+            height: 40px;
+            padding: 0;
+            padding-left: 8px;
+            padding-right: 8px;
+
+            &:disabled {
+                background-color: #a0a0a0;
+                cursor: default;
+            }
+
+            &:enabled:hover {
+                background-color: #00a99b;
+            }
+
+            span {
+                color: #ffffff;
+                font-weight: bold;
+            }
+        }
+    }
+}
