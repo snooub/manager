@@ -39,7 +39,7 @@ define([
 
                 success: function(data) {
                     if (self.check(data))
-                        self.run(self);
+                        self.run();
                 }
             });
         },
@@ -86,7 +86,7 @@ define([
                         success: function(data) {
                             if (self.check(data)) {
                                 self.hidden();
-                                self.run(self);
+                                self.run();
                             }
                         }
                     });
@@ -100,12 +100,9 @@ define([
             });
         },
 
-        run: function(instance) {
-            if (typeof instance === "undefined")
-                instance = this;
-
-            container.show();
-            sidebar.file.init(instance.lang, instance);
+        run: function() {
+           container.show();
+           sidebar.initFile();
         }
     };
 });

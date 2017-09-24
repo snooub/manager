@@ -621,7 +621,7 @@ div#sidebar div.sidebar-file ul.list-file li p,
     margin: 0;
     padding: 5px;
     padding-left: 0;
-    padding-right: 25px;
+    padding-right: 30px;
     height: 100%;
     min-width: 100%;
     max-width: 200px;
@@ -642,9 +642,8 @@ div#sidebar div.sidebar-file ul.list-file li p span.icomoon,
     font-size: 26px;
 }
 
-div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-folder, div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-folder-open,
-            div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-folder,
-            div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-folder-open {
+div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-folder,
+            div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-folder {
     color: #ffb300;
 }
 
@@ -656,12 +655,7 @@ div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-file,
 
 div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-spinner,
             div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-spinner {
-    font-size: 20px;
-}
-
-div#sidebar div.sidebar-file ul.list-file li p span:last-child,
-          div#sidebar div.sidebar-file ul.list-file li ul li p span:last-child {
-    margin-left: 5px;
+    font-size: 21px;
 }
 
 div#sidebar div.sidebar-file ul.list-file li p:hover,

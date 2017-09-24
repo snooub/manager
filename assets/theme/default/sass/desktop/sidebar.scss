@@ -44,7 +44,7 @@ div#sidebar {
                     margin: 0;
                     padding: 5px;
                     padding-left: 0;
-                    padding-right: 25px;
+                    padding-right: 30px;
                     height: 100%;
                     min-width: 100%;
                     max-width: 200px;
@@ -60,8 +60,7 @@ div#sidebar {
                         &.icomoon {
                             font-size: 26px;
 
-                            &.icon-folder,
-                            &.icon-folder-open {
+                            &.icon-folder {
                                 color: #ffb300;
                             }
 
@@ -71,12 +70,8 @@ div#sidebar {
                             }
 
                             &.icon-spinner {
-                                font-size: 20px;
+                                font-size: 21px;
                             }
-                        }
-
-                        &:last-child {
-                            margin-left: 5px;
                         }
                     }
 

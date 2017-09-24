@@ -22,10 +22,8 @@
         if (isset($_GET) && count($_GET) > 0)
             Request::redirect(env('app.http.host'));
 
-        if (Request::isMethodGet()) {
-            require_once('desktop.php');
-            exit(255);
-        }
+        require_once('desktop.php');
+        exit(255);
     }
 
     $title   = lng('home.title_page_root');
@@ -93,8 +91,7 @@
 
     if (Request::isDesktop()) {
         AppJson::getInstance()->setResponseData([
-            'list' => $handlerList,
-            'path' => AppDirectory::getInstance()->getDirectory()
+            'list' => $handlerList
         ]);
 
         AppJson::getInstance()->toResult();
