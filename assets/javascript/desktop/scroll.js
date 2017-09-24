@@ -112,7 +112,7 @@ define([
             scrollContentEndLeft = scrollContentEndLeft.scrollWidth - scrollContent.outerWidth();
             scrollContentEndTop  = scrollContentEndTop.scrollHeight - scrollContent.outerHeight();
 
-            jquery(window).resize(function(handler) {
+            element.unbind("resize").bind("resize", function(handler) {
                 elementWidth           = element.width();
                 elementHeight          = element.height();
                 scrollContentEndLeft   = scrollContent.get(0).scrollWidth  - elementWidth;

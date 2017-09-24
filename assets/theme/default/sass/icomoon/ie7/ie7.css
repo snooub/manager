@@ -1,3 +1,6 @@
+.icon-spinner {
+  *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe931;');
+}
 .icon-update {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe930;');
 }
@@ -40,7 +43,7 @@
 .icon-users {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe972;');
 }
-.icon-spinner {
+.icon-spinner-bound {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe980;');
 }
 .icon-view {

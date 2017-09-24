@@ -5,5 +5,7 @@
 }
 
 .spinner-animation {
-    @include animation(spinnerFrames 1s linear infinite);
+    display: inline-block;
+
+    @include animation(spinnerFrames 2s linear infinite);
 }

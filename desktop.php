@@ -92,7 +92,7 @@
                             <ul class="list-file">
                                 <li>
                                     <p class="root">
-                                        <span class="icomoon icon-folder"></span>
+                                        <span class="icomoon icon-spinner spinner-animation"></span>
                                         <span><?php echo AppDirectory::getInstance()->getSuperRoot(); ?></span>
                                     </p>
 

@@ -32,8 +32,6 @@ define([
             // Fix height
             selector.container.css(cssFix);
             selector.sidebar.css(cssFix);
-            selector.sidebarFile.css(cssFix);
-            selector.sidebarDatabase.css(cssFix);
 
             if (self.isInitFixSizeChild == false)
                 selector.loading.css(cssFix).css({ display: "block" });
@@ -65,7 +63,7 @@ define([
         registerWindowOnResize: function() {
             var self = this;
 
-            jquery(window).resize(function(handler) {
+            jquery(window).unbind("resize").bind("resize", function(handler) {
                 self.fixSizeChild();
             });
         },
