@@ -105,8 +105,10 @@
 
             echo json_encode($this->datas);
 
-            if ($isExit)
+            if ($isExit) {
+//                sleep(1);
                 exit(255);
+            }
         }
 
     }

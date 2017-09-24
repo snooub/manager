@@ -24,6 +24,7 @@ define(function(require) {
         loginSelector:         "div#login",
 
         sidebarFileSelector:          "div#sidebar div.sidebar-file",
+        sidebarFileListSelector:      "div#sidebar div.sidebar-file ul",
         sidebarFileListEntrySelector: "div#sidebar div.sidebar-file ul li",
         sidebarFileCursorSelector:    "div#sidebar div.sidebar-file div.cursor-hover",
         sidebarDatabaseSelector:      "div#sidebar div.sidebar-database",

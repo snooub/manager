@@ -516,6 +516,62 @@ div#header ul#action li[login=true] {
     display: none;
 }
 
+div#container div#contextmenu {
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 997;
+}
+
+div#container div#contextmenu > ul,
+  div#container div#contextmenu > ul > li {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div#container div#contextmenu > ul {
+    -webkit-border-radius: 8px 8px;
+    -moz-border-radius: 8px 8px;
+    -ms-border-radius: 8px 8px;
+    -o-border-radius: 8px 8px;
+    border-radius: 8px 8px;
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3);
+    -ms-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3);
+    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    overflow: hidden;
+}
+
+div#container div#contextmenu > ul > li p {
+    cursor: pointer;
+    display: block;
+    margin: 0;
+    padding: 10px;
+    padding-right: 30px;
+}
+
+div#container div#contextmenu > ul > li p span {
+    color: #505050;
+}
+
+div#container div#contextmenu > ul > li:hover p {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+div#container div#contextmenu > ul > li:hover p span {
+    color: #000000;
+}
+
 div#sidebar {
     display: none;
     background-color: #f0f0f0;
@@ -565,7 +621,7 @@ div#sidebar div.sidebar-file ul.list-file li p,
     margin: 0;
     padding: 5px;
     padding-left: 0;
-    padding-right: 30px;
+    padding-right: 25px;
     height: 100%;
     min-width: 100%;
     max-width: 200px;
@@ -586,8 +642,9 @@ div#sidebar div.sidebar-file ul.list-file li p span.icomoon,
     font-size: 26px;
 }
 
-div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-folder,
-            div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-folder {
+div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-folder, div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-folder-open,
+            div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-folder,
+            div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-folder-open {
     color: #ffb300;
 }
 
@@ -599,7 +656,12 @@ div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-file,
 
 div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-spinner,
             div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-spinner {
-    font-size: 21px;
+    font-size: 20px;
+}
+
+div#sidebar div.sidebar-file ul.list-file li p span:last-child,
+          div#sidebar div.sidebar-file ul.list-file li ul li p span:last-child {
+    margin-left: 5px;
 }
 
 div#sidebar div.sidebar-file ul.list-file li p:hover,
@@ -686,6 +748,7 @@ div#container div#alert {
     right: 15px;
     width: 300px;
     max-height: 300px;
+    z-index: 998;
 }
 
 div#container div#alert > ul,
