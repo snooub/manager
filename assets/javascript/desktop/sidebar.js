@@ -2,12 +2,14 @@ define([
     "ajax",
     "jquery",
     "define",
-    "selector"
+    "selector",
+    "contextmenu"
 ], function(
     ajax,
     jquery,
     define,
-    selector
+    selector,
+    contextmenu
 ) {
     return {
         file: {
@@ -81,7 +83,14 @@ define([
                     element.unbind("click").bind("click", function() {
                         console.log("Click: " + element);
                     }).unbind("contextmenu").bind("contextmenu", function(e) {
-                        console.log("Context menu: " + element);
+                        contextmenu.show(element, {
+                            open:   "Mở",
+                            copy:   "Sao chép",
+                            move:   "Di chuyển",
+                            delete: "Xóa",
+                            chmod:  "Phân quyền",
+                            info:   "Thông tin"
+                        });
 
                         e.preventDefault();
                     });

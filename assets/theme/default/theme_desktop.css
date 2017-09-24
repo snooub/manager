@@ -516,6 +516,63 @@ div#header ul#action li[login=true] {
     display: none;
 }
 
+div#container div#contextmenu {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.05);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 997;
+}
+
+div#container div#contextmenu > ul,
+  div#container div#contextmenu > ul > li {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div#container div#contextmenu > ul {
+    -webkit-border-radius: 8px 8px;
+    -moz-border-radius: 8px 8px;
+    -ms-border-radius: 8px 8px;
+    -o-border-radius: 8px 8px;
+    border-radius: 8px 8px;
+    -webkit-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3);
+    -ms-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3);
+    -o-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+div#container div#contextmenu > ul > li p {
+    cursor: pointer;
+    display: block;
+    margin: 0;
+    padding: 10px;
+    padding-right: 30px;
+}
+
+div#container div#contextmenu > ul > li p span {
+    color: #505050;
+}
+
+div#container div#contextmenu > ul > li:hover p {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+div#container div#contextmenu > ul > li:hover p span {
+    color: #000000;
+}
+
 div#sidebar {
     display: none;
     background-color: #f0f0f0;

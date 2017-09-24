@@ -2,12 +2,14 @@ define([
     "jquery",
     "define",
     "selector",
-    "scroll"
+    "scroll",
+    "contextmenu"
 ], function(
     jquery,
     define,
     selector,
-    scroll
+    scroll,
+    contextmenu
 ) {
     return {
         isInitFixSizeChild: false,
@@ -65,6 +67,14 @@ define([
 
             jquery(window).unbind("resize").bind("resize", function(handler) {
                 self.fixSizeChild();
+            });
+        },
+
+        registerDocumentOnMouseMove: function() {
+            var self = this;
+
+            jquery(document).unbind("mousemove").bind("mousemove", function(e) {
+                contextmenu.onMouseMove(self, e);
             });
         },
 

@@ -5,6 +5,7 @@ define([
     "define",
     "selector",
     "alert",
+    "contextmenu",
     "sidebar"
 ], function(
     ajax,
@@ -13,6 +14,7 @@ define([
     define,
     selector,
     alert,
+    contextmenu,
     sidebar
 ) {
     return {
@@ -105,6 +107,7 @@ define([
                 instance = this;
 
             container.show();
+            contextmenu.init(instance.lang, instance);
             sidebar.file.init(instance.lang, instance);
         }
     };

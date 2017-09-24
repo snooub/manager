@@ -13,6 +13,7 @@ define([
         init: function() {
             container.fixSizeChild();
             container.registerWindowOnResize();
+            container.registerDocumentOnMouseMove();
             lang.init(this);
 
             return this;
