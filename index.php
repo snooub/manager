@@ -18,14 +18,12 @@
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
     requireDefine('file_action');
 
-    if (Request::isDesktop(false)) {
+    if (Request::isDesktop(false) && Request::isMethodGet()) {
         if (isset($_GET) && count($_GET) > 0)
             Request::redirect(env('app.http.host'));
 
-        if (Request::isMethodGet()) {
-            require_once('desktop.php');
-            exit(255);
-        }
+        require_once('desktop.php');
+        exit(255);
     }
 
     $title   = lng('home.title_page_root');

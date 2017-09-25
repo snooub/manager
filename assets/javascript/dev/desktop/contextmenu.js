@@ -29,7 +29,7 @@ define([
             if (typeof element === "undefined")
                 return false;
 
-            if (typeof handler === "undefined")
+            if (typeof callback === "undefined")
                 callback = function(index, object) { };
 
             var contextListLeft   = (this.ePageX + 20);
@@ -48,7 +48,7 @@ define([
             selector.contextmenuList.find("li > p").each(function(index, object) {
                 var element = $(this);
 
-                element.unbind("click").bind("click", function(e) {
+                element.unbind("click contextmenu").bind("click contextmenu", function(e) {
                     if (typeof callback !== "undefined")
                         callback(index, object);
 

@@ -3,20 +3,25 @@ define([
     "jquery",
     "define",
     "selector",
+    "scroll",
     "contextmenu",
-    "content"
+    "content",
+    "lib/url"
 ], function(
     ajax,
     jquery,
     define,
     selector,
+    scroll,
     contextmenu,
-    content
+    content,
+    url
 ) {
     return {
         file: {
             lang:  null,
             login: null,
+            path:  null,
 
             init: function(lang, login) {
                 this.lang  = lang;
@@ -38,6 +43,14 @@ define([
                 this.repaintListEntry();
             },
 
+            setPath: function(path) {
+                this.path = path;
+            },
+
+            getPath: function() {
+                return this.path;
+            },
+
             loadPath: function(path, elementEntry) {
                 var url  = ajax.script.index;
                 var self = this;
@@ -51,8 +64,18 @@ define([
                 var elementIcon   = elementEntry.find("span.icomoon");
                 var elementParent = elementEntry.parent();
 
+                if (elementIcon.hasClass("icon-folder-open")) {
+                    elementIcon.removeClass("icon-folder-open").addClass("icon-folder");
+
+                    elementParent.find("> p + ul").css({
+                        display: "none"
+                    });
+
+                    return;
+                }
+
                 var request = ajax.open({
-                    url: ajax.script.index,
+                    url: url,
 
                     begin: function() {
                         self.startSpinner(elementParent);
@@ -73,6 +96,7 @@ define([
                                 elementSubList = elementParent.find("> p + ul");
                             }
 
+                            self.setPath(data.data.path);
                             self.renderDataList(elementSubList, data.data.path, data.data.list);
                             content.file.renderDataList(data.data.path, data.data.list);
                         }
@@ -81,11 +105,16 @@ define([
             },
 
             bindClickListEntry: function() {
+                var self = this;
+
                 selector.sidebarFileList.find("p").each(function() {
                     var element = $(this);
+                    var parent  = element.parent();
 
                     element.unbind("click").bind("click", function() {
+                        self.loadPath(url.rawDecode(parent.attr("path")), element);
                         console.log("Click: " + element);
+                        console.log(parent);
                     }).unbind("contextmenu").bind("contextmenu", function(e) {
                         contextmenu.show(element, {
                             open:   "Mở",
@@ -94,6 +123,9 @@ define([
                             delete: "Xóa",
                             chmod:  "Phân quyền",
                             info:   "Thông tin"
+                        }, function(index, object) {
+                            console.log(index);
+                            console.log(object);
                         });
 
                         e.preventDefault();
@@ -113,15 +145,19 @@ define([
                                .addClass("icon-folder");
             },
 
+            is: false,
+
             renderDataList: function(elementSubList, dataPath, dataList) {
                 elementSubList.stop().css({
                     display: "block",
                     opacity: 1
                 });
 
+                var self           = this;
                 var pathSplits     = [];
                 var pathSplitsTmp  = [];
                 var pathSeparator  = "/";
+                var pathBuffer     = "";
                 var elementCurrent = selector.sidebarFileList.find("> li");
 
                 if (dataPath.indexOf("/") === 0) {
@@ -137,18 +173,30 @@ define([
                     pathSplits.push(pathSplitsTmp[i]);
 
                 for (var i = 0; i < pathSplits.length; ++i) {
-                    var pathOffset = pathSplits[i];
+                    var pathOffset  = pathSplits[i];
+                        pathBuffer += pathOffset;
 
                     if (i === 0) {
-                        elementCurrent.find("span:last-child").html(pathOffset);
+                        elementCurrent.find("> p > span:last-child")
+                                      .html(pathOffset);
+
+                        elementCurrent.find("> p > span.icomoon:first-child")
+                                      .removeClass("icon-folder")
+                                      .addClass("icon-folder-open");
+
+                        if (pathSeparator === "\\")
+                            pathBuffer += pathSeparator;
                     } else {
-                        var elementSub = elementCurrent.find("> ul > li[name=\"" + pathOffset + "\"]");
+                        var elementSub  = elementCurrent.find("> ul > li[name=\"" + pathOffset + "\"]");
+
+                        if (i + 1 < pathSplits.length)
+                            pathBuffer += pathSeparator;
 
                         if (typeof elementSub === "undefined" || elementSub.length <= 0) {
                             var elementSubBuffer  = "<ul>";
                                 elementSubBuffer += "<li name=\"" + pathOffset + "\" is_directory=\"true\">";
                                 elementSubBuffer += "<p>";
-                                elementSubBuffer += "<span class=\"icomoon icon-folder\"></span>";
+                                elementSubBuffer += "<span class=\"icomoon icon-folder-open\"></span>";
                                 elementSubBuffer += "<span>" + pathOffset + "</span>";
                                 elementSubBuffer += "</p>";
                                 elementSubBuffer += "</li>";
@@ -159,6 +207,9 @@ define([
                         }
 
                         elementCurrent = elementSub;
+                        elementCurrent.find("> p:first-child > span:last-child").html(pathOffset);
+                        elementCurrent.find("> p:first-child > span.icomoon:first-child").removeClass("icon-folder").addClass("icon-folder-open");
+                        elementCurrent.attr("path", url.rawEncode(pathBuffer));
                     }
                 }
 
@@ -166,18 +217,18 @@ define([
                 var buffer    = "";
                 var entry     = null;
 
-                if (elementCurrent.find("> p + ul").length <= 0)
+                if (elementUl.find("> p + ul").length <= 0)
                     elementUl.append("<ul></ul>");
 
-                elementUl = elementUl.find("> p + ul");
+                elementUl = elementUl.find("> p + ul").html("");
 
                 for (var i = 0; i < dataList.length; ++i) {
-                    entry   = dataList[i];
+                    entry = dataList[i];
 
                     if (entry.is_directory)
-                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"true\">";
+                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"true\" path=\"" + url.rawEncode(entry.path) + "\">";
                     else
-                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"false\">";
+                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"false\" path=\"" + url.rawEncode(entry.path) + "\">";
 
                     buffer += "<p>";
 
@@ -204,15 +255,6 @@ define([
                         paddingLeft += 30;
                     else
                         paddingLeft += 10;
-
-                    var nextElement = element.next();
-
-                    if (typeof nextElement !== "undefined" && nextElement.length > 0) {
-                        var nextTagName = nextElement.get(0).tagName.toLowerCase();
-
-                        if (nextTagName === "ul")
-                            element.find("span.icomoon").removeClass("icon-folder icon-spinner spinner-animation").addClass("icon-folder-open");
-                    }
 
                     if (typeof parent !== "undefined" && parent.get(0).tagName.toLowerCase() === "li") {
                         var elementLabel      = parent.find("p:first-child");

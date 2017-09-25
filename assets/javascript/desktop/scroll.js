@@ -18,9 +18,9 @@ define([
             if (typeof element === "string")
                 element = jquery(element);
 
-            if (element.attr("class").indexOf("scroll-wrapper") === -1)
+            if (element.hasClass("scroll-wrapper") == false)
                 element = element.find("scroll-wrapper");
-            else if (element.parent().attr("class") && element.parent().attr("class").indexOf("scroll-wrapper") !== -1)
+            else if (element.parent().hasClass("scroll-wrapper"))
                 element = element.parent();
 
             this.addScrollThumb(element);
@@ -117,18 +117,19 @@ define([
             scrollContentEndLeft = scrollContentEndLeft.scrollWidth - scrollContent.outerWidth();
             scrollContentEndTop  = scrollContentEndTop.scrollHeight - scrollContent.outerHeight();
 
-            element.unbind("resize").bind("resize", function(handler) {
-                elementWidth           = element.width();
-                elementHeight          = element.height();
-                scrollContentEndLeft   = scrollContent.get(0).scrollWidth  - elementWidth;
-                scrollContentEndTop    = scrollContent.get(0).scrollHeight - elementHeight;
+            // element.unbind("resize").bind("resize", function(handler) {
+            //     elementWidth           = element.width();
+            //     elementHeight          = element.height();
+            //     scrollContentEndLeft   = scrollContent.get(0).scrollWidth  - elementWidth;
+            //     scrollContentEndTop    = scrollContent.get(0).scrollHeight - elementHeight;
 
-                scrollContent.scrollTop(0);
-                scrollContent.scrollLeft(0);
-                self.checkScroll(selector);
-            });
+            //     scrollContent.scrollTop(0);
+            //     scrollContent.scrollLeft(0);
+            //     self.checkScroll(selector);
+            // });
 
-            scrollContent.unbind("DOMSubtreeModified DOMNodeInserted DOMNodeRemoved DOMAttrModified").bind("DOMSubtreeModified DOMNodeInserted DOMNodeRemoved DOMAttrModified", function() {
+            scrollContent.unbind("DOMSubtreeModified DOMNodeInserted DOMNodeRemoved").bind("DOMSubtreeModified DOMNodeInserted DOMNodeRemoved", function(e) {
+
                 elementWidth           = element.width();
                 elementHeight          = element.height();
                 scrollContentEndLeft   = scrollContent.get(0).scrollWidth  - elementWidth;

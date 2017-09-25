@@ -439,11 +439,11 @@ div#container div#loading div#box span.notice {
 div#header {
     display: none;
     background-color: #00897b;
-    -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-    -ms-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-    -o-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.5);
+    -ms-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.5);
     position: fixed;
     top: 0;
     left: 0;
@@ -636,6 +636,7 @@ div#sidebar div.sidebar-file ul.list-file li p span,
     color: #606060;
     font-size: 16px;
     vertical-align: middle;
+    line-height: 25px;
 }
 
 div#sidebar div.sidebar-file ul.list-file li p span.icomoon,
@@ -653,6 +654,7 @@ div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-folder, div#sid
 
 div#sidebar div.sidebar-file ul.list-file li p span.icomoon.icon-spinner,
             div#sidebar div.sidebar-file ul.list-file li ul li p span.icomoon.icon-spinner {
+    color: #707070;
     font-size: 20px;
 }
 
@@ -723,11 +725,11 @@ div#content > ul > li.file-manager ul.file-location {
     padding-top: 0;
     padding-bottom: 0;
     z-index: 1;
-    -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
-    -ms-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
-    -o-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
-    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    -ms-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
 }
 
 div#content > ul > li.file-manager ul.file-location li {

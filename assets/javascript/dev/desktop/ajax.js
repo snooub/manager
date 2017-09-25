@@ -66,8 +66,11 @@ define([
             };
 
             options.error = function(xhr, status, throws) {
-                if (status === self.status.parsererror)
+                if (status === self.status.parsererror) {
                     alert.add(xhr.responseText);
+                    console.log(xhr);
+                    console.log(xhr.responseText);
+                }
 
                 var flagEnd = handlerError(xhr, status, throws);
 

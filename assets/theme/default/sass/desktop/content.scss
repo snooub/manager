@@ -47,7 +47,7 @@ div#content {
                 padding-bottom: 0;
                 z-index: 1;
 
-                @include box-shadow(1px 1px 8px rgba(0, 0, 0, 0.3));
+                @include box-shadow(1px 1px 5px rgba(0, 0, 0, 0.3));
 
                 li {
                     display: inline-block;

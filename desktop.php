@@ -101,12 +101,7 @@
                 <div id="content">
                     <ul>
                         <li class="file-manager">
-                            <ul class="file-location">
-                                <li><span class="label">C:</span><span class="separator"></span></li>
-                                <li><span class="label">xampp</span><span class="separator"></span></li>
-                                <li><span class="label">htdocs</span><span class="separator"></span></li>
-                                <li><span class="label">izerocs.net</span></li>
-                            </ul>
+                            <ul class="file-location"></ul>
                             <div class="list-file scroll-wrapper">
                                 <div class="scroll-content">
                                     <ul class="list thumb"></ul>
