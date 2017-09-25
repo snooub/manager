@@ -69,7 +69,7 @@ define([
 
                     elementParent.find("> p + ul").css({
                         display: "none"
-                    });
+                    }).html("");
 
                     return;
                 }

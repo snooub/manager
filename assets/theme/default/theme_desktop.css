@@ -787,7 +787,7 @@ div#content > ul > li.file-manager div.list-file ul.list,
 }
 
 div#content > ul > li.file-manager div.list-file ul.list {
-    padding: 1%;
+    width: 100%;
 }
 
 div#content > ul > li.file-manager div.list-file ul.list > li {
