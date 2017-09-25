@@ -3,13 +3,15 @@ define([
     "define",
     "selector",
     "scroll",
-    "contextmenu"
+    "contextmenu",
+    "content"
 ], function(
     jquery,
     define,
     selector,
     scroll,
-    contextmenu
+    contextmenu,
+    content
 ) {
     return {
         isInitFixSizeChild: false,
@@ -55,6 +57,8 @@ define([
             selector.container.css({ display: "block", top: headerHeight + "px" });
 
             scroll.emulator(define.sidebarFileSelector);
+            content.file.fixSize();
+            scroll.emulator(define.contentFileManagerListSelector);
 
             if (self.isInitFixSizeChild)
                 self.stopLoading();
@@ -127,6 +131,7 @@ define([
             });
 
             scroll.emulator(define.sidebarFileSelector);
+            scroll.emulator(define.contentFileManagerListSelector);
         },
 
         hidden: function() {

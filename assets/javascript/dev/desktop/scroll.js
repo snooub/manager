@@ -8,6 +8,11 @@ define([
         scrollMin:    30,
 
         emulator: function(selector) {
+            if (typeof selector === "undefined") {
+                console.log("Selector scroll is null");
+                return false;
+            }
+
             var element = selector;
 
             if (typeof element === "string")

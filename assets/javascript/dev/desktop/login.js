@@ -6,7 +6,8 @@ define([
     "selector",
     "alert",
     "contextmenu",
-    "sidebar"
+    "sidebar",
+    "content"
 ], function(
     ajax,
     jquery,
@@ -15,7 +16,8 @@ define([
     selector,
     alert,
     contextmenu,
-    sidebar
+    sidebar,
+    content
 ) {
     return {
         lang: null,
@@ -108,7 +110,8 @@ define([
 
             container.show();
             contextmenu.init(instance.lang, instance);
-            sidebar.file.init(instance.lang, instance);
+            sidebar.file.init(instance.lang, instance, content);
+            content.file.init(instance.lang, instance);
         }
     };
 });

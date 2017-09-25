@@ -25,12 +25,12 @@ define([
             });
         },
 
-        show: function(element, options, handler) {
+        show: function(element, options, callback) {
             if (typeof element === "undefined")
                 return false;
 
             if (typeof handler === "undefined")
-                handler = function(index) { };
+                callback = function(index, object) { };
 
             var contextListLeft   = (this.ePageX + 20);
             var contextListTop    = (this.ePageY - selector.header.height()) + 20;
@@ -45,12 +45,12 @@ define([
             }
 
             selector.contextmenuList.html(contextListBuffer);
-
-            selector.contextmenuList.find("li > p").each(function() {
+            selector.contextmenuList.find("li > p").each(function(index, object) {
                 var element = $(this);
 
                 element.unbind("click").bind("click", function(e) {
-                    console.log(element.find("span").html());
+                    if (typeof callback !== "undefined")
+                        callback(index, object);
 
                     return false;
                 });

@@ -3,16 +3,19 @@ define([
     "jquery",
     "define",
     "selector",
-    "contextmenu"
+    "contextmenu",
+    "content"
 ], function(
     ajax,
     jquery,
     define,
     selector,
-    contextmenu
+    contextmenu,
+    content
 ) {
     return {
         file: {
+            lang:  null,
             login: null,
 
             init: function(lang, login) {
@@ -71,6 +74,7 @@ define([
                             }
 
                             self.renderDataList(elementSubList, data.data.path, data.data.list);
+                            content.file.renderDataList(data.data.path, data.data.list);
                         }
                     }
                 });
@@ -180,7 +184,7 @@ define([
                     if (entry.is_directory)
                         buffer += "<span class=\"icomoon icon-folder\"></span>";
                     else
-                        buffer += "<span class=\"icomoon icon-file\"></span>";
+                        buffer += "<span class=\"icomoon " + entry.icon + "\"></span>";
 
                     buffer += "<span>" + entry.name + "</span>";
                     buffer += "</p>";

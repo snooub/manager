@@ -77,18 +77,86 @@
         }
     }
 
+    $takeInfo = function(&$array) {
+        $entrySize     = 0;
+        $entryPath     = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $array['name']);
+        $chmodPerms    = FileInfo::getChmodPermission($entryPath);
+        $entryInfo     = new FileInfo($entryPath);
+        $entryMime     = null;
+        $entryIcon     = null;
+        $entryEditHref = null;
+        $entryIsEdit   = false;
+
+        if ($array['is_directory'] == false) {
+            $entrySize = FileInfo::fileSize($entryPath);
+            $entryMime = new FileMime($entryInfo);
+
+            $entryIcon     = null;
+            $entryIsEdit   = false;
+            $entryEditHref = 'file_edit_text.php';
+
+            if ($entryMime->isFormatText()) {
+                $entryIcon   = 'icon-file-text';
+                $entryIsEdit = true;
+            } else if ($entryMime->isFormatCode()) {
+                $entryIcon   = 'icon-file-code';
+                $entryIsEdit = true;
+            } else if ($entryMime->isFormatArchive()) {
+                $entryIcon   = 'icon-file-archive';
+                $entryIsEdit = false;
+
+                if ($entryMime->isFormatArchiveZip()) {
+                    $entryIsEdit   = true;
+                    $entryEditHref = 'file_unzip.php';
+                }
+            } else if ($entryMime->isFormatAudio()) {
+                $entryIcon   = 'icon-file-audio';
+                $entryIsEdit = false;
+            } else if ($entryMime->isFormatVideo()) {
+                $entryIcon   = 'icon-file-video';
+                $entryIsEdit = false;
+            } else if ($entryMime->isFormatDocument()) {
+                $entryIcon   = 'icon-file-document';
+                $entryIsEdit = false;
+            } else if ($entryMime->isFormatImage()) {
+                $entryIcon   = 'icon-file-image';
+                $entryIsEdit = false;
+            } else if ($entryMime->isFormatSource()) {
+                $entryIcon   = 'icon-file-code';
+                $entryIsEdit = true;
+            } else {
+                $entryIcon   = 'icon-file';
+                $entryIsEdit = true;
+            }
+        }
+
+        $array['size']      = $entrySize;
+        $array['path']      = $entryPath;
+        $array['icon']      = $entryIcon;
+        $array['is_edit']   = $entryIsEdit;
+        $array['edit_href'] = $entryEditHref;
+        $array['format']    = $entryInfo->getFileExt();
+        $array['perms']     = $chmodPerms;
+
+        return $array;
+    };
+
     if (count($arrayFolder) > 0) {
         asort($arrayFolder);
 
-        foreach ($arrayFolder AS $entry)
-            $handlerList[] = [ 'name' => $entry, 'is_directory' => true ];
+        foreach ($arrayFolder AS $entry) {
+            $array         = [ 'name' => $entry, 'is_directory' => true ];
+            $handlerList[] = $takeInfo($array);
+        }
     }
 
     if (count($arrayFile) > 0) {
         asort($arrayFile);
 
-        foreach ($arrayFile AS $entry)
-            $handlerList[] = [ 'name' => $entry, 'is_directory' => false ];
+        foreach ($arrayFile AS $entry) {
+            $array         = [ 'name' => $entry, 'is_directory' => false ];
+            $handlerList[] = $takeInfo($array);
+        }
     }
 
     if (Request::isDesktop()) {
@@ -304,8 +372,8 @@
             <?php if ($handlerCount > 0) { ?>
                 <?php for ($i = $handlerPage['begin']; $i < $handlerPage['end']; ++$i) { ?>
                     <?php $entry        = $handlerList[$i]; ?>
-                    <?php $entryPath    = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $entry['name']); ?>
-                    <?php $chmodPerms   = FileInfo::getChmodPermission($entryPath); ?>
+                    <?php $entryPath    = $entry['path']; ?>
+                    <?php $chmodPerms   = $entry['perms']; ?>
                     <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
 
                     <?php if ($entry['is_directory']) { ?>
@@ -329,52 +397,10 @@
                                 <span><?php echo $entry['name']; ?></span>
                             </a>
                             <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
-                                <span><?php echo $chmodPerms; ?></span>
+                                <span><?php echo $entry['perms']; ?></span>
                             </a>
                         </li>
                     <?php } else { ?>
-                        <?php $info     = new FileInfo($entryPath); ?>
-                        <?php $mime     = new FileMime($info); ?>
-                        <?php $icon     = null; ?>
-                        <?php $isEdit   = false; ?>
-                        <?php $editHref = 'file_edit_text.php' . $urlParameter; ?>
-
-                        <?php
-                            if ($mime->isFormatText()) {
-                                $icon   = 'icon-file-text';
-                                $isEdit = true;
-                            } else if ($mime->isFormatCode()) {
-                                $icon   = 'icon-file-code';
-                                $isEdit = true;
-                            } else if ($mime->isFormatArchive()) {
-                                $icon   = 'icon-file-archive';
-                                $isEdit = false;
-
-                                if ($mime->isFormatArchiveZip()) {
-                                    $isEdit = true;
-                                    $editHref = 'file_unzip.php' . $urlParameter;
-                                }
-                            } else if ($mime->isFormatAudio()) {
-                                $icon   = 'icon-file-audio';
-                                $isEdit = false;
-                            } else if ($mime->isFormatVideo()) {
-                                $icon   = 'icon-file-video';
-                                $isEdit = false;
-                            } else if ($mime->isFormatDocument()) {
-                                $icon   = 'icon-file-document';
-                                $isEdit = false;
-                            } else if ($mime->isFormatImage()) {
-                                $icon   = 'icon-file-image';
-                                $isEdit = false;
-                            } else if ($mime->isFormatSource()) {
-                                $icon   = 'icon-file-code';
-                                $isEdit = true;
-                            } else {
-                                $icon   = 'icon-file';
-                                $isEdit = true;
-                            }
-                        ?>
-
                         <li class="type-file <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
                             <div class="icon">
                                 <?php $id = 'file-' . AppDirectory::rawEncode($entry['name']); ?>
@@ -388,17 +414,17 @@
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
 
-                                <?php if ($isEdit) { ?><a href="<?php echo $editHref; ?>"><?php } ?>
-                                    <span class="icomoon <?php echo $icon; ?>"></span>
-                                <?php if ($isEdit) { ?></a><?php } ?>
+                                <?php if ($entry['is_edit']) { ?><a href="<?php echo $entry['edit_href'] . $urlParameter; ?>"><?php } ?>
+                                    <span class="icomoon <?php echo $entry['icon']; ?>"></span>
+                                <?php if ($entry['is_edit']) { ?></a><?php } ?>
                             </div>
                             <a href="file_info.php<?php echo $urlParameter; ?>" class="file-name">
                                 <span><?php echo $entry['name']; ?></span>
                             </a>
                             <div class="chmod-size">
-                                <span class="size"><?php echo FileInfo::sizeToString($info->getFileSize()); ?></span><span>,</span>
+                                <span class="size"><?php echo FileInfo::sizeToString($entry['size']); ?></span><span>,</span>
                                 <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
-                                    <span><?php echo $chmodPerms; ?></span>
+                                    <span><?php echo $entry['perms']; ?></span>
                                 </a>
                             </div>
                         </li>

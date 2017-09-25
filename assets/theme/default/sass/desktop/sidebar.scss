@@ -58,16 +58,13 @@ div#sidebar {
                         vertical-align: middle;
 
                         &.icomoon {
-                            font-size: 26px;
+                            color: #707070;
+                            font-size: 23px;
 
                             &.icon-folder,
                             &.icon-folder-open {
                                 color: #ffb300;
-                            }
-
-                            &.icon-file {
-                                color: #707070;
-                                font-size: 23px;
+                                font-size: 26px;
                             }
 
                             &.icon-spinner {
