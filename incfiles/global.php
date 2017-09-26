@@ -36,6 +36,7 @@
     );
 
     Librarys\Bootstrap::execute($directory . SP . 'assets' . SP . 'config' . SP . 'app.php');
+    Librarys\App\Config\AppAboutConfig::updateBuildDev();
 
     if (Validate::ip(($ip = Request::ip())) == false)
         throw new RuntimeException(lng('default.global.ip_not_validate', 'ip', $ip));

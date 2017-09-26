@@ -5,6 +5,8 @@
     if (defined('LOADED') == false)
         exit;
 
+    use Librarys\Http\Request;
+
     final class AppAboutConfig extends BaseConfig
     {
 
@@ -39,6 +41,14 @@
         protected function __clone()
         {
 
+        }
+
+        public static function updateBuildDev()
+        {
+            if (Request::isLocal()) {
+                self::getInstance()->setSystem(self::ARRAY_KEY_BUILD_AT, time());
+                self::getInstance()->write(true);
+            }
         }
 
         public static function getInstance()
