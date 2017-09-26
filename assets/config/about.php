@@ -6,7 +6,7 @@
     return [
         'name' => 'Manager',
         'author' => 'Izero.Cs',
-        'version' => '3.5.0',
+        'version' => '3.5.1',
         'is_beta' => true,
         'email' => 'Izero.Cs@gmail.com',
         'fb_link' => 'https://facebook.com/Izero.Cs',
@@ -17,7 +17,7 @@
         'create_at' => 1434468025,
         'upgrade_at' => 1496595751,
         'check_at' => 1506417904,
-        'build_at' => 1434468025,
+        'build_at' => 1506419255,
     ];
 
 ?>
