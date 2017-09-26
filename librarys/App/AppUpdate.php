@@ -198,8 +198,6 @@
             if ($this->updateStatus === self::RESULT_VERSION_IS_LATEST && $this->updateStatus !== self::RESULT_HAS_ADDITIONAL)
                 return true;
 
-            $appUpgradeConfig = new AppUpgradeConfig($this->boot);
-
             foreach ($this->jsonArray AS $key => $value) {
                 if (
                         $key !== self::ARRAY_DATA_KEY_DATA_UPGRADE      &&
@@ -209,7 +207,7 @@
                         $key !== self::ARRAY_DATA_KEY_UPDATE_SCRIPT     &&
                         $key !== self::ARRAY_DATA_KEY_ERROR_INT         &&
 
-                        $appUpgradeConfig->setSystem($key, $value) == false
+                        AppUpgradeConfig::getInstance()->setSystem($key, $value) == false
                     )
                 {
                     $errorWriteInfo = self::ERROR_WRITE_INFO_FAILED;
@@ -217,7 +215,7 @@
                 }
             }
 
-            if ($appUpgradeConfig->write() == false) {
+            if (AppUpgradeConfig::getInstance()->write() == false) {
                 $errorWriteInfo = self::ERROR_WRITE_INFO_FAILED;
                 return false;
             }
