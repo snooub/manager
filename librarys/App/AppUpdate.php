@@ -97,7 +97,7 @@
             $this->aboutConfig = $about;
             $this->servers     = env('app.server_app');
 
-            if (Request::isLocal(true))
+            if (Request::isLocal(true) == false)
                 $this->path = 'app/ManagerServer/check_update.php';
             else
                 $this->path = 'app/manager/check_update.php';
