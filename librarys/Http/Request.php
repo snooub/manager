@@ -63,11 +63,11 @@
             $host = env('SERVER.HTTP_HOST');
             $ip   = self::ip();
 
-            if (preg_match('/^izerocs\.ga$/i', $host) && $igoneWebLocal)
-                return false;
+//            if (preg_match('/^izerocs\.ga$/i', $host) && $igoneWebLocal)
+//                return false;
 
-            if (preg_match('/(localhost|127\.0\.0\.1)(:8080)?/i', $host) || preg_match('/^127\.0\.0\.1$/', $ip) || preg_match('/^izerocs\.ga$/i', $host))
-                return true;
+//            if (preg_match('/(localhost|127\.0\.0\.1)(:8080)?/i', $host) || preg_match('/^127\.0\.0\.1$/', $ip) || preg_match('/^izerocs\.ga$/i', $host))
+//                return true;
 
             return false;
         }
@@ -77,7 +77,7 @@
             if (SimpleDetect::getInstance()->getDeviceType() !== SimpleDetect::DEVICE_TYPE_COMPUTER)
                 return false;
 
-            if (env('app.dev.enable_desktop') == false && Request::isLocal() == false)
+            if (env('app.dev.enable_desktop') == false || Request::isLocal() == false)
                 return false;
 
             if ($checkMethod && self::isMethodPost() == false)
