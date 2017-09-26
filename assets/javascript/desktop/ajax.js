@@ -35,6 +35,12 @@ define([
             if (!options.dataType)
                 options.dataType = "json";
 
+            if (!options.data || options.data.length <= 0) {
+                options.data = {
+                    submit: 1
+                };
+            }
+
             var self           = this;
             var handlerError   = null;
             var handlerSuccess = null;

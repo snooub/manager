@@ -569,7 +569,10 @@
 
         public static function scanDirectory($directory)
         {
-            return @scandir($directory);
+            if (self::fileExists($directory))
+                return @scandir($directory);
+
+            return false;
         }
 
         public static function globDirectory($pattern, $flag = 0)
