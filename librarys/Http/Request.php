@@ -63,7 +63,7 @@
             $host = env('SERVER.HTTP_HOST');
             $ip   = self::ip();
 
-            if (preg_match('/^izerocs\.ga$/i', $host) && $igoneWebLocal == false)
+            if (preg_match('/^izerocs\.ga$/i', $host) && $igoneWebLocal)
                 return false;
 
             if (preg_match('/(localhost|127\.0\.0\.1)(:8080)?/i', $host) || preg_match('/^127\.0\.0\.1$/', $ip) || preg_match('/^izerocs\.ga$/i', $host))
