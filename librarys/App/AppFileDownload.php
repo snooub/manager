@@ -74,19 +74,23 @@
             if ($this->fileInfo->isFile() == false)
                 return false;
 
-            $range = null;
+            $range = '';
 
             if(isset($_SERVER['HTTP_RANGE'])) {
                 list($size_unit, $rangeOrig) = explode('=', $_SERVER['HTTP_RANGE'], 2);
 
-                // Check if http_range is sent by browser (or download manager)
                 if ($size_unit == 'bytes') {
                     // Multiple ranges could be specified at the same time, but for simplicity only serve the first range
                     // http://tools.ietf.org/id/draft-ietf-http-range-retrieval-00.txt
 
-                    list($range, $extraRanges) = explode(',', $rangeOrig, 2);
+                    $range = explode(',', $rangeOrig);
+                    $range = explode('-', $range[0]);
+
+                    @list($range, $extraRanges) = $range;
+
+                   if (is_numeric($range) == false)
+                       $range = '0';
                 } else {
-                    $range = '';
                     header('HTTP/1.1 416 Requested Range Not Satisfiable');
                     exit;
                 }
@@ -94,12 +98,25 @@
                 $range = '-';
             }
 
-            list($seekStart, $seekEnd) = explode('-', $range, 2);
+            $ranges    = explode('-', $range, 2);
+            $seekStart = null;
+            $seekEnd   = null;
+
+            if (count($ranges) >= 2)
+                list($seekStart, $seekEnd) = $ranges;
 
             // Set start and end based on range (if set), else set defaults
             // Also check for invalid ranges.
-            $seekEnd   = (empty($seekEnd)) ? ($this->fileSize - 1) : min(abs(intval($seekEnd)), ($this->fileSize - 1));
-            $seekStart = (empty($seekStart) || $seekEnd < abs(intval($seekStart))) ? 0 : max(abs(intval($seekStart)),0);
+
+            if (empty($seekEnd) || is_null($seekEnd))
+                $seekEnd = $this->fileSize - 1;
+            else
+                $seekEnd = min(abs(intval($seekEnd)), $this->fileSize - 1);
+
+            if (empty($seekStart) || is_null($seekStart) || $seekEnd < abs(intval($seekStart)))
+                $seekStart = 0;
+            else
+                $seekStart = max(abs(intval($seekStart)), 0);
 
             // Only send partial content header if downloading a piece of the file (IE workaround)
             if ($seekStart > 0 || $seekEnd < ($this->fileSize - 1)) {
@@ -118,7 +135,7 @@
             FileInfo::fileSeek($file, $seekStart);
 
             while(FileInfo::fileEndOfFile($file) == false) {
-                print(FileInfo::fileRead($file, 1024 * 8));
+                echo(FileInfo::fileRead($file, 1024 * 8));
                 @ob_flush();
                 @flush();
 

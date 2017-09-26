@@ -158,7 +158,9 @@
         else
             $pclzipPage['end_loop'] = $pclZipCountArrayEntry;
     } else {
-        $pclzipPage['total'] = 1;
+        $pclzipPage['total']      = 1;
+        $pclzipPage['begin_loop'] = 0;
+        $pclzipPage['end_loop']   = $pclZipCountArrayEntry;
     }
 
     $appParameter->add(PARAMETER_ZIP_PATH, $pclZipDirectoryOrigin, $pclZipDirectoryOrigin != null);
