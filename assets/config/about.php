@@ -4,7 +4,7 @@
         exit;
 
     return [
-        'build_at' => 1506512794,
+        'build_at' => 1506512934,
         'name' => 'Manager',
         'author' => 'Izero.Cs',
         'version' => '3.5.1',

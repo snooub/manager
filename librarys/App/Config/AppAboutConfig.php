@@ -46,7 +46,9 @@
         public static function updateBuildDev()
         {
             if (Request::isLocal(true)) {
-                self::getInstance()->setSystem(self::ARRAY_KEY_BUILD_AT, time());
+                if (self::getInstance()->setSystem(self::ARRAY_KEY_BUILD_AT, time()) == false)
+                    return;
+
                 self::getInstance()->write(true);
             }
         }
