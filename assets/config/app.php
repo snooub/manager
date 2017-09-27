@@ -12,7 +12,6 @@
 
         'app' => [
             'server_app' => [
-                'localhost',
                 'izerocs.net',
                 'izerocs.ga'
             ],

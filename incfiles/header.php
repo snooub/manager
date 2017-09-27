@@ -56,12 +56,12 @@
                 </div>
                 <ul id="action">
                     <?php if (AppUser::getInstance()->isLogin()) { ?>
-                        <li>
+<!--                         <li>
                             <a href="#">
                                 <span class="icomoon icon-search"></span>
                             </a>
                         </li>
-
+ -->
                         <?php $url    = env('app.http.host') . '/mysql'; ?>
                         <?php $isShow = true; ?>
 

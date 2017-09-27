@@ -8,6 +8,9 @@
     use Librarys\App\Config\AppConfig;
     use Librarys\File\FileInfo;
     use Librarys\File\FileMime;
+    use Librarys\File\FileCurl;
+    use Librarys\Http\Request;
+    use Librarys\Http\Secure\CFSRToken;
 
     define('LOADED',              1);
     define('PARAMETER_PAGE_EDIT', 'page_edit_text');
@@ -79,6 +82,8 @@
         $edits['content'] = FileInfo::fileReadContents($edits['path']);
 
     if (isset($_POST['save'])) {
+        $name = AppDirectory::getInstance()->getName();
+
         if ($edits['page']['max'] > 0) {
             $edits['content'] = str_replace("\r\n", "\n", $edits['content']);
             $edits['content'] = str_replace("\n",   "\n", $edits['content']);
@@ -116,10 +121,83 @@
             $edits['content'] = str_replace("\r",   "\n", $edits['content']);
         }
 
-        if (FileInfo::fileWriteContents($edits['path'], $edits['content']) !== false)
-            AppAlert::success(lng('file_edit_text.alert.save_text_success'));
-        else
-            AppAlert::danger(lng('file_edit_text.alert.save_text_failed'));
+        $isSave = true;
+
+        if (strcasecmp($name, '.htaccess') === 0) {
+            $serverRoot = env('server.document_root');
+            $appRoot    = env('app.path.root');
+            $tmp        = env('app.path.tmp');
+            $appAbs     = substr($appRoot, strlen($serverRoot) + 1);
+            $tmpAbs     = substr($tmp, strlen($appRoot) + 1);
+
+            if (FileInfo::isTypeDirectory($tmp) == false)
+                FileInfo::mkdir($tmp);
+
+            $folderManager    = $appAbs;
+            $fileHtaccess     = '.htaccess';
+            $fileIndex        = 'index.php';
+            $fileManagerIndex = 'index.php';
+
+            $pathFolderManager    = FileInfo::filterPaths($tmp . SP . $folderManager);
+            $pathFileHtaccess     = FileInfo::filterPaths($tmp . SP . $fileHtaccess);
+            $pathFileIndex        = FileInfo::filterPaths($tmp . SP . $fileIndex);
+            $pathFileManagerIndex = FileInfo::filterPaths($pathFolderManager . SP . $fileManagerIndex);
+
+            if (FileInfo::isTypeDirectory($pathFolderManager) == false)
+                FileInfo::mkdir($pathFolderManager);
+
+            if (FileInfo::fileExists($pathFileIndex))
+                FileInfo::rrmdir($pathFileIndex);
+
+            if (FileInfo::fileExists($pathFileManagerIndex))
+                FileInfo::rrmdir($pathFileManagerIndex);
+
+            $tokenRandom = CFSRToken::generator();
+
+            FileInfo::fileWriteContents($pathFileIndex,        $tokenRandom);
+            FileInfo::fileWriteContents($pathFileManagerIndex, $tokenRandom);
+            FileInfo::fileWriteContents($pathFileHtaccess,     $edits['content']);
+
+            $httpTmp             = separator(env('app.http.host') . SP . $tmpAbs, '/');
+            $httpTmpIndex        = separator($httpTmp . SP . $fileIndex,          '/');
+            $httpTmpManagerIndex = separator($httpTmp . SP . $folderManager . SP . $fileManagerIndex,   '/');
+
+            $fileCurl          = new FileCurl($httpTmpIndex);
+            $tokenIndex        = null;
+            $tokenManagerIndex = null;
+            $errorResponseCode = null;
+            $errorIndex        = true;
+
+            if ($fileCurl->curl() != false && $fileCurl->getHttpCode() === 200) {
+                $tokenIndex = trim(addslashes($fileCurl->getBuffer()));
+
+                $fileCurl->setURL($httpTmpManagerIndex);
+
+                if ($fileCurl->curl() != false && $fileCurl->getHttpCode() === 200) {
+                    $tokenManagerIndex = trim(addslashes($fileCurl->getBuffer()));
+                } else {
+                    $errorResponseCode = $fileCurl->getResponseCode();
+                    $errorIndex        = false;
+                }
+            } else {
+                $errorResponseCode = $fileCurl->getResponseCode();
+                $errorIndex        = true;
+            }
+
+            $isSave = false;
+
+            if (empty($tokenIndex) || empty($tokenManagerIndex) || strcmp($tokenRandom, $tokenIndex) !== 0 || strcmp($tokenRandom, $tokenManagerIndex) !== 0)
+                AppAlert::danger(lng('file_edit_text.alert.htaccess_check_error_code', 'code', Request::httpResponseCodeToString($errorResponseCode)));
+            else
+                $isSave = true;
+        }
+
+        if ($isSave) {
+            if (FileInfo::fileWriteContents($edits['path'], $edits['content']) !== false)
+                AppAlert::success(lng('file_edit_text.alert.save_text_success'));
+            else
+                AppAlert::danger(lng('file_edit_text.alert.save_text_failed'));
+        }
     }
 
     if ($edits['content'] != null && empty($edits['content']) == false && strlen($edits['content']) > 0) {
@@ -173,7 +251,7 @@
             <ul class="form-element">
                 <li class="textarea">
                     <span><?php echo lng('file_edit_text.form.input.content_file'); ?></span>
-                    <textarea name="content" rows="20" wrap="off" autocorrect="off" autocomplete="false" autocapitalize="off" spellcheck="false"><?php echo htmlspecialchars($edits['content']); ?></textarea>
+                    <textarea name="content" rows="20" wrap="on" autocorrect="off" autocomplete="false" autocapitalize="off" spellcheck="false"><?php echo htmlspecialchars($edits['content']); ?></textarea>
                 </li>
                 <?php if ($edits['page']['max'] > 0 && $edits['page']['total'] > 1) { ?>
                     <li class="paging">
@@ -193,6 +271,10 @@
         <?php $appParameter->remove(PARAMETER_PAGE_EDIT); ?>
         <?php $appParameter->toString(true); ?>
     </div>
+
+    <ul class="alert">
+        <li class="info"><span><?php echo lng('file_edit_text.alert.tips'); ?></span></li>
+    </ul>
 
     <ul class="menu-action">
         <li>

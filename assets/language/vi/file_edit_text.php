@@ -19,7 +19,9 @@
         ],
 
         'alert' => [
+            'tips'                         => 'Nếu bạn sửa 1 tập tin .htaccess nó sẽ được mặc định kiểm tự động được kiểm tra lỗi trước khi lưu, để đảm bảo không xảy ra lỗi',
             'file_is_not_format_text_edit' => 'Tập tin không phải định dạng văn bản có thể sửa được',
+            'htaccess_check_error_code'    => 'Tập tin .htaccess có lỗi, kết quả: <strong>{$code}</strong>',
             'save_text_success'            => 'Lưu văn bản thành công',
             'save_text_failed'             => 'Lưu văn bản thất bại'
         ]

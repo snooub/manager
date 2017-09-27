@@ -18,6 +18,7 @@
         private $timeout;
         private $autoRedirect;
         private $httpCode;
+        private $responseCode;
         private $msgError;
         private $errorInt;
         private $buffer;
@@ -157,6 +158,11 @@
             return $this->httpCode;
         }
 
+        public function getResponseCode()
+        {
+            return $this->responseCode;
+        }
+
         public function getErrorInt()
         {
             return $this->errorInt;
@@ -204,9 +210,6 @@
                 $result = $this->useFsock();
 
             if ($this->timeEnd() && $result == false)
-                return false;
-
-            if ($this->timeEnd() && ($this->buffer === null || empty($this->buffer)))
                 return false;
 
             if ($this->timeEnd() && self::matchLinkMediaFire($this->url))
@@ -359,10 +362,11 @@
             curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $this->autoRedirect);
 
-            $this->buffer   = curl_exec($curl);
-            $this->msgError = curl_error($curl);
-            $this->httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            $this->errorInt = self::ERROR_NONE;
+            $this->buffer       = curl_exec($curl);
+            $this->msgError     = curl_error($curl);
+            $this->httpCode     = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $this->responseCode = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+            $this->errorInt     = self::ERROR_NONE;
 
             if ($this->httpCode === 0)
                 $this->errorInt = self::ERROR_URL_NOT_FOUND;
