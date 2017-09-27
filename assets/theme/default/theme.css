@@ -2546,3 +2546,24 @@ div#content {
     padding-left: 10px;
     padding-right: 10px;
 }
+
+div.editor-highlight {
+    position: relative;
+    overflow: hidden;
+}
+
+div.editor-highlight textarea {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    left: 0;
+    opacity: 0.5;
+}
+
+div.editor-highlight div.editor-highlight-box {
+    background-color: rgba(255, 0, 0, 0.1);
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}

@@ -50,6 +50,11 @@
     else
         $title = lng('file_edit_text.title_page_as');
 
+    $isEnableEditHighlight = Request::isLocal();
+
+    if ($isEnableEditHighlight)
+        $scripts = [ 'editor_highlight' ];
+
     AppAlert::setID(ALERT_FILE_EDIT_TEXT);
     require_once('incfiles' . SP . 'header.php');
 
@@ -231,6 +236,7 @@
         'file_edit_text.php' . $appParameter->toString(),
         'file_edit_text.php' . $appParameter->toString() . '&' . PARAMETER_PAGE_EDIT . '='
     );
+
 ?>
 
     <?php AppAlert::display(); ?>
@@ -251,7 +257,23 @@
             <ul class="form-element">
                 <li class="textarea">
                     <span><?php echo lng('file_edit_text.form.input.content_file'); ?></span>
-                    <textarea name="content" rows="20" wrap="on" autocorrect="off" autocomplete="false" autocapitalize="off" spellcheck="false"><?php echo htmlspecialchars($edits['content']); ?></textarea>
+                    <?php if ($isEnableEditHighlight) { ?>
+                        <div class="editor-highlight" id="editor-highlight">
+                            <div class="editor-highlight-box" id="editor-highlight-box"></div>
+                            <textarea name="content" id="editor-highlight-textarea" rows="20" wrap="off" autocorrect="off" autocomplete="false" autocapitalize="off" spellcheck="false"><?php echo htmlspecialchars($edits['content']); ?></textarea>
+                            <script type="text/javascript">
+                                OnLoad.add(function() {
+                                    EditorHighlight.init(
+                                        "editor-highlight",
+                                        "editor-highlight-textarea",
+                                        "editor-highlight-box"
+                                    );
+                                });
+                            </script>
+                        </div>
+                    <?php } else { ?>
+                        <textarea name="content" rows="20" wrap="on" autocorrect="off" autocomplete="false" autocapitalize="off" spellcheck="false"><?php echo htmlspecialchars($edits['content']); ?></textarea>
+                    <?php } ?>
                 </li>
                 <?php if ($edits['page']['max'] > 0 && $edits['page']['total'] > 1) { ?>
                     <li class="paging">
