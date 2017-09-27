@@ -4,7 +4,7 @@
     use Librarys\App\AppDirectory;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
-    use Librarys\App\AppConfig;
+    use Librarys\App\Config\AppConfig;
     use Librarys\File\FileInfo;
     use Librarys\File\FileMime;
 
