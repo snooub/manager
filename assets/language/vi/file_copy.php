@@ -10,6 +10,7 @@
         'form' => [
             'input' => [
                 'path_copy'              => 'Đường dẫn sao chép đến:',
+                'name_copy'              => 'Tên sap chép đến:',
                 'radio_action_copy'      => 'Sao chép',
                 'radio_action_move'      => 'Di chuyển',
                 'if_has_entry_is_exists' => 'Nếu có thư mục hoặc tập tin đã tồn tại:',
@@ -25,7 +26,8 @@
             ],
 
             'placeholder' => [
-                'input_path_copy' => 'Nhập đường dẫn sao chép đến'
+                'input_path_copy' => 'Nhập đường dẫn sao chép đến',
+                'input_name_copy' => 'Nhập tên sao chép đến'
             ]
         ],
 
@@ -39,6 +41,7 @@
             'cancel_move_directory_success'                   => 'Hủy di chuyển thư mục <strong>{$filename}</strong> thành công',
             'cancel_move_file_success'                        => 'Hủy di chuyển tập tin <strong>{$filename}</strong> thành công',
             'not_input_path_copy'                             => 'Chưa nhập đường dẫn sao chép',
+            'not_input_name_copy'                             => 'Chưa nhập tên sao chép',
             'action_not_validate'                             => 'Hành động không hợp lệ',
             'exists_func_not_validate'                        => 'Hành động khi thư mục hoặc tập tin tồn tại không hợp lệ',
             'path_copy_is_equal_path_current'                 => 'Đường dẫn sao chép phải khác đường dẫn hiện tại',

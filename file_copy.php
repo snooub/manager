@@ -48,12 +48,14 @@
 
     $forms = [
         'path'        => AppDirectory::getInstance()->getDirectory(),
+        'name'        => AppDirectory::getInstance()->getName(),
         'action'      => ACTION_COPY,
         'exists_func' => EXISTS_FUNC_OVERRIDE
     ];
 
     if (isset($_POST['browser'])) {
         $forms['path']        = $_POST['path'];
+        $forms['name']        = $_POST['name'];
         $forms['action']      = intval($_POST['action']);
         $forms['exists_func'] = intval($_POST['exists_func']);
 
@@ -69,6 +71,7 @@
         }
     } else if (isset($_POST['copy'])) {
         $forms['path']        = $_POST['path'];
+        $forms['name']        = $_POST['name'];
         $forms['action']      = intval($_POST['action']);
         $forms['exists_func'] = intval($_POST['exists_func']);
 
@@ -76,6 +79,8 @@
 
         if (empty($forms['path'])) {
             AppAlert::danger(lng('file_copy.alert.not_input_path_copy'));
+        } else if (empty($forms['name'])) {
+            AppAlert::danger(lng('file_copy.alert.not_input_name_copy'));
         } else if ($forms['action'] !== ACTION_COPY && $forms['action'] !== ACTION_MOVE) {
             AppAlert::danger(lng('file_copy.alert.action_not_validate'));
         } else if ($forms['exists_func'] !== EXISTS_FUNC_OVERRIDE &&
@@ -83,7 +88,7 @@
                    $forms['exists_func'] !== EXISTS_FUNC_RENAME)
         {
             AppAlert::danger(lng('file_copy.alert.exists_func_not_validate'));
-        } else if (FileInfo::filterPaths($forms['path'] . SP . AppDirectory::getInstance()->getName()) == FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName())) {
+        } else if (FileInfo::filterPaths($forms['path'] . SP . $forms['name']) == FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName())) {
             if ($forms['action'] === ACTION_COPY)
                 AppAlert::danger(lng('file_copy.alert.path_copy_is_equal_path_current'));
             else
@@ -94,7 +99,7 @@
             AppAlert::danger(lng('file_copy.alert.not_copy_file_to_directory_app'));
         } else {
             $filePathOld            = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
-            $filePathNew            = FileInfo::filterPaths($forms['path'] . SP . AppDirectory::getInstance()->getName());
+            $filePathNew            = FileInfo::filterPaths($forms['path'] . SP . $forms['name']);
             $isHasFileAppPermission = false;
 
             $callbackFileExists = function($directory, $filename, $isDirectory) {
@@ -166,6 +171,7 @@
                 $isChooseDirectoryPathFailed = true;
             } else {
                 $forms['path']               = $appFileCopy->getPath();
+                $forms['name']               = $appFileCopy->getName();
                 $forms['exists_func']        = $appFileCopy->getExistsFunc();
                 $forms['action']             = ACTION_COPY;
                 $isChooseDirectoryPathFailed = false;
@@ -207,6 +213,10 @@
                 <li class="input">
                     <span><?php echo lng('file_copy.form.input.path_copy'); ?></span>
                     <input type="text" name="path" value="<?php echo $forms['path']; ?>" placeholder="<?php echo lng('file_copy.form.placeholder.input_path_copy'); ?>"/>
+                </li>
+                <li class="input">
+                    <span><?php echo lng('file_copy.form.input.name_copy'); ?></span>
+                    <input type="text" name="name" value="<?php echo $forms['name']; ?>" placeholder="<?php echo lng('file_copy.form.placeholder.input_name_copy'); ?>"/>
                 </li>
                 <li class="radio-choose">
                     <ul class="radio-choose-tab">
