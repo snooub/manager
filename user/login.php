@@ -105,7 +105,7 @@
             if (Request::session()->has(SESSION_NAME_LOCK_TIME))
                 Request::session()->remove(SESSION_NAME_LOCK_TIME);
 
-            AppAlert::success(lng('user.login.alert.login_success'), ALERT_INDEX, env('app.http.host'));
+           AppAlert::success(lng('user.login.alert.login_success'), ALERT_INDEX, env('app.http.host'));
         }
 
         Request::session()->put(SESSION_NAME_LOCK_COUNT, intval(++$currentCountLock));

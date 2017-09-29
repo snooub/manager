@@ -1,65 +1,70 @@
 var EditorHighlight = {
-    box:       null,
-    textarea:  null,
-    editorBox: null,
+    box:              null,
+    textarea:         null,
+    editorParent:     null,
+    editorBoxContent: null,
+    editorContent:    null,
+    editorBoxLine:    null,
+    editorBoxCursor:  null,
 
-    init: function(boxSelector, textareaSelector, editorBoxSelector) {
-        EditorHighlight.box       = document.getElementById(boxSelector);
-        EditorHighlight.textarea  = document.getElementById(textareaSelector);
-        EditorHighlight.editorBox = document.getElementById(editorBoxSelector);
+    cursorColumn:       0,
+    cursorRow:          0,
+    textLineBreakCount: 0,
+
+    init: function(
+        boxSelector,
+        editorParentSelector,
+        editorBoxContentSelector,
+        editorContentSelector,
+        editorBoxLineSelector,
+        editorBoxCursorSelector
+    ) {
+        EditorHighlight.box              = document.getElementById(boxSelector);
+        EditorHighlight.editorParent     = document.getElementById(editorParentSelector);
+        EditorHighlight.editorBoxContent = document.getElementById(editorBoxContentSelector);
+        EditorHighlight.editorContent    = document.getElementById(editorContentSelector);
+        EditorHighlight.editorBoxLine    = document.getElementById(editorBoxLineSelector);
+        EditorHighlight.editorBoxCursor  = document.getElementById(editorBoxCursorSelector);
 
         EditorHighlight.initBoxEditor();
         EditorHighlight.initBindEvent();
         EditorHighlight.initText();
+        EditorHighlight.initCursor();
     },
 
     initBoxEditor: function() {
-        var box           = EditorHighlight.box;
-        var textarea      = EditorHighlight.textarea;
-        var editorBox     = EditorHighlight.editorBox;
-        var textareaStyle = window.getComputedStyle(textarea);
-
-        box.style.width  = EditorHighlight.getTexteareOffsetWidth()  + "px";
-        box.style.height = EditorHighlight.getTexteareOffsetHeight() + "px";
-
-        editorBox.style.width  = EditorHighlight.getTexteareOffsetWidth()  + "px";
-        editorBox.style.height = EditorHighlight.getTexteareOffsetHeight() + "px";
-
-        editorBox.style.fontFamily    = textareaStyle.fontFamily;
-        editorBox.style.fontSize      = textareaStyle.fontSize;
-        editorBox.style.lineHeight    = textareaStyle.lineHeight;
-
-        editorBox.style.padding       = textareaStyle.padding;
-        editorBox.style.margin        = textareaStyle.margin;
-
-        editorBox.style.paddingTop    = textareaStyle.paddingTop;
-        editorBox.style.paddingLeft   = textareaStyle.paddingLeft;
-        editorBox.style.paddingBottom = textareaStyle.paddingBottom;
-        editorBox.style.paddingRight  = textareaStyle.paddingRight;
-
-        editorBox.style.marginTop     = textareaStyle.marginTop;
-        editorBox.style.marginLeft    = textareaStyle.marginLeft;
-        editorBox.style.marginBottom  = textareaStyle.marginBottom;
-        editorBox.style.marginRight   = textareaStyle.marginRight;
-
-        console.log(window.getComputedStyle(textarea));
-        console.log(textarea.style);
+        var box = EditorHighlight.box;
     },
 
     initBindEvent: function() {
-        EditorHighlight.editorBox.removeEventListener("mousedown", EditorHighlight.mouseDownEditorBox);
-        EditorHighlight.editorBox.addEventListener("mousedown", EditorHighlight.mouseDownEditorBox);
-        EditorHighlight.textarea.addEventListener("focus", EditorHighlight.focusTextarea);
-        EditorHighlight.textarea.addEventListener("keyup", EditorHighlight.keyupTextera);
-        EditorHighlight.textarea.addEventListener("keydown", EditorHighlight.keydownTextera);
-        EditorHighlight.textarea.addEventListener("scroll", EditorHighlight.scrollTextera);
+        EditorHighlight.editorContent.removeEventListener("mousedown", EditorHighlight.mouseDownEditorBox);
+        EditorHighlight.editorContent.addEventListener("mousedown",    EditorHighlight.mouseDownEditorBox);
     },
 
     initText: function() {
-        var text = EditorHighlight.textarea.innerHTML;
-            text = text.replace(/(?:\r\n|\r|\n)/g, "<br/>");
+        var buffer = "";
+        var split  = EditorHighlight.editorContent.innerHTML;
+            split  = split.split(/(?:\r\n|\r|\n)/g);
 
-        EditorHighlight.editorBox.innerHTML = text;
+        for (var i = 1; i <= split.length; ++i)
+            buffer += "<span>" + i + "</span>";
+
+        EditorHighlight.textLineBreakCount      = split.length;
+        EditorHighlight.editorBoxLine.innerHTML = buffer;
+    },
+
+    initCursor: function() {
+        clearInterval(EditorHighlight.intervalCursor);
+        setInterval(EditorHighlight.intervalCursor, 500);
+    },
+
+    intervalCursor: function() {
+        var opacity = parseInt(EditorHighlight.editorBoxCursor.style.opacity);
+
+        if (opacity === 1)
+            EditorHighlight.editorBoxCursor.style.opacity = 0;
+        else
+            EditorHighlight.editorBoxCursor.style.opacity = 1;
     },
 
     mouseDownEditorBox: function() {
@@ -76,7 +81,7 @@ var EditorHighlight = {
 
     keydownTextera: function(e) {
         console.log("keydownTextera");
-        console.log(e.keyCode);
+        console.log(e);
         console.log(EditorHighlight.textarea.selectionStart);
         console.log(EditorHighlight.textarea.selectionEnd);
     },
@@ -90,6 +95,68 @@ var EditorHighlight = {
 
     scrollTextera: function() {
         console.log("Scroll");
+    },
+
+    clickTextarea: function() {
+        console.log("clickTextarea");
+        console.log(EditorHighlight.textarea.selectionStart);
+        console.log(EditorHighlight.textarea.selectionEnd);
+
+        EditorHighlight.repositionCursor(
+            EditorHighlight.textarea.selectionStart,
+            EditorHighlight.textarea.selectionEnd
+        );
+    },
+
+    repositionCursor: function(selectionStart, selectionEnd) {
+        var textarea  = EditorHighlight.textarea;
+        var selection = EditorHighlight.selection;
+        var range     = EditorHighlight.rangeTextarea;
+            bounds    = range.getBoundingClientRect();
+
+        textarea.__boundingTop    = bounds.top;
+        textarea.__boundingLeft   = bounds.left;
+        textarea.__boundingWidth  = bounds.width;
+        textarea.__boundingHeight = bounds.height;
+
+        var boundingTop  = (bounds.y + textarea.scrollTop)  - textarea.__boundingTop;
+        var boundingLeft = (bounds.x + textarea.scrollLeft) - textarea.__boundingLeft;
+
+        textarea.__line   = (boundingTop  / textarea.__boundingHeight) + 1;
+        textarea.__cloumn = (boundingLeft / textarea.__boundingWidth)  + 1;
+
+        // console.log(bounds);
+        console.log(textarea.__line);
+        console.log(textarea.__cloumn);
+        console.log(selection);
+        console.log(bounds);
+    },
+
+    getSelection: function() {
+        if (EditorHighlight.selection != null)
+            return EditorHighlight.selection;
+
+        var selection = (document.selection) || (window.getSelection && window.getSelection());
+
+        if (selection)
+            EditorHighlight.selection = selection;
+
+        return selection;
+    },
+
+    createRange: function() {
+        if (EditorHighlight.rangeTextarea != null)
+            return EditorHighlight.rangeTextarea;
+
+        var range = (document.selection && document.selection.createRange()) || (document.createRange && document.createRange());
+
+        if (EditorHighlight.textarea)
+            range.selectNode(EditorHighlight.textarea);
+
+        if (range)
+            EditorHighlight.rangeTextarea = range;
+
+        return range;
     },
 
     getTexteareOffsetWidth: function() {

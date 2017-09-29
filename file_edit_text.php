@@ -259,14 +259,22 @@
                     <span><?php echo lng('file_edit_text.form.input.content_file'); ?></span>
                     <?php if ($isEnableEditHighlight) { ?>
                         <div class="editor-highlight" id="editor-highlight">
-                            <div class="editor-highlight-box" id="editor-highlight-box"></div>
-                            <textarea name="content" id="editor-highlight-textarea" rows="20" wrap="off" autocorrect="off" autocomplete="false" autocapitalize="off" spellcheck="false"><?php echo htmlspecialchars($edits['content']); ?></textarea>
+                            <div class="editor-highlight-box-parent" id="editor-highlight-box-parent">
+                                <div class="editor-highlight-box-line" id="editor-highlight-box-line"></div>
+                                <div class="editor-highlight-box-content">
+                                    <pre class="editor-highlight-content" id="editor-highlight-content"><?php echo htmlspecialchars($edits['content']); ?></pre>
+                                    <div class="editor-highlight-box-cursor" id="editor-highlight-box-cursor"></div>
+                                </div>
+                            </div>
                             <script type="text/javascript">
                                 OnLoad.add(function() {
                                     EditorHighlight.init(
                                         "editor-highlight",
-                                        "editor-highlight-textarea",
-                                        "editor-highlight-box"
+                                        "editor-highlight-box-parent",
+                                        "editor-highlight-box-content",
+                                        "editor-highlight-content",
+                                        "editor-highlight-box-line",
+                                        "editor-highlight-box-cursor"
                                     );
                                 });
                             </script>

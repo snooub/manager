@@ -661,32 +661,40 @@
 
         public static function fileReadContents($path)
         {
-            if (($handle = self::fileOpen($path, 'ra')) !== false) {
-                if (($data = self::fileRead($handle, self::fileSize($path))) !== false) {
-                    self::fileClose($handle);
-                    return $data;
-                }
+            $handle = self::fileOpen($path, 'ra');
 
+            if ($handle == false)
+                return false;
+
+            $data = self::fileRead($handle, self::fileSize($path));
+
+            if ($data == false) {
+                self::fileClose($handle);
+                return false;
+            } else {
                 self::fileClose($handle);
             }
 
-            return false;
+            return $data;
         }
 
         public static function fileWriteContents($path, $buffer)
         {
-            if (($handle = self::fileOpen($path, 'wa+')) !== false) {
-                if (self::fileWrite($handle, $buffer) !== false) {
-                    self::fileFlush($handle);
-                    self::fileClose($handle);
+            $handle = self::fileOpen($path, 'wa+');
 
-                    return true;
-                }
+            if ($handle == false || $handle === 0 || $handle === false)
+                return false;
 
+            if (self::fileWrite($handle, $buffer) == false) {
+                self::fileClose($handle);
+
+                return false;
+            } else {
+                self::fileFlush($handle);
                 self::fileClose($handle);
             }
 
-            return false;
+            return true;
         }
 
         public static function fileGetsLine($handle, $length = 1024)
