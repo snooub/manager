@@ -246,6 +246,11 @@
             return true;
         }
 
+        public function hasKeySystem($name)
+        {
+            return $this->hasKey($name, true);
+        }
+
         public function remove($name, $isSystem = false)
         {
             if ($this->splitNames($name, $nameSplits, $nameSplitsCount) == false)

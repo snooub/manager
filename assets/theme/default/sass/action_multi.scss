@@ -29,6 +29,10 @@ ul.action-multi {
             text-overflow: ellipsis;
             white-space: nowrap;
 
+            span {
+                font-size: $font-size;
+            }
+
             &:hover,
             &:focus {
                 color: #707070;

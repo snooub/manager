@@ -28,25 +28,25 @@
         ],
 
         'alert' => [
-            'tips' => 'Để trống <strong>tên cơ sở dữ liệu</strong> để quản lý toàn bộ cơ sở dữ liệu, khi kết nối và ngắt kết nối sẽ chạy sleep ${app.sleep_time_redirect} giây do trình duyệt cache trang',
+            'tips' => 'Để trống <strong>tên cơ sở dữ liệu</strong> để quản lý toàn bộ cơ sở dữ liệu, khi kết nối và ngắt kết nối sẽ chạy sleep <strong>${app.mysql.sleep_redirect}</strong> giây do trình duyệt cache trang',
 
-            'not_input_mysql_host'     => 'Chưa nhập đường dẫn máy chủ',
-            'not_input_mysql_username' => 'Chưa nhập tên người dùng',
+            'not_input_mysql_host'               => 'Chưa nhập đường dẫn máy chủ',
+            'not_input_mysql_username'           => 'Chưa nhập tên người dùng',
 
-            'mysql_connect_failed'     => 'Kết nối cơ sở dữ liệu thất bại: <strong>{$error}</strong>',
-            'mysql_connect_success'    => 'Kết nối cơ sở dữ liệu thành công',
-            'mysql_is_already_connect' => 'Bạn đang ở trạng thái kết nối cơ sở dữ liệu',
+            'mysql_connect_failed'               => 'Kết nối cơ sở dữ liệu thất bại: <strong>{$error}</strong>',
+            'mysql_connect_success'              => 'Kết nối cơ sở dữ liệu thành công',
+            'mysql_is_already_connect'           => 'Bạn đang ở trạng thái kết nối cơ sở dữ liệu',
             'mysql_connect_database_name_failed' => 'Kết nối cơ sở dữ liệu <strong>{$name}</strong> thất bại',
 
-            'mysql_write_config_failed' => 'Viết cấu hình cơ sở dữ liệu thất bại',
+            'mysql_write_config_failed'          => 'Viết cấu hình cơ sở dữ liệu thất bại',
 
-            'disconnect_failed'  => 'Ngắt kết nối thất bại',
-            'disconnect_success' => 'Ngắt kết nối thành công',
+            'disconnect_failed'                  => 'Ngắt kết nối thất bại',
+            'disconnect_success'                 => 'Ngắt kết nối thành công',
 
-            'mysql_database_not_exists'      => 'Cơ sở dữ liệu không tồn tại',
-            'mysql_database_name_not_exists' => 'Cơ sở dữ liệu <strong>{$name}</strong> không tồn tại',
-            'mysql_table_not_exists'         => 'Bảng không tồn tại trong cơ sở dữ liệu <strong>{$database}</strong>',
-            'mysql_table_name_not_exists'    => 'Bảng <strong>{$table}</strong> không tồn tại trong cơ sở dữ liệu <strong>{$database}</strong>'
+            'mysql_database_not_exists'          => 'Cơ sở dữ liệu không tồn tại',
+            'mysql_database_name_not_exists'     => 'Cơ sở dữ liệu <strong>{$name}</strong> không tồn tại',
+            'mysql_table_not_exists'             => 'Bảng không tồn tại trong cơ sở dữ liệu <strong>{$database}</strong>',
+            'mysql_table_name_not_exists'        => 'Bảng <strong>{$table}</strong> không tồn tại trong cơ sở dữ liệu <strong>{$database}</strong>'
         ],
 
         'menu_action' => [

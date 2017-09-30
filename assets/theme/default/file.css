@@ -31,15 +31,14 @@ ul.location-path li {
 
 ul.location-path li span {
     color: #505050;
-    font-weight: bold;
-    font-size: 15px;
+    font-weight: normal;
     line-height: 45px;
 }
 
 ul.location-path li a:hover span,
 ul.location-path li a:focus span {
     color: #909090;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 ul.file-list,

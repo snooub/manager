@@ -2,8 +2,8 @@
 
 @font-face {
     font-family: 'icomoon';
-  src: url("assets/theme/default/fonts/icomoon.eot?4j2wx3");
-  src: url("assets/theme/default/fonts/icomoon.eot?4j2wx3#iefix") format("embedded-opentype"), url("assets/theme/default/fonts/icomoon.ttf?4j2wx3") format("truetype"), url("assets/theme/default/fonts/icomoon.woff?4j2wx3") format("woff"), url("assets/theme/default/fonts/icomoon.svg?4j2wx3#icomoon") format("svg");
+  src: url("fonts/icomoon.eot?4j2wx3");
+  src: url("fonts/icomoon.eot?4j2wx3#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?4j2wx3") format("truetype"), url("fonts/icomoon.woff?4j2wx3") format("woff"), url("fonts/icomoon.svg?4j2wx3#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -249,7 +249,7 @@
 body {
     background-color: #e3e3e3;
     font-family: Geneva, Tahoma, Verdana, sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     margin: 0;
     padding: 0;
     position: relative;
@@ -267,6 +267,14 @@ a:focus strong,
 a:focus p {
     color: #909090;
     text-decoration: none;
+}
+
+.no-box-shadow {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    -ms-box-shadow: none !important;
+    -o-box-shadow: none !important;
+    box-shadow: none !important;
 }
 
 input:invalid {
@@ -341,6 +349,7 @@ select {
 
 textarea {
     line-height: 22px;
+    resize: none;
 }
 
 input[type=text]:disabled,
@@ -363,7 +372,7 @@ input[type=number],
 input[type=password],
 textarea,
 select {
-    font-size: 14px;
+    font-size: 15px;
 }
 
 textarea {
@@ -622,7 +631,7 @@ ul.radio-choose-tab > li input:enabled:checked + label {
 ul.radio-choose-tab > li input + label span {
     color: #505050;
     line-height: 40px;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 ul.radio-choose-tab > li input:disabled + label span {
@@ -766,7 +775,7 @@ div#footer::after {
 div#footer,
   div#footer span {
     color: #c0c0c0;
-    font-size: 14px;
+    font-size: 15px;
     text-shadow: 1px 1px #ffffff;
 }
 
@@ -783,7 +792,7 @@ ul.alert {
 }
 
 ul.alert li {
-    font-size: 14px;
+    font-size: 15px;
     background-color: #ffffff;
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
@@ -1086,7 +1095,7 @@ div.form-action ul.form-element > li.input span,
     div.form-action ul.form-element > li.checkbox > span:first-child,
     div.form-action ul.form-element > li.radio > span:first-child {
     color: #00897b;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: normal;
 }
 
@@ -1143,7 +1152,7 @@ div.form-action ul.form-element > li.input-chmod input[type=checkbox] + label::a
 
 div.form-action ul.form-element > li.input-chmod ul li span {
     line-height: 40px;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 div.form-action ul.form-element > li.input-chmod ul li:nth-child(1),
@@ -1209,7 +1218,7 @@ div.form-action ul.form-element > li.radio-choose {
 div.form-action ul.form-element > li.radio-choose > span:first-child {
     color: #00897b;
     display: block;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: normal;
     margin-bottom: 10px;
 }
@@ -1279,7 +1288,7 @@ div.form-action ul.form-element > li.button button span,
     div.button-action-box button span,
     li.button-action-box button span {
     color: #00897b;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: normal;
 }
 
@@ -1306,7 +1315,7 @@ div.form-action ul.form-element > li.button > a span,
     li.button-action-box > a span {
     color: #404040;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 30px;
 }
 
@@ -1366,6 +1375,10 @@ ul.action-multi li button {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+ul.action-multi li button span {
+    font-size: 15px;
 }
 
 ul.action-multi li button:hover, ul.action-multi li button:focus {
@@ -1530,7 +1543,7 @@ div#container-login div#login-form-action a#forgot-password span {
     color: #404040;
     font-weight: normal;
     font-variant: normal;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 40px;
 }
 
@@ -1753,7 +1766,7 @@ ul.location-path li span {
 }
 
 ul.location-path li a:hover span,
-ul.location-path li a:focus span {
+    ul.location-path li a:focus span {
     color: #909090;
     font-weight: bold;
 }
@@ -1777,14 +1790,6 @@ ul.file-list {
     margin: 0;
     margin-bottom: 15px;
     text-align: center;
-}
-
-ul.file-list.no-box-shadow {
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    -ms-box-shadow: none !important;
-    -o-box-shadow: none !important;
-    box-shadow: none !important;
 }
 
 ul.file-list > li {
@@ -1811,17 +1816,16 @@ ul.file-list > li > a {
     line-height: 45px;
 }
 
-ul.file-list > li span.icomoon {
-    vertical-align: middle;
-}
-
-ul.file-list > li a:hover,
-ul.file-list > li a:hover span,
-ul.file-list > li a:hover strong {
+ul.file-list > li a:hover {
     color: #909090;
 }
 
-ul.file-list > li.type-directory a:hover span.icomoon {
+ul.file-list > li a:hover span,
+      ul.file-list > li a:hover strong {
+    color: #909090;
+}
+
+ul.file-list > li a:hover span.icomoon {
     color: #ffd300;
 }
 
@@ -1829,12 +1833,10 @@ ul.file-list > li span.icomoon {
     font-size: 20px;
     margin-right: 5px;
     line-height: 45px;
+    vertical-align: middle;
 }
 
-ul.file-list > li.back,
-ul.file-list > li.empty,
-ul.file-list > li.paging,
-ul.file-list > li.checkbox-all {
+ul.file-list > li.back, ul.file-list > li.empty, ul.file-list > li.paging, ul.file-list > li.checkbox-all {
     margin: 0;
     width: 100%;
 }
@@ -1845,7 +1847,7 @@ ul.file-list > li.checkbox-all label span {
 }
 
 ul.file-list > li.back span.icomoon,
-ul.file-list > li.empty span.icomoon {
+    ul.file-list > li.empty span.icomoon {
     margin-right: 5px;
 }
 
@@ -1869,10 +1871,7 @@ ul.file-list > li.paging ul.paging {
     box-shadow: none !important;
 }
 
-ul.file-list > li.type-directory,
-ul.file-list > li.type-file,
-ul.file-list > li.empty,
-ul.file-list > li.checkbox-all {
+ul.file-list > li.type-directory, ul.file-list > li.type-file, ul.file-list > li.empty, ul.file-list > li.checkbox-all {
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -1885,16 +1884,37 @@ ul.file-list > li.type-directory {
     font-weight: bold;
 }
 
-ul.file-list > li.type-directory div.icon,
-ul.file-list > li.type-file div.icon {
+ul.file-list > li.type-directory div.icon, ul.file-list > li.type-file div.icon {
     display: inline-block;
     float: left;
     height: 45px;
 }
 
+ul.file-list > li.type-directory > a.chmod-permission,
+    ul.file-list > li.type-directory > div.chmod-size, ul.file-list > li.type-file > a.chmod-permission,
+    ul.file-list > li.type-file > div.chmod-size {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-right: 10px;
+}
+
+ul.file-list > li.type-directory > a.chmod-permission span,
+      ul.file-list > li.type-directory > div.chmod-size span, ul.file-list > li.type-file > a.chmod-permission span,
+      ul.file-list > li.type-file > div.chmod-size span {
+    color: #d0d0d0;
+    line-height: 45px;
+}
+
+ul.file-list > li.type-directory a.chmod-permission:hover span,
+    ul.file-list > li.type-directory div.chmod-size a:hover span, ul.file-list > li.type-file a.chmod-permission:hover span,
+    ul.file-list > li.type-file div.chmod-size a:hover span {
+    color: #a0a0a0;
+}
+
 ul.file-list > li.back span.icomoon,
-ul.file-list > li.empty span.icomoon,
-ul.file-list > li.type-directory span.icomoon {
+    ul.file-list > li.empty span.icomoon,
+    ul.file-list > li.type-directory span.icomoon {
     color: #ffb300;
     font-size: 25px;
 }
@@ -1908,8 +1928,8 @@ ul.file-list > li.type-file span.icomoon {
 }
 
 ul.file-list > li.back a,
-ul.file-list > li.type-directory a.file-name,
-ul.file-list > li.type-file a.file-name {
+    ul.file-list > li.type-directory a.file-name,
+    ul.file-list > li.type-file a.file-name {
     display: inline-block;
     max-width: 55%;
     overflow: hidden;
@@ -1923,24 +1943,16 @@ ul.file-list > li.back a {
 
 @media all and (max-width: 340px) {
     ul.file-list > li.type-directory a.file-name,
-  ul.file-list > li.type-file a.file-name {
+      ul.file-list > li.type-file a.file-name {
         max-width: 55%;
     }
 }
 
 @media all and (max-width: 300px) {
     ul.file-list > li.type-directory a.file-name,
-  ul.file-list > li.type-file a.file-name {
+      ul.file-list > li.type-file a.file-name {
         max-width: 50%;
     }
-}
-
-ul.file-list > li.type-directory a.chmod-permission,
-ul.file-list > li.type-file div.chmod-size {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding-right: 10px;
 }
 
 @media all and (max-width: 780px) {
@@ -1949,7 +1961,7 @@ ul.file-list > li.type-file div.chmod-size {
     }
 
     ul.file-list > li.entry-odd a.chmod-permission,
-  ul.file-list > li.entry-odd div.chmod-size {
+      ul.file-list > li.entry-odd div.chmod-size {
         right: 0;
     }
 }
@@ -1960,7 +1972,7 @@ ul.file-list > li.type-file div.chmod-size {
     }
 
     ul.file-list > li.entry-odd a.chmod-permission,
-  ul.file-list > li.entry-odd div.chmod-size {
+      ul.file-list > li.entry-odd div.chmod-size {
         right: 50%;
     }
 
@@ -1969,15 +1981,12 @@ ul.file-list > li.type-file div.chmod-size {
     }
 }
 
-ul.file-list > li.type-directory a.chmod-permission span,
-ul.file-list > li.type-file div.chmod-size span {
-    color: #d0d0d0;
-    line-height: 45px;
-}
-
-ul.file-list > li.type-directory a.chmod-permission:hover span,
-ul.file-list > li.type-file div.chmod-size a:hover span {
-    color: #a0a0a0;
+ul.file-list.no-box-shadow {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    -ms-box-shadow: none !important;
+    -o-box-shadow: none !important;
+    box-shadow: none !important;
 }
 
 ul.file-info,
@@ -2016,17 +2025,17 @@ ul.file-info > li.title > span {
     font-size: 17px;
 }
 
-ul.file-info > li.label,
-ul.file-info > li.value {
+ul.file-info > li.label, ul.file-info > li.value {
     display: inline-block;
 }
 
-ul.file-info > li li {
-    height: 30px;
-}
-
-ul.file-info > li li > span {
-    line-height: 30px;
+ul.file-info > li.label li,
+    ul.file-info > li.label li, ul.file-info > li.value li,
+    ul.file-info > li.value li {
+    padding-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 ul.file-info > li.label li {
@@ -2040,32 +2049,12 @@ ul.file-info > li.label span {
 }
 
 ul.file-info > li.value,
-ul.file-info > li.value span {
+  ul.file-info > li.value span {
     color: #707070;
 }
 
 ul.file-info > li.value {
     max-width: 70%;
-}
-
-@media all and (max-width: 480px) {
-    ul.file-info > li.value {
-        max-width: 40%;
-    }
-}
-
-@media all and (max-width: 720px) {
-    ul.file-info > li.value {
-        max-width: 60%;
-    }
-}
-
-ul.file-info > li.label li,
-ul.file-info > li.value li {
-    padding-left: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 ul.file-info > li.image {
@@ -2083,6 +2072,26 @@ ul.file-info > li.image span {
 
 ul.file-info > li.image img {
     max-width: 90%;
+}
+
+ul.file-info > li li {
+    height: 30px;
+}
+
+ul.file-info > li li > span {
+    line-height: 30px;
+}
+
+@media all and (max-width: 480px) {
+    ul.file-info > li.value {
+        max-width: 40%;
+    }
+}
+
+@media all and (max-width: 720px) {
+    ul.file-info > li.value {
+        max-width: 60%;
+    }
 }
 
 div.mysql-query-string {

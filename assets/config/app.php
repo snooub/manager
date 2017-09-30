@@ -21,8 +21,8 @@
                 'enable_desktop' => true,
 
                 'error_reported' => [
-                    'enable'           => true,
-                    'enable_producted' => true,
+                    'enable'           => false,
+                    'enable_producted' => false,
                     'level'            => ErrorHandler::EU_ALL,
 
                     'tpl'              => '${app.path.error}${SP}handler.php'
@@ -79,6 +79,10 @@
 
             'http' => [
 
+            ],
+
+            'mysql' => [
+                'sleep_redirect' => 3
             ],
 
             'language' => [

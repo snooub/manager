@@ -73,67 +73,67 @@
     <?php AppAlert::display(); ?>
 
     <div class="form-action">
-        <div class="title">
-            <span><?php echo lng('app.upgrade_app.title_page'); ?></span>
-        </div>
+        <div id="about" class="no-box-shadow">
+            <h1><?php echo AppAboutConfig::getInstance()->get('name'); ?></h1>
 
-        <ul class="about-list">
-            <li class="label">
-                <ul>
-                    <li><span><?php echo lng('app.upgrade_app.info.label_server_name'); ?></span></li>
-                    <li><span><?php echo lng('app.upgrade_app.info.label_version'); ?></span></li>
-                    <li><span><?php echo lng('app.upgrade_app.info.label_build_last'); ?></span></li>
-                    <li><span><?php echo lng('app.upgrade_app.info.label_type_bin'); ?></span></li>
-                    <li><span><?php echo lng('app.upgrade_app.info.label_md5_bin_check'); ?></span></li>
-                    <li><span><?php echo lng('app.upgrade_app.info.label_data_length'); ?></span></li>
-                </ul>
-            </li>
-
-            <li class="value">
-                <ul>
-                    <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_SERVER_NAME); ?></span></li>
-                    <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_VERSION); ?></span></li>
-                    <li><span><?php echo date('d.m.Y - H:i:s', intval(AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_BUILD_LAST))); ?></span></li>
-
-                    <?php if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) { ?>
-                        <li><span><?php echo lng('app.upgrade_app.info.value_type_bin_install_upgrdae'); ?></span></li>
-                        <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK); ?></span></li>
-                        <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME), true); ?></span></li>
-                    <?php } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) { ?>
-                        <li><span><?php echo lng('app.upgrade_app.info.value_type_bin_install_additional'); ?></span></li>
-                        <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK); ?></span></li>
-                        <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_ADDITIONAL_FILENAME), true); ?></span></li>
-                    <?php } ?>
-                </ul>
-            </li>
-
-            <?php $markdownParse    = new MarkdownParse(); ?>
-            <?php $changelogContent = FileInfo::fileReadContents(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME)); ?>
-            <?php $readmeContent    = FileInfo::fileReadContents(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME)); ?>
-
-            <?php if ($readmeContent !== false && $readmeContent !== null && empty($readmeContent) == false) { ?>
-                <li class="message">
-                    <div><span><?php echo lng('app.upgrade_app.info.label_readme'); ?></span></div>
-                    <div class="markdown"><?php echo $markdownParse->text($readmeContent); ?></div>
+            <ul>
+                <li class="label">
+                    <ul>
+                        <li><span><?php echo lng('app.upgrade_app.info.label_server_name'); ?></span></li>
+                        <li><span><?php echo lng('app.upgrade_app.info.label_version'); ?></span></li>
+                        <li><span><?php echo lng('app.upgrade_app.info.label_build_last'); ?></span></li>
+                        <li><span><?php echo lng('app.upgrade_app.info.label_type_bin'); ?></span></li>
+                        <li><span><?php echo lng('app.upgrade_app.info.label_md5_bin_check'); ?></span></li>
+                        <li><span><?php echo lng('app.upgrade_app.info.label_data_length'); ?></span></li>
+                    </ul>
                 </li>
-            <?php } ?>
 
-            <?php if ($changelogContent !== false && $changelogContent !== null && empty($changelogContent) == false) { ?>
-                <li class="message">
-                    <div><span><?php echo lng('app.upgrade_app.info.label_changelog'); ?></span></div>
-                    <div class="markdown"><?php echo $markdownParse->text($changelogContent); ?></div>
+                <li class="value">
+                    <ul>
+                        <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_SERVER_NAME); ?></span></li>
+                        <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_VERSION); ?></span></li>
+                        <li><span><?php echo date('d.m.Y - H:i:s', intval(AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_BUILD_LAST))); ?></span></li>
+
+                        <?php if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) { ?>
+                            <li><span><?php echo lng('app.upgrade_app.info.value_type_bin_install_upgrdae'); ?></span></li>
+                            <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_MD5_BIN_CHECK); ?></span></li>
+                            <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_BIN_FILENAME), true); ?></span></li>
+                        <?php } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) { ?>
+                            <li><span><?php echo lng('app.upgrade_app.info.value_type_bin_install_additional'); ?></span></li>
+                            <li><span><?php echo AppUpgradeConfig::getInstance()->get(AppUpdate::ARRAY_DATA_KEY_MD5_ADDITIONAL_CHECK); ?></span></li>
+                            <li><span><?php echo FileInfo::fileSize(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_ADDITIONAL_FILENAME), true); ?></span></li>
+                        <?php } ?>
+                    </ul>
                 </li>
-            <?php } ?>
-        </ul>
 
-        <div class="about-button-check button-action-box center">
-            <a href="upgrade_app.php?<?php echo PARAMETER_INSTALL_URL; ?>">
-                <?php if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) { ?>
-                    <span><?php echo lng('app.upgrade_app.form.button.upgrade'); ?></span>
-                <?php } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) { ?>
-                    <span><?php echo lng('app.upgrade_app.form.button.additional'); ?></span>
+                <?php $markdownParse    = new MarkdownParse(); ?>
+                <?php $changelogContent = FileInfo::fileReadContents(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_CHANGELOG_FILENAME)); ?>
+                <?php $readmeContent    = FileInfo::fileReadContents(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME)); ?>
+
+                <?php if ($readmeContent !== false && $readmeContent !== null && empty($readmeContent) == false) { ?>
+                    <li class="message">
+                        <div><span><?php echo lng('app.upgrade_app.info.label_readme'); ?></span></div>
+                        <div class="markdown"><?php echo $markdownParse->text($readmeContent); ?></div>
+                    </li>
                 <?php } ?>
-            </a>
+
+                <?php if ($changelogContent !== false && $changelogContent !== null && empty($changelogContent) == false) { ?>
+                    <li class="message">
+                        <div><span><?php echo lng('app.upgrade_app.info.label_changelog'); ?></span></div>
+                        <div class="markdown"><?php echo $markdownParse->text($changelogContent); ?></div>
+                    </li>
+                <?php } ?>
+            </ul>
+
+            <div class="about-button-check button-action-box center">
+                <a href="upgrade_app.php?<?php echo PARAMETER_INSTALL_URL; ?>">
+                    <?php if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) { ?>
+                        <span><?php echo lng('app.upgrade_app.form.button.upgrade'); ?></span>
+                    <?php } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) { ?>
+                        <span><?php echo lng('app.upgrade_app.form.button.additional'); ?></span>
+                    <?php } ?>
+                </a>
+            </div>
         </div>
     </div>
 

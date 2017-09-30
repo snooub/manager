@@ -4,6 +4,7 @@
     use Librarys\App\AppPaging;
     use Librarys\App\AppLocationPath;
     use Librarys\App\AppParameter;
+    use Librarys\App\Config\AppConfig;
     use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\App\Mysql\AppMysqlConfigWrite;
 
@@ -62,6 +63,8 @@
                         if (AppMysqlConfig::getInstance()->write() == false) {
                             AppAlert::danger(lng('mysql.home.alert.mysql_write_config_failed'));
                         } else {
+                            sleep(env('app.mysql.sleep_redirect'));
+
                             if (empty($forms['mysql_name']))
                                 AppAlert::success(lng('mysql.home.alert.mysql_connect_success'), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
                             else

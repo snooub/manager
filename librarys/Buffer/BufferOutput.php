@@ -33,7 +33,6 @@
 
         public static function clearBuffer()
         {
-            self::endFlushBuffer();
             self::endCleanBuffer();
             self::startBuffer();
         }

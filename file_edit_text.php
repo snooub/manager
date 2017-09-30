@@ -50,7 +50,7 @@
     else
         $title = lng('file_edit_text.title_page_as');
 
-    $isEnableEditHighlight = Request::isLocal();
+    $isEnableEditHighlight = false; //Request::isLocal();
 
     if ($isEnableEditHighlight)
         $scripts = [ 'editor_highlight' ];
@@ -207,7 +207,7 @@
 
     if ($edits['content'] != null && empty($edits['content']) == false && strlen($edits['content']) > 0) {
         $edits['content'] = str_replace("\r\n", "\n", $edits['content']);
-        $edits['content'] = str_replace("\n",   "\n", $edits['content']);
+        $edits['content'] = str_replace("\r",   "\n", $edits['content']);
 
         if ($edits['page']['max'] > 0 && strpos($edits['content'], "\n") !== false) {
             $edits['content_lines']      = explode("\n", $edits['content']);
@@ -280,7 +280,7 @@
                             </script>
                         </div>
                     <?php } else { ?>
-                        <textarea name="content" rows="20" wrap="on" autocorrect="off" autocomplete="false" autocapitalize="off" spellcheck="false"><?php echo htmlspecialchars($edits['content']); ?></textarea>
+                        <textarea name="content" rows="20" wrap="off" autocomplete="off"><?php echo htmlspecialchars($edits['content']); ?></textarea>
                     <?php } ?>
                 </li>
                 <?php if ($edits['page']['max'] > 0 && $edits['page']['total'] > 1) { ?>
@@ -313,14 +313,6 @@
                 <span><?php echo lng('file_info.menu_action.info'); ?></span>
             </a>
         </li>
-        <?php if ($fileMime->isFormatTextEdit() && $fileMime->isFormatTextAsEdit() == false) { ?>
-            <li>
-                <a href="file_edit_text_line.php<?php echo $appParameter->toString(); ?>">
-                    <span class="icomoon icon-edit"></span>
-                    <span><?php echo lng('file_info.menu_action.edit_text_line'); ?></span>
-                </a>
-            </li>
-        <?php } ?>
         <li>
             <a href="file_download.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-download"></span>

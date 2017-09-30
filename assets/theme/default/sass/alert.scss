@@ -10,7 +10,7 @@ ul.alert {
     margin-bottom: 30px;
 
     li {
-        font-size: 14px;
+        font-size: $font-size;
         background-color: #ffffff;
 
         @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));

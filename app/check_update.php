@@ -112,57 +112,57 @@
     <?php AppAlert::display(); ?>
 
     <div class="form-action">
-        <div class="title">
-            <span><?php echo lng('app.check_update.title_page'); ?></span>
-        </div>
+        <div id="about" class="no-box-shadow">
+            <h1><?php echo AppAboutConfig::getInstance()->get('name'); ?></h1>
 
-        <ul class="about-list">
-            <li class="label">
-                <ul>
-                    <li><span><?php echo lng('app.check_update.info.label.last_check_update'); ?></span></li>
-                    <li><span><?php echo lng('app.check_update.info.label.last_upgrade'); ?></span></li>
-                    <li><span><?php echo lng('app.check_update.info.label.last_build'); ?></span></li>
-                    <li><span><?php echo lng('app.check_update.info.label.version_current'); ?></span></li>
+            <ul>
+                <li class="label">
+                    <ul>
+                        <li><span><?php echo lng('app.check_update.info.label.last_check_update'); ?></span></li>
+                        <li><span><?php echo lng('app.check_update.info.label.last_upgrade'); ?></span></li>
+                        <li><span><?php echo lng('app.check_update.info.label.last_build'); ?></span></li>
+                        <li><span><?php echo lng('app.check_update.info.label.version_current'); ?></span></li>
 
-                    <?php if (is_array($servers)) { ?>
-                        <?php for ($i = 0; $i < count($servers); ++$i) { ?>
-                            <li><span><?php echo lng('app.check_update.info.label.server_check', 'index', $i); ?></span></li>
+                        <?php if (is_array($servers)) { ?>
+                            <?php for ($i = 0; $i < count($servers); ++$i) { ?>
+                                <li><span><?php echo lng('app.check_update.info.label.server_check', 'index', $i); ?></span></li>
+                            <?php } ?>
                         <?php } ?>
-                    <?php } ?>
-                </ul>
-            </li>
+                    </ul>
+                </li>
 
-            <li class="value">
-                <ul>
-                    <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_CHECK_AT) <= 0) { ?>
-                        <li><span><?php echo lng('app.check_update.info.value.not_last_check_update'); ?></span></li>
-                    <?php } else { ?>
-                        <li><span><?php echo date('d.m.Y - H:i:s', intval(AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_CHECK_AT))); ?></span></li>
-                    <?php } ?>
-
-                    <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT) <= 0) { ?>
-                        <li><span><?php echo lng('app.check_update.info.value.not_last_upgrade'); ?></span></li>
-                    <?php } else { ?>
-                        <li><span><?php echo date('d.m.Y - H:i:s', intval(AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT))); ?></span></li>
-                    <?php } ?>
-
-                    <li><span><?php echo date('d.m.Y - H:i:s', intval(AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_BUILD_AT))); ?></span></li>
-
-                    <li><span><?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION); ?> <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_IS_BETA)) echo 'beta'; ?></span></li>
-
-                    <?php if (is_array($servers)) { ?>
-                        <?php foreach ($servers AS $server) { ?>
-                            <li><span><?php echo $server; ?></span></li>
+                <li class="value">
+                    <ul>
+                        <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_CHECK_AT) <= 0) { ?>
+                            <li><span><?php echo lng('app.check_update.info.value.not_last_check_update'); ?></span></li>
+                        <?php } else { ?>
+                            <li><span><?php echo date('d.m.Y - H:i:s', intval(AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_CHECK_AT))); ?></span></li>
                         <?php } ?>
-                    <?php } ?>
-                </ul>
-            </li>
-        </ul>
 
-        <div class="about-button-check button-action-box center">
-            <a href="check_update.php?<?php echo PARAMETER_CHECK_URL; ?>">
-                <span><?php echo lng('app.check_update.form.button.check'); ?></span>
-            </a>
+                        <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT) <= 0) { ?>
+                            <li><span><?php echo lng('app.check_update.info.value.not_last_upgrade'); ?></span></li>
+                        <?php } else { ?>
+                            <li><span><?php echo date('d.m.Y - H:i:s', intval(AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_UPGRADE_AT))); ?></span></li>
+                        <?php } ?>
+
+                        <li><span><?php echo date('d.m.Y - H:i:s', intval(AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_BUILD_AT))); ?></span></li>
+
+                        <li><span><?php echo AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_VERSION); ?> <?php if (AppAboutConfig::getInstance()->get(AppAboutConfig::ARRAY_KEY_IS_BETA)) echo 'beta'; ?></span></li>
+
+                        <?php if (is_array($servers)) { ?>
+                            <?php foreach ($servers AS $server) { ?>
+                                <li><span><?php echo $server; ?></span></li>
+                            <?php } ?>
+                        <?php } ?>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="about-button-check button-action-box center">
+                <a href="check_update.php?<?php echo PARAMETER_CHECK_URL; ?>">
+                    <span><?php echo lng('app.check_update.form.button.check'); ?></span>
+                </a>
+            </div>
         </div>
     </div>
 

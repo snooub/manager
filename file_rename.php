@@ -151,12 +151,6 @@
                         <span><?php echo lng('file_info.menu_action.edit_text'); ?></span>
                     </a>
                 </li>
-                <li>
-                    <a href="file_edit_text_line.php<?php echo $appParameter->toString(); ?>">
-                        <span class="icomoon icon-edit"></span>
-                        <span><?php echo lng('file_info.menu_action.edit_text_line'); ?></span>
-                    </a>
-                </li>
             <?php } ?>
         <?php } ?>
         <?php if ($isDirectory == false) { ?>

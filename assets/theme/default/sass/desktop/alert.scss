@@ -10,7 +10,7 @@ div#container {
 
         & > ul {
             & > li {
-                font-size: 14px;
+                font-size: $font-size;
                 background-color: #ffffff;
                 overflow: hidden;
                 word-wrap: break-word;

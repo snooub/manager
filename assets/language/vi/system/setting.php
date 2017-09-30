@@ -12,8 +12,7 @@
                 'paging_file_view_zip'       => 'Phân trang xem tập tin zip:',
                 'paging_file_edit_text'      => 'Phân trang sửa văn bản:',
                 'paging_file_edit_text_line' => 'Phân trang sửa văn bản theo dòng:',
-
-                'paging_mysql_list_data' => 'Phân trang danh sách dữ liệu mysql:',
+                'paging_mysql_list_data'     => 'Phân trang danh sách dữ liệu mysql:',
 
                 'enable_disable_label'                           => 'Bật/Tắt',
                 'enable_forgot_password'                         => 'Lấy lại mật khẩu',

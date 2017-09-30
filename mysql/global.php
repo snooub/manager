@@ -32,11 +32,11 @@
         $appMysqlConnect->setPassword(AppMysqlConfig::getInstance()->get('mysql_password'));
 
         if (isset($_GET[PARAMETER_DATABASE_URL]) && empty($_GET[PARAMETER_DATABASE_URL]) == false) {
-            if (AppMysqlConfig::getInstance()->get('mysql_name') == null) {
+            if (AppMysqlConfig::getInstance()->get('mysql_name') == null || strcmp(AppMysqlConfig::getInstance()->get('mysql_name'), $_GET[PARAMETER_DATABASE_URL]) === 0) {
                 $appMysqlConnect->setName(trim(addslashes(AppDirectory::rawDecode($_GET[PARAMETER_DATABASE_URL]))));
                 $appMysqlConnect->setDatabaseNameCustom(true);
             } else {
-                AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', AppMysqlConfig::getInstance()->get('mysql_name')), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
+               AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', AppMysqlConfig::getInstance()->get('mysql_name')), ALERT_MYSQL_LIST_TABLE, 'list_table.php');
             }
         } else if (defined('DATABASE_CHECK_MYSQL') && empty($_GET[PARAMETER_DATABASE_URL]) && AppMysqlConfig::getInstance()->get('mysql_name') == null) {
             AppAlert::danger(lng('mysql.home.alert.mysql_connect_database_name_failed', 'name', AppMysqlConfig::getInstance()->get('mysql_name')), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
@@ -86,4 +86,3 @@
         unset($idAlertMysql);
         unset($urlRedirectMysql);
     }
-?>

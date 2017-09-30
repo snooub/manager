@@ -70,6 +70,7 @@ select {
 
 textarea {
     line-height: 22px;
+    resize: none;
 }
 
 input[type=text]:disabled,
@@ -94,7 +95,7 @@ input[type=password],
 
 textarea,
 select {
-    font-size: 14px;
+    font-size: $font-size;
 }
 
 textarea {
@@ -357,7 +358,7 @@ ul.radio-choose-tab > li input:enabled:checked + label {
 ul.radio-choose-tab > li input + label span {
     color: #505050;
     line-height: 40px;
-    font-size: 14px;
+    font-size: $font-size;
 }
 
 ul.radio-choose-tab > li input:disabled + label span {

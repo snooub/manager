@@ -13,9 +13,6 @@
 
     require_once('global.php');
 
-    if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
-        AppAlert::danger(lng('mysql.list_database.alert.mysql_is_not_connect_root', 'name', $appMysqlConnect->getName()), ALERT_MYSQL_LIST_DATABASE, 'list_database.php');
-
     $title  = lng('mysql.rename_table.title_page');
     AppAlert::setID(ALERT_MYSQL_RENAME_TABLE);
     require_once(ROOT . 'incfiles' . SP . 'header.php');

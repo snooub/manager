@@ -25,7 +25,6 @@
         'menu_action' => [
             'info'           => 'Thông tin',
             'edit_text'      => 'Sửa văn bản',
-            'edit_text_line' => 'Sửa theo dòng',
             'edit_as_text'   => 'Sửa dạng văn bản',
             'view'           => 'Xem',
             'unzip'          => 'Giải nén zip',

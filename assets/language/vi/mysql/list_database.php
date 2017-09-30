@@ -15,8 +15,7 @@
         ],
 
         'alert' => [
-            'tips' => 'Cơ sở dữ liệu đang kết nối bằng <strong>{$type}</strong>',
-
+            'tips'                      => 'Cơ sở dữ liệu đang kết nối bằng <strong>{$type}</strong>',
             'mysql_is_not_connect_root' => 'Bạn đang kết nối ở chế độ quản lý cho cơ sở dữ liệu <strong>{$name}</strong>, không có quyền quản lý cơ sở dữ liệu khác'
         ]
     ];

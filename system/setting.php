@@ -132,6 +132,147 @@
         $forms['http_referer'] = env('app.http.host');
     else if (strpos($forms['http_referer'], $_SERVER['PHP_SELF']) !== false)
         $forms['http_referer'] = env('app.http.host');
+
+    $settingTextInputs = [
+        [
+            'config_key'      => 'paging.file_home_list',
+            'label_lng'       => 'system.setting.form.input.paging_file_home_list',
+            'placeholder_lng' => 'system.setting.form.placeholder.input_paging_file_home_list',
+            'name_input'      => 'paging_file_home_list',
+            'type_input'      => 'number',
+            'value_input'     => $forms['paging']['file_home_list']
+        ],
+
+        [
+            'config_key'      => 'paging.file_view_zip',
+            'label_lng'       => 'system.setting.form.input.paging_file_view_zip',
+            'placeholder_lng' => 'system.setting.form.placeholder.input_paging_file_view_zip',
+            'name_input'      => 'paging_file_view_zip',
+            'type_input'      => 'number',
+            'value_input'     => $forms['paging']['file_view_zip']
+        ],
+
+        [
+            'config_key'      => 'paging.file_edit_text',
+            'label_lng'       => 'system.setting.form.input.paging_file_edit_text',
+            'placeholder_lng' => 'system.setting.form.placeholder.input_paging_file_edit_text',
+            'name_input'      => 'paging_file_edit_text',
+            'type_input'      => 'number',
+            'value_input'     => $forms['paging']['file_edit_text']
+        ],
+
+        [
+            'config_key'      => 'paging_file_edit_text_line',
+            'label_lng'       => 'system.setting.form.input.paging_file_edit_text_line',
+            'placeholder_lng' => 'system.setting.form.placeholder.input_paging_file_edit_text_line',
+            'name_input'      => 'paging_file_edit_text_line',
+            'type_input'      => 'number',
+            'value_input'     => $forms['paging']['file_edit_text_line']
+        ],
+
+        [
+            'config_key'      => 'paging_mysql_list_data',
+            'label_lng'       => 'system.setting.form.input.paging_mysql_list_data',
+            'placeholder_lng' => 'system.setting.form.placeholder.input_paging_mysql_list_data',
+            'name_input'      => 'paging_mysql_list_data',
+            'type_input'      => 'number',
+            'value_input'     => $forms['paging']['mysql_list_data']
+        ]
+    ];
+
+    $settingCheckboxInputs = [
+        'enable_disable' => [
+            [
+                'config_key'      => 'login.enable_forgot_password',
+                'label_lng'       => 'system.setting.form.input.enable_forgot_password',
+                'id_input'        => 'login-enable-forgot-password',
+                'name_input'      => 'login_enable_forgot_password',
+                'value_input'     => $forms['login']['enable_forgot_password']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.button_save_on_javascript',
+                'label_lng'       => 'system.setting.form.input.enable_disable_button_save_on_javascript',
+                'id_input'        => 'enable-disable-button-save-on-javascript',
+                'name_input'      => 'enable_disable_button_save_on_javascript',
+                'value_input'     => $forms['enable_disable']['button_save_on_javascript']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.auto_focus_input_last',
+                'label_lng'       => 'system.setting.form.input.enable_disable_auto_focus_input_last',
+                'id_input'        => 'enable-disable-auto-focus-input-last',
+                'name_input'      => 'enable_disable_auto_focus_input_last',
+                'value_input'     => $forms['enable_disable']['auto_focus_input_last']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.count_checkbox_file_javascript',
+                'label_lng'       => 'system.setting.form.input.enable_disable_count_checkbox_file_javascript',
+                'id_input'        => 'enable-disable-count-checkbox-file-javascript',
+                'name_input'      => 'enable_disable_count_checkbox_file_javascript',
+                'value_input'     => $forms['enable_disable']['count_checkbox_file_javascript']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.count_checkbox_mysql_javascript',
+                'label_lng'       => 'system.setting.form.input.enable_disable_count_checkbox_mysql_javascript',
+                'id_input'        => 'enable-disable-count-checkbox-mysql-javascript',
+                'name_input'      => 'enable_disable_count_checkbox_mysql_javascript',
+                'value_input'     => $forms['enable_disable']['count_checkbox_mysql_javascript']
+            ]
+        ],
+
+        'auto_redirect' => [
+            [
+                'config_key'      => 'auto_redirect.file_rename',
+                'label_lng'       => 'system.setting.form.input.enable_auto_redirect_file_rename',
+                'id_input'        => 'auto-redirect-file-rename',
+                'name_input'      => 'auto_redirect_file_rename',
+                'value_input'     => $forms['auto_redirect']['file_rename']
+            ],
+
+            [
+                'config_key'      => 'auto_redirect.file_chmod',
+                'label_lng'       => 'system.setting.form.input.enable_auto_redirect_file_chmod',
+                'id_input'        => 'auto-redirect-file-chmod',
+                'name_input'      => 'auto_redirect_file_chmod',
+                'value_input'     => $forms['auto_redirect']['file_chmod']
+            ],
+
+            [
+                'config_key'      => 'auto_redirect.create_directory',
+                'label_lng'       => 'system.setting.form.input.enable_auto_redirect_create_directory',
+                'id_input'        => 'auto-redirect-create-directory',
+                'name_input'      => 'auto_redirect_create_directory',
+                'value_input'     => $forms['auto_redirect']['create_directory']
+            ],
+
+            [
+                'config_key'      => 'auto_redirect.create_file',
+                'label_lng'       => 'system.setting.form.input.enable_auto_redirect_create_file',
+                'id_input'        => 'auto-redirect-create-file',
+                'name_input'      => 'auto_redirect_create_file',
+                'value_input'     => $forms['auto_redirect']['create_file']
+            ],
+
+            [
+                'config_key'      => 'auto_redirect.create_database',
+                'label_lng'       => 'system.setting.form.input.enable_auto_redirect_create_database',
+                'id_input'        => 'auto-redirect-create-database',
+                'name_input'      => 'auto_redirect_create_database',
+                'value_input'     => $forms['auto_redirect']['create_database']
+            ],
+
+            [
+                'config_key'      => 'auto_redirect.rename_database',
+                'label_lng'       => 'system.setting.form.input.enable_auto_redirect_rename_database',
+                'id_input'        => 'auto-redirect-rename-database',
+                'name_input'      => 'auto_redirect_rename_database',
+                'value_input'     => $forms['auto_redirect']['rename_database']
+            ]
+        ]
+    ];
 ?>
 
     <?php AppAlert::display(); ?>
@@ -145,131 +286,41 @@
             <input type="hidden" name="http_referer" value="<?php echo $forms['http_referer']; ?>"/>
 
             <ul class="form-element">
-                <?php if (AppConfig::getInstance()->isEnvEnabled('paging.file_home_list')) { ?>
-                    <li class="input">
-                        <span><?php echo lng('system.setting.form.input.paging_file_home_list'); ?></span>
-                        <input type="number" name="paging_file_home_list" value="<?php echo $forms['paging']['file_home_list']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_home_list'); ?>"/>
-                    </li>
-                <?php } ?>
-                <?php if (AppConfig::getInstance()->isEnvEnabled('paging.file_view_zip')) { ?>
-                    <li class="input">
-                        <span><?php echo lng('system.setting.form.input.paging_file_view_zip'); ?></span>
-                        <input type="number" name="paging_file_view_zip" value="<?php echo $forms['paging']['file_view_zip']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_view_zip'); ?>"/>
-                    </li>
-                <?php } ?>
-                <?php if (AppConfig::getInstance()->isEnvEnabled('paging.file_edit_text')) { ?>
-                    <li class="input">
-                        <span><?php echo lng('system.setting.form.input.paging_file_edit_text'); ?></span>
-                        <input type="number" name="paging_file_edit_text" value="<?php echo $forms['paging']['file_edit_text']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text'); ?>"/>
-                    </li>
-                <?php } ?>
-                <?php if (AppConfig::getInstance()->isEnvEnabled('paging_file_edit_text_line')) { ?>
-                    <li class="input">
-                        <span><?php echo lng('system.setting.form.input.paging_file_edit_text_line'); ?></span>
-                        <input type="number" name="paging_file_edit_text_line" value="<?php echo $forms['paging']['file_edit_text_line']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_file_edit_text_line'); ?>"/>
-                    </li>
-                <?php } ?>
-                <?php if (AppConfig::getInstance()->isEnvEnabled('paging_mysql_list_data')) { ?>
-                    <li class="input">
-                        <span><?php echo lng('system.setting.form.input.paging_mysql_list_data'); ?></span>
-                        <input type="number" name="paging_mysql_list_data" value="<?php echo $forms['paging']['mysql_list_data']; ?>" placeholder="<?php echo lng('system.setting.form.placeholder.input_paging_mysql_list_data'); ?>"/>
-                    </li>
+                <?php foreach ($settingTextInputs AS $inputs) { ?>
+                    <?php if (AppConfig::getInstance()->isEnvEnabled($inputs['config_key'])) { ?>
+                        <li class="input">
+                            <span><?php echo lng($inputs['label_lng']); ?></span>
+                            <input type="<?php echo $inputs['type_input']; ?>" name="<?php echo $inputs['name_input']; ?>" value="<?php echo $inputs['value_input']; ?>" placeholder="<?php echo lng($inputs['placeholder_lng']); ?>"/>
+                        </li>
+                    <?php } ?>
                 <?php } ?>
                 <li class="checkbox">
                     <span><?php echo lng('system.setting.form.input.enable_disable_label'); ?></span>
                     <ul>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('login.enable_forgot_password')) { ?>
-                            <li>
-                                <input type="checkbox" id="login-enable-forgot-password" name="login_enable_forgot_password" value="1"<?php if ($forms['login']['enable_forgot_password'] == true) { ?> checked="checked"<?php } ?>/>
-                                <label for="login-enable-forgot-password">
-                                    <span><?php echo lng('system.setting.form.input.enable_forgot_password'); ?></span>
-                                </label>
-                            </li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('enable_disable.button_save_on_javascript')) { ?>
-                            <li>
-                                <input type="checkbox" id="enable-disable-button-save-on-javascript" name="enable_disable_button_save_on_javascript" value="1"<?php if ($forms['enable_disable']['button_save_on_javascript'] == true) { ?> checked="checked"<?php } ?>/>
-                                <label for="enable-disable-button-save-on-javascript">
-                                    <span><?php echo lng('system.setting.form.input.enable_disable_button_save_on_javascript'); ?></span>
-                                </label>
-                            </li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('enable_disable.auto_focus_input_last')) { ?>
-                            <li>
-                                <input type="checkbox" id="enable-disable-auto-focus-input-last" name="enable_disable_auto_focus_input_last" value="1"<?php if ($forms['enable_disable']['auto_focus_input_last'] == true) { ?> checked="checked"<?php } ?>/>
-                                <label for="enable-disable-auto-focus-input-last">
-                                    <span><?php echo lng('system.setting.form.input.enable_disable_auto_focus_input_last'); ?></span>
-                                </label>
-                            </li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('enable_disable.count_checkbox_file_javascript')) { ?>
-                            <li>
-                                <input type="checkbox" id="enable-disable-count-checkbox-file-javascript" name="enable_disable_count_checkbox_file_javascript" value="1"<?php if ($forms['enable_disable']['count_checkbox_file_javascript'] == true) { ?> checked="checked"<?php } ?>/>
-                                <label for="enable-disable-count-checkbox-file-javascript">
-                                    <span><?php echo lng('system.setting.form.input.enable_disable_count_checkbox_file_javascript'); ?></span>
-                                </label>
-                            </li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('enable_disable.count_checkbox_mysql_javascript')) { ?>
-                            <li>
-                                <input type="checkbox" id="enable-disable-count-checkbox-mysql-javascript" name="enable_disable_count_checkbox_mysql_javascript" value="1"<?php if ($forms['enable_disable']['count_checkbox_mysql_javascript'] == true) { ?> checked="checked"<?php } ?>/>
-                                <label for="enable-disable-count-checkbox-mysql-javascript">
-                                    <span><?php echo lng('system.setting.form.input.enable_disable_count_checkbox_mysql_javascript'); ?></span>
-                                </label>
-                            </li>
+                        <?php foreach ($settingCheckboxInputs['enable_disable'] AS $checkboxs) { ?>
+                            <?php if (AppConfig::getInstance()->isEnvEnabled($checkboxs['config_key'])) { ?>
+                                <li>
+                                    <input type="checkbox" id="<?php echo $checkboxs['id_input']; ?>" name="<?php echo $checkboxs['name_input']; ?>" value="1"<?php if ($checkboxs['value_input'] == true) { ?> checked="checked"<?php } ?>/>
+                                    <label for="<?php echo $checkboxs['id_input']; ?>">
+                                        <span><?php echo lng($checkboxs['label_lng']); ?></span>
+                                    </label>
+                                </li>
+                            <?php } ?>
                         <?php } ?>
                     </ul>
                 </li>
                 <li class="checkbox">
                     <span><?php echo lng('system.setting.form.input.auto_redirect_label'); ?></span>
                 	<ul>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('auto_redirect.file_rename')) { ?>
-                    		<li>
-    		                	<input type="checkbox" id="auto-redirect-file-rename" name="auto_redirect_file_rename" value="1"<?php if($forms['auto_redirect']['file_rename'] == true) { ?> checked="checked"<?php } ?>/>
-    		                	<label for="auto-redirect-file-rename">
-    		                		<span><?php echo lng('system.setting.form.input.enable_auto_redirect_file_rename'); ?></span>
-    		                	</label>
-                    		</li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('auto_redirect.file_chmod')) { ?>
-                    		<li>
-    		                	<input type="checkbox" id="auto-redirect-file-chmod" name="auto_redirect_file_chmod" value="1"<?php if($forms['auto_redirect']['file_chmod'] == true) { ?> checked="checked"<?php } ?>/>
-            		        	<label for="auto-redirect-file-chmod">
-                    				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_file_chmod'); ?></span>
-                    			</label>
-                    		</li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('auto_redirect.create_directory')) { ?>
-                    		<li>
-    		                	<input type="checkbox" id="auto-redirect-create-directory" name="auto_redirect_create_directory" value="1"<?php if($forms['auto_redirect']['create_directory'] == true) { ?> checked="checked"<?php } ?>/>
-            		        	<label for="auto-redirect-create-directory">
-                    				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_create_directory'); ?></span>
-                    			</label>
-                    		</li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('auto_redirect.create_file')) { ?>
-                    		<li>
-    		                	<input type="checkbox" id="auto-redirect-create-file" name="auto_redirect_create_file" value="1"<?php if($forms['auto_redirect']['create_file'] == true) { ?> checked="checked"<?php } ?>/>
-            		        	<label for="auto-redirect-create-file">
-                    				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_create_file'); ?></span>
-                    			</label>
-                    		</li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('auto_redirect.create_database')) { ?>
-                    		<li>
-    		                	<input type="checkbox" id="auto-redirect-create-database" name="auto_redirect_create_database" value="1"<?php if($forms['auto_redirect']['create_database'] == true) { ?> checked="checked"<?php } ?>/>
-            		        	<label for="auto-redirect-create-database">
-                    				<span><?php echo lng('system.setting.form.input.enable_auto_redirect_create_database'); ?></span>
-                    			</label>
-                    		</li>
-                        <?php } ?>
-                        <?php if (AppConfig::getInstance()->isEnvEnabled('auto_redirect.rename_database')) { ?>
-                            <li>
-                                <input type="checkbox" id="auto-redirect-rename-database" name="auto_redirect_rename_database" value="1"<?php if($forms['auto_redirect']['rename_database'] == true) { ?> checked="checked"<?php } ?>/>
-                                <label for="auto-redirect-rename-database">
-                                    <span><?php echo lng('system.setting.form.input.enable_auto_redirect_rename_database'); ?></span>
-                                </label>
-                            </li>
+                        <?php foreach ($settingCheckboxInputs['auto_redirect'] AS $checkboxs) { ?>
+                            <?php if (AppConfig::getInstance()->isEnvEnabled($checkboxs['config_key'])) { ?>
+                                <li>
+                                    <input type="checkbox" id="<?php echo $checkboxs['id_input']; ?>" name="<?php echo $checkboxs['name_input']; ?>" value="1"<?php if ($checkboxs['value_input'] == true) { ?> checked="checked"<?php } ?>/>
+                                    <label for="<?php echo $checkboxs['id_input']; ?>">
+                                        <span><?php echo lng($checkboxs['label_lng']); ?></span>
+                                    </label>
+                                </li>
+                            <?php } ?>
                         <?php } ?>
                 	</ul>
                 </li>

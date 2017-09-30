@@ -7,6 +7,7 @@
     use Librarys\Http\Request;
     use Librarys\App\Config\AppConfig;
     use Librarys\App\Config\AppAssetsConfig;
+    use Librarys\Exception\RuntimeException;
 
     final class AppAssets
     {
@@ -50,32 +51,54 @@
 
         public static function makeURLResourceTheme($themeDirectory, $filename)
         {
-            $filename = str_ireplace('.css', null, basename($filename));
-            $buffer   = env('app.http.host') . '/asset.php';
-            $buffer  .= '?' . ASSET_PARAMETER_THEME_URL . '=' . AppDirectory::rawEncode($themeDirectory);
-            $buffer  .= '&' . ASSET_PARAMETER_CSS_URL   . '=' . AppDirectory::rawEncode($filename);
-            $buffer  .= '&' . cfsrTokenName()           . '=' . cfsrTokenValue();
+            $rootPath  = env('app.path.root');
+            $themePath = env('app.path.theme');
+            $filename  = str_ireplace('.css', null, basename($filename));
+            $themePath = FileInfo::filterPaths($themePath . SP . $themeDirectory);
+
+            if (FileInfo::isTypeDirectory($themePath) == false)
+                return null;
+
+            $themeFilename = $filename . '.css';
+            $themeFilepath = FileInfo::filterPaths($themePath . SP . $themeFilename);
+
+            if (FileInfo::isTypeFile($themeFilepath) == false)
+                return null;
+
+            $buffer  = env('app.http.host');
+            $buffer .= substr($themeFilepath, strlen($rootPath));
 
             if (env('app.dev.enable') || Request::isLocal())
-                $buffer  .= '&' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
+                $buffer  .= '?' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
 
-            return $buffer;
+            return separator($buffer, '/');
         }
 
         public static function makeURLResourceJavascript($filename, $scriptDirectory = null)
         {
             $filename = str_ireplace('.js', null, basename($filename));
-            $buffer  = env('app.http.host') . '/asset.php';
-            $buffer .= '?' . ASSET_PARAMETER_JS_URL . '=' . AppDirectory::rawEncode($filename);
-            $buffer .= '&' . cfsrTokenName()        . '=' . cfsrTokenValue();
+            $root     = env('app.path.root');
+            $jsPath   = env('app.path.javascript');
 
             if ($scriptDirectory != null)
-                $buffer  .= '&' . ASSET_PARAMETER_JS_DIR_URL . '=' . AppDirectory::rawEncode($scriptDirectory);
+                $jsPath .= SP . $jsDirectory;
+
+            if (FileInfo::isTypeDirectory($jsPath) == false)
+                die(lng('default.resource.directory_not_found'));
+
+            $jsFilename = $filename . '.js';
+            $jsFilePath = FileInfo::filterPaths($jsPath . SP . $jsFilename);
+
+            if (FileInfo::isTypeFile($jsFilePath) == false)
+                return null;
+
+            $buffer  = env('app.http.host');
+            $buffer .= substr($jsFilePath, strlen($root));
 
             if (env('app.dev.enable'))
-                $buffer  .= '&' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
+                $buffer  .= '?' . ASSET_PARAMETER_RAND_URL . '=' . intval($_SERVER['REQUEST_TIME']);
 
-            return $buffer;
+            return separator($buffer, '/');
         }
 
         public static function makeURLResourceIcon($themeDirectory, $filename)

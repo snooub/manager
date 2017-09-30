@@ -55,7 +55,7 @@
             if ($isErrors == false && $isExceptions == false)
                 return;
 
-            //BufferOutput::clearBuffer();
+            BufferOutput::clearBuffer();
 
             $class      = null;
             $trace      = null;

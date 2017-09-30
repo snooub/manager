@@ -2,8 +2,8 @@
 
 @font-face {
     font-family: 'icomoon';
-  src: url("assets/theme/default/fonts/icomoon.eot?4j2wx3");
-  src: url("assets/theme/default/fonts/icomoon.eot?4j2wx3#iefix") format("embedded-opentype"), url("assets/theme/default/fonts/icomoon.ttf?4j2wx3") format("truetype"), url("assets/theme/default/fonts/icomoon.woff?4j2wx3") format("woff"), url("assets/theme/default/fonts/icomoon.svg?4j2wx3#icomoon") format("svg");
+  src: url("fonts/icomoon.eot?4j2wx3");
+  src: url("fonts/icomoon.eot?4j2wx3#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?4j2wx3") format("truetype"), url("fonts/icomoon.woff?4j2wx3") format("woff"), url("fonts/icomoon.svg?4j2wx3#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -966,7 +966,7 @@ div#container div#alert > ul,
 }
 
 div#container div#alert > ul > li {
-    font-size: 14px;
+    font-size: 16px;
     background-color: #ffffff;
     overflow: hidden;
     word-wrap: break-word;
