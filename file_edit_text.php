@@ -280,7 +280,7 @@
                             </script>
                         </div>
                     <?php } else { ?>
-                        <textarea name="content" rows="20" wrap="off" autocomplete="off"><?php echo htmlspecialchars($edits['content']); ?></textarea>
+                        <textarea name="content" rows="20" wrap="on" autocomplete="off"><?php echo htmlspecialchars($edits['content']); ?></textarea>
                     <?php } ?>
                 </li>
                 <?php if ($edits['page']['max'] > 0 && $edits['page']['total'] > 1) { ?>

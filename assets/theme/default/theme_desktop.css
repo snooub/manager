@@ -966,7 +966,7 @@ div#container div#alert > ul,
 }
 
 div#container div#alert > ul > li {
-    font-size: 16px;
+    font-size: 15px;
     background-color: #ffffff;
     overflow: hidden;
     word-wrap: break-word;
