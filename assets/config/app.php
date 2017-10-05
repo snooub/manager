@@ -21,7 +21,7 @@
                 'enable_desktop' => true,
 
                 'error_reported' => [
-                    'enable'           => false,
+                    'enable'           => true,
                     'enable_producted' => false,
                     'level'            => ErrorHandler::EU_ALL,
 
@@ -39,7 +39,7 @@
 
                 'font'   => [
                     'size' => 17,
-                    'path' => 'captcha.ttf'
+                    'path' => '${app.path.theme}${SP}fonts${SP}captcha.ttf'
                 ]
             ],
 

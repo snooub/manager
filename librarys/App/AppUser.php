@@ -12,6 +12,7 @@
     use Librarys\Http\Detection\SimpleDetect;
     use Librarys\Http\Secure\CFSRToken;
     use Librarys\Text\Encryption\StringEncryption;
+    use Librarys\Mailer\SimpleMail;
 
     final class AppUser
     {
@@ -344,6 +345,22 @@
             return false;
         }
 
+        public function isUserEmail($email)
+        {
+            $arrays = AppUserConfig::getInstance()->getConfigArraySystem();
+
+            if (is_array($arrays) && count($arrays) > 0) {
+                $email = strtolower($email);
+
+                foreach ($arrays AS $id => $arrayUser) {
+                    if (strcasecmp($arrayUser[AppUserConfig::ARRAY_KEY_EMAIL], $email) === 0)
+                        return $id;
+                }
+            }
+
+            return false;
+        }
+
         public function isUserBand($id = null, $exitUser = true)
         {
             if ($id == null)
@@ -404,7 +421,8 @@
                 self::TOKEN_ARRAY_KEY_USER_LIVE    => $userLive,
             ]);
 
-            if (FileInfo::fileWriteContents($tokenPath, $tokenBuffer, $userPassword));
+            if (FileInfo::fileWriteContents($tokenPath, $tokenBuffer, $userPassword) == false)
+                return false;
 
             if (AppUserConfig::getInstance()->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false || AppUserConfig::getInstance()->write() == false)
                 return false;
@@ -416,6 +434,32 @@
                 return true;
 
             return false;
+        }
+
+        public function sendMailForgotPassword($id, $email)
+        {
+            $id             = addslashes($id);
+            $time           = time();
+            $tokenPath      = null;
+            $tokenGenerator = null;
+            $tokenDirectory = env('app.path.token');
+
+            if (FileInfo::isTypeDirectory($tokenDirectory) == false && FileInfo::mkdir($tokenDirectory, true) == false)
+                return false;
+
+            if (empty($id))
+                return false;
+
+            $mailer = SimpleMail::make();
+            $mailer->setFrom('noreply@' . $_SERVER['HTTP_HOST'], lng('user.forgot_password.mail.name_from'));
+            $mailer->setTo($email, lng('user.forgot_password.mail.name_to'));
+            $mailer->setSubject(lng('user.forgot_password.mail.subject'));
+            $mailer->setMessage(lng('user.forgot_password.mail.message'));
+
+            if ($mailer->send() == false)
+                return false;
+
+            return true;
         }
 
         public static function isValidateUsername($username)

@@ -84,7 +84,7 @@
                 if ($handle === false)
                     return false;
 
-                $tokenMaxLive = intval(AppConfig::getInstance()->get('login.time_login'));
+                $tokenMaxLive = intval(AppConfig::getInstance()->get('login.time_login', 0));
 
                 foreach ($handle AS $filename) {
                     $filepath = FileInfo::filterPaths($directory . SP . $filename);

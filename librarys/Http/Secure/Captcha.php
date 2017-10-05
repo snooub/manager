@@ -41,12 +41,12 @@
 
         public static function create($width = null, $height = null, $letters = null, $fontSize = null, $fontPath = null)
         {
-            $envWidth   = env('app.http.captcha.width',   self::DEFAULT_WIDTH);
-            $envHeight  = env('app.http.captcha.height',  self::DEFAULT_HEIGHT);
-            $envLetters = env('app.http.captcha.letters', self::DEFAULT_LETTERS);
+            $envWidth   = env('app.captcha.width',   self::DEFAULT_WIDTH);
+            $envHeight  = env('app.captcha.height',  self::DEFAULT_HEIGHT);
+            $envLetters = env('app.captcha.letters', self::DEFAULT_LETTERS);
 
-            $envFontSize = env('app.http.captcha.font.size', null);
-            $envFontPath = env('app.http.captcha.font.path', null);
+            $envFontSize = env('app.captcha.font.size', null);
+            $envFontPath = env('app.captcha.font.path', null);
 
             if ($width == null)
                 $width = $envWidth;

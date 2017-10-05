@@ -111,12 +111,14 @@
         else
             $isLogin = true;
 
-        if ($isLogin == false)
-            AppJson::getInstance()->setResponseCodeSystem(DESKTOP_CODE_IS_NOT_LOGIN);
+        if (Request::isDesktop(false)) {
+            if ($isLogin == false)
+                AppJson::getInstance()->setResponseCodeSystem(DESKTOP_CODE_IS_NOT_LOGIN);
 
-        AppJson::getInstance()->setResponseDataSystem([
-            'is_login' => $isLogin
-        ]);
+            AppJson::getInstance()->setResponseDataSystem([
+                'is_login' => $isLogin
+            ]);
+        }
     }
 
     if (defined('INDEX') == false && Request::isDesktop(false)) {

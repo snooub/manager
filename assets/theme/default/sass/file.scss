@@ -57,6 +57,12 @@ ul.file-list {
     margin-bottom: 15px;
     text-align: center;
 
+    &.not-double {
+        li {
+            width: 100% !important;
+        }
+    }
+
     & > li {
         border-bottom: 1px solid #efefef;
 
@@ -186,6 +192,10 @@ ul.file-list {
 
         &.type-file {
             color: #606060;
+
+            a:hover span.icomoon {
+                color: #909090;
+            }
         }
 
         &.type-file span.icomoon {

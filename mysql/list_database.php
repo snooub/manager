@@ -8,6 +8,7 @@
     require_once('global.php');
 
     use Librarys\App\AppAlert;
+    use Librarys\App\Config\AppConfig;
     use Librarys\App\Mysql\AppMysqlConfig;
 
     if (AppMysqlConfig::getInstance()->get('mysql_name') != null)
@@ -29,7 +30,7 @@
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
     </div>
 
-    <ul class="list-database">
+    <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double', true) == false) { ?> not-double<?php } ?>">
         <?php if ($mysqlNums <= 0) { ?>
             <li class="empty">
                 <span class="icomoon icon-mysql"></span>

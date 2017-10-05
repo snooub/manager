@@ -4,6 +4,7 @@
     define('SETTING', 1);
 
     use Librarys\App\AppAlert;
+    use Librarys\App\AppUser;
     use Librarys\App\Config\AppConfig;
 
     require_once('global.php');
@@ -16,33 +17,33 @@
         'http_referer' => null,
 
         'paging' => [
-            'file_home_list'      => AppConfig::getInstance()->get('paging.file_home_list'),
-            'file_view_zip'       => AppConfig::getInstance()->get('paging.file_view_zip'),
-            'file_edit_text'      => AppConfig::getInstance()->get('paging.file_edit_text'),
-            'file_edit_text_line' => AppConfig::getInstance()->get('paging.file_edit_text_line'),
-
-            'mysql_list_data' => AppConfig::getInstance()->get('paging.mysql_list_data')
+            'file_home_list'      => AppConfig::getInstance()->get('paging.file_home_list',  50),
+            'file_view_zip'       => AppConfig::getInstance()->get('paging.file_view_zip',   50),
+            'file_edit_text'      => AppConfig::getInstance()->get('paging.file_edit_text',  20),
+            'mysql_list_data'     => AppConfig::getInstance()->get('paging.mysql_list_data', 50)
         ],
 
         'login' => [
-            'enable_forgot_password' => AppConfig::getInstance()->get('login.enable_forgot_password')
+            'enable_forgot_password' => AppConfig::getInstance()->get('login.enable_forgot_password', false)
         ],
 
         'enable_disable' => [
-            'button_save_on_javascript'       => AppConfig::getInstance()->get('enable_disable.button_save_on_javascript'),
-            'auto_focus_input_last'           => AppConfig::getInstance()->get('enable_disable.auto_focus_input_last'),
-            'count_checkbox_file_javascript'  => AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript'),
-            'count_checkbox_mysql_javascript' => AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')
+            'button_save_on_javascript'       => AppConfig::getInstance()->get('enable_disable.button_save_on_javascript',       true),
+            'auto_focus_input_last'           => AppConfig::getInstance()->get('enable_disable.auto_focus_input_last',           true),
+            'count_checkbox_file_javascript'  => AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript',  true),
+            'count_checkbox_mysql_javascript' => AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript', true),
+            'list_file_double'                => AppConfig::getInstance()->get('enable_disable.list_file_double',                true),
+            'list_database_double'            => AppConfig::getInstance()->get('enable_disable.list_database_double',            true)
         ],
 
         'auto_redirect' => [
-            'file_rename' => AppConfig::getInstance()->get('auto_redirect.file_rename'),
-            'file_chmod'  => AppConfig::getInstance()->get('auto_redirect.file_chmod'),
+            'file_rename' => AppConfig::getInstance()->get('auto_redirect.file_rename', true),
+            'file_chmod'  => AppConfig::getInstance()->get('auto_redirect.file_chmod',  true),
 
-            'create_directory' => AppConfig::getInstance()->get('auto_redirect.create_directory'),
-            'create_file'      => AppConfig::getInstance()->get('auto_redirect.create_file'),
-            'create_database'  => AppConfig::getInstance()->get('auto_redirect.create_database'),
-            'rename_database'  => AppConfig::getInstance()->get('auto_redirect.rename_database')
+            'create_directory' => AppConfig::getInstance()->get('auto_redirect.create_directory', true),
+            'create_file'      => AppConfig::getInstance()->get('auto_redirect.create_file',      true),
+            'create_database'  => AppConfig::getInstance()->get('auto_redirect.create_database',  true),
+            'rename_database'  => AppConfig::getInstance()->get('auto_redirect.rename_database',  true)
         ],
     ];
 
@@ -162,15 +163,6 @@
         ],
 
         [
-            'config_key'      => 'paging_file_edit_text_line',
-            'label_lng'       => 'system.setting.form.input.paging_file_edit_text_line',
-            'placeholder_lng' => 'system.setting.form.placeholder.input_paging_file_edit_text_line',
-            'name_input'      => 'paging_file_edit_text_line',
-            'type_input'      => 'number',
-            'value_input'     => $forms['paging']['file_edit_text_line']
-        ],
-
-        [
             'config_key'      => 'paging_mysql_list_data',
             'label_lng'       => 'system.setting.form.input.paging_mysql_list_data',
             'placeholder_lng' => 'system.setting.form.placeholder.input_paging_mysql_list_data',
@@ -220,6 +212,22 @@
                 'id_input'        => 'enable-disable-count-checkbox-mysql-javascript',
                 'name_input'      => 'enable_disable_count_checkbox_mysql_javascript',
                 'value_input'     => $forms['enable_disable']['count_checkbox_mysql_javascript']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.list_file_double',
+                'label_lng'       => 'system.setting.form.input.enable_disable_list_file_double',
+                'id_input'        => 'enable-disable-list-file-double',
+                'name_input'      => 'enable_disable_list_file_double',
+                'value_input'     => $forms['enable_disable']['list_file_double']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.list_database_double',
+                'label_lng'       => 'system.setting.form.input.enable_disable_list_database_double',
+                'id_input'        => 'enable-disable-list-database-double',
+                'name_input'      => 'enable_disable_list_database_double',
+                'value_input'     => $forms['enable_disable']['list_database_double']
             ]
         ],
 
@@ -343,22 +351,18 @@
     </ul>
 
     <ul class="menu-action">
-        <li>
-            <a href="<?php echo env('app.http.host'); ?>/system/setting_theme.php">
-                <span class="icomoon icon-theme"></span>
-                <span><?php echo lng('system.setting.menu_action.setting_theme'); ?></span>
-            </a>
-        </li>
+        <?php if (AppUser::getInstance()->getPosition() === AppUser::POSTION_ADMINSTRATOR) { ?>
+            <li>
+                <a href="<?php echo env('app.http.host'); ?>/system/setting_system.php">
+                    <span class="icomoon icon-config"></span>
+                    <span><?php echo lng('system.setting.menu_action.setting_system'); ?></span>
+                </a>
+            </li>
+        <?php } ?>
         <li>
             <a href="<?php echo env('app.http.host'); ?>/user/setting.php">
                 <span class="icomoon icon-config"></span>
                 <span><?php echo lng('system.setting.menu_action.setting_profile'); ?></span>
-            </a>
-        </li>
-        <li class="hidden">
-            <a href="<?php echo env('app.http.host'); ?>/user/manager.php">
-                <span class="icomoon icon-user"></span>
-                <span><?php echo lng('system.setting.menu_action.manager_user'); ?></span>
             </a>
         </li>
     </ul>

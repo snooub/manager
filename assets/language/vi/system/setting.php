@@ -4,14 +4,13 @@
         exit;
 
     return [
-        'title_page' => 'Cài đặt cấu hình',
+        'title_page' => 'Cài đặt quản lý',
 
         'form' => [
             'input' => [
                 'paging_file_home_list'      => 'Phân trang danh sách tập tin:',
                 'paging_file_view_zip'       => 'Phân trang xem tập tin zip:',
                 'paging_file_edit_text'      => 'Phân trang sửa văn bản:',
-                'paging_file_edit_text_line' => 'Phân trang sửa văn bản theo dòng:',
                 'paging_mysql_list_data'     => 'Phân trang danh sách dữ liệu mysql:',
 
                 'enable_disable_label'                           => 'Bật/Tắt',
@@ -20,6 +19,8 @@
                 'enable_disable_auto_focus_input_last'           => 'Tự động focus con trỏ chuột vào khung nhập',
                 'enable_disable_count_checkbox_file_javascript'  => 'Hiện số mục được checked trong danh sách tập tin',
                 'enable_disable_count_checkbox_mysql_javascript' => 'Hiện số mục được checked trong danh sách cơ sở dữ liệu',
+                'enable_disable_list_file_double'                => 'Danh sách tập tin chia làm đôi',
+                'enable_disable_list_database_double'            => 'Danh sách cơ sở dữ liệu chia làm đôi',
 
                 'auto_redirect_label'                   => 'Chuyển hướng',
                 'enable_auto_redirect_file_rename'      => 'Khi thay đổi tên tập tin, thư mục',
@@ -41,7 +42,7 @@
                 'input_paging_file_edit_text'      => 'Nhập phân trang sửa văn bản',
                 'input_paging_file_edit_text_line' => 'Nhập phân trang sửa văn bản theo dòng',
 
-                'input_paging_mysql_list_data' => 'Nhập phân trang danh sách cơ sở dữ liệu mysql'
+                'input_paging_mysql_list_data'     => 'Nhập phân trang danh sách cơ sở dữ liệu mysql'
             ]
         ],
 
@@ -49,11 +50,13 @@
         	'tips'                 => 'Phân trang cài <strong>0</strong> sẽ không phân trang, ' .
                                       'bật tắt chuyển hướng cho tạo thư mục, tập tin, cơ sở dữ liệu thì khi tạo những mục này thành công sẽ tự động chuyển hướng tới mục vừa được tạo',
             'save_setting_failed'  => 'Lưu cài đặt thất bại',
-            'save_setting_success' => 'Lưu cài đặt thành công'
+            'save_setting_success' => 'Lưu cài đặt thành công',
+            'user_not_permission'  => 'Bạn không có quyền truy cập vào đó'
         ],
 
         'menu_action' => [
-            'setting_system'  => 'Cài đặt cấu hình',
+            'setting_manager' => 'Cài đặt quản lý',
+            'setting_system'  => 'Cài đặt hệ thống',
             'setting_theme'   => 'Cài đặt giao diện',
             'setting_profile' => 'Cài đặt tài khoản',
             'manager_user'    => 'Quản lý người dùng'

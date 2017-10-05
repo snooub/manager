@@ -41,7 +41,7 @@
     <form action="action_table.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
-        <ul class="list-database">
+        <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double', true) == false) { ?> not-double<?php } ?>">
             <?php if ($appMysqlConnect->isDatabaseNameCustom()) { ?>
                 <li class="back">
                     <a href="info_database.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_IS_REFERER_LIST_TABLE; ?>=1">

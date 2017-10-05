@@ -18,14 +18,16 @@
             'auto_focus_input_last' => true,
             'count_checkbox_file_javascript' => true,
             'count_checkbox_mysql_javascript' => true,
+            'list_file_double' => true,
+            'list_database_double' => true
         ],
 
         'login' => [
-            'enable_forgot_password' => false,
-            'enable_lock_count_failed' => false,
+            'enable_forgot_password' => true,
+            'enable_lock_count_failed' => true,
             'max_lock_count' => 5,
-            'time_lock' => 180,
-            'time_login' => 604800,
+            'time_lock' => 5,
+            'time_login' => 64800,
         ],
 
         'paging' => [
@@ -45,7 +47,8 @@
             'js' => [
                 'enable' => true,
                 'lifetime' => 31536000,
-            ]
+            ],
+
         ],
 
         'tmp' => [

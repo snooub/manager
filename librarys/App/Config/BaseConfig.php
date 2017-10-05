@@ -20,6 +20,7 @@
         protected $configSystemArray;
 
         protected $cacheArray;
+        protected $cacheArraySystem;
         protected $envProtectedArray;
 
         protected $spacingWrite;
@@ -29,6 +30,7 @@
             $this->configArray       = array();
             $this->configSystemArray = array();
             $this->cacheArray        = array();
+            $this->cacheArraySystem  = array();
 
             $this->setPathConfigSystem($pathConfigSystem);
             $this->setFileConfigName($fileConfigName);
@@ -217,6 +219,14 @@
             return $this->receiverToCache($name, $default);
         }
 
+        public function getSystem($name, $default = null, $recache = false)
+        {
+            if (array_key_exists($name, $this->cacheArraySystem) && $recache == false)
+                return $this->cacheArraySystem[$name];
+
+            return $this->receiverToCacheSystem($name, $default);
+        }
+
         public function hasKey($name, $isSystem = false)
         {
             if ($this->splitNames($name, $nameSplits, $nameSplitsCount) == false)
@@ -288,6 +298,11 @@
         private function receiverToCache($name, $default = null)
         {
             return ($this->cacheArray[$name] = urlSeparatorMatches($this->receiver($name, $default)));
+        }
+
+        private function receiverToCacheSystem($name, $default = null)
+        {
+            return ($this->cacheArraySystem[$name] = urlSeparatorMatches($this->receiver($name, $default, $this->configSystemArray)));
         }
 
         private function receiver($key, $default = null, $array = null)

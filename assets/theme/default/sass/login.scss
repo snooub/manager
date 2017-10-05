@@ -5,13 +5,13 @@ div#container-login {
 
         @media all and (min-width: 560px) {
             & {
-                max-width: 480px;
+                max-width: 320px;
             }
         }
 
         @media all and (min-width: 680px) {
             & {
-                max-width: 560px;
+                max-width: 480px;
             }
         }
     }
@@ -27,103 +27,172 @@ div#container-login {
         @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
 
         margin: 0 auto;
-        margin-bottom: 140px;
+        margin-bottom: 100px;
         padding: 0;
         position: relative;
     }
 
-    form#login-form input {
-        color: #a0a0a0;
-        border: 0;
-
-        @include box-sizing(border-box);
-
-        display: block;
-        margin: 0;
-        padding: 15px;
-        width: 100%;
-        outline: 0;
-
-        &:focus {
-            color:  #303030;
-        }
-
-        &::-webkit-input-placeholder {
-            color: #707070;
-        }
-
-        &:-ms-input-placeholder {
-            color: #707070;
-        }
-
-        &:-moz-placeholder {
-            color: #707070;
-        }
-
-        &::-moz-placeholder {
-            color: #707070;
-        }
-    }
-
-    div#login-form-action {
-        position: absolute;
-        bottom: -80px;
-        left: 0;
-        right: 0;
-        height: 40px;
-        text-align: right;
-
-        a#forgot-password {
-            display: inline-block;
-            background-color: #ffffff;
-
-            @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
-
-            height: 40px;
-            margin-right: 10px;
-            padding-left: 8px;
-            padding-right: 8px;
-            text-decoration: none;
-
-            &:hover {
-                background-color: #efefef;
-            }
-
-            span {
-                color: #404040;
-                font-weight: normal;
-                font-variant: normal;
-                font-size: $font-size;
-                line-height: 40px;
-            }
-        }
-
-        button {
-            background-color: #00897b;
-            display: inline-block;
-            float: right;
-
-            @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.5));
-
-            border: 0;
+    form#login-form {
+        > ul {
+            display: block;
+            list-style: none;
             margin: 0;
-            height: 40px;
             padding: 0;
-            padding-left: 8px;
-            padding-right: 8px;
+            text-align: left;
 
-            &:disabled {
-                background-color: #a0a0a0;
-                cursor: default;
+            $height_input: 65px;
+            $color_input: #a0a0a0;
+            $color_focus_input: #505050;
+
+            li.input {
+                position: relative;
+
+                input {
+                    color: $color_input;
+                    border: 0;
+                    font-size: 15px;
+                    height: $height_input;
+                    display: block;
+                    width: 100%;
+                    padding-left: $height_input;
+                    padding-right: $height_input / 2;
+
+                    @include box-sizing(border-box);
+
+                    + span.icomoon {
+                        color: $color_input;
+                        font-size: 20px;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: $height_input;
+                        height: $height_input;
+                        line-height: $height_input;
+                        text-align: center;
+                    }
+
+                    &:hover, &:focus {
+                        color: $color_focus_input;
+
+                        + span {
+                            color: $color_focus_input;
+                        }
+                    }
+                }
+
+                &.captcha {
+                    padding-right: ($height_input / 2) + 100px;
+
+                    img {
+                        position: absolute;
+                        top: ($height_input - 45px) / 2;
+                        right: $height_input / 2;
+                    }
+                }
             }
 
-            &:enabled:hover {
-                background-color: #00a99b;
+            li.checkbox {
+                height: $height_input;
+                position: relative;
+                padding-left: $height_input;
+                padding-right: $height_input / 2;
+
+                label {
+                    span {
+                        height: $height_input;
+                        line-height: $height_input;
+
+                        a {
+                            display: inline;
+
+                            span {
+                                color: #00897b;
+                                height: $height_input;
+                                line-height: $height_input;
+                            }
+
+                            &:hover span {
+                                color: #009688 !important;
+                            }
+                        }
+                    }
+
+                    &::before {
+                        color: $color_input;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: $height_input;
+                        height: $height_input;
+                        line-height: $height_input;
+                        text-align: center;
+                    }
+                }
             }
 
-            span {
-                color: #ffffff;
-                font-weight: bold;
+            li.button {
+                border-top: 1px dashed #d0d0d0;
+
+                $height: 55px;
+
+                button, a {
+                    background-color: transparent;
+                    border: 0;
+                    outline: 0;
+                    font-size: 15px;
+                    font-family: $font-family;
+                    display: inline-block;
+                    width: 49%;
+                    height: $height;
+                    line-height: $height;
+                    margin: 0;
+                    padding: 0;
+                    cursor: pointer;
+                    text-align: center;
+
+                    span {
+                        color: #505050;
+                    }
+
+                    &:hover {
+                        span {
+                            color: #a0a0a0;
+                        }
+                    }
+                }
+            }
+        }
+
+        input {
+            color: #a0a0a0;
+            border: 0;
+
+            @include box-sizing(border-box);
+
+            display: block;
+            margin: 0;
+            padding: 15px;
+            width: 100%;
+            outline: 0;
+
+            &:focus {
+                color:  #303030;
+            }
+
+            &::-webkit-input-placeholder {
+                color: #707070;
+            }
+
+            &:-ms-input-placeholder {
+                color: #707070;
+            }
+
+            &:-moz-placeholder {
+                color: #707070;
+            }
+
+            &::-moz-placeholder {
+                color: #707070;
             }
         }
     }

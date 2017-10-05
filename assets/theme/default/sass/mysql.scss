@@ -37,14 +37,24 @@ ul.list-database {
     margin: 0;
     margin-bottom: 15px;
     text-align: center;
-}
 
-ul.list-database.no-box-shadow {
-    -webkit-box-shadow: none !important;
-       -moz-box-shadow: none !important;
-        -ms-box-shadow: none !important;
-         -o-box-shadow: none !important;
-            box-shadow: none !important;
+    &.not-double {
+        li {
+            width: 100% !important;
+
+            div.info {
+                right: 0 !important;
+            }
+        }
+    }
+
+    &.no-box-shadow {
+        -webkit-box-shadow: none !important;
+           -moz-box-shadow: none !important;
+            -ms-box-shadow: none !important;
+             -o-box-shadow: none !important;
+                box-shadow: none !important;
+    }
 }
 
 ul.list-database > li {
@@ -89,13 +99,33 @@ ul.list-database > li span.icomoon {
     line-height: 45px;
 }
 
+ul.list-database > li div.info {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-right: 10px;
+}
+
+ul.list-database > li.entry-odd div.info {
+    right: 50%;
+}
+
+ul.list-database > li div.info span {
+    color: #d0d0d0;
+    line-height: 45px;
+}
+
+ul.list-database > li div.info a:hover span {
+    color: #a0a0a0;
+}
+
 @media all and (max-width: 780px) {
     ul.list-database > li {
         width: 100%;
     }
 
     ul.list-database > li.entry-odd div.info {
-        right: 0 !important;
+        right: 0;
     }
 }
 
@@ -105,7 +135,7 @@ ul.list-database > li span.icomoon {
     }
 
     ul.list-database > li.entry-odd div.info {
-        right: 50% !important;
+        right: 50%;
     }
 }
 
@@ -275,26 +305,6 @@ ul.list-database > li.type-backup-record a.name {
     ul.list-database > li.entry-only-one a.name {
         max-width: 30%;
     }
-}
-
-ul.list-database > li div.info {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding-right: 10px;
-}
-
-ul.list-database > li.entry-odd div.info {
-    right: 50%;
-}
-
-ul.list-database > li div.info span {
-    color: #d0d0d0;
-    line-height: 45px;
-}
-
-ul.list-database > li div.info a:hover span {
-    color: #a0a0a0;
 }
 
 ul.mysql-info,

@@ -364,7 +364,7 @@
     <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-file-home">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
-        <ul class="file-list">
+        <ul class="file-list<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double', true) == false) { ?> not-double<?php } ?>">
             <?php echo $bufferBack; ?>
 
             <?php if ($handlerCount > 0) { ?>

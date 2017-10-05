@@ -136,21 +136,17 @@
         <li>
             <a href="<?php echo env('app.http.host'); ?>/system/setting.php">
                 <span class="icomoon icon-config"></span>
-                <span><?php echo lng('system.setting.menu_action.setting_system'); ?></span>
+                <span><?php echo lng('system.setting.menu_action.setting_manager'); ?></span>
             </a>
         </li>
-        <li>
-            <a href="<?php echo env('app.http.host'); ?>/system/setting_theme.php">
-                <span class="icomoon icon-theme"></span>
-                <span><?php echo lng('system.setting.menu_action.setting_theme'); ?></span>
-            </a>
-        </li>
-        <li class="hidden">
-            <a href="<?php echo env('app.http.host'); ?>/user/manager.php">
-                <span class="icomoon icon-user"></span>
-                <span><?php echo lng('system.setting.menu_action.manager_user'); ?></span>
-            </a>
-        </li>
+        <?php if (AppUser::getInstance()->getPosition() === AppUser::POSTION_ADMINSTRATOR) { ?>
+            <li>
+                <a href="<?php echo env('app.http.host'); ?>/system/setting_system.php">
+                    <span class="icomoon icon-config"></span>
+                    <span><?php echo lng('system.setting.menu_action.setting_system'); ?></span>
+                </a>
+            </li>
+        <?php } ?>
     </ul>
 
 <?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>

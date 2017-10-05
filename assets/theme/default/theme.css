@@ -2,8 +2,8 @@
 
 @font-face {
     font-family: 'icomoon';
-  src: url("fonts/icomoon.eot?4j2wx3");
-  src: url("fonts/icomoon.eot?4j2wx3#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?4j2wx3") format("truetype"), url("fonts/icomoon.woff?4j2wx3") format("woff"), url("fonts/icomoon.svg?4j2wx3#icomoon") format("svg");
+  src: url("fonts/icomoon.eot?zbzcim");
+  src: url("fonts/icomoon.eot?zbzcim#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?zbzcim") format("truetype"), url("fonts/icomoon.woff?zbzcim") format("woff"), url("fonts/icomoon.svg?zbzcim#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -20,6 +20,14 @@
   /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-email:before {
+    content: "";
+}
+
+.icon-secure:before {
+    content: "";
 }
 
 .icon-spinner:before {
@@ -1447,14 +1455,14 @@ div#container-login ul.alert {
 @media all and (min-width: 560px) {
     div#container-login div#login,
     div#container-login ul.alert {
-        max-width: 480px;
+        max-width: 320px;
     }
 }
 
 @media all and (min-width: 680px) {
     div#container-login div#login,
     div#container-login ul.alert {
-        max-width: 560px;
+        max-width: 480px;
     }
 }
 
@@ -1471,9 +1479,132 @@ div#container-login div#login {
     -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
     margin: 0 auto;
-    margin-bottom: 140px;
+    margin-bottom: 100px;
     padding: 0;
     position: relative;
+}
+
+div#container-login form#login-form > ul {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+div#container-login form#login-form > ul li.input {
+    position: relative;
+}
+
+div#container-login form#login-form > ul li.input input {
+    color: #a0a0a0;
+    border: 0;
+    font-size: 15px;
+    height: 65px;
+    display: block;
+    width: 100%;
+    padding-left: 65px;
+    padding-right: 32.5px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+div#container-login form#login-form > ul li.input input + span.icomoon {
+    color: #a0a0a0;
+    font-size: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 65px;
+    height: 65px;
+    line-height: 65px;
+    text-align: center;
+}
+
+div#container-login form#login-form > ul li.input input:hover, div#container-login form#login-form > ul li.input input:focus {
+    color: #505050;
+}
+
+div#container-login form#login-form > ul li.input input:hover + span, div#container-login form#login-form > ul li.input input:focus + span {
+    color: #505050;
+}
+
+div#container-login form#login-form > ul li.input.captcha {
+    padding-right: 132.5px;
+}
+
+div#container-login form#login-form > ul li.input.captcha img {
+    position: absolute;
+    top: 10px;
+    right: 32.5px;
+}
+
+div#container-login form#login-form > ul li.checkbox {
+    height: 65px;
+    position: relative;
+    padding-left: 65px;
+    padding-right: 32.5px;
+}
+
+div#container-login form#login-form > ul li.checkbox label span {
+    height: 65px;
+    line-height: 65px;
+}
+
+div#container-login form#login-form > ul li.checkbox label span a {
+    display: inline;
+}
+
+div#container-login form#login-form > ul li.checkbox label span a span {
+    color: #00897b;
+    height: 65px;
+    line-height: 65px;
+}
+
+div#container-login form#login-form > ul li.checkbox label span a:hover span {
+    color: #009688 !important;
+}
+
+div#container-login form#login-form > ul li.checkbox label::before {
+    color: #a0a0a0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 65px;
+    height: 65px;
+    line-height: 65px;
+    text-align: center;
+}
+
+div#container-login form#login-form > ul li.button {
+    border-top: 1px dashed #d0d0d0;
+}
+
+div#container-login form#login-form > ul li.button button, div#container-login form#login-form > ul li.button a {
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+    font-size: 15px;
+    font-family: Geneva, Tahoma, Verdana, sans-serif;
+    display: inline-block;
+    width: 49%;
+    height: 55px;
+    line-height: 55px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    text-align: center;
+}
+
+div#container-login form#login-form > ul li.button button span, div#container-login form#login-form > ul li.button a span {
+    color: #505050;
+}
+
+div#container-login form#login-form > ul li.button button:hover span, div#container-login form#login-form > ul li.button a:hover span {
+    color: #a0a0a0;
 }
 
 div#container-login form#login-form input {
@@ -1509,73 +1640,6 @@ div#container-login form#login-form input:-moz-placeholder {
 
 div#container-login form#login-form input::-moz-placeholder {
     color: #707070;
-}
-
-div#container-login div#login-form-action {
-    position: absolute;
-    bottom: -80px;
-    left: 0;
-    right: 0;
-    height: 40px;
-    text-align: right;
-}
-
-div#container-login div#login-form-action a#forgot-password {
-    display: inline-block;
-    background-color: #ffffff;
-    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-    -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-    -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-    height: 40px;
-    margin-right: 10px;
-    padding-left: 8px;
-    padding-right: 8px;
-    text-decoration: none;
-}
-
-div#container-login div#login-form-action a#forgot-password:hover {
-    background-color: #efefef;
-}
-
-div#container-login div#login-form-action a#forgot-password span {
-    color: #404040;
-    font-weight: normal;
-    font-variant: normal;
-    font-size: 15px;
-    line-height: 40px;
-}
-
-div#container-login div#login-form-action button {
-    background-color: #00897b;
-    display: inline-block;
-    float: right;
-    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    border: 0;
-    margin: 0;
-    height: 40px;
-    padding: 0;
-    padding-left: 8px;
-    padding-right: 8px;
-}
-
-div#container-login div#login-form-action button:disabled {
-    background-color: #a0a0a0;
-    cursor: default;
-}
-
-div#container-login div#login-form-action button:enabled:hover {
-    background-color: #00a99b;
-}
-
-div#container-login div#login-form-action button span {
-    color: #ffffff;
-    font-weight: bold;
 }
 
 div#about {
@@ -1792,6 +1856,10 @@ ul.file-list {
     text-align: center;
 }
 
+ul.file-list.not-double li {
+    width: 100% !important;
+}
+
 ul.file-list > li {
     border-bottom: 1px solid #efefef;
     -webkit-box-sizing: border-box;
@@ -1921,6 +1989,10 @@ ul.file-list > li.back span.icomoon,
 
 ul.file-list > li.type-file {
     color: #606060;
+}
+
+ul.file-list > li.type-file a:hover span.icomoon {
+    color: #909090;
 }
 
 ul.file-list > li.type-file span.icomoon {
@@ -2131,6 +2203,14 @@ ul.list-database {
     text-align: center;
 }
 
+ul.list-database.not-double li {
+    width: 100% !important;
+}
+
+ul.list-database.not-double li div.info {
+    right: 0 !important;
+}
+
 ul.list-database.no-box-shadow {
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
@@ -2179,13 +2259,33 @@ ul.list-database > li span.icomoon {
     line-height: 45px;
 }
 
+ul.list-database > li div.info {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-right: 10px;
+}
+
+ul.list-database > li.entry-odd div.info {
+    right: 50%;
+}
+
+ul.list-database > li div.info span {
+    color: #d0d0d0;
+    line-height: 45px;
+}
+
+ul.list-database > li div.info a:hover span {
+    color: #a0a0a0;
+}
+
 @media all and (max-width: 780px) {
     ul.list-database > li {
         width: 100%;
     }
 
     ul.list-database > li.entry-odd div.info {
-        right: 0 !important;
+        right: 0;
     }
 }
 
@@ -2195,7 +2295,7 @@ ul.list-database > li span.icomoon {
     }
 
     ul.list-database > li.entry-odd div.info {
-        right: 50% !important;
+        right: 50%;
     }
 }
 
@@ -2365,26 +2465,6 @@ ul.list-database > li.type-backup-record a.name {
     ul.list-database > li.entry-only-one a.name {
         max-width: 30%;
     }
-}
-
-ul.list-database > li div.info {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding-right: 10px;
-}
-
-ul.list-database > li.entry-odd div.info {
-    right: 50%;
-}
-
-ul.list-database > li div.info span {
-    color: #d0d0d0;
-    line-height: 45px;
-}
-
-ul.list-database > li div.info a:hover span {
-    color: #a0a0a0;
 }
 
 ul.mysql-info,
