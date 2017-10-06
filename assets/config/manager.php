@@ -27,7 +27,7 @@
             'enable_forgot_password' => true,
             'enable_lock_count_failed' => true,
             'max_lock_count' => 5,
-            'time_lock' => 5,
+            'time_lock' => 180,
             'time_login' => 64800,
             'enable_captcha_secure' => 0,
         ],
