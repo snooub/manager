@@ -4,6 +4,9 @@
         exit;
 
     use Librarys\Error\ErrorHandler;
+    use Librarys\Http\Request;
+
+    $isLocal = Request::isLocal();
 
     return [
         'server' => [
@@ -124,8 +127,8 @@
 
             'filename' => [
                 'theme' => [
-                    'app'         => 'theme.css',
-                    'app_desktop' => 'theme_desktop.css',
+                    'app'         => $isLocal ? 'theme.css'         : 'theme.min.css',
+                    'app_desktop' => $isLocal ? 'theme_desktop.css' : 'theme_desktop.min.css',
                 ],
 
                 'javascript' => [
@@ -141,13 +144,13 @@
                         ]
                     ],
 
-                    'onload'                    => 'onload.js',
-                    'custom_input_file'         => 'custom_input_file.js',
-                    'more_input_url'            => 'more_input_url.js',
-                    'chmod_input'               => 'chmod_input.js',
-                    'button_save_on_javascript' => 'button_save_on_javascript.js',
-                    'auto_focus_input_last'     => 'auto_focus_input_last.js',
-                    'checkbox_checkall'         => 'checkbox_checkall.js'
+                    'onload'                    => $isLocal ? 'onload.js'                    : 'onload.min.js',
+                    'custom_input_file'         => $isLocal ? 'custom_input_file.js'         : 'custom_input_file.min.js',
+                    'more_input_url'            => $isLocal ? 'more_input_url.js'            : 'more_input_url.min.js',
+                    'chmod_input'               => $isLocal ? 'chmod_input.js'               : 'chmod_input.min.js',
+                    'button_save_on_javascript' => $isLocal ? 'button_save_on_javascript.js' : 'button_save_on_javascript.min.js',
+                    'auto_focus_input_last'     => $isLocal ? 'auto_focus_input_last.js'     : 'auto_focus_input_last.min.js',
+                    'checkbox_checkall'         => $isLocal ? 'checkbox_checkall.js'         : 'checkbox_checkall.min.js'
                 ],
 
                 'icon' => [
