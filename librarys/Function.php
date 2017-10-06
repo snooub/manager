@@ -249,4 +249,9 @@
         return 1;
     }
 
-?>
+    if (function_exists('boolval') == false) {
+        function boolval($val)
+        {
+            return !!$val;
+        }
+    }
