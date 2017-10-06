@@ -37,7 +37,7 @@
             ],
 
             'captcha' => [
-                'width'  => 120,
+                'width'  => 140,
                 'height' => 45,
 
                 'font'   => [

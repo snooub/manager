@@ -161,7 +161,7 @@
             for ($i = 0; $i < $letterCount; ++$i) {
                 $letterCharacter = $letterArray[$i];
 
-                imagettftext($this->res, $this->fontSize, $angle, $xBegin + rand(0, 4) + ($i * $ttfWidth), $this->height - $ttfHeight, $textColor, $this->fontPath, $letterCharacter);
+                imagettftext($this->res, $this->fontSize, $angle, $xBegin + ($i * $ttfWidth), $this->height - $ttfHeight, $textColor, $this->fontPath, $letterCharacter);
             }
 
             Request::session()->put(self::SESSION_NAME, $letterWord);
