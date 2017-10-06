@@ -20,17 +20,17 @@ gulp.task("compress_js", function() {
                         this.emit("end");
                     }
                }))
-               // .pipe(minifyJs())
-               // .pipe(plumber({
-               //      errorHandler: function(error) {
-               //          gutil.log(error.toString());
-               //          this.emit("end");
-               //      }
-               // }))
-               // .pipe(rename({
-               //      extname: ".min.js"
-               // }))
-               // .pipe(gulp.dest("assets/javascript"))
+               .pipe(minifyJs())
+               .pipe(plumber({
+                    errorHandler: function(error) {
+                        gutil.log(error.toString());
+                        this.emit("end");
+                    }
+               }))
+               .pipe(rename({
+                    extname: ".min.js"
+               }))
+               .pipe(gulp.dest("assets/javascript"))
                .pipe(livereload());
 });
 
@@ -54,9 +54,9 @@ gulp.task("sass", function() {
                .pipe(cssbeautify())
                .pipe(rename("theme.css"))
                .pipe(gulp.dest("assets/theme/default"))
-               // .pipe(minifyCss())
-               // .pipe(rename("theme.min.css"))
-               // .pipe(gulp.dest("assets/theme/default"))
+               .pipe(minifyCss())
+               .pipe(rename("theme.min.css"))
+               .pipe(gulp.dest("assets/theme/default"))
                .pipe(livereload());
 });
 
@@ -80,9 +80,9 @@ gulp.task("sass_desktop", function() {
                .pipe(cssbeautify())
                .pipe(rename("theme_desktop.css"))
                .pipe(gulp.dest("assets/theme/default"))
-               // .pipe(minifyCss())
-               // .pipe(rename("theme_desktop.min.css"))
-               // .pipe(gulp.dest("assets/theme/default"))
+               .pipe(minifyCss())
+               .pipe(rename("theme_desktop.min.css"))
+               .pipe(gulp.dest("assets/theme/default"))
                .pipe(livereload());
 });
 
