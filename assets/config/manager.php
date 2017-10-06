@@ -19,7 +19,8 @@
             'count_checkbox_file_javascript' => true,
             'count_checkbox_mysql_javascript' => true,
             'list_file_double' => true,
-            'list_database_double' => true
+            'list_database_double' => true,
+            'check_password_default' => false,
         ],
 
         'login' => [
@@ -28,6 +29,7 @@
             'max_lock_count' => 5,
             'time_lock' => 5,
             'time_login' => 64800,
+            'enable_captcha_secure' => 0,
         ],
 
         'paging' => [

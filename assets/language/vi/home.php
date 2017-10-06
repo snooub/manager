@@ -16,7 +16,8 @@
             'path_not_receiver_list'         => 'Không thể lấy danh sách tập tin',
             'path_not_permission'            => 'Đường dẫn <strong>"{$path}"</strong> bạn truy cập thuộc của ứng dụng nên không thể truy cập',
             'path_not_is_file'               => 'Đường dẫn này không phải một tập tin',
-            'password_user_is_equal_default' => 'Bạn chưa thay đổi mật khẩu mặc định, điều này rất nguy hiểm hãy thay đổi ngay. Thông báo sẽ xuất hiện <strong>{$time}</strong> lần trong mỗi lần đăng nhập'
+            'password_user_is_equal_default' => 'Bạn chưa thay đổi mật khẩu mặc định, điều này rất nguy hiểm hãy thay đổi ngay. Thông báo sẽ xuất hiện <strong>{$time}</strong> lần trong mỗi lần đăng nhập',
+            'secret_is_empty'                => 'Bạn chưa cập nhật câu hỏi bí mật hoặc câu trả lời bí mật, hãy cập nhật để có thể lấy lại mật khẩu trong trường hợp không nhớ. Thông báo này sẽ tắt khi nào bạn cập nhật câu hỏi bí mật và câu trả lời'
         ],
 
         'action_multi' => [

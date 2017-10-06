@@ -20,11 +20,16 @@
         'http_referer' => null,
 
         'login' => [
-            'enable_forgot_password'   => AppConfig::getInstance()->getSystem('login.enable_forgot_password'),
-            'enable_lock_count_failed' => AppConfig::getInstance()->getSystem('login.enable_lock_count_failed'),
-            'max_lock_count'           => AppConfig::getInstance()->getSystem('login.max_lock_count'),
-            'time_lock'                => AppConfig::getInstance()->getSystem('login.time_lock'),
-            'time_login'               => AppConfig::getInstance()->getSystem('login.time_login')
+            'enable_forgot_password'   => AppConfig::getInstance()->getSystem('login.enable_forgot_password',   true),
+            'enable_lock_count_failed' => AppConfig::getInstance()->getSystem('login.enable_lock_count_failed', true),
+            'enable_captcha_secure'    => AppConfig::getInstance()->getSystem('login.enable_captcha_secure',    true),
+            'max_lock_count'           => AppConfig::getInstance()->getSystem('login.max_lock_count',           5),
+            'time_lock'                => AppConfig::getInstance()->getSystem('login.time_lock',                180),
+            'time_login'               => AppConfig::getInstance()->getSystem('login.time_login',               64800)
+        ],
+
+        'enable_disable' => [
+            'check_password_default' => AppConfig::getInstance()->getSystem('enable_disable.check_password_default', true)
         ]
     ];
 
@@ -32,12 +37,12 @@
         $isFailed = false;
 
         foreach ($forms['login'] AS $key => &$value) {
-            $isEnableDisable = isset($_POST['enable_disable_login_' . $key]);
             $envKey          = 'login.' . $key;
             $formKey         = 'login_' . $key;
+            $isEnableDisable = isset($_POST[$formKey]) && strpos($formKey, 'login_enable_') === 0;
 
             if ($isEnableDisable)
-                $formKey = 'enable_disable_login_' . $key;
+                $formKey = 'login_' . $key;
 
             if (isset($_POST[$formKey])) {
                 if ($isEnableDisable)
@@ -56,6 +61,25 @@
                 AppAlert::danger(lng('system.setting_system.alert.save_setting_failed'));
 
                 break;
+            }
+        }
+
+        if ($isFailed == false) {
+            foreach ($forms['enable_disable'] AS $key => &$value) {
+                $envKey  = 'enable_disable.' . $key;
+                $formKey = 'enable_disable_' . $key;
+
+                if (isset($_POST[$formKey]))
+                    $value = boolval(addslashes($_POST[$formKey]));
+                else
+                    $value = false;
+
+                if (AppConfig::getInstance()->setSystem($envKey, $value) == false) {
+                    $isFailed = true;
+                    AppAlert::danger(lng('system.setting_system.alert.save_setting_failed'));
+
+                    break;
+                }
             }
         }
 
@@ -101,17 +125,33 @@
             [
                 'config_key'      => 'login.enable_forgot_password',
                 'label_lng'       => 'system.setting_system.form.input.enable_forgot_password',
-                'id_input'        => 'enable-disable-login-enable-forgot-password',
-                'name_input'      => 'enable_disable_login_enable_forgot_password',
+                'id_input'        => 'login-enable-forgot-password',
+                'name_input'      => 'login_enable_forgot_password',
                 'value_input'     => $forms['login']['enable_forgot_password']
             ],
 
             [
                 'config_key'      => 'login.enable_lock_count_failed',
                 'label_lng'       => 'system.setting_system.form.input.enable_lock_count_failed',
-                'id_input'        => 'enable-disable-login-enable-lock-count-failed',
-                'name_input'      => 'enable_disable_login_enable_lock_count_failed',
+                'id_input'        => 'login-enable-lock-count-failed',
+                'name_input'      => 'login_enable_lock_count_failed',
                 'value_input'     => $forms['login']['enable_lock_count_failed']
+            ],
+
+            [
+                'config_key'      => 'login.enable_captcha_secure',
+                'label_lng'       => 'system.setting_system.form.input.enable_captcha_secure',
+                'id_input'        => 'login-enable-captcha-secure',
+                'name_input'      => 'login_enable_captcha_secure',
+                'value_input'     => $forms['login']['enable_captcha_secure']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.check_password_default',
+                'label_lng'       => 'system.setting_system.form.input.enable_check_password_default',
+                'id_input'        => 'enable-disable-check-password-default',
+                'name_input'      => 'enable_disable_check_password_default',
+                'value_input'     => $forms['enable_disable']['check_password_default']
             ]
         ]
     ];

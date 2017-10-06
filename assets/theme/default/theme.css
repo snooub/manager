@@ -2,8 +2,8 @@
 
 @font-face {
     font-family: 'icomoon';
-  src: url("fonts/icomoon.eot?zbzcim");
-  src: url("fonts/icomoon.eot?zbzcim#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?zbzcim") format("truetype"), url("fonts/icomoon.woff?zbzcim") format("woff"), url("fonts/icomoon.svg?zbzcim#icomoon") format("svg");
+  src: url("fonts/icomoon.eot?n4h55g");
+  src: url("fonts/icomoon.eot?n4h55g#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?n4h55g") format("truetype"), url("fonts/icomoon.woff?n4h55g") format("woff"), url("fonts/icomoon.svg?n4h55g#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -22,88 +22,8 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-email:before {
-    content: "";
-}
-
-.icon-secure:before {
-    content: "";
-}
-
-.icon-spinner:before {
-    content: "";
-}
-
-.icon-update:before {
-    content: "";
-}
-
-.icon-help:before {
-    content: "";
-}
-
-.icon-table:before {
-    content: "";
-}
-
-.icon-file-binary:before {
-    content: "";
-}
-
-.icon-copy:before {
-    content: "";
-}
-
-.icon-file:before {
-    content: "";
-}
-
-.icon-back:before {
-    content: "";
-}
-
-.icon-trash:before {
-    content: "";
-}
-
-.icon-folder-download:before {
-    content: "";
-}
-
-.icon-folder-upload:before {
-    content: "";
-}
-
-.icon-folder-create:before {
-    content: "";
-}
-
-.icon-mysql:before {
-    content: "";
-}
-
-.icon-pencil:before {
-    content: "";
-}
-
-.icon-users:before {
-    content: "";
-}
-
-.icon-spinner-bound:before {
-    content: "";
-}
-
-.icon-view:before {
-    content: "";
-}
-
-.icon-terminal:before {
-    content: "";
-}
-
-.icon-plus:before {
-    content: "";
+.icon-question:before {
+    content: "";
 }
 
 .icon-check:before {
@@ -214,6 +134,114 @@
     content: "";
 }
 
+.icon-email:before {
+    content: "";
+}
+
+.icon-secure:before {
+    content: "";
+}
+
+.icon-spinner:before {
+    content: "";
+}
+
+.icon-update:before {
+    content: "";
+}
+
+.icon-help:before {
+    content: "";
+}
+
+.icon-table:before {
+    content: "";
+}
+
+.icon-file-binary:before {
+    content: "";
+}
+
+.icon-copy:before {
+    content: "";
+}
+
+.icon-file:before {
+    content: "";
+}
+
+.icon-back:before {
+    content: "";
+}
+
+.icon-trash:before {
+    content: "";
+}
+
+.icon-folder-download:before {
+    content: "";
+}
+
+.icon-folder-upload:before {
+    content: "";
+}
+
+.icon-folder-create:before {
+    content: "";
+}
+
+.icon-mysql:before {
+    content: "";
+}
+
+.icon-pencil:before {
+    content: "";
+}
+
+.icon-users:before {
+    content: "";
+}
+
+.icon-spinner-bound:before {
+    content: "";
+}
+
+.icon-view:before {
+    content: "";
+}
+
+.icon-terminal:before {
+    content: "";
+}
+
+.icon-plus:before {
+    content: "";
+}
+
+.icon-home:before {
+    content: "";
+}
+
+.icon-help2:before {
+    content: "";
+}
+
+.icon-about:before {
+    content: "";
+}
+
+.icon-config:before {
+    content: "";
+}
+
+.icon-close:before {
+    content: "";
+}
+
+.icon-user:before {
+    content: "";
+}
+
 .icon-backup:before {
     content: "";
 }
@@ -260,7 +288,6 @@ body {
     font-size: 15px;
     margin: 0;
     padding: 0;
-    position: relative;
 }
 
 a:link, a:visited {
@@ -319,6 +346,11 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
     -ms-appearance: none;
     -o-appearance: none;
     appearance: none;
+}
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
+    background-color: transparent !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 input,
@@ -670,6 +702,8 @@ div#container {
     padding: 0;
     padding-left: 1%;
     padding-right: 1%;
+    position: relative;
+    height: 100%;
 }
 
 div#header {
@@ -772,7 +806,7 @@ div#footer {
 
 div#footer::after {
     content: '';
-    background-color: #ffffff;
+    background-color: #eaeaea;
     position: absolute;
     top: 0;
     left: 0;
@@ -782,7 +816,7 @@ div#footer::after {
 
 div#footer,
   div#footer span {
-    color: #c0c0c0;
+    color: #d0d0d0;
     font-size: 15px;
     text-shadow: 1px 1px #ffffff;
 }
@@ -1447,21 +1481,25 @@ ul.action-multi li:first-child:nth-last-child(7),
     }
 }
 
+div#container-login {
+    padding-top: 10%;
+}
+
 div#container-login div#login,
-div#container-login ul.alert {
+  div#container-login ul.alert {
     max-width: 320px;
 }
 
 @media all and (min-width: 560px) {
     div#container-login div#login,
-    div#container-login ul.alert {
+      div#container-login ul.alert {
         max-width: 320px;
     }
 }
 
 @media all and (min-width: 680px) {
     div#container-login div#login,
-    div#container-login ul.alert {
+      div#container-login ul.alert {
         max-width: 480px;
     }
 }
@@ -1524,11 +1562,11 @@ div#container-login form#login-form > ul li.input input + span.icomoon {
     text-align: center;
 }
 
-div#container-login form#login-form > ul li.input input:hover, div#container-login form#login-form > ul li.input input:focus {
+div#container-login form#login-form > ul li.input input:enabled:hover, div#container-login form#login-form > ul li.input input:enabled:focus {
     color: #505050;
 }
 
-div#container-login form#login-form > ul li.input input:hover + span, div#container-login form#login-form > ul li.input input:focus + span {
+div#container-login form#login-form > ul li.input input:enabled:hover + span, div#container-login form#login-form > ul li.input input:enabled:focus + span {
     color: #505050;
 }
 
@@ -1580,7 +1618,7 @@ div#container-login form#login-form > ul li.checkbox label::before {
 }
 
 div#container-login form#login-form > ul li.button {
-    border-top: 1px dashed #d0d0d0;
+    border-top: 1px dashed #e0e0e0;
 }
 
 div#container-login form#login-form > ul li.button button, div#container-login form#login-form > ul li.button a {
@@ -1861,7 +1899,7 @@ ul.file-list.not-double li {
 }
 
 ul.file-list > li {
-    border-bottom: 1px solid #efefef;
+    border-bottom: 1px dashed #e0e0e0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
@@ -2220,7 +2258,7 @@ ul.list-database.no-box-shadow {
 }
 
 ul.list-database > li {
-    border-bottom: 1px solid #efefef;
+    border-bottom: 1px dashed #e0e0e0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;

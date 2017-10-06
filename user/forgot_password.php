@@ -11,6 +11,7 @@
     use Librarys\App\AppAlert;
     use Librarys\App\AppJson;
     use Librarys\App\Config\AppConfig;
+    use Librarys\App\Config\AppUserConfig;
     use Librarys\Http\Request;
     use Librarys\Http\Validate;
     use Librarys\Http\Secure\Captcha;
@@ -25,8 +26,6 @@
     if (AppConfig::getInstance()->getSystem('login.enable_forgot_password') == false)
         AppAlert::danger(lng('user.forgot_password.alert.forgot_password_not_enable'), ALERT_USER_LOGIN, 'login.php');
 
-    AppAlert::info(lng('user.forgot_password.alert.features_is_construct'), ALERT_USER_LOGIN, 'login.php');
-
     $title = lng('user.forgot_password.title_page');
     AppAlert::setID(ALERT_USER_FORGOT_PASSWORD);
     require_once('..' . SP . 'incfiles' . SP . 'header.php');
@@ -39,8 +38,12 @@
     $currentCountLock    = 0;
     $currentTimeLock     = 0;
 
-    $email   = null;
-    $captcha = null;
+    $username         = null;
+    $captcha          = null;
+    $secretQuestion   = null;
+    $secretAnswerForm = null;
+    $secretAnswerUser = null;
+    $isCheckSuccess   = false;
 
     if ($isEnabledLockCount) {
         if (Request::session()->has(SESSION_NAME_LOCK_COUNT))
@@ -50,15 +53,15 @@
             $currentTimeLock = intval(addslashes(Request::session()->get(SESSION_NAME_LOCK_TIME)));
 
         if ($currentTimeNow - $currentTimeLock > $timeLockCountFailed) {
-            $currentCountLock  = 0;
-            $currentTimeLock   = $currentTimeNow;
-            $isLockCountStatus = false;
-
             if ($currentCountLock >= $maxLockCountFailed && $currentTimeLock > 0 && isset($_SESSION[SESSION_NAME_LOCK_COUNT]) && isset($_SESSION[SESSION_NAME_LOCK_TIME]))
                 AppAlert::success(lng('user.forgot_password.alert.unlock_count'));
 
             Request::session()->remove(SESSION_NAME_LOCK_COUNT);
             Request::session()->remove(SESSION_NAME_LOCK_TIME);
+
+            $currentCountLock  = 0;
+            $currentTimeLock   = $currentTimeNow;
+            $isLockCountStatus = false;
         } else {
             $isLockCountStatus = $currentCountLock >= $maxLockCountFailed;
         }
@@ -90,35 +93,71 @@
             Request::redirect('forgot_password.php');
 
         AppAlert::danger(lng('user.forgot_password.alert.lock_count_failed', 'count', $currentCountLock, 'time', $timeLockCalc));
-    } else if (isset($_POST['submit'])) {
-        $user     = null;
-        $email   = addslashes($_POST['email']);
-        $captcha = addslashes($_POST['captcha']);
+    } else if (isset($_POST['check']) || isset($_POST['forgot'])) {
+        $username = addslashes($_POST['username']);
+        $captcha  = addslashes($_POST['captcha']);
 
-        if (empty($email)) {
-            AppAlert::danger(lng('user.forgot_password.alert.not_input_email'));
-        //} else if (empty($captcha)) {
-            //AppAlert::danger(lng('user.forgot_password.alert.not_input_captcha'));
-        } else if (Validate::email($email) == false) {
-            AppAlert::danger(lng('user.forgot_password.alert.email_not_validate'));
-        //} else if (strcmp($captcha, Request::session()->get(Captcha::SESSION_NAME)) !== 0) {
-           //AppAlert::danger(lng('user.forgot_password.alert.captcha_wrong'));
-        } else if (($idUser = AppUser::getInstance()->isUserEmail($email)) === false) {
-            AppAlert::danger(lng('user.forgot_password.alert.email_wrong'));
-        } else if ($idUser === null || empty($idUser)) {
+        $infoUser = null;
+        $idUser   = null;
+
+        if (empty($username)) {
+            AppAlert::danger(lng('user.forgot_password.alert.not_input_username'));
+        } else if (isset($_POST['check']) && empty($captcha)) {
+            AppAlert::danger(lng('user.forgot_password.alert.not_input_captcha'));
+        } else if (isset($_POST['check']) &&  strcmp($captcha, Request::session()->get(Captcha::SESSION_NAME)) !== 0) {
+            AppAlert::danger(lng('user.forgot_password.alert.captcha_wrong'));
+        } else if (($idUser = AppUser::getInstance()->isUser($username, false, $infoUser)) === false) {
+            AppAlert::danger(lng('user.forgot_password.alert.username_wrong'));
+        } else if ($idUser === null || $infoUser == null || empty($idUser) || is_array($infoUser) == false) {
             AppAlert::danger(lng('user.forgot_password.alert.user_not_exists'));
         } else if (AppUser::getInstance()->isUserBand($idUser, false)) {
             AppAlert::danger(lng('user.forgot_password.alert.user_is_band'));
-        } else if (AppUser::getInstance()->sendMailForgotPassword($idUser, $email) == false) {
-            AppAlert::danger(lng('user.forgot_password.alert.forgot_password_failed'));
         } else {
-            if (Request::session()->has(SESSION_NAME_LOCK_COUNT))
-                Request::session()->remove(SESSION_NAME_LOCK_COUNT);
+            if (isset($_POST['check'])) {
+                $currentCountLock = 0;
 
-            if (Request::session()->has(SESSION_NAME_LOCK_TIME))
-                Request::session()->remove(SESSION_NAME_LOCK_TIME);
+                if (Request::session()->has(SESSION_NAME_LOCK_COUNT))
+                    Request::session()->remove(SESSION_NAME_LOCK_COUNT);
 
-          AppAlert::success(lng('user.forgot_password.alert.forgot_password_success', 'email', $email), ALERT_USER_LOGIN, 'login.php');
+                if (Request::session()->has(SESSION_NAME_LOCK_TIME))
+                    Request::session()->remove(SESSION_NAME_LOCK_TIME);
+            }
+
+            $isCheckSuccess   = true;
+
+            $secretQuestion   = base64_decode($infoUser[AppUserConfig::ARRAY_KEY_SECRET_QUESTION]);
+            $secretAnswerUser = base64_decode($infoUser[AppUserConfig::ARRAY_KEY_SECRET_ANSWER]);
+
+            AppAlert::info(lng('user.forgot_password.alert.secret_question', 'secret_question', $secretQuestion));
+
+            if (isset($_POST['forgot'])) {
+                $passwordReset = null;
+
+                if (isset($_POST['secret_answer']))
+                    $secretAnswerForm = addslashes($_POST['secret_answer']);
+
+                if (empty($captcha)) {
+                    AppAlert::danger(lng('user.forgot_password.alert.not_input_captcha'));
+                } else if (empty($secretAnswerForm)) {
+                    AppAlert::danger(lng('user.forgot_password.alert.not_input_secret_answer'));
+                } else if (strcmp($captcha, Request::session()->get(Captcha::SESSION_NAME)) !== 0) {
+                    AppAlert::danger(lng('user.forgot_password.alert.captcha_wrong'));
+                } else if (strcasecmp($secretAnswerForm, $secretAnswerUser) !== 0) {
+                    AppAlert::danger(lng('user.forgot_password.alert.secret_answer_wrong'));
+                } else if (AppUser::getInstance()->resetPassword($idUser, $passwordReset) == false) {
+                    AppAlert::danger(lng('user.forgot_password.alert.reset_password_failed'));
+                } else {
+                    $currentCountLock = 0;
+
+                    if (Request::session()->has(SESSION_NAME_LOCK_COUNT))
+                        Request::session()->remove(SESSION_NAME_LOCK_COUNT);
+
+                    if (Request::session()->has(SESSION_NAME_LOCK_TIME))
+                        Request::session()->remove(SESSION_NAME_LOCK_TIME);
+
+                    AppAlert::success(lng('user.forgot_password.alert.reset_password_success', 'username', $username, 'password', $passwordReset), ALERT_USER_LOGIN, 'login.php');
+                }
+            }
         }
 
         Request::session()->put(SESSION_NAME_LOCK_COUNT, intval(++$currentCountLock));
@@ -138,9 +177,15 @@
 
                     <ul>
                         <li class="input">
-                            <input type="text" name="email" value="<?php echo stripslashes(htmlspecialchars($email)); ?>" placeholder="<?php echo lng('user.forgot_password.form.input_email_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
-                            <span class="icomoon icon-email"></span>
+                            <input type="text" name="username" value="<?php echo stripslashes(htmlspecialchars($username)); ?>" placeholder="<?php echo lng('user.forgot_password.form.input_username_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
+                            <span class="icomoon icon-user"></span>
                         </li>
+                        <?php if ($isCheckSuccess) { ?>
+                            <li class="input">
+                                <input type="text" name="secret_answer" value="<?php echo stripslashes(htmlspecialchars($secretAnswerForm)); ?>" placeholder="<?php echo lng('user.forgot_password.form.input_secret_answer_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
+                                <span class="icomoon icon-question"></span>
+                            </li>
+                        <?php } ?>
                         <li class="input captcha">
                             <input type="text" name="captcha" value="<?php echo stripslashes(htmlspecialchars($captcha)); ?>" placeholder="<?php echo lng('user.forgot_password.form.input_captcha_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
                             <span class="icomoon icon-secure"></span>
@@ -150,9 +195,15 @@
                             <a href="login.php" id="login">
                                 <span><?php echo lng('user.forgot_password.form.login'); ?></span>
                             </a>
-                            <button type="submit" name="submit"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>>
-                                <span><?php echo lng('user.forgot_password.form.button_forgot_password'); ?></span>
-                            </button>
+                            <?php if ($isCheckSuccess) { ?>
+                                <button type="submit" name="forgot"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>>
+                                    <span><?php echo lng('user.forgot_password.form.button_forgot_password'); ?></span>
+                                </button>
+                            <?php } else { ?>
+                                <button type="submit" name="check"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>>
+                                    <span><?php echo lng('user.forgot_password.form.button_check_user'); ?></span>
+                                </button>
+                            <?php } ?>
                         </li>
                     </ul>
                 </form>

@@ -5,13 +5,15 @@
 
         'form' => [
             'input' => [
-                'login_max_lock_count'     => 'Số lần đăng nhập sai sẽ bị khóa:',
-                'login_time_lock'          => 'Thời gian khóa (tính bằng giây):',
-                'login_time_login'         => 'Thời gian một phiên đăng nhập:',
+                'login_max_lock_count'          => 'Số lần đăng nhập sai sẽ bị khóa:',
+                'login_time_lock'               => 'Thời gian khóa (tính bằng giây):',
+                'login_time_login'              => 'Thời gian một phiên đăng nhập:',
 
-                'enable_disable_label'     => 'Bật/Tắt',
-                'enable_forgot_password'   => 'Bật/Tắt lấy lại mật khẩu',
-                'enable_lock_count_failed' => 'Bật/Tắt khóa khi đăng nhập sai quá số lần'
+                'enable_disable_label'          => 'Bật/Tắt',
+                'enable_forgot_password'        => 'Lấy lại mật khẩu',
+                'enable_lock_count_failed'      => 'Khóa khi đăng nhập sai quá số lần',
+                'enable_captcha_secure'         => 'Mã bảo vệ khi đăng nhập',
+                'enable_check_password_default' => 'Kiểm tra mật khẩu có là mặc định và cảnh báo'
             ],
 
             'button' => [

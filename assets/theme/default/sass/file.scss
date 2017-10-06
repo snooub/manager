@@ -64,7 +64,7 @@ ul.file-list {
     }
 
     & > li {
-        border-bottom: 1px solid #efefef;
+        border-bottom: 1px dashed #e0e0e0;
 
         @include box-sizing(border-box);
 

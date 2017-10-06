@@ -109,8 +109,11 @@
 
         public static function display()
         {
-            if (AppUser::getInstance()->checkUserIsUsePasswordDefault())
+            if (AppConfig::getInstance()->getSystem('enable_disable.check_password_default', true) && AppUser::getInstance()->checkUserIsUsePasswordDefault())
                 self::warning(lng('home.alert.password_user_is_equal_default', 'time', AppUser::TIME_SHOW_WARNING_PASSWORD_DEFAULT));
+
+            if (AppUser::getInstance()->checkEmptySecret())
+                self::warning(lng('home.alert.secret_is_empty'));
 
             if (AppUser::getInstance()->isPositionAdminstrator() && defined('DISABLE_ALERT_HAS_UPDATE') == false && self::hasAlertDisplay() == false && AppConfig::getInstance()->get('check_update.enable', false) == true) {
                 $timeCurrent    = time();

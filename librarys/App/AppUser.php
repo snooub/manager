@@ -12,7 +12,6 @@
     use Librarys\Http\Detection\SimpleDetect;
     use Librarys\Http\Secure\CFSRToken;
     use Librarys\Text\Encryption\StringEncryption;
-    use Librarys\Mailer\SimpleMail;
 
     final class AppUser
     {
@@ -202,6 +201,20 @@
             return true;
         }
 
+        public function checkEmptySecret()
+        {
+            if ($this->isLogin == false || $this->id == null)
+                return false;
+
+            $secretQuestion = $this->getSecretQuestion();
+            $secretAnswer   = $this->getSecretAnswer();
+
+            if (empty($secretQuestion) || empty($secretAnswer))
+                return true;
+
+            return false;
+        }
+
         public function get($key)
         {
             if ($this->isLogin() == false)
@@ -255,6 +268,16 @@
         public function getEmail()
         {
             return $this->getUserInfoKey(AppUserConfig::ARRAY_KEY_EMAIL);
+        }
+
+        public function getSecretQuestion()
+        {
+            return base64_decode($this->getUserInfoKey(AppUserConfig::ARRAY_KEY_SECRET_QUESTION));
+        }
+
+        public function getSecretAnswer()
+        {
+            return base64_decode($this->getUserInfoKey(AppUserConfig::ARRAY_KEY_SECRET_ANSWER));
         }
 
         public function getPosition()
@@ -327,7 +350,7 @@
             return $this->getPosition() === self::POSTION_ADMINSTRATOR;
         }
 
-        public function isUser($username, $password)
+        public function isUser($username, $password = false, &$infos = null)
         {
             $arrays = AppUserConfig::getInstance()->getConfigArraySystem();
 
@@ -336,25 +359,16 @@
 
                 foreach ($arrays AS $id => $arrayUser) {
                     if (strcasecmp($arrayUser[AppUserConfig::ARRAY_KEY_USERNAME], $username) === 0 || strcasecmp($arrayUser[AppUserConfig::ARRAY_KEY_EMAIL], $username) === 0) {
+                        $infos = $arrayUser;
+
+                        if ($password === false)
+                            return $id;
+
                         if (self::checkPassword($arrayUser[AppUserConfig::ARRAY_KEY_PASSWORD], $password))
                             return $id;
+
+                        $infos = null;
                     }
-                }
-            }
-
-            return false;
-        }
-
-        public function isUserEmail($email)
-        {
-            $arrays = AppUserConfig::getInstance()->getConfigArraySystem();
-
-            if (is_array($arrays) && count($arrays) > 0) {
-                $email = strtolower($email);
-
-                foreach ($arrays AS $id => $arrayUser) {
-                    if (strcasecmp($arrayUser[AppUserConfig::ARRAY_KEY_EMAIL], $email) === 0)
-                        return $id;
                 }
             }
 
@@ -424,7 +438,10 @@
             if (FileInfo::fileWriteContents($tokenPath, $tokenBuffer, $userPassword) == false)
                 return false;
 
-            if (AppUserConfig::getInstance()->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false || AppUserConfig::getInstance()->write() == false)
+            if (AppUserConfig::getInstance()->setSystem($id . '.' . AppUserConfig::ARRAY_KEY_LOGIN_AT, $time) == false)
+                return false;
+
+            if (AppUserConfig::getInstance()->write() == false)
                 return false;
 
             Request::session()->put(env('app.login.session_login_name'), $id);
@@ -436,27 +453,18 @@
             return false;
         }
 
-        public function sendMailForgotPassword($id, $email)
+        public function resetPassword($idUser, &$passwordBuffer = null)
         {
-            $id             = addslashes($id);
-            $time           = time();
-            $tokenPath      = null;
-            $tokenGenerator = null;
-            $tokenDirectory = env('app.path.token');
-
-            if (FileInfo::isTypeDirectory($tokenDirectory) == false && FileInfo::mkdir($tokenDirectory, true) == false)
+            if ($idUser == null || empty($idUser))
                 return false;
 
-            if (empty($id))
+            $passwordBuffer     = self::PASSWORD_CREATE_FIRST;
+            $passwordEncryption = self::createPassword($passwordBuffer);
+
+            if (AppUserConfig::getInstance()->setSystem($idUser . '.' . AppUserConfig::ARRAY_KEY_PASSWORD, $passwordEncryption) == false)
                 return false;
 
-            $mailer = SimpleMail::make();
-            $mailer->setFrom('noreply@' . $_SERVER['HTTP_HOST'], lng('user.forgot_password.mail.name_from'));
-            $mailer->setTo($email, lng('user.forgot_password.mail.name_to'));
-            $mailer->setSubject(lng('user.forgot_password.mail.subject'));
-            $mailer->setMessage(lng('user.forgot_password.mail.message'));
-
-            if ($mailer->send() == false)
+            if (AppUserConfig::getInstance()->write() == false)
                 return false;
 
             return true;

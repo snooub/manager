@@ -7,6 +7,8 @@
             'input' => [
                 'username'        => 'Tên tài khoản:',
                 'email'           => 'Địa chỉ email:',
+                'secret_question' => 'Câu hỏi bí mật:',
+                'secret_answer'   => 'Câu trả lời câu hỏi bí mật:',
                 'password_old'    => 'Mật khẩu cũ:',
                 'password_new'    => 'Mật khẩu mới:',
                 'password_verify' => 'Nhập lại mật khẩu mới:'
@@ -15,6 +17,8 @@
             'placeholder' => [
                 'input_username'        => 'Nhập tên người dùng',
                 'input_email'           => 'Nhập địa chỉ email',
+                'input_secret_question' => 'Nhập câu hỏi bí mật',
+                'input_secret_answer'   => 'Nhập câu trả lời cho câu hỏi bí mật',
                 'input_password_old'    => 'Nhập mật khẩu cũ',
                 'input_password_new'    => 'Nhập mật khẩu mới',
                 'input_password_verify' => 'Nhập lại mật khẩu mới'
@@ -27,9 +31,12 @@
         ],
 
         'alert' => [
-            'tips'                                   => 'Nhập mật khẩu để xác nhận thay đổi thông tin, nhập mật khẩu mới nếu muốn thay đổi mật khẩu',
+            'tips'                                   => 'Nhập mật khẩu để xác nhận thay đổi thông tin, nhập mật khẩu mới nếu muốn thay đổi mật khẩu. ' .
+                                                        'Câu hỏi bí mật dùng để lấy lại mật khẩu, do một số host không hỗ trợ gửi mail.',
             'not_input_username'                     => 'Chưa nhập tên đăng nhập',
             'not_input_email'                        => 'Chưa nhập email',
+            'not_input_secret_question'              => 'Chưa nhập câu hỏi bí mật',
+            'not_input_secret_answer'                => 'Chưa nhập câu trả lời cho câu hỏi bí mật',
             'not_input_password_old'                 => 'Chưa nhập mật khẩu cũ',
             'not_input_password_verify'              => 'Chưa nhập lại mật khẩu mới để thay đổi mật khẩu',
             'username_not_validate'                  => 'Tên đăng nhập không hợp lệ, không được chứa bất kỳ ký tự <strong>{$validate}</strong>',

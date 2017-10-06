@@ -16,7 +16,7 @@ div#footer {
 
     &::after {
         content: '';
-        background-color: #ffffff;
+        background-color: #eaeaea;
         position: absolute;
         top: 0;
         left: 0;
@@ -26,7 +26,7 @@ div#footer {
 
     &,
     & span {
-        color: #c0c0c0;
+        color: #d0d0d0;
         font-size: $font-size;
         text-shadow: 1px 1px #ffffff;
     }

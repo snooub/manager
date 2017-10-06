@@ -12,6 +12,7 @@
     use Librarys\App\AppJson;
     use Librarys\App\Config\AppConfig;
     use Librarys\Http\Request;
+    use Librarys\Http\Secure\Captcha;
 
     if (AppUser::getInstance()->isLogin() && AppUser::getInstance()->isUserBand(null, true) == false) {
         if (isset($_POST['init']) == false || Request::isDesktop() == false) {
@@ -26,10 +27,12 @@
 
     $username = null;
     $password = null;
+    $captcha  = null;
 
-    $isEnabledLockCount  = AppConfig::getInstance()->get('login.enable_lock_count_failed');
-    $maxLockCountFailed  = AppConfig::getInstance()->get('login.max_lock_count');
-    $timeLockCountFailed = AppConfig::getInstance()->get('login.time_lock');
+    $captchaEnable       = AppConfig::getInstance()->getSystem('login.enable_captcha_secure', true);
+    $isEnabledLockCount  = AppConfig::getInstance()->get('login.enable_lock_count_failed',    true);
+    $maxLockCountFailed  = AppConfig::getInstance()->get('login.max_lock_count',              5);
+    $timeLockCountFailed = AppConfig::getInstance()->get('login.time_lock',                   180);
     $currentTimeNow      = intval($_SERVER['REQUEST_TIME']);
     $isLockCountStatus   = false;
     $currentCountLock    = 0;
@@ -43,15 +46,15 @@
             $currentTimeLock = intval(addslashes(Request::session()->get(SESSION_NAME_LOCK_TIME)));
 
         if ($currentTimeNow - $currentTimeLock > $timeLockCountFailed) {
-            $currentCountLock  = 0;
-            $currentTimeLock   = $currentTimeNow;
-            $isLockCountStatus = false;
-
             if ($currentCountLock >= $maxLockCountFailed && $currentTimeLock > 0 && isset($_SESSION[SESSION_NAME_LOCK_COUNT]) && isset($_SESSION[SESSION_NAME_LOCK_TIME]))
-                AppAlert::success(lng('user.login.alert.unlock_count'));
+               AppAlert::success(lng('user.login.alert.unlock_count'));
 
             Request::session()->remove(SESSION_NAME_LOCK_COUNT);
             Request::session()->remove(SESSION_NAME_LOCK_TIME);
+
+            $currentCountLock  = 0;
+            $currentTimeLock   = $currentTimeNow;
+            $isLockCountStatus = false;
         } else {
             $isLockCountStatus = $currentCountLock >= $maxLockCountFailed;
         }
@@ -88,8 +91,15 @@
         $username = addslashes($_POST['username']);
         $password = addslashes($_POST['password']);
 
+        if (isset($_POST['captcha']))
+            $captcha  = addslashes($_POST['captcha']);
+
         if (empty($username) || empty($password)) {
             AppAlert::danger(lng('user.login.alert.not_input_username_or_password'));
+        } else if ($captchaEnable && empty($captcha)) {
+            AppAlert::danger(lng('user.login.alert.not_input_captcha'));
+        } else if ($captchaEnable && strcmp($captcha, Request::session()->get(Captcha::SESSION_NAME)) !== 0) {
+           AppAlert::danger(lng('user.login.alert.captcha_wrong'));
         } else if (($idUser = AppUser::getInstance()->isUser($username, $password)) === false) {
             AppAlert::danger(lng('user.login.alert.username_or_password_wrong'));
         } else if ($idUser === null || empty($idUser)) {
@@ -131,7 +141,7 @@
 
         <?php if ($isLockCountStatus == false) { ?>
             <div id="login">
-                <form action="login.php" method="post" id="login-form">
+                <form action="login.php" method="post" id="login-form" autocomplete="off">
                     <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
                     <ul>
@@ -143,6 +153,13 @@
                             <input type="password" name="password" value="<?php echo stripslashes(htmlspecialchars($password)); ?>" placeholder="<?php echo lng('user.login.form.input_password_placeholder'); ?>"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
                             <span class="icomoon icon-key"></span>
                         </li>
+                        <?php if ($captchaEnable) { ?>
+                            <li class="input captcha">
+                                <input type="text" name="captcha" value="<?php echo stripslashes(htmlspecialchars($captcha)); ?>" placeholder="<?php echo lng('user.forgot_password.form.input_captcha_placeholder'); ?>" autofocus="autofocus"<?php if ($isLockCountStatus) { ?> disabled="disabled"<?php } ?>/>
+                                <span class="icomoon icon-secure"></span>
+                                <img src="<?php echo Captcha::create()->exportBase64(); ?>" alt="Captcha"/>
+                            </li>
+                        <?php } ?>
                         <li class="button">
                             <?php if (AppConfig::getInstance()->getSystem('login.enable_forgot_password')) { ?>
                                 <a href="forgot_password.php" id="forgot-password">

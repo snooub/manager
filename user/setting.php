@@ -13,8 +13,10 @@
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
     $forms = [
-        'username'        => AppUser::getInstance()->get('username'),
-        'email'           => AppUser::getInstance()->get('email'),
+        'username'        => AppUser::getInstance()->getUsername(),
+        'email'           => AppUser::getInstance()->getEmail(),
+        'secret_question' => AppUser::getInstance()->getSecretQuestion(),
+        'secret_answer'   => AppUser::getInstance()->getSecretAnswer(),
         'password_old'    => null,
         'password_new'    => null,
         'password_verify' => null
@@ -26,15 +28,23 @@
         $forms['password_old']    = addslashes($_POST['password_old']);
         $forms['password_new']    = addslashes($_POST['password_new']);
         $forms['password_verify'] = addslashes($_POST['password_verify']);
+        $forms['secret_question'] = addslashes($_POST['secret_question']);
+        $forms['secret_answer']   = addslashes($_POST['secret_answer']);
 
         $usernameConfig = AppUser::getInstance()->get('username');
         $emailConfig    = AppUser::getInstance()->get('email');
         $passwordConfig = AppUser::getInstance()->get('password');
+        $secretQuestion = AppUser::getInstance()->get('secret_question');
+        $secretAnswer   = AppUser::getInstance()->get('secret_answer');
 
         if (empty($forms['username'])) {
             AppAlert::danger(lng('user.setting.alert.not_input_username'));
         } else if (empty($forms['email'])) {
             AppAlert::danger(lng('user.setting.alert.not_input_email'));
+        } else if (empty($forms['secret_question'])) {
+            AppAlert::danger(lng('user.setting.alert.not_input_secret_question'));
+        } else if (empty($forms['secret_answer'])) {
+            AppAlert::danger(lng('user.setting.alert.not_input_secret_answer'));
         } else if (empty($forms['password_old'])) {
             AppAlert::danger(lng('user.setting.alert.not_input_password_old'));
         } else if (empty($forms['password_new']) == false && empty($forms['password_verify'])) {
@@ -48,8 +58,10 @@
         } else if (empty($forms['password_new']) == false && strcmp($forms['password_new'], $forms['password_verify']) !== 0) {
             AppAlert::danger(lng('user.setting.alert.password_new_not_equal_password_verify'));
         } else if (
-            strcasecmp($usernameConfig, $forms['username']) === 0 &&
-            strcasecmp($emailConfig,    $forms['email'])    === 0 &&
+            strcasecmp($usernameConfig, $forms['username'])        === 0 &&
+            strcasecmp($emailConfig,    $forms['email'])           === 0 &&
+            strcasecmp($secretQuestion, $forms['secret_question']) === 0 &&
+            strcasecmp($secretAnswer,   $forms['secret_answer'])   === 0 &&
 
             (
                 empty($forms['password_new']) ||
@@ -61,9 +73,11 @@
             $time = time();
 
             if (
-                AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_USERNAME,  $forms['username']) == false ||
-                AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_EMAIL,     $forms['email'])    == false ||
-                AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_MODIFY_AT, time())             == false
+                AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_USERNAME,                      $forms['username'])         == false ||
+                AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_EMAIL,                         $forms['email'])            == false ||
+                AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_SECRET_QUESTION, base64_encode($forms['secret_question'])) == false ||
+                AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_SECRET_ANSWER,   base64_encode($forms['secret_answer']))   == false ||
+                AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_MODIFY_AT,                     time())                     == false
             ) {
                 AppAlert::danger(lng('user.setting.alert.change_config_info_failed'));
             } else if (
@@ -83,6 +97,9 @@
         $forms['password_old']    = stripslashes(htmlspecialchars($forms['password_old']));
         $forms['password_new']    = stripslashes(htmlspecialchars($forms['password_new']));
         $forms['password_verify'] = stripslashes(htmlspecialchars($forms['password_verify']));
+        $forms['secret_question'] = stripslashes(htmlspecialchars($forms['secret_question']));
+        $forms['secret_question'] = stripslashes(htmlspecialchars($forms['secret_question']));
+        $forms['secret_answer']   = stripslashes(htmlspecialchars($forms['secret_answer']));
     }
 ?>
 
@@ -103,6 +120,14 @@
                 <li class="input">
                     <span><?php echo lng('user.setting.form.input.email'); ?></span>
                     <input type="email" name="email" value="<?php echo $forms['email']; ?>" placeholder="<?php echo lng('user.setting.form.placeholder.input_email'); ?>"/>
+                </li>
+                <li class="input">
+                    <span><?php echo lng('user.setting.form.input.secret_question'); ?></span>
+                    <input type="text" name="secret_question" value="<?php echo $forms['secret_question']; ?>" placeholder="<?php echo lng('user.setting.form.placeholder.input_secret_question'); ?>"/>
+                </li>
+                <li class="input">
+                    <span><?php echo lng('user.setting.form.input.secret_answer'); ?></span>
+                    <input type="text" name="secret_answer" value="<?php echo $forms['secret_answer']; ?>" placeholder="<?php echo lng('user.setting.form.placeholder.input_secret_answer'); ?>"/>
                 </li>
                 <li class="input">
                     <span><?php echo lng('user.setting.form.input.password_old'); ?></span>

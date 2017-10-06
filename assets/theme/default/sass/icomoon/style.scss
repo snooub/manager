@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: 'icomoon';
-  src:  url('#{$icomoon-font-path}/icomoon.eot?zbzcim');
-  src:  url('#{$icomoon-font-path}/icomoon.eot?zbzcim#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/icomoon.ttf?zbzcim') format('truetype'),
-    url('#{$icomoon-font-path}/icomoon.woff?zbzcim') format('woff'),
-    url('#{$icomoon-font-path}/icomoon.svg?zbzcim#icomoon') format('svg');
+  src:  url('#{$icomoon-font-path}/icomoon.eot?n4h55g');
+  src:  url('#{$icomoon-font-path}/icomoon.eot?n4h55g#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/icomoon.ttf?n4h55g') format('truetype'),
+    url('#{$icomoon-font-path}/icomoon.woff?n4h55g') format('woff'),
+    url('#{$icomoon-font-path}/icomoon.svg?n4h55g#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -26,109 +26,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-email {
+.icon-question {
   &:before {
-    content: $icon-email;
-  }
-}
-.icon-secure {
-  &:before {
-    content: $icon-secure;
-  }
-}
-.icon-spinner {
-  &:before {
-    content: $icon-spinner;
-  }
-}
-.icon-update {
-  &:before {
-    content: $icon-update;
-  }
-}
-.icon-help {
-  &:before {
-    content: $icon-help;
-  }
-}
-.icon-table {
-  &:before {
-    content: $icon-table;
-  }
-}
-.icon-file-binary {
-  &:before {
-    content: $icon-file-binary;
-  }
-}
-.icon-copy {
-  &:before {
-    content: $icon-copy;
-  }
-}
-.icon-file {
-  &:before {
-    content: $icon-file;
-  }
-}
-.icon-back {
-  &:before {
-    content: $icon-back;
-  }
-}
-.icon-trash {
-  &:before {
-    content: $icon-trash;
-  }
-}
-.icon-folder-download {
-  &:before {
-    content: $icon-folder-download;
-  }
-}
-.icon-folder-upload {
-  &:before {
-    content: $icon-folder-upload;
-  }
-}
-.icon-folder-create {
-  &:before {
-    content: $icon-folder-create;
-  }
-}
-.icon-mysql {
-  &:before {
-    content: $icon-mysql;
-  }
-}
-.icon-pencil {
-  &:before {
-    content: $icon-pencil;
-  }
-}
-.icon-users {
-  &:before {
-    content: $icon-users;
-  }
-}
-.icon-spinner-bound {
-  &:before {
-    content: $icon-spinner-bound;
-  }
-}
-.icon-view {
-  &:before {
-    content: $icon-view;
-  }
-}
-.icon-terminal {
-  &:before {
-    content: $icon-terminal;
-  }
-}
-.icon-plus {
-  &:before {
-    content: $icon-plus;
+    content: $icon-question;
   }
 }
 .icon-check {
@@ -234,6 +134,141 @@
 .icon-folder-open {
   &:before {
     content: $icon-folder-open;
+  }
+}
+.icon-home {
+  &:before {
+    content: $icon-home;
+  }
+}
+.icon-help2 {
+  &:before {
+    content: $icon-help2;
+  }
+}
+.icon-about {
+  &:before {
+    content: $icon-about;
+  }
+}
+.icon-config {
+  &:before {
+    content: $icon-config;
+  }
+}
+.icon-close {
+  &:before {
+    content: $icon-close;
+  }
+}
+.icon-user {
+  &:before {
+    content: $icon-user;
+  }
+}
+.icon-email {
+  &:before {
+    content: $icon-email;
+  }
+}
+.icon-secure {
+  &:before {
+    content: $icon-secure;
+  }
+}
+.icon-spinner {
+  &:before {
+    content: $icon-spinner;
+  }
+}
+.icon-update {
+  &:before {
+    content: $icon-update;
+  }
+}
+.icon-help {
+  &:before {
+    content: $icon-help;
+  }
+}
+.icon-table {
+  &:before {
+    content: $icon-table;
+  }
+}
+.icon-file-binary {
+  &:before {
+    content: $icon-file-binary;
+  }
+}
+.icon-copy {
+  &:before {
+    content: $icon-copy;
+  }
+}
+.icon-file {
+  &:before {
+    content: $icon-file;
+  }
+}
+.icon-back {
+  &:before {
+    content: $icon-back;
+  }
+}
+.icon-trash {
+  &:before {
+    content: $icon-trash;
+  }
+}
+.icon-folder-download {
+  &:before {
+    content: $icon-folder-download;
+  }
+}
+.icon-folder-upload {
+  &:before {
+    content: $icon-folder-upload;
+  }
+}
+.icon-folder-create {
+  &:before {
+    content: $icon-folder-create;
+  }
+}
+.icon-mysql {
+  &:before {
+    content: $icon-mysql;
+  }
+}
+.icon-pencil {
+  &:before {
+    content: $icon-pencil;
+  }
+}
+.icon-users {
+  &:before {
+    content: $icon-users;
+  }
+}
+.icon-spinner-bound {
+  &:before {
+    content: $icon-spinner-bound;
+  }
+}
+.icon-view {
+  &:before {
+    content: $icon-view;
+  }
+}
+.icon-terminal {
+  &:before {
+    content: $icon-terminal;
+  }
+}
+.icon-plus {
+  &:before {
+    content: $icon-plus;
   }
 }
 .icon-home {

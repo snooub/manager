@@ -1,4 +1,6 @@
 div#container-login {
+    padding-top: 10%;
+
     div#login,
     ul.alert {
         max-width: 320px;
@@ -71,7 +73,7 @@ div#container-login {
                         text-align: center;
                     }
 
-                    &:hover, &:focus {
+                    &:enabled:hover, &:enabled:focus {
                         color: $color_focus_input;
 
                         + span {
@@ -131,7 +133,7 @@ div#container-login {
             }
 
             li.button {
-                border-top: 1px dashed #d0d0d0;
+                border-top: 1px dashed #e0e0e0;
 
                 $height: 55px;
 

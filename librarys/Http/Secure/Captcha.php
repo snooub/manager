@@ -15,7 +15,7 @@
 
         const DEFAULT_WIDTH   = 100;
         const DEFAULT_HEIGHT  = 50;
-        const DEFAULT_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        const DEFAULT_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         const SESSION_NAME = 'captcha';
 
