@@ -155,7 +155,7 @@
                     if (Request::session()->has(SESSION_NAME_LOCK_TIME))
                         Request::session()->remove(SESSION_NAME_LOCK_TIME);
 
-                    AppAlert::success(lng('user.forgot_password.alert.reset_password_success', 'username', $username, 'password', $passwordReset), ALERT_USER_LOGIN, 'login.php');
+                    AppAlert::success(lng('user.forgot_password.alert.reset_password_success', 'username', $infoUser[AppUserConfig::ARRAY_KEY_USERNAME], 'password', $passwordReset), ALERT_USER_LOGIN, 'login.php');
                 }
             }
         }
