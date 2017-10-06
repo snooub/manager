@@ -11,8 +11,6 @@
     if (defined('ROOT') == false)
         define('ROOT', '.');
 
-    define('PARAMETER_CHECK_CHANGE_CONFIG_URL', 'check_change_config');
-
     use Librarys\App\AppJson;
     use Librarys\App\AppUser;
     use Librarys\App\AppAlert;
@@ -39,19 +37,19 @@
     Librarys\App\Config\AppAboutConfig::updateBuildDev();
 
     if (Validate::ip(($ip = Request::ip())) == false)
-        throw new RuntimeException(lng('default.global.ip_not_validate', 'ip', $ip));
+        die(lng('default.global.ip_not_validate', 'ip', $ip));
 
     unset($directory);
 
     if (AppChecker::getInstance()->execute()->isAccept() == false) {
         if (AppChecker::getInstance()->isInstallDirectory() == false)
-            throw new RuntimeException(lng('default.global.app_is_install_root'));
+            die(lng('default.global.app_is_install_root'));
         else if (AppChecker::getInstance()->isDirectoryPermissionExecute() == false)
-            throw new RuntimeException(lng('default.global.host_is_not_premission'));
+            die(lng('default.global.host_is_not_premission'));
         else if (AppChecker::getInstance()->isConfigValidate() == false)
-            throw new RuntimeException(lng('default.global.config_app_not_found'));
+            die(lng('default.global.config_app_not_found'));
         else
-            throw new RuntimeException(lng('default.global.unknown_error_app'));
+            die(lng('default.global.unknown_error_app'));
     }
 
     if (Request::isDesktop(false))
@@ -76,19 +74,12 @@
     $httpHostConfig = AppConfig::getInstance()->get('http_host');
 
     if (strcmp($httpHostApp, $httpHostConfig) !== 0) {
-        if (AppConfig::getInstance()->setSystem('http_host', $httpHostApp) == false || AppConfig::getInstance()->write(true) == false)
-            throw new RuntimeException(lng('default.global.change_config_failed'));
+        if (AppConfig::getInstance()->setSystem('http_host', $httpHostApp))
+            AppConfig::getInstance()->write(true);
 
-        if (isset($_GET[PARAMETER_CHECK_CHANGE_CONFIG_URL]))
-            throw new RuntimeException(lng('default.global.change_config_failed'));
-
-        if (AppClean::scanAutoClean(true))
-            Request::redirect($httpHostApp . '?' . PARAMETER_CHECK_CHANGE_CONFIG_URL);
+        AppClean::scanAutoClean(true);
     } else {
         AppClean::scanAutoClean();
-
-        if (isset($_GET[PARAMETER_CHECK_CHANGE_CONFIG_URL]))
-            AppAlert::success(lng('default.global.change_config_success'), AppUser::getInstance()->isLogin() ? ALERT_INDEX : ALERT_USER_LOGIN, $httpHostApp);
     }
 
     if (AppUserConfig::getInstance()->hasEntryConfigArraySystem() == false) {

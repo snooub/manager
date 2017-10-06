@@ -8,8 +8,6 @@
             'unknown_error_app'         => 'Không thể xác định lỗi, bạn hãy kiểm tra lại, hoặc cài lại ứng dụng',
             'cfsr_token_not_validate'   => 'CFSR Token không hợp lệ',
             'ip_not_validate'           => 'IP <strong>{$ip}</strong> của bạn không hợp lệ',
-            'change_config_failed'      => 'Thay đổi cấu hình phù hợp cho host của bạn thất bại hãy tải lại trang',
-            'change_config_success'     => 'Thay đổi cấu hình phù hợp cho host của bạn thành công hãy tải lại trang',
             'create_first_user_success' => 'Tạo người dùng đầu tiên thành công. Tài khoản <strong>{$username}</strong>, mật khẩu <strong>{$password}</strong>, hãy thay đổi thông tin ngay khi đăng nhập thành công',
             'create_first_user_failed'  => 'Tạo người dùng đầu tiên thất bại, hãy tải lại trang để tạo lại tự động'
         ],
