@@ -7,6 +7,8 @@
 
         public static function startBuffer($isCustomHeader = true)
         {
+            self::cleanLevelBuffer();
+
             if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
                 @ob_start('ob_gzhandler');
             else
@@ -18,6 +20,19 @@
                 header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
                 header('Last-Modified: ' . gmdate('D, d M Y H:i:s ', time()) . 'GMT');
                 header('Etag: "' . md5(time()) . '"');
+            }
+        }
+
+        public static function cleanLevelBuffer()
+        {
+            $level = @ob_get_level();
+
+            if ($level <= 0)
+                return;
+
+            for ($i = 0; $i < $level; ++$i) {
+                if (@ob_end_clean() == false && function_exists('ob_clean'))
+                    @ob_clean();
             }
         }
 
