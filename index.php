@@ -198,11 +198,14 @@
     if ($handlerPage['entry_on_page'] % 2 !== 0)
         $handlerIsOdd = true;
 
-    $bufferBack = null;
+    $bufferBack       = null;
+    $isRoot           = true;
+    $currentDirectory = null;
 
     if (preg_replace('|[a-zA-Z]+:|', '', FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory())) != SP) {
         $backPath      = strrchr(AppDirectory::getInstance()->getDirectory(), SP);
         $backDirectory = $backPath;
+        $isRoot        = false;
 
         if ($backPath !== false) {
             $backPath = substr(AppDirectory::getInstance()->getDirectory(), 0, strlen(AppDirectory::getInstance()->getDirectory()) - strlen($backPath));
@@ -221,6 +224,8 @@
                 $bufferBack .= '<strong>' . $backDirectory . '</strong>';
             $bufferBack .= '</a>';
         $bufferBack .= '</li>';
+
+        $currentDirectory = $backDirectory;
     }
 
     $appLocationPath = new AppLocationPath('index.php');
@@ -234,6 +239,9 @@
     $appParameter = new AppParameter();
     $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
     $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      $handlerPage['current'],            $handlerPage['current'] > 1);
+
+    if (isset($_GET[AppDirectory::PARAMETER_LIST_URL]))
+        $appParameter->add(AppDirectory::PARAMETER_LIST_URL, 1, true);
 
     $appFileCopy = new AppFileCopy();
 
@@ -275,10 +283,14 @@
             }
         }
 
-        $appFileCopyHrefParamater = new AppParameter();
-        $appFileCopyHrefParamater->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appFileCopy->getDirectory(), true);
-        $appFileCopyHrefParamater->add(AppDirectory::PARAMETER_NAME_URL,      $appFileCopy->getName(),      true);
-        $appFileCopyHref = 'file_copy.php' . $appFileCopyHrefParamater->toString(true);
+        $appFileCopyHrefParameter = new AppParameter();
+        $appFileCopyHrefParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, $appFileCopy->getDirectory(), true);
+        $appFileCopyHrefParameter->add(AppDirectory::PARAMETER_NAME_URL,      $appFileCopy->getName(),      true);
+
+        if (isset($_GET[AppDirectory::PARAMETER_LIST_URL]))
+            $appFileCopyHrefParameter->add(AppDirectory::PARAMETER_LIST_URL, 1, true);
+
+        $appFileCopyHref = 'file_copy.php' . $appFileCopyHrefParameter->toString(true);
 
         if (FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $appFileCopy->getName()) == FileInfo::filterPaths($appFileCopy->getDirectory() . SP . $appFileCopy->getName())) {
             if ($appFileCopy->isMove() == false)
@@ -356,6 +368,10 @@
         $appFileCopy->flushSession();
     }
 
+    $listParameter = null;
+
+    if (isset($_GET[AppDirectory::PARAMETER_LIST_URL]))
+        $listParameter = AppDirectory::PARAMETER_LIST_URL . '=1';
 ?>
 
     <?php echo AppAlert::display(); ?>
@@ -391,7 +407,7 @@
                                     <span class="icomoon icon-folder"></span>
                                 </a>
                             </div>
-                            <a href="index.php?<?php echo AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath); ?>" class="file-name">
+                            <a href="index.php?<?php echo AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath) . '&' . $listParameter; ?>" class="file-name">
                                 <span><?php echo $entry['name']; ?></span>
                             </a>
                             <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
@@ -512,6 +528,41 @@
                 <span><?php echo lng('home.menu_action.import'); ?></span>
             </a>
         </li>
+
+        <?php if ($isRoot == false) { ?>
+            <?php
+                $appParameterDirectory = new AppParameter();
+                $appParameterDirectory->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getParentDirectoryEncode(), true);
+                $appParameterDirectory->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),                  AppDirectory::getInstance()->getPage() > 1);
+                $appParameterDirectory->add(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::getInstance()->getNameInParentEncode(),    true);
+                $appParameterDirectory->add(AppDirectory::PARAMETER_LIST_URL,      1,                                                       true);
+            ?>
+
+            <li>
+                <a href="file_rename.php<?php echo $appParameterDirectory->toString(); ?>">
+                    <span class="icomoon icon-edit"></span>
+                    <span><?php echo lng('file_info.menu_action.rename'); ?></span>
+                </a>
+            </li>
+            <li>
+                <a href="file_copy.php<?php echo $appParameterDirectory->toString(); ?>">
+                    <span class="icomoon icon-copy"></span>
+                    <span><?php echo lng('file_info.menu_action.copy'); ?></span>
+                </a>
+            </li>
+            <li>
+                <a href="file_delete.php<?php echo $appParameterDirectory->toString(); ?>">
+                    <span class="icomoon icon-trash"></span>
+                    <span><?php echo lng('file_info.menu_action.delete'); ?></span>
+                </a>
+            </li>
+            <li>
+                <a href="file_chmod.php<?php echo $appParameterDirectory->toString(); ?>">
+                    <span class="icomoon icon-key"></span>
+                    <span><?php echo lng('file_info.menu_action.chmod'); ?></span>
+                </a>
+            </li>
+        <?php } ?>
     </ul>
 
 <?php require_once('incfiles' . SP . 'footer.php'); ?>

@@ -13,10 +13,14 @@
         private static $instance;
 
         private $directory;
+        private $parentDirectory;
         private $name;
+        private $nameInParent;
         private $aliasName;
         private $directoryEncode;
+        private $parentDirectoryEncode;
         private $nameEncode;
+        private $nameInParentEncode;
         private $aliasNameEncode;
         private $page;
         private $permissionDeny;
@@ -26,6 +30,7 @@
         const PARAMETER_NAME_URL       = 'name';
         const PARAMETER_ALIAS_NAME_URL = 'alias_name';
         const PARAMETER_PAGE_URL       = 'pager';
+        const PARAMETER_LIST_URL       = 'list';
 
         protected function __construct()
         {
@@ -58,8 +63,13 @@
                 $this->directory = env('SERVER.DOCUMENT_ROOT');
 
             if ($this->directory != null) {
-                $this->directory       = FileInfo::filterPaths($this->directory);
-                $this->directoryEncode = self::rawEncode($this->directory);
+                $this->directory             = FileInfo::filterPaths($this->directory);
+                $this->parentDirectory       = FileInfo::filterPaths(@dirname($this->directory));
+                $this->directoryEncode       = self::rawEncode($this->directory);
+                $this->parentDirectoryEncode = self::rawEncode($this->parentDirectory);
+
+                $this->nameInParent          = @substr($this->directory, strlen($this->parentDirectory) + 1);
+                $this->nameInParentEncode    = self::rawEncode($this->nameInParent);
             }
 
             if (isset($_GET[self::PARAMETER_NAME_URL]) && empty($_GET[self::PARAMETER_NAME_URL]) == false) {
@@ -157,9 +167,19 @@
             return $this->directory;
         }
 
+        public function getParentDirectory()
+        {
+            return $this->parentDirectory;
+        }
+
         public function getDirectoryEncode()
         {
             return $this->directoryEncode;
+        }
+
+        public function getParentDirectoryEncode()
+        {
+            return $this->parentDirectoryEncode;
         }
 
         public function getName()
@@ -167,9 +187,19 @@
             return $this->name;
         }
 
+        public function getNameInParent()
+        {
+            return $this->nameInParent;
+        }
+
         public function getNameEncode()
         {
             return $this->nameEncode;
+        }
+
+        public function getNameInParentEncode()
+        {
+            return $this->nameInParentEncode;
         }
 
         public function getAliasName()
@@ -188,6 +218,11 @@
                 return $this->directory . SP . $this->name;
 
             return $this->directory;
+        }
+
+        public function getDirectoryAndNameEncode()
+        {
+            return self::rawEncode($this->getDirectoryAndName());
         }
 
         public function getPage()

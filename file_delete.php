@@ -20,9 +20,20 @@
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryAndNameEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),                   AppDirectory::getInstance()->getPage() > 1);
+
+    if (isset($_GET[AppDirectory::PARAMETER_LIST_URL]))
+        $backParameter = $appParameter->toString();
+
     $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
     $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::getInstance()->getNameEncode(),      true);
+
+    if (isset($_GET[AppDirectory::PARAMETER_LIST_URL])) {
+        $appParameter->add(AppDirectory::PARAMETER_LIST_URL, 1, true)->toString(true);
+    } else {
+        $backParameter = $appParameter->toString(true);
+    }
 
     $fileInfo    = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
     $fileMime    = new FileMime($fileInfo);
@@ -92,7 +103,7 @@
                     <button type="submit" name="delete" id="button-save-on-javascript">
                         <span><?php echo lng('file_delete.form.button.delete'); ?></span>
                     </button>
-                    <a href="index.php<?php echo $appParameter->toString(); ?>">
+                    <a href="index.php<?php echo $backParameter; ?>">
                         <span><?php echo lng('file_delete.form.button.cancel'); ?></span>
                     </a>
                 </li>

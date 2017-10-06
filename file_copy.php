@@ -29,9 +29,25 @@
     $appLocationPath->setIsLinkLastEntry(true);
 
     $appParameter = new AppParameter();
+    $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryAndNameEncode(), true);
+    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),                   AppDirectory::getInstance()->getPage() > 1);
+
+    if (isset($_GET[AppDirectory::PARAMETER_LIST_URL])) {
+        if ($appFileCopy->isSession())
+            $appParameter->add(AppDirectory::PARAMETER_LIST_URL, 1, true);
+
+        $backParameter = $appParameter->toString(true);
+    }
+
+    $appParameter->remove(AppDirectory::PARAMETER_LIST_URL);
     $appParameter->add(AppDirectory::PARAMETER_DIRECTORY_URL, AppDirectory::getInstance()->getDirectoryEncode(), true);
-    $appParameter->add(AppDirectory::PARAMETER_PAGE_URL,      AppDirectory::getInstance()->getPage(),            AppDirectory::getInstance()->getPage() > 1);
     $appParameter->add(AppDirectory::PARAMETER_NAME_URL,      AppDirectory::getInstance()->getNameEncode(),      true);
+
+    if (isset($_GET[AppDirectory::PARAMETER_LIST_URL])) {
+        $appParameter->add(AppDirectory::PARAMETER_LIST_URL, 1, true)->toString(true);
+    } else {
+        $backParameter = $appParameter->toString(true);
+    }
 
     $fileInfo    = new FileInfo(AppDirectory::getInstance()->getDirectory() . SP . AppDirectory::getInstance()->getName());
     $fileMime    = new FileMime($fileInfo);
@@ -182,8 +198,7 @@
                 AppAlert::success(lng('file_copy.alert.directory_path_choose_is_validate', 'path', $appFileCopy->getPath()));
             }
 
-            if ($isChooseDirectoryPathFailed)
-                $appFileCopy->clearSession();
+            $appFileCopy->clearSession();
 
             if ($isChooseDirectoryPathFailed && $idAlert === ALERT_INDEX) {
                 $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
@@ -264,7 +279,7 @@
                     <button type="submit" name="browser">
                         <span><?php echo lng('file_copy.form.button.browser'); ?></span>
                     </button>
-                    <a href="index.php<?php echo $appParameter->toString(); ?>">
+                    <a href="index.php<?php echo $backParameter; ?>">
                         <span><?php echo lng('file_copy.form.button.cancel'); ?></span>
                     </a>
                 </li>
