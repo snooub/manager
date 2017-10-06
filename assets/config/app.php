@@ -37,11 +37,11 @@
             ],
 
             'captcha' => [
-                'width'  => 100,
+                'width'  => 120,
                 'height' => 45,
 
                 'font'   => [
-                    'size' => 17,
+                    'size' => 15,
                     'path' => '${app.path.theme}${SP}fonts${SP}captcha.ttf'
                 ]
             ],

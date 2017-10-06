@@ -156,11 +156,12 @@
             $ttfWidth    = abs($ttfBox[4] - $ttfBox[0]) + 8;
             $ttfHeight   = abs($ttfBox[5] - $ttfBox[1]);
             $letterCount = count($letterArray);
+            $xBegin      = (($this->width >> 1) - $ttfWidth) >> 1;
 
             for ($i = 0; $i < $letterCount; ++$i) {
                 $letterCharacter = $letterArray[$i];
 
-                imagettftext($this->res, $this->fontSize, $angle, 5 + ($i * $ttfWidth), $this->height - $ttfHeight, $textColor, $this->fontPath, $letterCharacter);
+                imagettftext($this->res, $this->fontSize, $angle, $xBegin + rand(0, 4) + ($i * $ttfWidth), $this->height - $ttfHeight, $textColor, $this->fontPath, $letterCharacter);
             }
 
             Request::session()->put(self::SESSION_NAME, $letterWord);
