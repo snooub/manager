@@ -67,8 +67,9 @@
             'max'        => AppConfig::getInstance()->get('paging.file_edit_text')
         ],
 
-        'path'    => FileInfo::filterPaths(AppDirectory::getInstance()->getDirectoryAndName()),
-        'content' => null,
+        'path'               => FileInfo::filterPaths(AppDirectory::getInstance()->getDirectoryAndName()),
+        'content'            => null,
+        'is_syntax'          => true,
 
         'content_lines'      => null,
         'content_line_count' => 0
@@ -86,8 +87,21 @@
     if ($edits['path'] != null)
         $edits['content'] = FileInfo::fileReadContents($edits['path']);
 
+    $isCheckSyntax = true;
+    $pathPHPBin    = null;
+
+    if (strcasecmp(FileInfo::extFile(AppDirectory::getInstance()->getName()), 'php') !== 0)
+        $isCheckSyntax = false;
+    else if (function_exists('exec') == false || function_exists('shell_exec') == false)
+        $isCheckSyntax = false;
+    else if (($pathPHPBin = FileInfo::takePathPHPBin()) == null || empty($pathPHPBin))
+        $isCheckSyntax = false;
+
     if (isset($_POST['save'])) {
         $name = AppDirectory::getInstance()->getName();
+
+        if ($isCheckSyntax && isset($_POST['is_syntax']) && intval($_POST['is_syntax']) === 1)
+            $edits['is_syntax'] = true;
 
         if ($edits['page']['max'] > 0) {
             $edits['content'] = str_replace("\r\n", "\n", $edits['content']);
@@ -198,10 +212,33 @@
         }
 
         if ($isSave) {
-            if (FileInfo::fileWriteContents($edits['path'], $edits['content']) !== false)
+            if (FileInfo::fileWriteContents($edits['path'], $edits['content']) !== false) {
                 AppAlert::success(lng('file_edit_text.alert.save_text_success'));
-            else
+
+                if ($isCheckSyntax && $edits['is_syntax']) {
+                    $callback = null;
+
+                    if (function_exists('exec'))
+                        $callback = 'exec';
+                    else if (function_exists('shell_exec'))
+                        $callback = 'shell_exec';
+
+                    if ($callback == null) {
+                        AppAlert::danger(lng('file_edit_text.alert.function_exec_is_disable'));
+                    } else {
+                        $callback($pathPHPBin . ' -c -f -l ' . $edits['path'], $execOutput, $execValue);
+
+                        if ($execValue == -1)
+                            AppAlert::info(lng('file_edit_text.alert.not_check_syntax'));
+                        else if ($execValue == 255 || count($execOutput) == 3)
+                            AppAlert::danger($execOutput[1]);
+                        else
+                            AppAlert::success(lng('file_edit_text.alert.syntax_not_error'));
+                    }
+                }
+            } else {
                 AppAlert::danger(lng('file_edit_text.alert.save_text_failed'));
+            }
         }
     }
 
@@ -236,7 +273,6 @@
         'file_edit_text.php' . $appParameter->toString(),
         'file_edit_text.php' . $appParameter->toString() . '&' . PARAMETER_PAGE_EDIT . '='
     );
-
 ?>
 
     <?php AppAlert::display(); ?>
@@ -283,6 +319,19 @@
                         <textarea name="content" rows="20"><?php echo htmlspecialchars($edits['content']); ?></textarea>
                     <?php } ?>
                 </li>
+                <?php if ($isCheckSyntax) { ?>
+                    <li class="checkbox">
+                        <span><?php echo lng('file_edit_text.form.input.options'); ?></span>
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="is-syntax" name="is_syntax" value="1"<?php if ($edits['is_syntax'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="is-syntax">
+                                    <span><?php echo lng('file_edit_text.form.input.syntax_check'); ?></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </li>
+                <?php } ?>
                 <?php if ($edits['page']['max'] > 0 && $edits['page']['total'] > 1) { ?>
                     <li class="paging">
                         <?php echo $appPaging->display($edits['page']['current'], $edits['page']['total']); ?>

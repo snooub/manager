@@ -822,6 +822,58 @@
                 return true;
         }
 
+        public static function takePathPHPBin()
+        {
+            $path              = getenv('PATH');
+            $separator         = PATH_SEPARATOR;
+            $pathArrays        = explode($separator, $path);
+            $isWindow          = strcasecmp(substr(PHP_OS, 0, 3), 'WIN') === 0;
+            $openBaseDir       = ini_get('open_basedir');
+            $openBaseDirArrays = null;
+            $pathBinPHP        = null;
+
+            if (empty($openBaseDir) == false) {
+                $openBaseDirArrays = explode($separator, $openBaseDir);
+                $openBaseDirArrays = array_map(array(FileInfo::class, 'filterPaths'), $openBaseDirArrays);
+            }
+
+            foreach ($pathArrays AS $entry) {
+                $pathEntry     = null;
+                $isOpenBaseDir = false;
+
+                if (is_array($openBaseDirArrays)) {
+                    foreach ($openBaseDirArrays AS $baseDir) {
+                        if (strpos($baseDir, $entry) === 0) {
+                            $isOpenBaseDir = true;
+                            break;
+                        }
+                    }
+                } else {
+                    $isOpenBaseDir = true;
+                }
+
+                if ($isOpenBaseDir) {
+                    if ($isWindow) {
+                        if (strstr($entry, 'php.exe'))
+                            $pathEntry = $entry;
+                        else
+                            $pathEntry = $entry . SP . 'php.exe';
+                    } else {
+                        $pathEntry = $entry . SP . 'php';
+                    }
+
+                    $pathEntry = FileInfo::filterPaths($pathEntry);
+
+                    if (FileInfo::isTypeFile($pathEntry)) {
+                        $pathBinPHP = $pathEntry;
+                        break;
+                    }
+                }
+            }
+
+            return $pathBinPHP;
+        }
+
 	}
 
 ?>

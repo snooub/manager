@@ -30,6 +30,24 @@
 
     $infos = [
         [
+            'title' => 'Infomation',
+
+            'labels' => [
+                'System:',
+                'Server api:',
+                'Loaded Configuration File:',
+                'PHP Path:'
+            ],
+
+            'values' => [
+                php_uname(),
+                php_sapi_name(),
+                php_ini_loaded_file(),
+                getenv('PATH')
+            ]
+        ],
+
+        [
             'title' => 'Core',
 
             'labels' => [
@@ -48,7 +66,7 @@
                 'Output encoding:',
                 'Output handler:',
                 'Post max size:',
-                'Upload max size:',
+                'Upload max file size:',
                 'Upload tmp dir:',
                 'User dir:'
             ],
@@ -71,7 +89,7 @@
                 $nullToString(ini_get('output_encoding')),
                 $nullToString(ini_get('output_handler')),
                 $nullToString(ini_get('post_max_size')),
-                $nullToString(ini_get('upload_max_size')),
+                $nullToString(ini_get('upload_max_filesize')),
                 $nullToString(ini_get('upload_tmp_dir')),
                 $nullToString(ini_get('user_dir'))
             ]
@@ -96,7 +114,7 @@
 
             'labels' => [
                 'Date/Time support:',
-                'Default timezone'
+                'Default timezone:'
             ],
 
             'values' => [
