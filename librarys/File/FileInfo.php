@@ -6,6 +6,7 @@
         exit;
 
     use Librarys\Zip\PclZip;
+    use Librarys\App\Config\AppConfig;
 
 	final class FileInfo
 	{
@@ -510,8 +511,11 @@
          * Check permission path
          * If path is deny permission return true
          */
-        public static function permissionDenyPath($path, $isUseName = false)
+        public static function permissionDenyPath($path, $isUseName = false, $igoneDevelopementMode = false)
         {
+            if (AppConfig::getInstance()->getSystem('enable_disable.development', false) && $igoneDevelopementMode == false)
+                return false;
+
             if ($path != null && empty($path) == false) {
                 $sp = SP;
 

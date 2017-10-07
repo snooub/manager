@@ -13,14 +13,16 @@
 
     use Librarys\Boot;
     use Librarys\Autoload;
+    use Librarys\App\Config\AppAboutConfig;
 
     class Bootstrap
     {
 
-        public static function execute($configPath)
+        public static function execute($configPath, $cacheDirectory)
         {
             Autoload::getInstance()->execute();
-            Boot::getInstance(require_once($configPath), defined('ENABLE_CUSTOM_HEADER'));
+            Boot::getInstance($configPath, $cacheDirectory, defined('ENABLE_CUSTOM_HEADER'));
+            AppAboutConfig::updateBuildDev();
         }
 
     }

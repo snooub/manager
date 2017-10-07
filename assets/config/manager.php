@@ -21,6 +21,7 @@
             'list_file_double' => true,
             'list_database_double' => true,
             'check_password_default' => false,
+            'development' => false,
         ],
 
         'login' => [
@@ -41,21 +42,12 @@
         ],
 
         'cache' => [
-            'css' => [
-                'enable' => true,
-                'lifetime' => 31536000,
-            ],
-
-            'js' => [
-                'enable' => true,
-                'lifetime' => 31536000,
-            ],
-
+            'lifetime' => 64800,
         ],
 
         'tmp' => [
-            'lifetime' => 180,
-            'limit' => 20,
+            'lifetime' => 300,
+            'limit' => 50,
         ],
 
         'theme' => [

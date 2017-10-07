@@ -117,8 +117,7 @@
                 if ($handle === false)
                     return false;
 
-                $cacheLifetimeCss = AppConfig::getInstance()->get('cache.css.lifetime');
-                $cacheLifetimeJs  = AppConfig::getInstance()->get('cache.js.lifetime');
+                $cacheLifetime = AppConfig::getInstance()->get('cache.lifetime', 3600);
 
                 foreach ($handle AS $filename) {
                     $filepath = FileInfo::filterPaths($directory . SP . $filename);
@@ -126,12 +125,6 @@
                     if (FileInfo::isTypeFile($filepath)) {
                         $filemime      = FileInfo::extFile($filename);
                         $filetime      = FileInfo::fileMTime($filepath);
-                        $cacheLifetime = 0;
-
-                        if (strcasecmp($filemime, AppAssets::CACHE_CSS_MIME) === 0)
-                            $cacheLifetime = $cacheLifetimeCss;
-                        else if (strcasecmp($filemime, AppAssets::CACHE_JS_MIME) === 0)
-                            $cacheLifetime = $cacheLifetimeJs;
 
                         if ($isCleanAllNotCheck || $time - $filetime >= $cacheLifetime)
                             FileInfo::unlink($filepath);

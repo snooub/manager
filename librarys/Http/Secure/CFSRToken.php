@@ -74,7 +74,7 @@
 
         public function validatePost()
         {
-            if (env('http.cfsr.use_token') == false || env('http.cfsr.validate_post') == false)
+            if (env('app.cfsr.use_token') == false || env('app.cfsr.validate_post') == false)
                 return true;
 
             if (env('SERVER.REQUEST_METHOD') == 'POST') {
@@ -89,7 +89,7 @@
 
         public function validateGet()
         {
-            if (env('http.cfsr.use_token') == false || env('http.cfsr.validate_get') == false)
+            if (env('app.cfsr.use_token') == false || env('app.cfsr.validate_get') == false)
                 return true;
 
             if (env('SERVER.REQUEST_METHOD') == 'GET') {

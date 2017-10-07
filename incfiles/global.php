@@ -33,8 +33,10 @@
         'Bootstrap.php'
     );
 
-    Librarys\Bootstrap::execute($directory . SP . 'assets' . SP . 'config' . SP . 'app.php');
-    Librarys\App\Config\AppAboutConfig::updateBuildDev();
+    Librarys\Bootstrap::execute(
+        $directory . SP . 'assets' . SP . 'config' . SP . 'app.php',
+        $directory . SP . 'assets' . SP . 'cache'
+    );
 
     if (Validate::ip(($ip = Request::ip())) == false)
         die(lng('default.global.ip_not_validate', 'ip', $ip));

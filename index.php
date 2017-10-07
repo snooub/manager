@@ -27,7 +27,6 @@
     }
 
     $title   = lng('home.title_page_root');
-    $themes  = [ env('resource.filename.theme.file') ];
     $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
     AppAlert::setID(ALERT_INDEX);
 
@@ -64,14 +63,24 @@
     $arrayFolder = array();
     $arrayFile   = array();
 
+    $developmentMode = AppConfig::getInstance()->getSystem('enable_disable.development', false);
+    $isPermission    = FileInfo::permissionDenyPath(AppDirectory::getInstance()->getDirectory(), false, true);
+
     foreach ($handler AS $entry) {
         if ($entry != '.' && $entry != '..') {
-            if ($entry == env('application.directory') && AppDirectory::getInstance()->isAccessParentPath())
-                ;
-            else if (FileInfo::isTypeDirectory(AppDirectory::getInstance()->getDirectory() . SP . $entry))
-                $arrayFolder[] = $entry;
-            else
-                $arrayFile[] = $entry;
+            $isEntryApp = false;
+
+            if ($isPermission)
+                $isEntryApp = true;
+            else if (strcmp($entry, env('application.directory')) === 0 && AppDirectory::getInstance()->isAccessParentPath())
+                $isEntryApp = true;
+
+            if ($developmentMode || $isEntryApp == false) {
+                if (FileInfo::isTypeDirectory(AppDirectory::getInstance()->getDirectory() . SP . $entry))
+                    $arrayFolder[$entry] = [ 'name' => $entry, 'is_directory' => true, 'is_app'  => $isEntryApp ];
+                else
+                    $arrayFile[$entry]   = [ 'name' => $entry, 'is_directory' => false, 'is_app' => $isEntryApp ];
+            }
         }
     }
 
@@ -140,21 +149,17 @@
     };
 
     if (count($arrayFolder) > 0) {
-        asort($arrayFolder);
+        ksort($arrayFolder);
 
-        foreach ($arrayFolder AS $entry) {
-            $array         = [ 'name' => $entry, 'is_directory' => true ];
-            $handlerList[] = $takeInfo($array);
-        }
+        foreach ($arrayFolder AS $entry)
+            $handlerList[] = $takeInfo($entry);
     }
 
     if (count($arrayFile) > 0) {
-        asort($arrayFile);
+        ksort($arrayFile);
 
-        foreach ($arrayFile AS $entry) {
-            $array         = [ 'name' => $entry, 'is_directory' => false ];
-            $handlerList[] = $takeInfo($array);
-        }
+        foreach ($arrayFile AS $entry)
+            $handlerList[] = $takeInfo($entry);
     }
 
     if (Request::isDesktop()) {
@@ -221,7 +226,12 @@
         $bufferBack .= '<li class="back">';
             $bufferBack .= '<a href="' . $backPath . '">';
                 $bufferBack .= '<span class="icomoon icon-folder-open"></span>';
-                $bufferBack .= '<strong>' . $backDirectory . '</strong>';
+
+                if ($isPermission)
+                    $bufferBack .= '<strong class="file-name-of-app">' . $backDirectory . '</strong>';
+                else
+                    $bufferBack .= '<strong>' . $backDirectory . '</strong>';
+
             $bufferBack .= '</a>';
         $bufferBack .= '</li>';
 
@@ -407,7 +417,7 @@
                                     <span class="icomoon icon-folder"></span>
                                 </a>
                             </div>
-                            <a href="index.php?<?php echo AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath) . '&' . $listParameter; ?>" class="file-name">
+                            <a href="index.php?<?php echo AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath) . '&' . $listParameter; ?>" class="file-name<?php if ($entry['is_app']) { ?> file-name-of-app<?php } ?>">
                                 <span><?php echo $entry['name']; ?></span>
                             </a>
                             <a href="file_chmod.php<?php echo $urlParameter; ?>" class="chmod-permission">
@@ -432,7 +442,7 @@
                                     <span class="icomoon <?php echo $entry['icon']; ?>"></span>
                                 <?php if ($entry['is_edit']) { ?></a><?php } ?>
                             </div>
-                            <a href="file_info.php<?php echo $urlParameter; ?>" class="file-name">
+                            <a href="file_info.php<?php echo $urlParameter; ?>" class="file-name<?php if ($entry['is_app']) { ?> file-name-of-app<?php } ?>">
                                 <span><?php echo $entry['name']; ?></span>
                             </a>
                             <div class="chmod-size">
@@ -508,6 +518,12 @@
             </ul>
         <?php } ?>
     </form>
+
+    <?php if ($developmentMode) { ?>
+        <ul class="alert">
+            <li class="warning"><span><?php echo lng('home.alert.tips'); ?></span></li>
+        </ul>
+    <?php } ?>
 
     <ul class="menu-action">
         <li>

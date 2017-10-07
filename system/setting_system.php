@@ -19,6 +19,15 @@
     $forms = [
         'http_referer' => null,
 
+        'cache' => [
+            'lifetime' => AppConfig::getInstance()->getSystem('cache.lifetime', 64800)
+        ],
+
+        'tmp' => [
+            'lifetime' => AppConfig::getInstance()->getSystem('tmp.lifetime', 180),
+            'limit'    => AppConfig::getInstance()->getSystem('tmp.limit',    20)
+        ],
+
         'login' => [
             'enable_forgot_password'   => AppConfig::getInstance()->getSystem('login.enable_forgot_password',   true),
             'enable_lock_count_failed' => AppConfig::getInstance()->getSystem('login.enable_lock_count_failed', true),
@@ -29,12 +38,138 @@
         ],
 
         'enable_disable' => [
-            'check_password_default' => AppConfig::getInstance()->getSystem('enable_disable.check_password_default', true)
+            'check_password_default' => AppConfig::getInstance()->getSystem('enable_disable.check_password_default', true),
+            'development'            => AppConfig::getInstance()->getSystem('enable_disable.development',            false)
         ]
     ];
 
     if (isset($_POST['save'])) {
-        $isFailed = false;
+        $isFailed      = false;
+        $isFailedCheck = false;
+
+        $listCheck = [
+            'login.max_lock_count' => [
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.login_max_lock_count_is_small', 'count', 3);
+                    },
+
+                    'callback' => function($value) {
+                        return $value < 3;
+                    }
+                ],
+
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.login_max_lock_count_is_large', 'count', 10);
+                    },
+
+                    'callback' => function($value) {
+                        return $value > 10;
+                    }
+                ]
+            ],
+
+            'login.time_lock' => [
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.login_time_lock_is_small', 'time', 30);
+                    },
+
+                    'callback' => function($value) {
+                        return $value < 30;
+                    }
+                ],
+
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.login_time_lock_is_large', 'time', 86400);
+                    },
+
+                    'callback' => function($value) {
+                        return $value > 86400;
+                    }
+                ]
+            ],
+
+            'login.time_login' => [
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.login_time_login_is_small', 'time', 300);
+                    },
+
+                    'callback' => function($value) {
+                        return $value < 300;
+                    }
+                ]
+            ],
+
+            'cache.lifetime' => [
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.cache_lifetime_is_small', 'time', 300);
+                    },
+
+                    'callback' => function($value) {
+                        return $value < 300;
+                    }
+                ],
+
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.cache_lifetime_is_large', 'time', 86400);
+                    },
+
+                    'callback' => function($value) {
+                        return $value > 86400;
+                    }
+                ]
+            ],
+
+            'tmp.lifetime' => [
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.tmp_lifetime_is_small', 'time', 300);
+                    },
+
+                    'callback' => function($value) {
+                        return $value < 300;
+                    }
+                ],
+
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.tmp_lifetime_is_large', 'time', 86400);
+                    },
+
+                    'callback' => function($value) {
+                        return $value > 86400;
+                    }
+                ]
+            ],
+
+            'tmp.limit' => [
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.tmp_limit_is_small', 'count', 10);
+                    },
+
+                    'callback' => function($value) {
+                        return $value < 10;
+                    }
+                ],
+
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.tmp_limit_is_large', 'count', 50);
+                    },
+
+                    'callback' => function($value) {
+                        return $value > 50;
+                    }
+                ]
+            ]
+        ];
 
         foreach ($forms['login'] AS $key => &$value) {
             $envKey          = 'login.' . $key;
@@ -56,7 +191,18 @@
                     $value = 0;
             }
 
-            if (AppConfig::getInstance()->setSystem($envKey, $value) == false) {
+            if (array_key_exists($envKey, $listCheck)) {
+                foreach ($listCheck[$envKey] AS $arrs) {
+                    if ($arrs['callback']($value)) {
+                        $isFailedCheck = true;
+
+                        AppAlert::danger($arrs['alert']($value));
+                        break;
+                    }
+                }
+            }
+
+            if ($isFailedCheck == false && AppConfig::getInstance()->setSystem($envKey, $value) == false) {
                 $isFailed = true;
                 AppAlert::danger(lng('system.setting_system.alert.save_setting_failed'));
 
@@ -64,7 +210,67 @@
             }
         }
 
-        if ($isFailed == false) {
+        if ($isFailed == false && $isFailedCheck == false) {
+            foreach ($forms['cache'] AS $key => &$value) {
+                $envKey  = 'cache.' . $key;
+                $formKey = 'cache_' . $key;
+
+                if (isset($_POST[$formKey]))
+                    $value = intval(addslashes($_POST[$formKey]));
+                else
+                    $value = false;
+
+                if (array_key_exists($envKey, $listCheck)) {
+                    foreach ($listCheck[$envKey] AS $arrs) {
+                        if ($arrs['callback']($value)) {
+                            $isFailedCheck = true;
+
+                            AppAlert::danger($arrs['alert']($value));
+                            break;
+                        }
+                    }
+                }
+
+                if ($isFailedCheck == false && AppConfig::getInstance()->setSystem($envKey, $value) == false) {
+                    $isFailed = true;
+                    AppAlert::danger(lng('system.setting_system.alert.save_setting_failed'));
+
+                    break;
+                }
+            }
+        }
+
+        if ($isFailed == false && $isFailedCheck == false) {
+            foreach ($forms['tmp'] AS $key => &$value) {
+                $envKey  = 'tmp.' . $key;
+                $formKey = 'tmp_' . $key;
+
+                if (isset($_POST[$formKey]))
+                    $value = intval(addslashes($_POST[$formKey]));
+                else
+                    $value = false;
+
+                if (array_key_exists($envKey, $listCheck)) {
+                    foreach ($listCheck[$envKey] AS $arrs) {
+                        if ($arrs['callback']($value)) {
+                            $isFailedCheck = true;
+
+                            AppAlert::danger($arrs['alert']($value));
+                            break;
+                        }
+                    }
+                }
+
+                if ($isFailedCheck == false && AppConfig::getInstance()->setSystem($envKey, $value) == false) {
+                    $isFailed = true;
+                    AppAlert::danger(lng('system.setting_system.alert.save_setting_failed'));
+
+                    break;
+                }
+            }
+        }
+
+        if ($isFailed == false && $isFailedCheck == false) {
             foreach ($forms['enable_disable'] AS $key => &$value) {
                 $envKey  = 'enable_disable.' . $key;
                 $formKey = 'enable_disable_' . $key;
@@ -74,7 +280,18 @@
                 else
                     $value = false;
 
-                if (AppConfig::getInstance()->setSystem($envKey, $value) == false) {
+                if (array_key_exists($envKey, $listCheck)) {
+                    foreach ($listCheck[$envKey] AS $arrs) {
+                        if ($arrs['callback']($value)) {
+                            $isFailedCheck = true;
+
+                            AppAlert::danger($arrs['alert']($value));
+                            break;
+                        }
+                    }
+                }
+
+                if ($isFailedCheck == false && AppConfig::getInstance()->setSystem($envKey, $value) == false) {
                     $isFailed = true;
                     AppAlert::danger(lng('system.setting_system.alert.save_setting_failed'));
 
@@ -83,7 +300,7 @@
             }
         }
 
-        if ($isFailed == false) {
+        if ($isFailed == false && $isFailedCheck == false) {
             if (AppConfig::getInstance()->write(true))
                 AppAlert::success(lng('system.setting_system.alert.save_setting_success'));
             else
@@ -117,6 +334,33 @@
             'name_input'      => 'login_time_login',
             'type_input'      => 'number',
             'value_input'     => $forms['login']['time_login']
+        ],
+
+        [
+            'config_key'      => 'cache.lifetime',
+            'label_lng'       => 'system.setting_system.form.input.cache_lifetime',
+            'placeholder_lng' => 'system.setting_system.form.placeholder.input_cache_lifetime',
+            'name_input'      => 'cache_lifetime',
+            'type_input'      => 'number',
+            'value_input'     => $forms['cache']['lifetime']
+        ],
+
+        [
+            'config_key'      => 'tmp.lifetime',
+            'label_lng'       => 'system.setting_system.form.input.tmp_lifetime',
+            'placeholder_lng' => 'system.setting_system.form.placeholder.input_tmp_lifetime',
+            'name_input'      => 'tmp_lifetime',
+            'type_input'      => 'number',
+            'value_input'     => $forms['tmp']['lifetime']
+        ],
+
+        [
+            'config_key'      => 'tmp.limit',
+            'label_lng'       => 'system.setting_system.form.input.tmp_limit',
+            'placeholder_lng' => 'system.setting_system.form.placeholder.input_tmp_limit',
+            'name_input'      => 'tmp_limit',
+            'type_input'      => 'number',
+            'value_input'     => $forms['tmp']['limit']
         ]
     ];
 
@@ -152,6 +396,14 @@
                 'id_input'        => 'enable-disable-check-password-default',
                 'name_input'      => 'enable_disable_check_password_default',
                 'value_input'     => $forms['enable_disable']['check_password_default']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.development',
+                'label_lng'       => 'system.setting_system.form.input.enable_development',
+                'id_input'        => 'enable-disable-development',
+                'name_input'      => 'enable_disable_development',
+                'value_input'     => $forms['enable_disable']['development']
             ]
         ]
     ];

@@ -17,7 +17,7 @@
         protected $fileConfigName;
 
         protected $configArray;
-        protected $configSystemArray;
+        protected $configArraySystem;
 
         protected $cacheArray;
         protected $cacheArraySystem;
@@ -28,7 +28,7 @@
         protected function __construct($pathConfigSystem, $fileConfigName = null)
         {
             $this->configArray       = array();
-            $this->configSystemArray = array();
+            $this->configArraySystem = array();
             $this->cacheArray        = array();
             $this->cacheArraySystem  = array();
 
@@ -77,9 +77,19 @@
             return $this->configArray;
         }
 
+        public function setConfigArray($configArray)
+        {
+            $this->configArray = $configArray;
+        }
+
         public function getConfigArraySystem()
         {
-            return $this->configSystemArray;
+            return $this->configArraySystem;
+        }
+
+        public function setConfigArraySystem($configArraySystem)
+        {
+            $this->configArraySystem = $configArraySystem;
         }
 
         public function hasEntryConfigArray()
@@ -89,7 +99,7 @@
 
         public function hasEntryConfigArraySystem()
         {
-            return is_array($this->configSystemArray) && count($this->configSystemArray) > 0;
+            return is_array($this->configArraySystem) && count($this->configArraySystem) > 0;
         }
 
         public function hasEntryConfigArrayAny()
@@ -147,12 +157,12 @@
             }
 
             if ($parseSystem)
-                $this->configSystemArray = require_once($path);
+                $this->configArraySystem = require_once($path);
             else
                 $this->configArray = require_once($path);
 
-            if (is_array($this->configSystemArray) == false)
-                $this->configSystemArray = array();
+            if (is_array($this->configArraySystem) == false)
+                $this->configArraySystem = array();
 
             if (is_array($this->configArray) == false)
                 $this->configArray = array();
@@ -183,7 +193,7 @@
             $configArray = null;
 
             if ($isSystem)
-                $configArray = &$this->configSystemArray;
+                $configArray = &$this->configArraySystem;
             else
                 $configArray = &$this->configArray;
 
@@ -233,7 +243,7 @@
                 return false;
 
             if ($isSystem)
-                $configArray = &$this->configSystemArray;
+                $configArray = &$this->configArraySystem;
             else
                 $configArray = &$this->configArray;
 
@@ -267,7 +277,7 @@
                 return false;
 
             if ($isSystem)
-                $configArray = &$this->configSystemArray;
+                $configArray = &$this->configArraySystem;
             else
                 $configArray = &$this->configArray;
 
@@ -302,7 +312,7 @@
 
         private function receiverToCacheSystem($name, $default = null)
         {
-            return ($this->cacheArraySystem[$name] = urlSeparatorMatches($this->receiver($name, $default, $this->configSystemArray)));
+            return ($this->cacheArraySystem[$name] = urlSeparatorMatches($this->receiver($name, $default, $this->configArraySystem)));
         }
 
         private function receiver($key, $default = null, $array = null)
@@ -333,7 +343,7 @@
 
                 if ($array === null) {
                     // Config of system
-                    $array = $this->configSystemArray;
+                    $array = $this->configArraySystem;
 
                     if (is_array($array) == false)
                         return null;

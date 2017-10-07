@@ -45,7 +45,6 @@
     else
         $title = lng('file_rename.title_page_file');
 
-    $themes  = [ env('resource.filename.theme.file') ];
     AppAlert::setID(ALERT_FILE_RENAME);
     require_once('incfiles' . SP . 'header.php');
 

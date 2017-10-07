@@ -11,6 +11,7 @@
         'checkbox_all_entry' => 'Chọn tất cả',
 
         'alert' => [
+            'tips'                           => 'Chế độ phát triển đang bật, các thư mục tập tin của app được hiển thị với màu nhạt hơn. Hãy cẩn thận khi chế độ này được bật, trong quá trình sử dụng có thể thao tác sai lên thư mục và tập tin của app.',
             'features_is_construct'          => 'Tính năng đang trong quá trình xây dựng',
             'path_not_exists'                => 'Đường dẫn không tồn tại',
             'path_not_receiver_list'         => 'Không thể lấy danh sách tập tin',

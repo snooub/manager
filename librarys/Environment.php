@@ -9,23 +9,39 @@
 
     use Librarys\File\FileInfo;
     use Librarys\Http\Request;
+    use Librarys\App\Config\AppEnvironmentCacheConfig;
 
     class Environment
     {
 
         private static $instance;
 
+        private $isUpdateCache;
+        private $configPath;
+        private $cacheDirectory;
+        private $cacheFilePath;
         private $cache;
         private $array;
 
-        protected function __construct(array $config)
+
+        protected function __construct($configPath, $cacheDirectory)
         {
             global $_SERVER, $_POST, $_GET, $_REQUEST, $_COOKIE, $_SESSION;
 
-            $this->cache    = array();
-            $this->array    = $config;
+            $this->configPath     = $configPath;
+            $this->cacheDirectory = $cacheDirectory;
+            $this->cacheFilePath  = $cacheDirectory . SP . md5($configPath);
+            $this->cache          = array();
+            $this->array          = require_once($configPath);
 
-            self::$instance = $this;
+            register_shutdown_function(function() {
+                if ($this->isUpdateCache == false)
+                    return;
+
+                $cacheConfig = new AppEnvironmentCacheConfig($this->cacheFilePath);
+                $cacheConfig->setConfigArraySystem($this->cache);
+                $cacheConfig->write(true);
+            });
         }
 
         protected function __wakeup()
@@ -38,16 +54,25 @@
 
         }
 
-        public static function getInstance(array $config)
+        public static function getInstance($configPath = null, $cacheDirectory = null)
         {
-            if (null === self::$instance)
-                self::$instance = new Environment($config);
+            if (null === self::$instance) {
+                if ($configPath == null || $cacheDirectory == null)
+                    return null;
+
+                self::$instance = new Environment($configPath, $cacheDirectory);
+            }
 
             return self::$instance;
         }
 
         public function execute()
         {
+            if ($this->loadCacheFile())
+                return;
+            else
+                $this->isUpdateCache = true;
+
             $requestScheme = 'http';
 
             // If server using reverce proxy
@@ -66,8 +91,6 @@
 
             if (Request::isLocal() == false)
                 $this->setCache('app.dev.enable', false);
-
-            $this->cache('app.dev.rand',   intval($_SERVER['REQUEST_TIME']));
 
             $this->cache('app.date.timezone', 'Asia/Ho_Chi_Minh');
 
@@ -162,6 +185,8 @@
 
             if (array_key_exists($name, self::$instance->cache))
                 return self::$instance->cache[$name];
+            else
+                self::$instance->isUpdateCache = true;
 
             return (self::$instance->cache[$name] = urlSeparatorMatches(self::$instance->get($name, $default)));
         }
@@ -177,6 +202,26 @@
         private function setCache($name, $value)
         {
             self::$instance->cache[$name] = $value;
+        }
+
+        private function loadCacheFile()
+        {
+            if (FileInfo::fileExists($this->cacheDirectory) == false && FileInfo::mkdir($this->cacheDirectory, true) == false)
+                return false;
+
+            if (FileInfo::fileExists($this->cacheFilePath) == false)
+                return false;
+
+            $timeNow             = intval($_SERVER['REQUEST_TIME']);
+            $configFileTime      = FileInfo::fileMTime($this->configPath);
+            $configCacheFileTime = FileInfo::fileMTime($this->cacheFilePath);
+
+            if ($configFileTime > $configCacheFileTime || $timeNow - $configCacheFileTime > 64800)
+                return false;
+
+            $this->cache = require_once($this->cacheFilePath);
+
+            return true;
         }
 
         private function get($key, $default = null, $array = null)

@@ -59,7 +59,6 @@
     else
         AppAlert::danger(lng('file_action.alert.action_not_validate'), ALERT_INDEX, 'index.php');
 
-    $themes  = [ env('resource.filename.theme.file') ];
     $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
     AppAlert::setID(ALERT_FILE_ACTION);
 

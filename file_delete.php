@@ -44,7 +44,6 @@
     else
         $title = lng('file_delete.title_page_file');
 
-    $themes  = [ env('resource.filename.theme.file') ];
     AppAlert::setID(ALERT_FILE_DELETE);
     require_once('incfiles' . SP . 'header.php');
 

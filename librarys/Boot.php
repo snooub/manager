@@ -22,13 +22,13 @@
 
         private static $instance;
 
-        protected function __construct(array $config, $isCustomHeader = false)
+        protected function __construct($configPath, $cacheDirectory, $isCustomHeader = false)
         {
             BufferOutput::startBuffer($isCustomHeader);
             BufferOutput::listenEndBuffer();
             BufferOutput::fixMagicQuotesGpc();
 
-            Environment::getInstance($config)->execute();
+            Environment::getInstance($configPath, $cacheDirectory)->execute();
             Language::getInstance($this)->execute();
 
             $reported        = env('app.dev.error_reported.enable',         false);
@@ -55,10 +55,10 @@
 
         }
 
-        public static function getInstance(array $config, $isCustomHeader = false)
+        public static function getInstance($configPath, $cacheDirectory, $isCustomHeader = false)
         {
             if (null === self::$instance)
-                self::$instance = new Boot($config, $isCustomHeader);
+                self::$instance = new Boot($configPath, $cacheDirectory, $isCustomHeader);
 
             return self::$instance;
         }

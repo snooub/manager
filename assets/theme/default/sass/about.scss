@@ -16,6 +16,10 @@ div#about {
         font-weight: normal;
         font-variant: normal;
         text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+
+        &.small {
+            font-size: 20px;
+        }
     }
 
     & > h5 {

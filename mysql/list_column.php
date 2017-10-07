@@ -3,6 +3,7 @@
     use Librarys\App\AppAlert;
     use Librarys\App\AppDirectory;
     use Librarys\App\AppParameter;
+    use Librarys\App\Config\AppConfig;
     use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\File\FileInfo;
 

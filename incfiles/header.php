@@ -95,17 +95,26 @@
                                 </a>
                             </li>
                         <?php } ?>
-                        <li class="about">
-                            <a href="<?php echo env('app.http.host'); ?>/app/about.php">
-                                <span class="icomoon icon-about"></span>
-                            </a>
-                        </li>
+                        <?php if (defined('ABOUT') == false) { ?>
+                            <li class="about">
+                                <a href="<?php echo env('app.http.host'); ?>/app/about.php">
+                                    <span class="icomoon icon-about"></span>
+                                </a>
+                            </li>
+                        <?php } ?>
+                        <?php if (defined('SYSTEM_INFO') == false) { ?>
+                            <li>
+                                <a href="<?php echo env('app.http.host'); ?>/app/system_info.php">
+                                    <span class="icomoon icon-dashboard"></span>
+                                </a>
+                            </li>
+                        <?php } ?>
                         <li>
                             <a href="<?php echo env('app.http.host'); ?>/user/exit.php">
                                 <span class="icomoon icon-exit"></span>
                             </a>
                         </li>
-                    <?php } else { ?>
+                    <?php } else if (defined('ABOUT') == false) { ?>
                         <li>
                             <a href="<?php echo env('app.http.host'); ?>/app/about.php">
                                 <span class="icomoon icon-about"></span>

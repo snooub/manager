@@ -210,6 +210,11 @@ ul.file-list {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+
+            &.file-name-of-app,
+            strong.file-name-of-app {
+                color: #909090;
+            }
         }
 
         &.back a {

@@ -6,6 +6,7 @@
     use Librarys\App\Config\AppAboutConfig;
 
     define('LOADED',                   1);
+    define('ABOUT',                    1);
     define('DISABLE_CHECK_LOGIN',      1);
     define('DISABLE_ALERT_HAS_UPDATE', 1);
 

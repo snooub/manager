@@ -77,8 +77,7 @@
                     <img
                         src="image.php<?php echo $appParameter->toString(); ?>"
                         alt="<?php echo $fileInfo->getFileName(); ?>"
-                        height="auto"
-                        class="<?php echo $imageClass; ?>"/>
+                        height="auto"/>
                 <?php } ?>
             </li>
         <?php } ?>

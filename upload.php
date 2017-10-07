@@ -15,7 +15,6 @@
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     $title   = lng('upload.title_page');
-    $themes  = [ env('resource.filename.theme.file') ];
     $scripts = [ env('resource.filename.javascript.custom_input_file') ];
     AppAlert::setID(ALERT_UPLOAD);
     require_once('incfiles' . SP . 'header.php');
