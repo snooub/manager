@@ -1,1 +1,0 @@
-define(["jquery","container","define","lang"],function(i,e,n,t){return{init:function(){return e.fixSizeChild(),e.registerWindowOnResize(),e.registerDocumentOnMouseMove(),t.init(this),this}}.init()});
