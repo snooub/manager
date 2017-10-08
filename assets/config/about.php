@@ -4,7 +4,7 @@
         exit;
 
     return [
-        'build_at' => 1507425833,
+        'build_at' => 1507434268,
         'name' => 'Manager',
         'author' => 'IzeroCs',
         'version' => '3.5.1',
@@ -17,6 +17,7 @@
         'phone' => '+841685929323',
         'create_at' => 1434468025,
         'upgrade_at' => 0,
+        'check_at' => 1507428870,
     ];
 
 ?>

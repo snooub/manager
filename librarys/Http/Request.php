@@ -247,7 +247,7 @@
 
         public static function httpResponseCodeToString($code)
         {
-            $array = self::$httpCodeStrings;
+            $array = self::getHttpCodeStrings();
 
             if (array_key_exists($code, $array) == true)
                 return $array[$code];

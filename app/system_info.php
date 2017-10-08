@@ -35,7 +35,7 @@
             'labels' => [
                 'System:',
                 'Server api:',
-                'Loaded Configuration File:',
+                'Loaded Config File:',
                 'PHP Path:'
             ],
 

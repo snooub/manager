@@ -111,16 +111,18 @@
                 <?php $readmeContent    = FileInfo::fileReadContents(AppUpdate::getPathFileUpgrade(AppUpdate::VERSION_README_FILENAME)); ?>
 
                 <?php if ($readmeContent !== false && $readmeContent !== null && empty($readmeContent) == false) { ?>
-                    <li class="message">
-                        <div><span><?php echo lng('app.upgrade_app.info.label_readme'); ?></span></div>
-                        <div class="markdown"><?php echo $markdownParse->text($readmeContent); ?></div>
+                    <li class="message show-hidden divider-top">
+                        <div class="title"><span><?php echo lng('app.upgrade_app.info.label_readme'); ?></span></div>
+                        <div class="markdown content" id="show-readme"><?php echo $markdownParse->text($readmeContent); ?></div>
+                        <a href="#show-readme" class="show"><span><?php echo lng('app.upgrade_app.info.show_more'); ?></span></a>
                     </li>
                 <?php } ?>
 
                 <?php if ($changelogContent !== false && $changelogContent !== null && empty($changelogContent) == false) { ?>
-                    <li class="message">
-                        <div><span><?php echo lng('app.upgrade_app.info.label_changelog'); ?></span></div>
-                        <div class="markdown"><?php echo $markdownParse->text($changelogContent); ?></div>
+                    <li class="message show-hidden divider-top divider-bottom">
+                        <div class="title"><span><?php echo lng('app.upgrade_app.info.label_changelog'); ?></span></div>
+                        <div class="markdown content" id="show-changelog"><?php echo $markdownParse->text($changelogContent); ?></div>
+                        <a href="#show-changelog" class="show"><span><?php echo lng('app.upgrade_app.info.show_more'); ?></span></a>
                     </li>
                 <?php } ?>
             </ul>

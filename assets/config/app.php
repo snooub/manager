@@ -144,13 +144,7 @@
                         ]
                     ],
 
-                    'onload'                    => $isLocal ? 'onload.js'                    : 'onload.min.js',
-                    'custom_input_file'         => $isLocal ? 'custom_input_file.js'         : 'custom_input_file.min.js',
-                    'more_input_url'            => $isLocal ? 'more_input_url.js'            : 'more_input_url.min.js',
-                    'chmod_input'               => $isLocal ? 'chmod_input.js'               : 'chmod_input.min.js',
-                    'button_save_on_javascript' => $isLocal ? 'button_save_on_javascript.js' : 'button_save_on_javascript.min.js',
-                    'auto_focus_input_last'     => $isLocal ? 'auto_focus_input_last.js'     : 'auto_focus_input_last.min.js',
-                    'checkbox_checkall'         => $isLocal ? 'checkbox_checkall.js'         : 'checkbox_checkall.min.js'
+                    'app' => $isLocal ? 'app.js' : 'app.min.js'
                 ],
 
                 'icon' => [

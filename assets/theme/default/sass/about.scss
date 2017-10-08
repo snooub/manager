@@ -1,5 +1,6 @@
 div#about {
     background-color: #ffffff;
+    overflow: hidden;
 
     @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
 
@@ -30,8 +31,7 @@ div#about {
     }
 }
 
-div#about > ul,
-ul.about-list {
+div#about > ul {
 	width: 100%;
 	text-align: left;
 }
@@ -39,12 +39,7 @@ ul.about-list {
 div#about > ul,
 div#about > ul > li,
 div#about > ul > li > ul,
-div#about > ul > li > ul > li,
-
-ul.about-list,
-ul.about-list > li,
-ul.about-list > li > ul,
-ul.about-list > li > ul > li {
+div#about > ul > li > ul > li {
 	display: block;
 	list-style: none;
 	margin: 0;
@@ -54,103 +49,118 @@ ul.about-list > li > ul > li {
 div#about > ul {
     border-top: 1px solid #efefef;
     padding-top: 15px;
-}
-
-div#about > ul,
-ul.about-list {
-    position: relative;
     padding-bottom: 10px;
-}
+    position: relative;
+    overflow: auto;
 
-div#about > ul > li.label,
-div#about > ul > li.value,
+    & > li.label,
+    & > li.value {
+        height: 30px;
+    	display: inline-block;
 
-ul.about-list > li.label,
-ul.about-list > li.value {
-	display: inline-block;
-}
+        li {
+            padding-left: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
-div#about > ul > li > li,
-ul.about-list > li > li {
-	height: 30px;
-}
+        span {
+            line-height: 30px;
+        }
+    }
 
-div#about ul > li > ul > li span,
-ul.about-list > li > ul > li span {
-	line-height: 30px;
-}
+    & > li.label li {
+        padding-left: 10px;
 
-div#about ul > li.label li,
-ul.about-list > li.label li {
-	padding-left: 10px;
-}
+        span {
+            color: #00897b;
+            font-weight: bold;
+            font-size: 15px;
+        }
+    }
 
-div#about ul > li.label li span,
-ul.about-list > li.label li span {
-	color: #00897b;
-    font-weight: bold;
-    font-size: 15px;
-}
+    & > li.value li {
+        max-width: 100%;
 
-div#about ul > li.value li span,
-ul.about-list > li.value li span {
-	color: #707070;
-}
+        span {
+            color: #707070;
+        }
+    }
 
-div#about ul > li.value > li,
-ul.about-list > li.value > li {
-	max-width: 100%;
-}
+    & > li.message {
+        display: block;
+        word-wrap: break-word;
 
-div#about ul > li.label li,
-div#about ul > li.value li,
+        & > div {
+            &.title {
+                padding: 15px;
+                text-align: center;
 
-ul.about-list > li.label li,
-ul.about-list > li.value li {
-	padding-left: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
+                span {
+                    color: #00897b;
+                    font-weight: bold;
+                }
+            }
 
-div#about ul > li.message,
-ul.about-list > li.message,
+            &.content {
+                padding: 10px;
+                text-align: left;
 
-div#about ul > li.message > div,
-ul.about-list > li.message > div {
-    display: block;
-}
+                span {
+                    color: #505050;
+                }
+            }
+        }
 
-div#about ul > li.message > div:first-child,
-ul.about-list > li.message > div:first-child {
-    padding: 15px;
-    text-align: center;
-}
+        &.show-hidden {
+            position: relative;
 
-div#about ul > li.message > div:first-child span,
-ul.about-list > li.message > div:first-child span {
-    color: #00897b;
-    font-weight: bold;
-}
+            & > div.content {
+                max-height: 250px;
+                overflow: hidden;
+            }
+        }
 
-div#about ul > li.message > div:last-child,
-ul.about-list > li.message > div:last-child {
-    padding: 10px;
-    text-align: left;
-}
+        &.divider-top {
+            border-top: 1px dashed #dadada;
+            margin-top: 10px;
+        }
 
-div#about ul > li.message > div:last-child span,
-ul.about-list > li.message > div:last-child span {
-    color: #505050;
+        &.divider-bottom {
+            border-bottom: 1px dashed #dadada;
+        }
+
+        #show-readme,
+        #show-changelog {
+            &:target {
+                max-height: 100%;
+                height: auto;
+                overflow: none;
+
+                & + a.show {
+                    display: none;
+                }
+            }
+
+            & + a.show {
+                display: inline-block;
+                text-align: center;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                width: 100%;
+            }
+        }
+    }
 }
 
 div.about-button-check {
     border-top: 1px solid #efefef;
     width: auto;
     padding: 10px;
-}
 
-div.about-button-check * {
-    color: #707070;
-    font-weight: bold;
+    * {
+        color: #707070;
+        font-weight: bold;
+    }
 }

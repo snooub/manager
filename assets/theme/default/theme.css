@@ -1666,6 +1666,7 @@ div#container-login form#login-form input::-moz-placeholder {
 
 div#about {
     background-color: #ffffff;
+    overflow: hidden;
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
     -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
@@ -1698,8 +1699,7 @@ div#about > h5 {
     font-variant: normal;
 }
 
-div#about > ul,
-ul.about-list {
+div#about > ul {
     width: 100%;
     text-align: left;
 }
@@ -1707,11 +1707,7 @@ ul.about-list {
 div#about > ul,
 div#about > ul > li,
 div#about > ul > li > ul,
-div#about > ul > li > ul > li,
-ul.about-list,
-ul.about-list > li,
-ul.about-list > li > ul,
-ul.about-list > li > ul > li {
+div#about > ul > li > ul > li {
     display: block;
     list-style: none;
     margin: 0;
@@ -1721,91 +1717,109 @@ ul.about-list > li > ul > li {
 div#about > ul {
     border-top: 1px solid #efefef;
     padding-top: 15px;
-}
-
-div#about > ul,
-ul.about-list {
-    position: relative;
     padding-bottom: 10px;
+    position: relative;
+    overflow: auto;
 }
 
 div#about > ul > li.label,
-div#about > ul > li.value,
-ul.about-list > li.label,
-ul.about-list > li.value {
+  div#about > ul > li.value {
+    height: 30px;
     display: inline-block;
 }
 
-div#about > ul > li > li,
-ul.about-list > li > li {
-    height: 30px;
-}
-
-div#about ul > li > ul > li span,
-ul.about-list > li > ul > li span {
-    line-height: 30px;
-}
-
-div#about ul > li.label li,
-ul.about-list > li.label li {
-    padding-left: 10px;
-}
-
-div#about ul > li.label li span,
-ul.about-list > li.label li span {
-    color: #00897b;
-    font-weight: bold;
-    font-size: 15px;
-}
-
-div#about ul > li.value li span,
-ul.about-list > li.value li span {
-    color: #707070;
-}
-
-div#about ul > li.value > li,
-ul.about-list > li.value > li {
-    max-width: 100%;
-}
-
-div#about ul > li.label li,
-div#about ul > li.value li,
-ul.about-list > li.label li,
-ul.about-list > li.value li {
+div#about > ul > li.label li,
+    div#about > ul > li.value li {
     padding-left: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-div#about ul > li.message,
-ul.about-list > li.message,
-div#about ul > li.message > div,
-ul.about-list > li.message > div {
-    display: block;
+div#about > ul > li.label span,
+    div#about > ul > li.value span {
+    line-height: 30px;
 }
 
-div#about ul > li.message > div:first-child,
-ul.about-list > li.message > div:first-child {
+div#about > ul > li.label li {
+    padding-left: 10px;
+}
+
+div#about > ul > li.label li span {
+    color: #00897b;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+div#about > ul > li.value li {
+    max-width: 100%;
+}
+
+div#about > ul > li.value li span {
+    color: #707070;
+}
+
+div#about > ul > li.message {
+    display: block;
+    word-wrap: break-word;
+}
+
+div#about > ul > li.message > div.title {
     padding: 15px;
     text-align: center;
 }
 
-div#about ul > li.message > div:first-child span,
-ul.about-list > li.message > div:first-child span {
+div#about > ul > li.message > div.title span {
     color: #00897b;
     font-weight: bold;
 }
 
-div#about ul > li.message > div:last-child,
-ul.about-list > li.message > div:last-child {
+div#about > ul > li.message > div.content {
     padding: 10px;
     text-align: left;
 }
 
-div#about ul > li.message > div:last-child span,
-ul.about-list > li.message > div:last-child span {
+div#about > ul > li.message > div.content span {
     color: #505050;
+}
+
+div#about > ul > li.message.show-hidden {
+    position: relative;
+}
+
+div#about > ul > li.message.show-hidden > div.content {
+    max-height: 250px;
+    overflow: hidden;
+}
+
+div#about > ul > li.message.divider-top {
+    border-top: 1px dashed #dadada;
+    margin-top: 10px;
+}
+
+div#about > ul > li.message.divider-bottom {
+    border-bottom: 1px dashed #dadada;
+}
+
+div#about > ul > li.message #show-readme:target,
+    div#about > ul > li.message #show-changelog:target {
+    max-height: 100%;
+    height: auto;
+    overflow: none;
+}
+
+div#about > ul > li.message #show-readme:target + a.show,
+      div#about > ul > li.message #show-changelog:target + a.show {
+    display: none;
+}
+
+div#about > ul > li.message #show-readme + a.show,
+    div#about > ul > li.message #show-changelog + a.show {
+    display: inline-block;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
 }
 
 div.about-button-check {
@@ -2659,8 +2673,12 @@ ul.mysql-info > li.comment > div.comment span {
 }
 
 .markdown ol > li > ul,
-.markdown ul > li > ul {
+  .markdown ul > li > ul {
     list-style-type: disc;
+}
+
+.markdown h1 {
+    font-size: 21px;
 }
 
 div#content {

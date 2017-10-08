@@ -11,17 +11,6 @@
 
     if (Request::isDesktop(false) == false) {
         requireDefine('asset');
-
-        if (isset($scripts) == false || is_array($scripts) == false)
-            $scripts = array();
-
-        if (AppConfig::getInstance()->get('enable_disable.auto_focus_input_last') == true)
-            array_unshift($scripts, env('resource.filename.javascript.auto_focus_input_last'));
-
-        if (AppConfig::getInstance()->get('enable_disable.button_save_on_javascript') == true)
-            array_unshift($scripts, env('resource.filename.javascript.button_save_on_javascript'));
-
-        array_unshift($scripts, env('resource.filename.javascript.onload'));
 ?>
 
 <!DOCTYPE html>
@@ -39,12 +28,7 @@
         <link rel="icon" type="image/png" href="<?php echo AppAssets::makeURLResourceIcon(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.icon.favicon_png')); ?>"/>
         <link rel="icon" type="image/x-icon" href="<?php echo AppAssets::makeURLResourceIcon(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.icon.favicon_ico')); ?>"/>
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo AppAssets::makeURLResourceIcon(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.icon.favicon_ico')); ?>"/>
-
-        <?php foreach ($scripts AS $entry) { ?>
-            <script type="text/javascript" src="<?php echo AppAssets::makeURLResourceJavascript($entry); ?>"></script>
-        <?php } ?>
-        <?php unset($scripts); ?>
-
+        <script type="text/javascript" src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.app')); ?>"></script>
     </head>
     <body>
         <div id="container">

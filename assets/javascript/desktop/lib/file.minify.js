@@ -1,0 +1,1 @@
+define(function(n){return{parseSize:function(n){return n<1024?n+"B":n<1048576?Math.round(n/1024,2)+"KB":n<1073741824?Math.round(n/1048576,2)+"MB":Math.round(n/1073741824,2)+"GB"}}});

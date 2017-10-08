@@ -14,7 +14,9 @@
             'label_changelog'     => 'Thay đổi của phiên bản',
 
             'value_type_bin_install_upgrdae'    => 'Nâng cấp',
-            'value_type_bin_install_additional' => 'Bổ sung'
+            'value_type_bin_install_additional' => 'Bổ sung',
+
+            'show_more' => 'Hiển thị thêm'
         ],
 
         'form' => [
