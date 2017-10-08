@@ -144,7 +144,12 @@
                         ]
                     ],
 
-                    'app' => $isLocal ? 'app.js' : 'app.min.js'
+                    'directory' => [
+                        'lib' => 'lib'
+                    ],
+
+                    'app'     => $isLocal ? 'app.js' : 'app.min.js',
+                    'history' => $isLocal ? 'history.js' : 'history.min.js'
                 ],
 
                 'icon' => [

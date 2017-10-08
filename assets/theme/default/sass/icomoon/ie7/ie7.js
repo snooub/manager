@@ -51,6 +51,7 @@
 		'icon-close': '&#xe900;',
 		'icon-user': '&#xe901;',
 		'icon-email': '&#xe933;',
+		'icon-spinner-2': '&#xe935;',
 		'icon-secure': '&#xe932;',
 		'icon-spinner': '&#xe931;',
 		'icon-update': '&#xe930;',
@@ -71,7 +72,6 @@
 		'icon-view': '&#xe9ce;',
 		'icon-terminal': '&#xea81;',
 		'icon-plus': '&#xe922;',
-		'icon-select-arrows': '&#xe923;',
 		'icon-select-arrows': '&#xe923;',
 		'icon-cord': '&#xe91f;',
 		'0': 0

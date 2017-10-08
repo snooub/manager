@@ -7,7 +7,6 @@ div#header {
     top: 0;
     left: 0;
     right: 0;
-    max-width: 1100px;
     height: 55px;
     margin: 0 auto;
     padding: 0;
@@ -66,6 +65,10 @@ div#header {
             a:hover span,
             a:focus span {
                 color: #d0d0d0;
+            }
+
+            a span.icomoon.autoload-is-disable {
+                color: #a0a0a0;
             }
         }
 

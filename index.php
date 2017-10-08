@@ -224,7 +224,7 @@
         }
 
         $bufferBack .= '<li class="back">';
-            $bufferBack .= '<a href="' . $backPath . '">';
+            $bufferBack .= '<a href="' . $backPath . '" class="file-name">';
                 $bufferBack .= '<span class="icomoon icon-folder-open"></span>';
 
                 if ($isPermission)

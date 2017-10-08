@@ -2,8 +2,8 @@
 
 @font-face {
     font-family: 'icomoon';
-  src: url("fonts/icomoon.eot?fk2pw7");
-  src: url("fonts/icomoon.eot?fk2pw7#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?fk2pw7") format("truetype"), url("fonts/icomoon.woff?fk2pw7") format("woff"), url("fonts/icomoon.svg?fk2pw7#icomoon") format("svg");
+  src: url("fonts/icomoon.eot?qf41wk");
+  src: url("fonts/icomoon.eot?qf41wk#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?qf41wk") format("truetype"), url("fonts/icomoon.woff?qf41wk") format("woff"), url("fonts/icomoon.svg?qf41wk#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -174,6 +174,10 @@
     content: "";
 }
 
+.icon-spinner-2:before {
+    content: "";
+}
+
 .icon-secure:before {
     content: "";
 }
@@ -258,10 +262,6 @@
     content: "";
 }
 
-.icon-select-arrows:before {
-    content: "";
-}
-
 .icon-cord:before {
     content: "";
 }
@@ -294,6 +294,48 @@ a:focus p {
     -ms-box-shadow: none !important;
     -o-box-shadow: none !important;
     box-shadow: none !important;
+}
+
+#progress-bar-body {
+    display: block;
+    background-color: #ff3d00;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    z-index: 10000;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    -ms-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    -o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+#progress-bar-body:after {
+    content: "";
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    /* Old browsers */
+    background: -moz-linear-gradient(left, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+    /* FF3.6+ */
+    background: -webkit-gradient(linear, left left, left right, color-stop(0%, rgba(0, 0, 0, 0.2)), color-stop(100%, rgba(0, 0, 0, 0.1)));
+    /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+    /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+    /* Opera 11.10+ */
+    background: -ms-linear-gradient(left, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+    /* IE10+ */
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#000000',GradientType=0 );
+    /* IE6-9 */
 }
 
 input:invalid {
@@ -682,12 +724,13 @@ ul.radio-choose-tab > li input + label:enabled:hover span {
 
 div#container {
     margin: 0 auto;
-    max-width: 960px;
+    max-width: 1200px;
     padding: 0;
     padding-left: 1%;
     padding-right: 1%;
     position: relative;
     height: 100%;
+    z-index: 0;
 }
 
 div#header {
@@ -701,7 +744,6 @@ div#header {
     top: 0;
     left: 0;
     right: 0;
-    max-width: 1100px;
     height: 55px;
     margin: 0 auto;
     padding: 0;
@@ -763,6 +805,10 @@ div#header ul#action li span {
 div#header ul#action li a:hover span,
       div#header ul#action li a:focus span {
     color: #d0d0d0;
+}
+
+div#header ul#action li a span.icomoon.autoload-is-disable {
+    color: #a0a0a0;
 }
 
 @media all and (max-width: 260px) {

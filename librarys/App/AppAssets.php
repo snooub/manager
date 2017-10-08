@@ -81,7 +81,7 @@
             $jsPath   = env('app.path.javascript');
 
             if ($scriptDirectory != null)
-                $jsPath .= SP . $jsDirectory;
+                $jsPath .= SP . $scriptDirectory;
 
             if (FileInfo::isTypeDirectory($jsPath) == false)
                 die(lng('default.resource.directory_not_found'));

@@ -11,6 +11,8 @@
 
     if (Request::isDesktop(false) == false) {
         requireDefine('asset');
+
+    $autoload = AppConfig::getInstance()->getSystem('enable_disable.autoload', true);
 ?>
 
 <!DOCTYPE html>
@@ -31,6 +33,19 @@
         <script type="text/javascript" src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.app')); ?>"></script>
     </head>
     <body>
+        <?php if ($autoload) { ?>
+            <script type="text/javascript">
+                OnLoad.add(function() {
+                    UrlLoadAjax.init(
+                        "<?php echo env('app.http.host'); ?>",
+                        "<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>"
+                    );
+
+                    return false;
+                });
+            </script>
+        <?php } ?>
+        <span id="progress-bar-body"></span>
         <div id="container">
             <div id="header">
                 <div id="logo">
@@ -86,6 +101,11 @@
                                 </a>
                             </li>
                         <?php } ?>
+                        <li>
+                            <a href="<?php echo env('app.http.host'); ?>/auto.php" class="not-autoload">
+                                <span class="icomoon icon-spinner-2<?php if ($autoload == false) { ?> autoload-is-disable<?php } ?>"></span>
+                            </a>
+                        </li>
                         <?php if (defined('SYSTEM_INFO') == false) { ?>
                             <li>
                                 <a href="<?php echo env('app.http.host'); ?>/app/system_info.php">

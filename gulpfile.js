@@ -39,6 +39,34 @@ gulp.task("compress_js", function() {
                .pipe(livereload());
 });
 
+gulp.task("compress_js_lib", function() {
+    gutil.log("Js desktop is change");
+
+    return gulp.src("assets/javascript/dev/lib/**/*.js")
+               .pipe(rename({
+                    extname: ".js"
+               }))
+               .pipe(gulp.dest("assets/javascript/lib"))
+               .pipe(plumber({
+                    errorHandler: function(error) {
+                        gutil.log(error.toString());
+                        this.emit("end");
+                    }
+               }))
+               .pipe(minifyJs())
+               .pipe(plumber({
+                    errorHandler: function(error) {
+                        gutil.log(error.toString());
+                        this.emit("end");
+                    }
+               }))
+               .pipe(rename({
+                    extname: ".min.js"
+               }))
+               .pipe(gulp.dest("assets/javascript/lib"))
+               .pipe(livereload());
+});
+
 gulp.task("compress_js_desktop", function() {
     gutil.log("Js desktop is change");
 
@@ -70,7 +98,7 @@ gulp.task("compress_js_desktop", function() {
 gulp.task("concat_js", function() {
     gutil.log("Concat file js");
 
-    return gulp.src("assets/tmp/*.unmin.js")
+    return gulp.src([ "assets/tmp/onload.unmin.js", "assets/tmp/*.unmin.js" ])
                .pipe(concat("app.js"))
                .pipe(gulp.dest("assets/javascript"))
                .pipe(livereload());
@@ -79,7 +107,7 @@ gulp.task("concat_js", function() {
 gulp.task("concat_js_min", function() {
     gutil.log("Concat file js min");
 
-    return gulp.src("assets/tmp/*.unmin.minify.js")
+    return gulp.src([ "assets/tmp/onload.unmin.minify.js", "assets/tmp/*.unmin.minify.js" ])
                .pipe(concat("app.min.js"))
                .pipe(minifyJs())
                .pipe(gulp.dest("assets/javascript"))
@@ -153,6 +181,7 @@ gulp.task("watch", function() {
     gulp.watch([ "assets/theme/default/sass/*.scss", "assets/theme/default/sass/icomoon/*.scss" ], [ "sass" ]);
     gulp.watch([ "assets/theme/default/sass/desktop/*.scss" ], [ "sass_desktop" ]);
     gulp.watch([ "assets/javascript/dev/*.js" ], [ "compress_js" ]);
+    gulp.watch([ "assets/javascript/dev/lib/**/*.js" ], [ "compress_js_lib" ]);
     gulp.watch([ "assets/javascript/dev/desktop/**/*.js" ], [ "compress_js_desktop" ]);
     gulp.watch([ "assets/tmp/*.unmin.js" ], [ "concat_js" ]);
     gulp.watch([ "assets/tmp/*.unmin.minify.js" ], [ "concat_js_min" ]);
@@ -163,6 +192,7 @@ gulp.task("default", [
     "sass",
     "sass_desktop",
     "compress_js",
+    "compress_js_lib",
     "compress_js_desktop",
     "concat_js",
     "concat_js_min",

@@ -1,3 +1,111 @@
+var OnLoad = {
+    funcs: [],
+
+    add: function(func) {
+        OnLoad.funcs.push(func);
+    },
+
+    execute: function() {
+        var self = OnLoad;
+
+        window.onload = function() {
+            self.reload();
+        };
+    },
+
+    reload: function() {
+        var self    = OnLoad;
+        var removes = [];
+
+        for (var i = 0; i < self.funcs.length; ++i) {
+            var func = self.funcs[i];
+
+            if (typeof func === "function") {
+                // Result is remove element, false = remove
+                var res = func();
+
+                if (typeof res !== "undefined" && res == false)
+                    removes.push(i);
+            }
+        }
+
+        if (removes.length <= 0)
+            return;
+
+        for (var i = removes.length - 1; i >= 0; --i)
+            self.funcs.splice(removes[i], 1);
+    }
+};
+
+OnLoad.execute();
+var Ajax = {
+    open: function(options) {
+        var xhr   = Ajax.createXHR();
+        var ready = false;
+
+        if (!options.url)
+            return;
+
+        if (!options.before)
+            options.before = function(xhr) { };
+
+        if (!options.end)
+            options.end = function(xhr) { };
+
+        if (!options.success)
+            options.success = function(data, xhr) { };
+
+        if (!options.error)
+            options.error = function(xhr) { };
+
+        if (!options.progress)
+            options.progress = function(event, xhr) { };
+
+        if (!options.loadstart)
+            options.loadstart = function(event, xhr) { };
+
+        if (!options.loadend)
+            options.loadend = function(event, xhr) { };
+
+        if (!options.method)
+            options.method = "GET";
+
+        xhr.onreadystatechange = function(e) {
+            ready = true;
+        };
+
+        xhr.onloadstart = function(e) {
+            options.loadstart(e, xhr);
+        };
+
+        xhr.onprogress = function(e) {
+            options.progress(e, xhr);
+        };
+
+        xhr.onloadend = function(e) {
+            if (ready) {
+                if (xhr.readyState == 4 && xhr.status == 200)
+                    options.success(xhr.responseText);
+                else
+                    options.error(xhr);
+            }
+
+            options.loadend(e, xhr);
+            options.end(xhr);
+        };
+
+        options.before(xhr);
+        xhr.open(options.method, options.url, true);
+        xhr.send();
+    },
+
+    createXHR: function() {
+        if (window.XMLHttpRequest)
+            return new XMLHttpRequest();
+        else
+            return new ActiveXObject("Microsoft.XMLHTTP");
+    }
+};
 var AutoFocusInputLast = {
     elements: [],
 
@@ -932,25 +1040,138 @@ var MoreInputUrl = {
     }
 };
 
-var OnLoad = {
-    funcs: [],
+var UrlLoadAjax = {
+    httpHost:            null,
+    aLinks:              null,
+    historyScriptLink:   null,
+    progressBarInterval: null,
+    progressBarElement:  null,
+    progressCount:       0,
+    progressCurrent:     0,
+    progressTime:        0,
 
-    add: function(func) {
-        OnLoad.funcs.push(func);
+    init: function(httpHost, historyScriptLink) {
+        UrlLoadAjax.httpHost           = httpHost;
+        UrlLoadAjax.historyScriptLink  = historyScriptLink;
+        UrlLoadAjax.progressBarElement = document.getElementById("progress-bar-body");
+
+        UrlLoadAjax.reinit();
     },
 
-    execute: function() {
-        var self = OnLoad;
+    reinit: function() {
+        if (!History.pushState && !window.history.pushState)
+            return;
 
-        window.onload = function() {
-            for (var i = 0; i < self.funcs.length; ++i) {
-                var func = self.funcs[i];
+        UrlLoadAjax.aLinks = document.getElementsByTagName("a");
 
-                if (typeof func === "function")
-                    func();
+        for (var i = 0; i < UrlLoadAjax.aLinks.length; ++i) {
+            var element = UrlLoadAjax.aLinks[i];
+
+            if (element.className && element.className.indexOf("not-autoload") === -1) {
+                if (element.setAttribute)
+                    element.setAttribute("onclick", "return false");
+                else if (UrlLoadAjax.aLinks.setAttributeNode)
+                    element.setAttributeNode("onclick", "return false");
+
+                element.addEventListener("click", function(e) {
+                    var href = this.href;
+
+                    if (href.indexOf(UrlLoadAjax.httpHost) !== 0 && href.indexOf("http://") === -1)
+                        href = UrlLoadAjax.httpHost + '/' + href;
+
+                    var ajax = Ajax.open({
+                        url: href,
+
+                        before: function(xhr) {
+                            UrlLoadAjax.progressCount   = 0;
+                            UrlLoadAjax.progressCurrent = 50;
+                            UrlLoadAjax.progressTime    = 10;
+                        },
+
+                        end: function(xhr) {
+                            UrlLoadAjax.reinit();
+
+                            UrlLoadAjax.progressCurrent = 100;
+                            UrlLoadAjax.progressBar();
+                        },
+
+                        error: function(xhr) {
+                            console.log("Error");
+                            console.log(xhr);
+                        },
+
+                        loadstart: function(e, xhr) {
+                            UrlLoadAjax.progressBar();
+                        },
+
+                        progress: function(e, xhr) {
+                            if (e.total <= 0) {
+                                UrlLoadAjax.progressCurrent = 99;
+                                UrlLoadAjax.progressTime    = 1;
+                            } else {
+                                UrlLoadAjax.progressCurrent = (e.loaded / e.total * 99);
+                                UrlLoadAjax.progressTime--;
+                            }
+
+                            UrlLoadAjax.progressBar();
+                        },
+
+                        success: function(data, xhr) {
+                            var containerTagBegin = "<div id=\"container\">";
+                            var containerTagEnd   = "</div>";
+                            var containerPosBegin = data.indexOf(containerTagBegin);
+                            var containerPosEnd   = data.lastIndexOf(containerTagEnd);
+
+                            if (containerPosBegin === -1 || containerPosEnd === -1)
+                                return;
+
+                            if (window.history.pushState) {
+                                window.history.pushState({
+                                    path: href
+                                }, '', href);
+                            } else if (History.pushState) {
+                                History.pushState({
+                                    path: href
+                                }, '', href);
+                            } else {
+                                return;
+                            }
+
+                            var container        = data.substr(containerPosBegin + containerTagBegin.length, containerPosEnd - (containerPosBegin + containerTagBegin.length));
+                            var containerElement = document.getElementById("container");
+
+                            containerElement.innerHTML  = container;
+
+                            if (OnLoad.reload)
+                                OnLoad.reload();
+                        }
+                    });
+
+                    return false;
+                });
             }
-        };
+        }
+    },
+
+    progressBar: function() {
+        if (UrlLoadAjax.progressBarInterval != null)
+            clearInterval(UrlLoadAjax.progressBarInterval, null);
+
+        if (UrlLoadAjax.progressBarElement.style.display === "none")
+            UrlLoadAjax.progressBarElement.style.width = "0%";
+
+        UrlLoadAjax.progressBarElement.style.display = "block";
+
+        UrlLoadAjax.progressBarInterval = setInterval(frame, UrlLoadAjax.progressTime);
+
+        function frame() {
+            if (UrlLoadAjax.progressCount >= UrlLoadAjax.progressCurrent || UrlLoadAjax.progressCount >= 100) {
+                clearInterval(UrlLoadAjax.interval);
+                UrlLoadAjax.progressBarElement.style.display = "none";
+            } else {
+                UrlLoadAjax.progressCount                 += 0.5;
+                UrlLoadAjax.progressBarElement.style.width = UrlLoadAjax.progressCount + "%";
+            }
+        }
     }
 };
-
-OnLoad.execute();
