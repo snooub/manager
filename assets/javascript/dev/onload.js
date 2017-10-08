@@ -3,7 +3,6 @@ var OnLoad = {
 
     add: function(func) {
         OnLoad.funcs.push(func);
-        console.log("add");
     },
 
     execute: function() {

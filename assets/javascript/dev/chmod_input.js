@@ -8,6 +8,9 @@ var ChmodInput = {
         ChmodInput.inputChmodCheckbox     = document.getElementById(idInputChmodCheckbox);
         ChmodInput.listInputChmodCheckbox = [];
 
+        if (ChmodInput.inputChmod == null || ChmodInput.inputChmodCheckbox == null)
+            return;
+
         if (typeof ChmodInput.inputChmod === "undefined" || typeof ChmodInput.inputChmodCheckbox === "undefined")
             return;
 
