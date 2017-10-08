@@ -30,8 +30,8 @@
 
             if (FileInfo::isTypeDirectory($directory)) {
                 $time     = time();
-                $lifetime = AppConfig::getInstance()->get('tmp.lifetime', 180);
-                $limit    = AppConfig::getInstance()->get('tmp.limit',    10);
+                $lifetime = AppConfig::getInstance()->get('tmp.lifetime');
+                $limit    = AppConfig::getInstance()->get('tmp.limit');
                 $handle   = FileInfo::scanDirectory($directory);
 
                 if ($handle === false)
@@ -84,7 +84,7 @@
                 if ($handle === false)
                     return false;
 
-                $tokenMaxLive = intval(AppConfig::getInstance()->get('login.time_login', 0));
+                $tokenMaxLive = intval(AppConfig::getInstance()->get('login.time_login'));
 
                 foreach ($handle AS $filename) {
                     $filepath = FileInfo::filterPaths($directory . SP . $filename);
@@ -117,7 +117,7 @@
                 if ($handle === false)
                     return false;
 
-                $cacheLifetime = AppConfig::getInstance()->get('cache.lifetime', 3600);
+                $cacheLifetime = AppConfig::getInstance()->get('cache.lifetime');
 
                 foreach ($handle AS $filename) {
                     $filepath = FileInfo::filterPaths($directory . SP . $filename);

@@ -12,7 +12,7 @@
     if (Request::isDesktop(false) == false) {
         requireDefine('asset');
 
-    $autoload = AppConfig::getInstance()->getSystem('enable_disable.autoload', true);
+    $autoload = AppConfig::getInstance()->getSystem('enable_disable.autoload');
 ?>
 
 <!DOCTYPE html>
@@ -45,6 +45,17 @@
                 });
             </script>
         <?php } ?>
+
+        <script type="text/javascript">
+            OnLoad.add(function() {
+                CheckboxCheckAll.onInitForm("form-list-checkbox-all", "form-list-checked-all-entry", "form-list-checkall-count");
+            });
+
+            OnLoad.add(function() {
+                ChmodInput.onAddEventChmodListener("form-input-chmod", "form-input-chmod-checkbox")
+            });
+        </script>
+
         <span id="progress-bar-body"></span>
         <div id="container">
             <div id="header">
@@ -94,13 +105,6 @@
                                 </a>
                             </li>
                         <?php } ?>
-                        <?php if (defined('ABOUT') == false) { ?>
-                            <li class="about">
-                                <a href="<?php echo env('app.http.host'); ?>/app/about.php">
-                                    <span class="icomoon icon-about"></span>
-                                </a>
-                            </li>
-                        <?php } ?>
                         <li>
                             <a href="<?php echo env('app.http.host'); ?>/auto.php" class="not-autoload">
                                 <span class="icomoon icon-spinner-2<?php if ($autoload == false) { ?> autoload-is-disable<?php } ?>"></span>
@@ -110,6 +114,13 @@
                             <li>
                                 <a href="<?php echo env('app.http.host'); ?>/app/system_info.php">
                                     <span class="icomoon icon-dashboard"></span>
+                                </a>
+                            </li>
+                        <?php } ?>
+                        <?php if (defined('ABOUT') == false) { ?>
+                            <li class="about">
+                                <a href="<?php echo env('app.http.host'); ?>/app/about.php">
+                                    <span class="icomoon icon-about"></span>
                                 </a>
                             </li>
                         <?php } ?>

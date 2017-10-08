@@ -63,7 +63,7 @@
     $arrayFolder = array();
     $arrayFile   = array();
 
-    $developmentMode = AppConfig::getInstance()->getSystem('enable_disable.development', false);
+    $developmentMode = AppConfig::getInstance()->getSystem('enable_disable.development');
     $isPermission    = FileInfo::permissionDenyPath(AppDirectory::getInstance()->getDirectory(), false, true);
 
     foreach ($handler AS $entry) {
@@ -387,10 +387,10 @@
     <?php echo AppAlert::display(); ?>
     <?php echo $appLocationPath->display(); ?>
 
-    <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-file-home">
+    <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
-        <ul class="file-list<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double', true) == false) { ?> not-double<?php } ?>">
+        <ul class="file-list<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double') == false) { ?> not-double<?php } ?>">
             <?php echo $bufferBack; ?>
 
             <?php if ($handlerCount > 0) { ?>
@@ -456,16 +456,11 @@
                 <?php } ?>
 
                 <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
-                    <label for="checked-all-entry">
+                    <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
+                    <label for="form-list-checked-all-entry">
                         <span><?php echo lng('home.checkbox_all_entry'); ?></span>
                         <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?>
-                            <span id="checkall-count"></span>
-                            <script type="text/javascript">
-                                OnLoad.add(function() {
-                                    CheckboxCheckAll.onInitForm('form-list-file-home', 'checked-all-entry', 'checkall-count');
-                                });
-                            </script>
+                            <span id="form-list-checkall-count"></span>
                         <?php } ?>
                     </label>
                 </li>

@@ -38,10 +38,10 @@
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
     </div>
 
-    <form action="action_table.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database">
+    <form action="action_table.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
-        <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double', true) == false) { ?> not-double<?php } ?>">
+        <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
             <?php if ($appMysqlConnect->isDatabaseNameCustom()) { ?>
                 <li class="back">
                     <a href="info_database.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_IS_REFERER_LIST_TABLE; ?>=1">
@@ -98,16 +98,11 @@
                 <?php } ?>
 
                 <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
-                    <label for="checked-all-entry">
+                    <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
+                    <label for="form-list-checked-all-entry">
                         <span><?php echo lng('mysql.list_table.form.input.checkbox_all_entry'); ?></span>
                         <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
-                            <span id="checkall-count"></span>
-                            <script type="text/javascript">
-                                OnLoad.add(function() {
-                                    CheckboxCheckAll.onInitForm('form-list-database', 'checked-all-entry', 'checkall-count');
-                                });
-                            </script>
+                            <span id="form-list-checkall-count"></span>
                         <?php } ?>
                     </label>
                 </li>

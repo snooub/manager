@@ -82,7 +82,7 @@
                 $idAlert = null;
                 $urlGoto = null;
 
-                if (AppConfig::getInstance()->get('auto_redirect.file_rename', true)) {
+                if (AppConfig::getInstance()->get('auto_redirect.file_rename')) {
                     $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
                     $appParameter->toString(true);
 

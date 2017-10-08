@@ -6,7 +6,7 @@
     define('LOADED', 1);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
-    $autoload = AppConfig::getInstance()->getSystem('enable_disable.autoload', true);
+    $autoload = AppConfig::getInstance()->getSystem('enable_disable.autoload');
 
     AppConfig::getInstance()->setSystem('enable_disable.autoload', $autoload == false);
     AppConfig::getInstance()->write(true);

@@ -8,12 +8,11 @@ var ButtonSaveOnJavascript = {
     WHICH_KEY_S:    83,
 
     addEventSave: function() {
-        var self = ButtonSaveOnJavascript;
-
+        var self           = ButtonSaveOnJavascript;
         self.buttonElement = document.getElementById("button-save-on-javascript");
 
         if (self.buttonElement === null || typeof self.buttonElement === "undefined" || typeof self.buttonElement.click === "undefined")
-            return false;
+            return;
 
         window.addEventListener("keydown", function(event) {
             if (event.which) {

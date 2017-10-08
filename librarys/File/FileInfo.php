@@ -513,7 +513,7 @@
          */
         public static function permissionDenyPath($path, $isUseName = false, $igoneDevelopementMode = false)
         {
-            if (AppConfig::getInstance()->getSystem('enable_disable.development', false) && $igoneDevelopementMode == false)
+            if (AppConfig::getInstance()->getSystem('enable_disable.development') && $igoneDevelopementMode == false)
                 return false;
 
             if ($path != null && empty($path) == false) {

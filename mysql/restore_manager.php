@@ -127,7 +127,7 @@
 
     <?php echo AppAlert::display(); ?>
 
-    <form action="restore_manager.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database-backup">
+    <form action="restore_manager.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
         <?php if ($isAction) { ?>
@@ -186,19 +186,14 @@
                         <input
                             type="checkbox"
                             name="checked_all_entry"
-                            id="checked-all-entry"
+                            id="form-list-checked-all-entry"
                             <?php if ($countChecked === $countList) { ?>checked="checked"<?php } ?>
                             onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
 
-                        <label for="checked-all-entry">
+                        <label for="form-list-checked-all-entry">
                             <span><?php echo lng('mysql.restore_manager.form.input.checkbox_all_entry'); ?></span>
                             <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
-                                <span id="checkall-count"></span>
-                                 <script type="text/javascript">
-                                    OnLoad.add(function() {
-                                        CheckboxCheckAll.onInitForm('form-list-database-backup', 'checked-all-entry', 'checkall-count');
-                                    });
-                                </script>
+                                <span id="form-list-checkall-count"></span>
                            <?php } ?>
                         </label>
                     </li>

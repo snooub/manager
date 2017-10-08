@@ -17,33 +17,33 @@
         'http_referer' => null,
 
         'paging' => [
-            'file_home_list'      => AppConfig::getInstance()->get('paging.file_home_list',  50),
-            'file_view_zip'       => AppConfig::getInstance()->get('paging.file_view_zip',   50),
-            'file_edit_text'      => AppConfig::getInstance()->get('paging.file_edit_text',  20),
-            'mysql_list_data'     => AppConfig::getInstance()->get('paging.mysql_list_data', 50)
+            'file_home_list'      => AppConfig::getInstance()->get('paging.file_home_list'),
+            'file_view_zip'       => AppConfig::getInstance()->get('paging.file_view_zip'),
+            'file_edit_text'      => AppConfig::getInstance()->get('paging.file_edit_text'),
+            'mysql_list_data'     => AppConfig::getInstance()->get('paging.mysql_list_data')
         ],
 
         'login' => [
-            'enable_forgot_password' => AppConfig::getInstance()->get('login.enable_forgot_password', false)
+            'enable_forgot_password' => AppConfig::getInstance()->get('login.enable_forgot_password')
         ],
 
         'enable_disable' => [
-            'button_save_on_javascript'       => AppConfig::getInstance()->get('enable_disable.button_save_on_javascript',       true),
-            'auto_focus_input_last'           => AppConfig::getInstance()->get('enable_disable.auto_focus_input_last',           true),
-            'count_checkbox_file_javascript'  => AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript',  true),
-            'count_checkbox_mysql_javascript' => AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript', true),
-            'list_file_double'                => AppConfig::getInstance()->get('enable_disable.list_file_double',                true),
-            'list_database_double'            => AppConfig::getInstance()->get('enable_disable.list_database_double',            true)
+            'button_save_on_javascript'       => AppConfig::getInstance()->get('enable_disable.button_save_on_javascript'),
+            'auto_focus_input_last'           => AppConfig::getInstance()->get('enable_disable.auto_focus_input_last'),
+            'count_checkbox_file_javascript'  => AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript'),
+            'count_checkbox_mysql_javascript' => AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript'),
+            'list_file_double'                => AppConfig::getInstance()->get('enable_disable.list_file_double'),
+            'list_database_double'            => AppConfig::getInstance()->get('enable_disable.list_database_double')
         ],
 
         'auto_redirect' => [
-            'file_rename' => AppConfig::getInstance()->get('auto_redirect.file_rename', true),
-            'file_chmod'  => AppConfig::getInstance()->get('auto_redirect.file_chmod',  true),
+            'file_rename' => AppConfig::getInstance()->get('auto_redirect.file_rename'),
+            'file_chmod'  => AppConfig::getInstance()->get('auto_redirect.file_chmod'),
 
-            'create_directory' => AppConfig::getInstance()->get('auto_redirect.create_directory', true),
-            'create_file'      => AppConfig::getInstance()->get('auto_redirect.create_file',      true),
-            'create_database'  => AppConfig::getInstance()->get('auto_redirect.create_database',  true),
-            'rename_database'  => AppConfig::getInstance()->get('auto_redirect.rename_database',  true)
+            'create_directory' => AppConfig::getInstance()->get('auto_redirect.create_directory'),
+            'create_file'      => AppConfig::getInstance()->get('auto_redirect.create_file'),
+            'create_database'  => AppConfig::getInstance()->get('auto_redirect.create_database'),
+            'rename_database'  => AppConfig::getInstance()->get('auto_redirect.rename_database')
         ],
     ];
 

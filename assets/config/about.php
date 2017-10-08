@@ -4,10 +4,10 @@
         exit;
 
     return [
-        'build_at' => 1507462980,
+        'build_at' => 1507478605,
         'name' => 'Manager',
         'author' => 'IzeroCs',
-        'version' => '3.5.1',
+        'version' => '3.5.2',
         'is_beta' => true,
         'email' => 'Izero.Cs@gmail.com',
         'fb_link' => 'https://facebook.com/IzeroCs',

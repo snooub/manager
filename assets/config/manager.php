@@ -22,7 +22,7 @@
             'list_database_double' => true,
             'check_password_default' => false,
             'development' => false,
-            'autoload' => false,
+            'autoload' => true,
         ],
 
         'login' => [

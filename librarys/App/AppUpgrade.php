@@ -165,7 +165,7 @@
                 return false;
             }
 
-        if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::filterPaths($appPath), PCLZIP_CB_PRE_EXTRACT, 'installUpgradeCallbackExtractZip') != false) {
+            if ($pclZip->extract(PCLZIP_OPT_PATH, FileInfo::filterPaths($appPath), PCLZIP_CB_PRE_EXTRACT, 'installUpgradeCallbackExtractZip') != false) {
                 FileInfo::fileWrite($logHandle, "Info: Extract upgrade success\n");
                 FileInfo::fileWrite($logHandle, "Info: Check file recycle in app begin\n");
 

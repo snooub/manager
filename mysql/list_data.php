@@ -56,7 +56,7 @@
         'begin_query' => 0,
         'end_query'   => $mysqlNums,
         'row_on_page' => $mysqlNums,
-        'max'         => AppConfig::getInstance()->get('paging.mysql_list_data', 0)
+        'max'         => AppConfig::getInstance()->get('paging.mysql_list_data')
     ];
 
     if (isset($_GET[PARAMETER_ORDER_DATA_URL]) && empty($_GET[PARAMETER_ORDER_DATA_URL]) == false) {
@@ -111,7 +111,7 @@
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
     </div>
 
-    <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double', true) == false) { ?> not-double<?php } ?>">
+    <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
         <li class="back">
             <a href="info_table.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-table"></span>

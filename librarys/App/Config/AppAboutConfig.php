@@ -27,7 +27,7 @@
 
         const ARRAY_VALUE_NAME      = 'Manager';
         const ARRAY_VALUE_AUTHOR    = 'IzeroCs';
-        const ARRAY_VALUE_VERSION   = '3.5.1';
+        const ARRAY_VALUE_VERSION   = '3.5.2';
         const ARRAY_VALUE_IS_BETA   = true;
         const ARRAY_VALUE_EMAIL     = 'Izero.Cs@gmail.com';
         const ARRAY_VALUE_FB_LINK   = 'https://facebook.com/IzeroCs';

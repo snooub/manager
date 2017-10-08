@@ -1,7 +1,3 @@
-//var inputChmod             = null;
-//var inputChmodCheckbox     = null;
-//var listInputChmodCheckbox = null;
-
 var ChmodInput = {
     inputChmod:             null,
     inputChmodCheckbox:     null,

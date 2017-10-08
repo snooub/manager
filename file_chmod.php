@@ -71,7 +71,7 @@
                 $idAlert = null;
                 $urlGoto = null;
 
-                if (AppConfig::getInstance()->get('auto_redirect.file_chmod', true)) {
+                if (AppConfig::getInstance()->get('auto_redirect.file_chmod')) {
                     $appParameter->remove(AppDirectory::PARAMETER_NAME_URL);
                     $appParameter->toString(true);
 
@@ -101,11 +101,6 @@
                 <span><?php echo lng('file_chmod.title_page_file'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } ?>
         </div>
-        <script type="text/javascript" async>
-            OnLoad.add(function() {
-                ChmodInput.onAddEventChmodListener("input-chmod", "input-chmod-checkbox")
-            });
-        </script>
         <form action="file_chmod.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
@@ -116,10 +111,10 @@
                     <?php } else { ?>
                         <span><?php echo lng('file_chmod.form.input.chmod_file'); ?></span>
                     <?php } ?>
-                    <input type="number" name="chmod_permission" value="<?php echo $forms['chmod']; ?>" placeholder="<?php if ($isDirectory) echo lng('file_chmod.form.placeholder.input_chmod_directory'); else echo lng('file_chmod.form.placeholder.input_chmod_file'); ?>" id="input-chmod" max="777"/>
+                    <input type="number" name="chmod_permission" value="<?php echo $forms['chmod']; ?>" placeholder="<?php if ($isDirectory) echo lng('file_chmod.form.placeholder.input_chmod_directory'); else echo lng('file_chmod.form.placeholder.input_chmod_file'); ?>" id="form-input-chmod" max="777"/>
                 </li>
                 <li class="input-chmod">
-                    <ul id="input-chmod-checkbox">
+                    <ul id="form-input-chmod-checkbox">
                         <li>
                         	<span class="icomoon icon-config"></span>
 							<span><?php echo lng('file_chmod.form.input.chmod_label_system'); ?></span>

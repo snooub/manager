@@ -20,26 +20,26 @@
         'http_referer' => null,
 
         'cache' => [
-            'lifetime' => AppConfig::getInstance()->getSystem('cache.lifetime', 64800)
+            'lifetime' => AppConfig::getInstance()->getSystem('cache.lifetime')
         ],
 
         'tmp' => [
-            'lifetime' => AppConfig::getInstance()->getSystem('tmp.lifetime', 180),
-            'limit'    => AppConfig::getInstance()->getSystem('tmp.limit',    20)
+            'lifetime' => AppConfig::getInstance()->getSystem('tmp.lifetime'),
+            'limit'    => AppConfig::getInstance()->getSystem('tmp.limit')
         ],
 
         'login' => [
-            'enable_forgot_password'   => AppConfig::getInstance()->getSystem('login.enable_forgot_password',   true),
-            'enable_lock_count_failed' => AppConfig::getInstance()->getSystem('login.enable_lock_count_failed', true),
-            'enable_captcha_secure'    => AppConfig::getInstance()->getSystem('login.enable_captcha_secure',    true),
-            'max_lock_count'           => AppConfig::getInstance()->getSystem('login.max_lock_count',           5),
-            'time_lock'                => AppConfig::getInstance()->getSystem('login.time_lock',                180),
-            'time_login'               => AppConfig::getInstance()->getSystem('login.time_login',               64800)
+            'enable_forgot_password'   => AppConfig::getInstance()->getSystem('login.enable_forgot_password'),
+            'enable_lock_count_failed' => AppConfig::getInstance()->getSystem('login.enable_lock_count_failed'),
+            'enable_captcha_secure'    => AppConfig::getInstance()->getSystem('login.enable_captcha_secure'),
+            'max_lock_count'           => AppConfig::getInstance()->getSystem('login.max_lock_count'),
+            'time_lock'                => AppConfig::getInstance()->getSystem('login.time_lock'),
+            'time_login'               => AppConfig::getInstance()->getSystem('login.time_login')
         ],
 
         'enable_disable' => [
-            'check_password_default' => AppConfig::getInstance()->getSystem('enable_disable.check_password_default', true),
-            'development'            => AppConfig::getInstance()->getSystem('enable_disable.development',            false)
+            'check_password_default' => AppConfig::getInstance()->getSystem('enable_disable.check_password_default'),
+            'development'            => AppConfig::getInstance()->getSystem('enable_disable.development')
         ]
     ];
 

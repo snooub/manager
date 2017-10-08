@@ -29,10 +29,10 @@
     $password = null;
     $captcha  = null;
 
-    $captchaEnable       = AppConfig::getInstance()->getSystem('login.enable_captcha_secure', true);
-    $isEnabledLockCount  = AppConfig::getInstance()->get('login.enable_lock_count_failed',    true);
-    $maxLockCountFailed  = AppConfig::getInstance()->get('login.max_lock_count',              5);
-    $timeLockCountFailed = AppConfig::getInstance()->get('login.time_lock',                   180);
+    $captchaEnable       = AppConfig::getInstance()->getSystem('login.enable_captcha_secure');
+    $isEnabledLockCount  = AppConfig::getInstance()->get('login.enable_lock_count_failed');
+    $maxLockCountFailed  = AppConfig::getInstance()->get('login.max_lock_count');
+    $timeLockCountFailed = AppConfig::getInstance()->get('login.time_lock');
     $currentTimeNow      = intval($_SERVER['REQUEST_TIME']);
     $isLockCountStatus   = false;
     $currentCountLock    = 0;

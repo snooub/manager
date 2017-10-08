@@ -33,7 +33,7 @@
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
     </div>
 
-    <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double', true) == false) { ?> not-double<?php } ?>">
+    <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
         <li class="back">
             <a href="info_table.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-table"></span>

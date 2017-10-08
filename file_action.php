@@ -466,7 +466,7 @@
     <?php AppAlert::display(); ?>
     <?php $appLocationPath->display(); ?>
 
-    <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-file">
+    <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
         <input type="hidden" name="action" value="<?php echo $nameAction; ?>"/>
 
@@ -542,16 +542,11 @@
                 <?php } ?>
 
                 <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();" checked="checked"/>
-                    <label for="checked-all-entry">
+                    <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();" checked="checked"/>
+                    <label for="form-list-checked-all-entry">
                         <span><?php echo lng('home.checkbox_all_entry'); ?></span>
                         <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?>
-                            <span id="checkall-count"></span>
-                            <script type="text/javascript">
-                                OnLoad.add(function() {
-                                    CheckboxCheckAll.onInitForm('form-list-file', 'checked-all-entry', 'checkall-count');
-                                });
-                            </script>
+                            <span id="form-list-checkall-count"></span>
                         <?php } ?>
                     </label>
                 </li>

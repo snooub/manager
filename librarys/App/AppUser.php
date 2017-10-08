@@ -159,7 +159,7 @@
             if (strcmp($userIp, $tokenArray[self::TOKEN_ARRAY_KEY_USER_IP]) !== 0)
                 return false;
 
-            if ($userLive - intval($tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE]) >= AppConfig::getInstance()->get('login.time_login', 3600))
+            if ($userLive - intval($tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE]) >= AppConfig::getInstance()->get('login.time_login'))
                 return false;
 
             $tokenArray[self::TOKEN_ARRAY_KEY_USER_LIVE] = $userLive;
