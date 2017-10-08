@@ -834,7 +834,7 @@
 
             if (empty($openBaseDir) == false) {
                 $openBaseDirArrays = explode($separator, $openBaseDir);
-                $openBaseDirArrays = array_map(array(FileInfo::class, 'filterPaths'), $openBaseDirArrays);
+                $openBaseDirArrays = array_map('self::filterPaths', $openBaseDirArrays);
             }
 
             foreach ($pathArrays AS $entry) {

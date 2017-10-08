@@ -26,6 +26,7 @@
             'htaccess_check_error_code'    => 'Tập tin <strong>.htaccess</strong> có lỗi, kết quả: <strong>{$code}</strong>',
             'function_exec_is_disable'     => 'Không thể chạy chức năng kiểm tra lỗi cú pháp do function: exec, shell_exec bị chặn',
             'not_check_syntax'             => 'Không thể kiểm tra lỗi cú pháp',
+            'not_support_check_syntax'     => 'Host của bạn không hỗ trợ kiểm tra lỗi cú pháp php, nên tính năng đó không thể hiển thị',
             'syntax_not_error'             => 'Không có lỗi cú pháp',
             'save_text_success'            => 'Lưu văn bản thành công',
             'save_text_failed'             => 'Lưu văn bản thất bại',

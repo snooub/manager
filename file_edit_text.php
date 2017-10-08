@@ -88,14 +88,17 @@
         $edits['content'] = FileInfo::fileReadContents($edits['path']);
 
     $isCheckSyntax = true;
+    $isMimePHP     = true;
     $pathPHPBin    = null;
 
-    if (strcasecmp(FileInfo::extFile(AppDirectory::getInstance()->getName()), 'php') !== 0)
+    if (strcasecmp(FileInfo::extFile(AppDirectory::getInstance()->getName()), 'php') !== 0) {
         $isCheckSyntax = false;
-    else if (function_exists('exec') == false || function_exists('shell_exec') == false)
+        $isMimePHP     = false;
+    } else if (function_exists('exec') == false || function_exists('shell_exec') == false) {
         $isCheckSyntax = false;
-    else if (($pathPHPBin = FileInfo::takePathPHPBin()) == null || empty($pathPHPBin))
+    } else if (($pathPHPBin = FileInfo::takePathPHPBin()) == null || empty($pathPHPBin)) {
         $isCheckSyntax = false;
+    }
 
     if (isset($_POST['save'])) {
         $name = AppDirectory::getInstance()->getName();
@@ -353,6 +356,9 @@
 
     <ul class="alert">
         <li class="info"><span><?php echo lng('file_edit_text.alert.tips'); ?></span></li>
+        <?php if ($isMimePHP && $isCheckSyntax == false) { ?>
+            <li class="warning"><span><?php echo lng('file_edit_text.alert.not_support_check_syntax'); ?></span></li>
+        <?php } ?>
     </ul>
 
     <ul class="menu-action">
