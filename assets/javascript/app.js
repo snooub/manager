@@ -1069,7 +1069,8 @@ var UrlLoadAjax = {
                 else if (UrlLoadAjax.aLinks.setAttributeNode)
                     element.setAttributeNode("onclick", "return false");
 
-                element.addEventListener("click", UrlLoadAjax.eventclick);
+                if (element != null && element.addEventListener)
+                    element.addEventListener("click", UrlLoadAjax.eventclick);
             }
         }
     },
