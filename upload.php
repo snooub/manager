@@ -68,7 +68,7 @@
             } else {
                 foreach ($forms['files'] AS $index => $file) {
                     if ($file['error'] == UPLOAD_ERR_INI_SIZE) {
-                        AppAlert::danger(lng('upload.alert.file_error_max_size', 'filemame', $file['name']));
+                        AppAlert::danger(lng('upload.alert.file_error_max_size', 'filename', $file['name']));
                     } else {
                         $path        = FileInfo::filterPaths(AppDirectory::getInstance()->getDirectory() . SP . $file['name']);
                         $isDirectory = FileInfo::isTypeDirectory($path);
@@ -133,13 +133,13 @@
         <div class="title">
             <span><?php echo lng('upload.title_page'); ?></span>
         </div>
-        <form action="upload.php<?php echo $appParameter->toString(); ?>" method="post" enctype="multipart/form-data">
+        <form action="<?php echo env('app.http.host'); ?>/upload.php<?php echo $appParameter->toString(); ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">
                 <?php for ($i = 0; $i < $forms['files_count']; ++$i) { ?>
                     <li class="input-file"<?php if ($i === $forms['files_count'] - 1) { ?> id="template-input-file"<?php } ?> name="file_<?php echo $i; ?>">
-                        <input type="file" name="files[]" id="file_<?php echo $i; ?>"/>
+                        <input type="file" name="files[]" id="file_<?php echo $i; ?>" multiple="multiple"/>
                         <label for="file_<?php echo $i; ?>">
                             <span lng="<?php echo lng('upload.form.input.choose_file'); ?>"><?php echo lng('upload.form.input.choose_file'); ?></span>
                         </label>

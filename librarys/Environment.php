@@ -68,10 +68,12 @@
 
         public function execute()
         {
-            if ($this->loadCacheFile())
+            if ($this->loadCacheFile()) {
                 return;
-            else
+            } else {
+                $this->cache         = array();
                 $this->isUpdateCache = true;
+            }
 
             $requestScheme = 'http';
 
@@ -220,6 +222,26 @@
                 return false;
 
             $this->cache = require_once($this->cacheFilePath);
+
+            if (is_array($this->cache)) {
+                $serverHttpHostCache = env('server.http_host');
+                $appHttpHostCache    = env('app.http.host');
+
+                if (strpos($appHttpHostCache, $serverHttpHostCache) !== 0)
+                    return false;
+
+                $serverHttpHost = $_SERVER['HTTP_HOST'];
+                $httpScheme     = 'http://';
+                $httpsScheme    = 'https://';
+
+                if (strpos($serverHttpHostCache, $httpScheme) === 0)
+                    $serverHttpHostCache = substr($serverHttpHostCache, strlen($httpScheme));
+                else if (strpos($serverHttpHostCache, $httpsScheme) === 0)
+                    $serverHttpHostCache = substr($serverHttpHostCache, strlen($httpsScheme));
+
+                if (strpos($serverHttpHostCache, $serverHttpHost) === false)
+                    return false;
+            }
 
             return true;
         }

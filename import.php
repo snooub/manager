@@ -207,7 +207,7 @@
         <div class="title">
             <span><?php echo lng('import.title_page'); ?></span>
         </div>
-        <form action="import.php<?php echo $appParameter->toString(); ?>" method="post" enctype="multipart/form-data">
+        <form action="<?php echo env('app.http.host'); ?>/import.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

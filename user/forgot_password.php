@@ -172,7 +172,7 @@
 
         <?php if ($isLockCountStatus == false) { ?>
             <div id="login">
-                <form action="forgot_password.php" method="post" id="login-form">
+                <form action="<?php echo env('app.http.host'); ?>/user/forgot_password.php" method="post" id="login-form">
                     <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
                     <ul>

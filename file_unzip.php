@@ -169,7 +169,7 @@
         <div class="title">
             <span><?php echo lng('file_unzip.title_page'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
         </div>
-        <form action="file_unzip.php<?php echo $appParameter->toString(); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/file_unzip.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

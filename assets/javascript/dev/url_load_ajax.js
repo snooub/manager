@@ -2,23 +2,51 @@ var UrlLoadAjax = {
     httpHost:            null,
     aLinks:              null,
     historyScriptLink:   null,
-    progressBarInterval: null,
-    progressBarElement:  null,
-    progressCount:       0,
-    progressCurrent:     0,
-    progressTime:        0,
 
     init: function(httpHost, historyScriptLink) {
         UrlLoadAjax.httpHost           = httpHost;
         UrlLoadAjax.historyScriptLink  = historyScriptLink;
-        UrlLoadAjax.progressBarElement = document.getElementById("progress-bar-body");
-
         UrlLoadAjax.reinit();
     },
 
     reinit: function() {
-        if (!History.pushState && !window.history.pushState)
-            return;
+        if (!window.history.pushState && !History.pushState && UrlLoadAjax.historyScriptLink != null) {
+            var head = document.getElementsByTagName("head");
+
+            if (head.length > 0) {
+                var history       = document.createElement("script");
+                    history.type  = "text/javascript";
+                    history.async = true;
+                    history.src   = UrlLoadAjax.historyScriptLink;
+
+                head[0].appendChild(history);
+            }
+
+            function eventReload(e) {
+                if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) {
+                    var href      = window.location.href;
+                    var hastagPos = href.indexOf("#");
+
+                    if (hastagPos !== -1)
+                        href = UrlLoadAjax.httpHost + "/" + href.substr(hastagPos + 1);
+
+                    window.location.href = href;
+
+                    e.preventDefault();
+                } else {
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (window.addEventListener)
+                window.addEventListener("keydown", eventReload);
+            else if (window.attachEvent)
+                window.attachEvent("keydown", eventReload);
+
+            UrlLoadAjax.historyScriptLink = null;
+        }
 
         UrlLoadAjax.aLinks = document.getElementsByTagName("a");
 
@@ -31,16 +59,27 @@ var UrlLoadAjax = {
                 else if (UrlLoadAjax.aLinks.setAttributeNode)
                     element.setAttributeNode("onclick", "return false");
 
-                if (element != null && element.addEventListener)
-                    element.addEventListener("click", UrlLoadAjax.eventclick);
+                if (element != null) {
+                    if (element.addEventListener)
+                        element.addEventListener("click", UrlLoadAjax.eventclick);
+                    else if (element.attachEvent)
+                        element.attachEvent("click", UrlLoadAjax.eventclick);
+                }
             }
         }
     },
 
+    reload: function() {
+        UrlLoadAjax.reinit();
+    },
+
     eventclick: function(e) {
+        if (!this.href)
+            return;
+
         var href = this.href;
 
-        if (href.indexOf(UrlLoadAjax.httpHost) === -1) {
+        if (href.indexOf && href.indexOf(UrlLoadAjax.httpHost) === -1) {
             var strHttp  = "http://";
             var strHttps = "https://";
             var posHttp  = href.indexOf(strHttp);
@@ -68,16 +107,16 @@ var UrlLoadAjax = {
             url: href,
 
             before: function(xhr) {
-                UrlLoadAjax.progressCount   = 0;
-                UrlLoadAjax.progressCurrent = 50;
-                UrlLoadAjax.progressTime    = 10;
+                ProgressBarBody.updateProgressCount(0);
+                ProgressBarBody.updateProgressCurrent(30);
+                ProgressBarBody.updateProgressTime(20);
             },
 
             end: function(xhr) {
                 UrlLoadAjax.reinit();
 
-                UrlLoadAjax.progressCurrent = 100;
-                UrlLoadAjax.progressBar();
+                ProgressBarBody.updateProgressCurrent(100);
+                ProgressBarBody.repaint();
             },
 
             error: function(xhr) {
@@ -85,19 +124,23 @@ var UrlLoadAjax = {
             },
 
             loadstart: function(e, xhr) {
-                UrlLoadAjax.progressBar();
+                ProgressBarBody.repaint();
             },
 
             progress: function(e, xhr) {
-                if (e.total <= 0) {
-                    UrlLoadAjax.progressCurrent = 99;
-                    UrlLoadAjax.progressTime    = 1;
+                if (e.lengthComputable == false) {
+                    ProgressBarBody.updateProgressCurrent(70);
+                    ProgressBarBody.updateProgressTime(1);
                 } else {
-                    UrlLoadAjax.progressCurrent = (e.loaded / e.total * 99);
-                    UrlLoadAjax.progressTime--;
+                    var percent = (e.loaded / e.total * 70);
+
+                    if (percent > ProgressBarBody.getProgressCurrent())
+                        ProgressBarBody.updateProgressCurrent(percent);
+
+                    ProgressBarBody.updateProgressTime(ProgressBarBody.getProgressTime() - 1);
                 }
 
-                UrlLoadAjax.progressBar();
+                ProgressBarBody.repaint();
             },
 
             success: function(data, xhr) {
@@ -109,27 +152,46 @@ var UrlLoadAjax = {
                 if (containerPosBegin === -1 || containerPosEnd === -1)
                     return;
 
+                ProgressBarBody.updateProgressCurrent(75);
+                ProgressBarBody.repaint();
+
+                for (var i = 0; i < UrlLoadAjax.aLinks.length; ++i) {
+                    if (UrlLoadAjax.aLinks[i].removeEventListener)
+                        UrlLoadAjax.aLinks[i].removeEventListener("click", UrlLoadAjax.eventclick);
+                    else if (UrlLoadAjax.aLinks[i].detachEvent)
+                        UrlLoadAjax.aLinks[i].detachEvent("click", UrlLoadAjax.eventclick);
+                }
+
+                ProgressBarBody.updateProgressCurrent(80);
+                ProgressBarBody.repaint();
+
+                var container        = data.substr(containerPosBegin + containerTagBegin.length, containerPosEnd - (containerPosBegin + containerTagBegin.length));
+                var containerElement = document.getElementById("container");
+
+                ProgressBarBody.updateProgressCurrent(85);
+                ProgressBarBody.repaint();
+
+                containerElement.innerHTML = container;
+
+                ProgressBarBody.updateProgressCurrent(90);
+                ProgressBarBody.repaint();
+
+                if (xhr.responseURL && xhr.responseURL != null && xhr.responseURL.length > 0)
+                    href = xhr.responseURL;
+
                 if (window.history.pushState) {
                     window.history.pushState({
                         path: href
                     }, '', href);
                 } else if (History.pushState) {
-                    History.pushState({
-                        path: href
-                    }, '', href);
-                } else {
-                    return;
+                    History.pushState(null, null, href);
                 }
 
-                for (var i = 0; i < UrlLoadAjax.aLinks.length; ++i) {
-                    if (UrlLoadAjax.aLinks[i].removeEventListener)
-                        UrlLoadAjax.aLinks[i].removeEventListener("click", UrlLoadAjax.eventclick);
-                }
+                ProgressBarBody.updateProgressCurrent(95);
+                ProgressBarBody.repaint();
 
-                var container        = data.substr(containerPosBegin + containerTagBegin.length, containerPosEnd - (containerPosBegin + containerTagBegin.length));
-                var containerElement = document.getElementById("container");
-
-                containerElement.innerHTML  = container;
+                if (OnLoad.reonload)
+                    OnLoad.reonload();
 
                 if (OnLoad.reload)
                     OnLoad.reload();
@@ -137,27 +199,5 @@ var UrlLoadAjax = {
         });
 
         return false;
-    },
-
-    progressBar: function() {
-        if (UrlLoadAjax.progressBarInterval != null)
-            clearInterval(UrlLoadAjax.progressBarInterval, null);
-
-        if (UrlLoadAjax.progressBarElement.style.display === "none")
-            UrlLoadAjax.progressBarElement.style.width = "0%";
-
-        UrlLoadAjax.progressBarElement.style.display = "block";
-
-        UrlLoadAjax.progressBarInterval = setInterval(frame, UrlLoadAjax.progressTime);
-
-        function frame() {
-            if (UrlLoadAjax.progressCount >= UrlLoadAjax.progressCurrent || UrlLoadAjax.progressCount >= 100) {
-                clearInterval(UrlLoadAjax.interval);
-                UrlLoadAjax.progressBarElement.style.display = "none";
-            } else {
-                UrlLoadAjax.progressCount                 += 1;
-                UrlLoadAjax.progressBarElement.style.width = UrlLoadAjax.progressCount + "%";
-            }
-        }
     }
 };

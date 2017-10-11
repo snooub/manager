@@ -128,7 +128,7 @@
             </ul>
 
             <div class="about-button-check button-action-box center">
-                <a href="upgrade_app.php?<?php echo PARAMETER_INSTALL_URL; ?>">
+                <a href="upgrade_app.php?<?php echo PARAMETER_INSTALL_URL; ?>" class="not-autoload">
                     <?php if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_UPGRADE) { ?>
                         <span><?php echo lng('app.upgrade_app.form.button.upgrade'); ?></span>
                     <?php } else if ($appUpgrade->getTypeBinInstall() === AppUpgrade::TYPE_BIN_INSTALL_ADDITIONAL) { ?>

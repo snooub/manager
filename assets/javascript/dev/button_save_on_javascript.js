@@ -14,7 +14,7 @@ var ButtonSaveOnJavascript = {
         if (self.buttonElement === null || typeof self.buttonElement === "undefined" || typeof self.buttonElement.click === "undefined")
             return;
 
-        window.addEventListener("keydown", function(event) {
+        var keydown = function(event) {
             if (event.which) {
                 if (event.which === self.WHICH_KEY_S && event.ctrlKey && event.ctrlKey == true) {
                     self.isKeyS = true;
@@ -25,9 +25,9 @@ var ButtonSaveOnJavascript = {
             }
 
             return true;
-        });
+        };
 
-        window.addEventListener("keyup", function(event) {
+        var keyup = function(event) {
             if (event.which && event.which == self.WHICH_KEY_CTRL) {
                 self.isKeyCtrl = false;
 
@@ -42,7 +42,15 @@ var ButtonSaveOnJavascript = {
 
             event.preventDefault();
             return false;
-        });
+        };
+
+        if (window.addEventListener) {
+            window.addEventListener("keydown", keydown);
+            window.addEventListener("keyup", keyup);
+        } else if (window.attachEvent) {
+            window.attachEvent("keydown", keydown);
+            window.attachEvent("keyup", keyup);
+        }
     },
 
     saveActionEvent: function() {

@@ -37,10 +37,12 @@
                 return false;
 
             foreach ($handle AS $filename) {
-                $extFile = FileInfo::extFile($filename);
+                if ($filename != '.' && $filename != '..') {
+                    $extFile = FileInfo::extFile($filename);
 
-                if (strcasecmp($extFile, self::MIME) !== 0)
-                    FileInfo::unlink(FileInfo::filterPaths($directory . SP . $filename));
+                    if (strcasecmp($extFile, self::MIME) !== 0)
+                        FileInfo::unlink(FileInfo::filterPaths($directory . SP . $filename));
+                }
             }
         }
 

@@ -21,6 +21,7 @@
                 'enable_disable_count_checkbox_mysql_javascript' => 'Hiện số mục được checked trong danh sách cơ sở dữ liệu',
                 'enable_disable_list_file_double'                => 'Danh sách tập tin chia làm đôi',
                 'enable_disable_list_database_double'            => 'Danh sách cơ sở dữ liệu chia làm đôi',
+                'enable_disable_header_fixed'                    => 'Thanh tiêu đề trượt theo',
 
                 'auto_redirect_label'                   => 'Chuyển hướng',
                 'enable_auto_redirect_file_rename'      => 'Khi thay đổi tên tập tin, thư mục',

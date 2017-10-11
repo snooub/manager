@@ -378,7 +378,8 @@
         $appFileCopy->flushSession();
     }
 
-    $listParameter = null;
+    $listParameter       = null;
+    $isCountCheckBoxList = AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript');
 
     if (isset($_GET[AppDirectory::PARAMETER_LIST_URL]))
         $listParameter = AppDirectory::PARAMETER_LIST_URL . '=1';
@@ -387,7 +388,7 @@
     <?php echo AppAlert::display(); ?>
     <?php echo $appLocationPath->display(); ?>
 
-    <form action="file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
+    <form action="<?php echo env('app.http.host'); ?>/file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
         <ul class="file-list<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double') == false) { ?> not-double<?php } ?>">
@@ -401,7 +402,7 @@
                     <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
 
                     <?php if ($entry['is_directory']) { ?>
-                        <li class="type-directory <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?><?php if ($handlerPage['entry_on_page'] === 1) { ?> entry-only-one<?php } ?>">
+                        <li class="has-first-not-entry is-end-list-option type-directory is-has-checkbox">
                             <div class="icon">
                                 <?php $id = 'folder-' . AppDirectory::rawEncode($entry['name']); ?>
 
@@ -410,7 +411,7 @@
                                         name="entrys[]"
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entry['name']); ?>"
-                                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                        <?php if ($isCountCheckBoxList) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <a href="file_info.php<?php echo $urlParameter; ?>">
@@ -425,7 +426,7 @@
                             </a>
                         </li>
                     <?php } else { ?>
-                        <li class="type-file <?php if ($handlerIsOdd && $i + 1 === $handlerPage['end']) { ?> entry-odd<?php } ?>">
+                        <li class="has-first-not-entry is-end-list-option type-file">
                             <div class="icon">
                                 <?php $id = 'file-' . AppDirectory::rawEncode($entry['name']); ?>
 
@@ -434,7 +435,7 @@
                                         name="entrys[]"
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entry['name']); ?>"
-                                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                        <?php if ($isCountCheckBoxList) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
 
@@ -455,23 +456,25 @@
                     <?php } ?>
                 <?php } ?>
 
-                <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
-                    <label for="form-list-checked-all-entry">
-                        <span><?php echo lng('home.checkbox_all_entry'); ?></span>
-                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript')) { ?>
-                            <span id="form-list-checkall-count"></span>
-                        <?php } ?>
-                    </label>
-                </li>
+                <li class="end-list-option">
+                    <div class="checkbox-all">
+                        <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
+                        <label for="form-list-checked-all-entry">
+                            <span><?php echo lng('home.checkbox_all_entry'); ?></span>
+                            <?php if ($isCountCheckBoxList) { ?>
+                                <span id="form-list-checkall-count"></span>
+                            <?php } ?>
+                        </label>
+                    </div>
 
-                <?php if (AppConfig::getInstance()->get('paging.file_home_list') > 0 && $handlerPage['total'] > 1) { ?>
-                    <li class="paging">
-                        <?php echo $pagePaging->display($handlerPage['current'], $handlerPage['total']); ?>
-                    </li>
-                <?php } ?>
+                    <?php if (AppConfig::getInstance()->get('paging.file_home_list') > 0 && $handlerPage['total'] > 1) { ?>
+                        <div class="paging">
+                            <?php echo $pagePaging->display($handlerPage['current'], $handlerPage['total']); ?>
+                        </div>
+                    <?php } ?>
+                </li>
             <?php } else { ?>
-                <li class="empty entry-odd">
+                <li class="empty">
                     <span class="icomoon icon-folder-o"></span>
                     <span><?php echo lng('home.directory_empty'); ?></span>
                 </li>

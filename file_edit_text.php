@@ -290,7 +290,7 @@
             <?php } ?>
         </div>
         <?php $appParameter->add(PARAMETER_PAGE_EDIT, $edits['page']['current'], $edits['page']['current'] > 1); ?>
-        <form action="file_edit_text.php<?php echo $appParameter->toString(true); ?>" method="post" id="form-file-edit-javascript">
+        <form action="<?php echo env('app.http.host'); ?>/file_edit_text.php<?php echo $appParameter->toString(true); ?>" method="post" id="form-file-edit-javascript">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

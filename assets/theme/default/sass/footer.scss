@@ -1,6 +1,6 @@
 div#footer {
     border: 0;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid #dadada;
     position: relative;
     left: 0;
     right: 0;
@@ -16,7 +16,7 @@ div#footer {
 
     &::after {
         content: '';
-        background-color: #eaeaea;
+        background-color: #efefef;
         position: absolute;
         top: 0;
         left: 0;
@@ -28,6 +28,6 @@ div#footer {
     & span {
         color: #d0d0d0;
         font-size: $font-size;
-        text-shadow: 1px 1px #ffffff;
+        text-shadow: 1px 1px 1px #efefef;
     }
 }

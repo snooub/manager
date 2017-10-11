@@ -12,8 +12,7 @@
 
     require_once('global.php');
 
-    $title   = lng('mysql.restore_record.title_page');
-    $themes  = [ env('resource.filename.theme.mysql') ];
+    $title = lng('mysql.restore_record.title_page');
     AppAlert::setID(ALERT_MYSQL_RESTORE_RECORD);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
     requireDefine('mysql_restore_manager');
@@ -49,7 +48,7 @@
         <div class="title">
             <span><?php echo lng('mysql.restore_record.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
-        <form action="restore_record.php<?php echo $appParameter->toString(); ?>&<?php echo MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL; ?>=<?php echo AppDirectory::rawEncode($recordName); ?>" method="post" id="form-list-database-backup">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/restore_record.php<?php echo $appParameter->toString(); ?>&<?php echo MYSQL_RESTORE_RECORD_PARAMETER_FILE_URL; ?>=<?php echo AppDirectory::rawEncode($recordName); ?>" method="post" id="form-list-database-backup">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

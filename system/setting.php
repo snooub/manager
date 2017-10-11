@@ -33,7 +33,8 @@
             'count_checkbox_file_javascript'  => AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript'),
             'count_checkbox_mysql_javascript' => AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript'),
             'list_file_double'                => AppConfig::getInstance()->get('enable_disable.list_file_double'),
-            'list_database_double'            => AppConfig::getInstance()->get('enable_disable.list_database_double')
+            'list_database_double'            => AppConfig::getInstance()->get('enable_disable.list_database_double'),
+            'header_fixed'                    => AppConfig::getInstance()->get('enable_disable.header_fixed')
         ],
 
         'auto_redirect' => [
@@ -228,6 +229,14 @@
                 'id_input'        => 'enable-disable-list-database-double',
                 'name_input'      => 'enable_disable_list_database_double',
                 'value_input'     => $forms['enable_disable']['list_database_double']
+            ],
+
+            [
+                'config_key'      => 'enable_disable.header_fixed',
+                'label_lng'       => 'system.setting.form.input.enable_disable_header_fixed',
+                'id_input'        => 'enable-disable-hedader-fixed',
+                'name_input'      => 'enable_disable_header_fixed',
+                'value_input'     => $forms['enable_disable']['header_fixed']
             ]
         ],
 
@@ -289,7 +298,7 @@
         <div class="title">
             <span><?php echo lng('system.setting.title_page'); ?></span>
         </div>
-        <form action="setting.php" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/system/setting.php" method="post">
 	        <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
             <input type="hidden" name="http_referer" value="<?php echo $forms['http_referer']; ?>"/>
 

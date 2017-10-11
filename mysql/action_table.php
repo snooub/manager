@@ -13,8 +13,6 @@
 
     require_once('global.php');
 
-    $themes  = [ env('resource.filename.theme.mysql') ];
-    $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
     AppAlert::setID(ALERT_MYSQL_ACTION_TABLE);
     requireDefine('mysql_action_table');
 
@@ -132,11 +130,13 @@
 
         $forms['backup']['filename'] = stripslashes($forms['backup']['filename']);
     }
+
+    $isCountCheckBoxList = AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')
 ?>
 
     <?php AppAlert::display(); ?>
 
-    <form action="action_table.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
+    <form action="<?php echo env('app.http.host'); ?>/mysql/action_table.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
         <input type="hidden" name="action" value="<?php echo $nameAction; ?>"/>
 
@@ -145,7 +145,7 @@
                 <span><?php echo $title; ?></span>
             </div>
 
-            <ul class="list-database no-box-shadow">
+            <ul class="list-database no-box-shadow<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
                 <?php $indexAssoc = 0; ?>
 
                 <?php while ($assocTable = $appMysqlConnect->fetchAssoc($queryTables)) { ?>
@@ -153,7 +153,7 @@
                     <?php $urlParameterTable .= '&' . PARAMETER_TABLE_URL    . '=' . AppDirectory::rawEncode($assocTable['Name']); ?>
                     <?php $indexAssoc++; ?>
 
-                    <li class="type-table<?php if ($indexAssoc === $numsTables && ($numsTables % 2) !== 0)  { ?> entry-odd<?php } ?><?php if ($numsTables === 1) { ?> entry-only-one<?php } ?>">
+                    <li class="is-end-list-option type-table">
                         <div class="icon">
                             <?php $id = 'table-' . $assocTable['Name']; ?>
 
@@ -163,7 +163,7 @@
                                 id="<?php echo $id; ?>"
                                 value="<?php echo $assocTable['Name']; ?>"
                                 <?php if (in_array($assocTable['Name'], $listTables)) { ?>checked="checked"<?php } ?>
-                                <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                <?php if ($isCountCheckBoxList) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
                             <label for="<?php echo $id; ?>" class="not-content"></label>
                             <a href="info_table.php<?php echo $urlParameterTable; ?>">
                                 <span class="icomoon icon-table"></span>
@@ -175,14 +175,16 @@
                     </li>
                 <?php } ?>
 
-                <li class="checkbox-all">
-                    <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();" checked="checked"/>
-                    <label for="form-list-checked-all-entry">
-                        <span><?php echo lng('mysql.action_table.form.input.checkbox_all_entry'); ?></span>
-                        <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
-                            <span id="form-list-checkall-count"></span>
-                        <?php } ?>
-                    </label>
+                <li class="end-list-option">
+                    <div class="checkbox-all">
+                        <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();" checked="checked"/>
+                        <label for="form-list-checked-all-entry">
+                            <span><?php echo lng('mysql.action_table.form.input.checkbox_all_entry'); ?></span>
+                            <?php if ($isCountCheckBoxList) { ?>
+                                <span id="form-list-checkall-count"></span>
+                            <?php } ?>
+                        </label>
+                    </div>
                 </li>
             </ul>
 

@@ -111,7 +111,7 @@
         <div class="title">
             <span><?php echo lng('mysql.rename_database.title_page'); ?></span>
         </div>
-        <form action="rename_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/rename_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

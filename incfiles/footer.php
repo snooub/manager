@@ -2,7 +2,7 @@
 
             </div>
             <div id="footer">
-                <span>&copy; IzeroCs <?php echo date('Y', time()); ?> | <?php echo Librarys\File\FileInfo::sizeToString(@memory_get_usage() - $memoryUsageBegin); ?></span>
+                <span>&copy; IzeroCs <?php echo date('Y', time()); ?>, <?php echo Librarys\File\FileInfo::sizeToString(@memory_get_usage() - $memoryUsageBegin); ?></span>
             </div>
         </div>
     </body>

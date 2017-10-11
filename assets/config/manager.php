@@ -21,7 +21,7 @@
             'list_file_double' => true,
             'list_database_double' => true,
             'check_password_default' => false,
-            'development' => false,
+            'development' => true,
             'autoload' => true,
         ],
 
@@ -47,8 +47,8 @@
         ],
 
         'tmp' => [
-            'lifetime' => 300,
-            'limit' => 50,
+            'lifetime' => 3600,
+            'limit' => 100,
         ],
 
         'theme' => [

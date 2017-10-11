@@ -82,6 +82,8 @@
         $pagings['total']       = ceil($mysqlNums / $pagings['max']);
     }
 
+    $pagings['is_paging'] = $pagings['max'] > 0 && $pagings['total'] > 1;
+
     $urlBeginPaging = 'list_data.php?' . PARAMETER_DATABASE_URL   . '=' . AppDirectory::rawEncode($appMysqlConnect->getName()) .
                                    '&' . PARAMETER_TABLE_URL      . '=' . AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()) .
                                    '&' . PARAMETER_ORDER_DATA_URL . '=' . AppDirectory::rawEncode($orders['key']);
@@ -121,12 +123,12 @@
             </a>
         </li>
         <?php if ($mysqlNums <= 0) { ?>
-            <li class="empty">
+            <li class="has-first-not-entry empty">
                 <span class="icomoon icon-column"></span>
                 <span><?php echo lng('mysql.list_data.alert.empty_list_data'); ?></span>
             </li>
         <?php } else { ?>
-            <li class="order">
+            <li class="has-first-not-entry order">
                 <?php if ($orders['key'] == ORDER_DATA_ASC) { ?>
                     <span class="current"><?php echo strtoupper(ORDER_DATA_ASC); ?></span>
                     <span class="text">|</span>
@@ -147,7 +149,7 @@
             <?php while ($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery)) { ?>
                 <?php $indexAssoc++; ?>
 
-                <li class="type-column<?php if ($indexAssoc === $pagings['row_on_page'] && ($pagings['row_on_page'] % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($pagings['row_on_page'] === 1) { ?> entry-only-one<?php } ?>">
+                <li class="has-first-not-entry type-column <?php if ($pagings['is_paging']) { ?> is-end-list-option<?php } ?>">
                     <a href="#">
                         <span class="icomoon icon-column"></span>
                     </a>
@@ -157,9 +159,11 @@
                 </li>
             <?php } ?>
 
-            <?php if ($pagings['max'] > 0 && $pagings['total'] > 1) { ?>
-                <li class="paging">
-                    <?php echo $pagePaging->display($pagings['current'], $pagings['total']); ?>
+            <?php if ($pagings['is_paging']) { ?>
+                <li class="end-list-option">
+                    <div class="paging">
+                        <?php echo $pagePaging->display($pagings['current'], $pagings['total']); ?>
+                    </div>
                 </li>
             <?php } ?>
         <?php } ?>

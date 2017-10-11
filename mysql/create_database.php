@@ -58,7 +58,7 @@
         <div class="title">
             <span><?php echo lng('mysql.create_database.title_page'); ?></span>
         </div>
-        <form action="create_database.php" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/create_database.php" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

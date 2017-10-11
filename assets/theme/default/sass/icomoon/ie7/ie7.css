@@ -1,3 +1,9 @@
+.icon-about {
+  *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe937;');
+}
+.icon-cord {
+  *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe91f;');
+}
 .icon-dashboard {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe936;');
 }
@@ -97,9 +103,6 @@
 .icon-help2 {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe904;');
 }
-.icon-about {
-  *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe905;');
-}
 .icon-config {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe902;');
 }
@@ -177,8 +180,5 @@
 }
 .icon-select-arrows {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe923;');
-}
-.icon-cord {
-  *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe91f;');
 }
 

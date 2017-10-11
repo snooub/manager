@@ -98,7 +98,7 @@ gulp.task("compress_js_desktop", function() {
 gulp.task("concat_js", function() {
     gutil.log("Concat file js");
 
-    return gulp.src([ "assets/tmp/onload.unmin.js", "assets/tmp/*.unmin.js" ])
+    return gulp.src([ "assets/tmp/onload.unmin.js", "assets/tmp/progress_bar_body.unmin.js", "assets/tmp/*.unmin.js" ])
                .pipe(concat("app.js"))
                .pipe(gulp.dest("assets/javascript"))
                .pipe(livereload());
@@ -107,7 +107,7 @@ gulp.task("concat_js", function() {
 gulp.task("concat_js_min", function() {
     gutil.log("Concat file js min");
 
-    return gulp.src([ "assets/tmp/onload.unmin.minify.js", "assets/tmp/*.unmin.minify.js" ])
+    return gulp.src([ "assets/tmp/onload.unmin.minify.js", "assets/tmp/progress_bar_body.unmin.minify.js", "assets/tmp/*.unmin.minify.js" ])
                .pipe(concat("app.min.js"))
                .pipe(minifyJs())
                .pipe(gulp.dest("assets/javascript"))

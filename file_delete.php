@@ -87,7 +87,7 @@
                 <span><?php echo lng('file_delete.title_page_file'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } ?>
         </div>
-        <form action="file_delete.php<?php echo $appParameter->toString(); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/file_delete.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

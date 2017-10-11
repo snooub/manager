@@ -109,7 +109,7 @@
         <div class="title">
             <span><?php echo lng('user.setting.title_page'); ?></span>
         </div>
-        <form action="setting.php" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/user/setting.php" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

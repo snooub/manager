@@ -15,9 +15,7 @@
 
     require_once('global.php');
 
-    $title   = lng('mysql.restore_manager.title_page');
-    $themes  = [ env('resource.filename.theme.mysql') ];
-    $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
+    $title = lng('mysql.restore_manager.title_page');
     AppAlert::setID(ALERT_MYSQL_RESTORE_MANAGER);
     requireDefine('mysql_restore_manager');
 
@@ -122,12 +120,13 @@
         }
     }
 
+    $isCountCheckBoxList = AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript');
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 ?>
 
     <?php echo AppAlert::display(); ?>
 
-    <form action="restore_manager.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
+    <form action="<?php echo env('app.http.host'); ?>/mysql/restore_manager.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
         <?php if ($isAction) { ?>
@@ -139,7 +138,7 @@
                 <span><?php echo $title; ?>: <?php echo $appMysqlConnect->getName(); ?></span>
             </div>
 
-            <ul class="list-database no-box-shadow">
+            <ul class="list-database no-box-shadow<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
 
                 <?php if ($countList <= 0) { ?>
                     <li class="empty">
@@ -153,7 +152,7 @@
                         <?php $entryFilename = $listBackups[$i]; ?>
                         <?php $entryFilepath = FileInfo::filterPaths($pathDatabaseBackup . SP . $entryFilename); ?>
 
-                        <li class="type-backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($countList === 1) { ?> entry-only-one<?php } ?>">
+                        <li class="is-end-list-option type-backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($countList === 1) { ?> entry-only-one<?php } ?>">
                             <div class="icon">
                                 <?php $id = 'backup-' . $entryFilename; ?>
                                 <?php $isChecked = in_array($entryFilename, $listRecords); ?>
@@ -164,7 +163,7 @@
                                     id="<?php echo $id; ?>"
                                     value="<?php echo $entryFilename; ?>"
                                     <?php if ($isChecked) { ?>checked="checked"<?php } ?>
-                                    <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                    <?php if ($isCountCheckBoxList) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <span class="icomoon icon-backup"></span>
@@ -182,20 +181,22 @@
                         </li>
                     <?php } ?>
 
-                    <li class="checkbox-all">
-                        <input
-                            type="checkbox"
-                            name="checked_all_entry"
-                            id="form-list-checked-all-entry"
-                            <?php if ($countChecked === $countList) { ?>checked="checked"<?php } ?>
-                            onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
+                    <li class="end-list-option">
+                        <div class="checkbox-all">
+                            <input
+                                type="checkbox"
+                                name="checked_all_entry"
+                                id="form-list-checked-all-entry"
+                                <?php if ($countChecked === $countList) { ?>checked="checked"<?php } ?>
+                                onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
 
-                        <label for="form-list-checked-all-entry">
-                            <span><?php echo lng('mysql.restore_manager.form.input.checkbox_all_entry'); ?></span>
-                            <?php if (AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')) { ?>
-                                <span id="form-list-checkall-count"></span>
-                           <?php } ?>
-                        </label>
+                            <label for="form-list-checked-all-entry">
+                                <span><?php echo lng('mysql.restore_manager.form.input.checkbox_all_entry'); ?></span>
+                                <?php if ($isCountCheckBoxList) { ?>
+                                    <span id="form-list-checkall-count"></span>
+                               <?php } ?>
+                            </label>
+                        </div>
                     </li>
                 <?php } ?>
 

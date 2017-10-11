@@ -34,7 +34,7 @@
         <div class="title">
             <span><?php echo lng('mysql.truncate_data.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
-        <form action="truncate_data.php<?php echo $appParameter->toString(); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/truncate_data.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

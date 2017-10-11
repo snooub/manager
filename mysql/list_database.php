@@ -43,7 +43,7 @@
             <?php while (($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery))) { ?>
                 <?php $indexAssoc++; ?>
 
-                <li class="type-database<?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($mysqlNums === 1) { ?> entry-only-one<?php } ?>">
+                <li class="type-database">
                     <div class="icon">
                         <a href="info_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($mysqlAssoc['Database']); ?>">
                             <span class="icomoon icon-mysql"></span>

@@ -31,9 +31,15 @@ var AutoFocusInputLast = {
     },
 
     addListener: function(element) {
-        element.addEventListener("focus", function() {
-            AutoFocusInputLast.addHastagToForm(element);
-        });
+        if (element.addEventListener) {
+            element.addEventListener("focus", function() {
+                AutoFocusInputLast.addHastagToForm(element);
+            });
+        } else if (element.attachEvent) {
+            element.attachEvent("focus", function() {
+                AutoFocusInputLast.addHastagToForm(element);
+            });
+        }
     },
 
     autoFocusOnHastagUrl: function() {

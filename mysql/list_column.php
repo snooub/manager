@@ -43,7 +43,7 @@
             </a>
         </li>
         <?php if ($mysqlNums <= 0) { ?>
-            <li class="empty">
+            <li class="has-first-not-entry empty">
                 <span class="icomoon icon-column"></span>
                 <span><?php echo lng('mysql.list_column.alert.empty_list_column'); ?></span>
             </li>
@@ -53,7 +53,7 @@
             <?php while ($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery)) { ?>
                 <?php $indexAssoc++; ?>
 
-                <li class="type-column<?php if ($indexAssoc === $mysqlNums && ($mysqlNums % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($mysqlNums === 1) { ?> entry-only-one<?php } ?>">
+                <li class="has-first-not-entry type-column">
                     <a href="#">
                         <span class="icomoon icon-column"></span>
                     </a>

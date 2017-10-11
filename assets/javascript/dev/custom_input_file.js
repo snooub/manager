@@ -3,11 +3,18 @@ var CustomInputFile = {
         if (typeof env.target.nextElementSibling !== "undefined") {
             var nextElement = env.target.nextElementSibling;
             var spanElement = nextElement.getElementsByTagName("span");
+            var innerHTML   = env.target.value;
+            var files       = env.target.files;
+
+            if (files && files.length && files.length > 1) {
+                for (var i = 1; i < files.length; ++i)
+                    innerHTML += ", " + files[i].name;
+            }
 
             if (spanElement !== "undefined" && spanElement.length >= 1)
-                spanElement[0].innerHTML = env.target.value;
+                spanElement[0].innerHTML = innerHTML;
             else
-                nextElement.innerHTML = env.target.value;
+                nextElement.innerHTML = innerHTML;
         }
     },
 

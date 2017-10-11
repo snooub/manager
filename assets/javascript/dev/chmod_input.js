@@ -14,12 +14,17 @@ var ChmodInput = {
         if (typeof ChmodInput.inputChmod === "undefined" || typeof ChmodInput.inputChmodCheckbox === "undefined")
             return;
 
-        ChmodInput.inputChmod.addEventListener("input", function(env) {
+        var inputEvent = function(env) {
             var chmod = ChmodInput.calculatorChmodInput();
 
             if (typeof chmod !== "undefined")
                 ChmodInput.onCheckboxSetChecked(chmod.system, chmod.group, chmod.user);
-        });
+        };
+
+        if (ChmodInput.inputChmod.addEventListener)
+            ChmodInput.inputChmod.addEventListener("input", inputEvent);
+        else if (ChmodInput.inputChmod.attachEvent)
+            ChmodInput.inputChmod.attachEvent("input", inputEvent);
 
         var inputChmodCheckboxElement = ChmodInput.inputChmodCheckbox.getElementsByTagName("input");
 

@@ -161,11 +161,11 @@
 
                 [
                     'alert' => function($value) {
-                        return lng('system.setting_system.alert.tmp_limit_is_large', 'count', 50);
+                        return lng('system.setting_system.alert.tmp_limit_is_large', 'count', 100);
                     },
 
                     'callback' => function($value) {
-                        return $value > 50;
+                        return $value > 100;
                     }
                 ]
             ]
@@ -416,7 +416,7 @@
         <div class="title">
             <span><?php echo lng('system.setting.title_page'); ?></span>
         </div>
-        <form action="setting_system.php" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/system/setting_system.php" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

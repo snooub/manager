@@ -10,7 +10,7 @@ ul.location-path {
     background-color: #ffffff;
     display: block;
 
-    @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
+    @include box-shadow(1px 1px 2px rgba(0, 0, 0, 0.15));
 
     margin-bottom: 15px;
     padding-left: 10px;
@@ -49,22 +49,18 @@ ul.file-list > li {
 }
 
 ul.file-list {
+    $border-color: #e0e0e0;
+
+    overflow: hidden;
     background-color: #ffffff;
-
-    @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
-
     margin: 0;
     margin-bottom: 15px;
     text-align: center;
 
-    &.not-double {
-        li {
-            width: 100% !important;
-        }
-    }
+    @include box-shadow(1px 1px 2px rgba(0, 0, 0, 0.15));
 
     & > li {
-        border-bottom: 1px dashed #e0e0e0;
+        border-bottom: 1px dashed $border-color;
 
         @include box-sizing(border-box);
 
@@ -76,8 +72,40 @@ ul.file-list {
         padding-right: 12px;
         text-align: left;
 
-        &:last-child {
-            border: 0;
+        &.is-end-list-option + li:last-child {
+            border-bottom: 0;
+        }
+
+        &:last-child:not(.is-end-list-option) {
+            border-bottom: 0;
+        }
+
+        @media all and (max-width: 780px) {
+            & {
+                width: 100%;
+            }
+
+            &.is-end-list-option:nth-last-child(2) {
+                border-bottom: 0;
+            }
+        }
+
+        @media all and (min-width: 780px) {
+            &.has-first-not-entry.is-end-list-option:nth-last-child(2):nth-child(even),
+            &.has-first-not-entry.is-end-list-option:nth-last-child(2):nth-child(odd),
+            &.has-first-not-entry.is-end-list-option:nth-last-child(3):nth-child(even) {
+                border-bottom: 0;
+            }
+
+            &.is-end-list-option:nth-last-child(2):not(.has-first-not-entry):nth-child(odd),
+            &.is-end-list-option:nth-last-child(2):not(.has-first-not-entry):nth-child(even),
+            &.is-end-list-option:nth-last-child(3):not(.has-first-not-entry):nth-child(odd) {
+                border-bottom: 0;
+            }
+
+            &:nth-last-child(2):not(.is-end-list-option):not(.back) {
+                border-bottom: 0;
+            }
         }
 
         & > a {
@@ -108,15 +136,55 @@ ul.file-list {
 
         &.back,
         &.empty,
-        &.paging,
-        &.checkbox-all {
+        &.end-list-option {
             margin: 0;
             width: 100%;
         }
 
-        &.checkbox-all label span {
-            line-height: 45px;
-            margin-left: 0;
+        &.end-list-option {
+            border-top: 1px dashed $border-color;
+            float: left;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: auto;
+
+            div {
+                display: block;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 45px;
+                text-align: left;
+            }
+
+            div.checkbox-all {
+                padding-left: 20px;
+                padding-right: 20px;
+
+                input[type=checkbox] + label span {
+                    padding-left: 10px;
+                }
+
+                label span {
+                    line-height: 45px;
+                    margin-left: 0;
+                }
+
+                & + div.paging {
+                    border-top: 1px dashed $border-color;
+                }
+            }
+
+            div.paging {
+                padding-left: 0;
+                padding-right: 0;
+                text-overflow: initial;
+
+                ul.paging {
+                    @include box-shadow(none !important);
+                }
+            }
         }
 
         &.back span.icomoon,
@@ -130,26 +198,11 @@ ul.file-list {
             vertical-align: middle;
         }
 
-        &.paging {
-            padding-left: 0;
-            padding-right: 0;
-            text-overflow: initial;
-        }
-
-        &.paging ul.paging {
-            @include box-shadow(none !important);
-        }
-
         &.type-directory,
         &.type-file,
-        &.empty,
-        &.checkbox-all {
+        &.empty {
             padding-left: 20px;
             padding-right: 20px;
-        }
-
-        &.checkbox-all input[type=checkbox] + label span {
-            padding-left: 10px;
         }
 
         &.type-directory {
@@ -234,30 +287,20 @@ ul.file-list {
                 max-width: 50%;
             }
         }
+    }
 
-        @media all and (max-width: 780px) {
-            & {
-                width: 100%;
+    &.not-double {
+        & > li {
+            width: 100%;
+            border-bottom: 1px dashed $border-color;
+
+            &:nth-last-child(2),
+            &:nth-last-child(3) {
+                border-bottom: 1px dashed $border-color;
             }
 
-            &.entry-odd a.chmod-permission,
-            &.entry-odd div.chmod-size {
-                right: 0;
-            }
-        }
-
-        @media all and (min-width: 780px) {
-            &.entry-odd {
-                width: 100%;
-            }
-
-            &.entry-odd a.chmod-permission,
-            &.entry-odd div.chmod-size {
-                right: 50%;
-            }
-
-            &.entry-only-one a.file-name {
-                max-width: 30%;
+            &:last-child {
+                border-bottom: 0;
             }
         }
     }
@@ -281,7 +324,7 @@ ul.file-info {
     background-color: #ffffff;
     margin-bottom: 15px;
 
-    @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.20));
+    @include box-shadow(1px 1px 2px rgba(0, 0, 0, 0.15));
 
 	width: 100%;
 	text-align: left;

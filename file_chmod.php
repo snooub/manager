@@ -101,7 +101,7 @@
                 <span><?php echo lng('file_chmod.title_page_file'); ?>: <?php echo AppDirectory::getInstance()->getName(); ?></span>
             <?php } ?>
         </div>
-        <form action="file_chmod.php<?php echo $appParameter->toString(); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/file_chmod.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

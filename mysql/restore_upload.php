@@ -16,9 +16,7 @@
 
     require_once('global.php');
 
-    $title   = lng('mysql.restore_upload.title_page');
-    $themes  = [ env('resource.filename.theme.mysql') ];
-    $scripts = [ env('resource.filename.javascript.custom_input_file') ];
+    $title = lng('mysql.restore_upload.title_page');
     AppAlert::setID(ALERT_MYSQL_RESTORE_UPLOAD);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
     requireDefine('mysql_restore_manager');
@@ -111,7 +109,7 @@
         <div class="title">
             <span><?php echo lng('mysql.restore_upload.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
-        <form action="restore_upload.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database-backup" enctype="multipart/form-data">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/restore_upload.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-database-backup" enctype="multipart/form-data">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

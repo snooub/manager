@@ -159,7 +159,7 @@
             </ul>
 
             <div class="about-button-check button-action-box center">
-                <a href="check_update.php?<?php echo PARAMETER_CHECK_URL; ?>">
+                <a href="check_update.php?<?php echo PARAMETER_CHECK_URL; ?>" class="not-autoload">
                     <span><?php echo lng('app.check_update.form.button.check'); ?></span>
                 </a>
             </div>

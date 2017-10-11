@@ -13,7 +13,7 @@
 
     require_once('global.php');
 
-    $title  = lng('mysql.home.title_page');
+    $title = lng('mysql.home.title_page');
     AppAlert::setID(ALERT_MYSQL_HOME);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
 
@@ -84,13 +84,13 @@
     }
 ?>
 
-    <?php echo AppAlert::display(); ?>
+    <?php AppAlert::display(); ?>
 
     <div class="form-action">
         <div class="title">
             <span><?php echo lng('mysql.home.title_page'); ?></span>
         </div>
-        <form action="index.php" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/index.php" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

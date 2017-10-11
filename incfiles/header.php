@@ -41,7 +41,17 @@
                         "<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>"
                     );
 
+                    FormLoadAjax.init(
+                        "<?php echo env('app.http.host'); ?>",
+                        "<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>"
+                    );
+
                     return false;
+                });
+
+                OnLoad.addReload(function() {
+                    UrlLoadAjax.reload();
+                    FormLoadAjax.reload();
                 });
             </script>
         <?php } ?>
@@ -58,7 +68,7 @@
 
         <span id="progress-bar-body"></span>
         <div id="container">
-            <div id="header">
+            <div id="header"<?php if (AppConfig::getInstance()->get('enable_disable.header_fixed') == false) { ?> class="disable-fixed"<?php } ?>>
                 <div id="logo">
                     <a href="<?php echo env('app.http.host'); ?>">
                         <span id="logo" class="icomoon icon-home"></span>
@@ -125,7 +135,7 @@
                             </li>
                         <?php } ?>
                         <li>
-                            <a href="<?php echo env('app.http.host'); ?>/user/exit.php">
+                            <a href="<?php echo env('app.http.host'); ?>/user/exit.php" class="not-autoload">
                                 <span class="icomoon icon-exit"></span>
                             </a>
                         </li>

@@ -166,7 +166,7 @@
         <div class="title">
             <span><?php echo lng('mysql.create_column.title_page'); ?></span>
         </div>
-        <form action="create_column.php<?php echo $appParameter->toString(); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/create_column.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

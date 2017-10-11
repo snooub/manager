@@ -13,6 +13,8 @@
 		el.innerHTML = '<span style="font-family: \'icomoon\'">' + entity + '</span>' + html;
 	}
 	var icons = {
+		'icon-about': '&#xe937;',
+		'icon-cord': '&#xe91f;',
 		'icon-dashboard': '&#xe936;',
 		'icon-backup': '&#xe92a;',
 		'icon-restore': '&#xe92b;',
@@ -46,7 +48,6 @@
 		'icon-folder-open': '&#xe910;',
 		'icon-home': '&#xe906;',
 		'icon-help2': '&#xe904;',
-		'icon-about': '&#xe905;',
 		'icon-config': '&#xe902;',
 		'icon-close': '&#xe900;',
 		'icon-user': '&#xe901;',
@@ -73,7 +74,6 @@
 		'icon-terminal': '&#xea81;',
 		'icon-plus': '&#xe922;',
 		'icon-select-arrows': '&#xe923;',
-		'icon-cord': '&#xe91f;',
 		'0': 0
 		},
 		els = document.getElementsByTagName('*'),

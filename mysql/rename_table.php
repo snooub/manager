@@ -96,7 +96,7 @@
         <div class="title">
             <span><?php echo lng('mysql.rename_table.title_page'); ?></span>
         </div>
-        <form action="rename_table.php<?php echo $appParameter->toString(); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/rename_table.php<?php echo $appParameter->toString(); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

@@ -24,7 +24,7 @@
         <div class="title">
             <span><?php echo lng('mysql.delete_database.title_page'); ?>: <?php echo $appMysqlConnect->getName(); ?></span>
         </div>
-        <form action="delete_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/mysql/delete_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>" method="post">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

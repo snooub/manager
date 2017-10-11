@@ -35,6 +35,7 @@
                 'enable_disable.check_password_default'          => false,
                 'enable_disable.development'                     => false,
                 'enable_disable.autoload'                        => true,
+                'enable_disable.header_fixed'                    => true,
 
                 'login.enable_forgot_password'   => true,
                 'login.enable_lock_count_failed' => true,
