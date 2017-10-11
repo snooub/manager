@@ -1370,6 +1370,19 @@ var FormLoadAjax = {
             },
 
             success: function(data, xhr) {
+                var titleTagBegin = "<title>";
+                var titleTagEnd   = "</title>";
+                var titlePosBegin = data.indexOf(titleTagBegin);
+                var titlePosEnd   = data.indexOf(titleTagEnd);
+
+                if (titlePosBegin !== -1 && titlePosEnd !== -1) {
+                    var titleStr     = data.substr(titlePosBegin + titleTagBegin.length, titlePosEnd - (titlePosBegin + titleTagBegin.length));
+                    var titleElement = document.getElementsByTagName("title");
+
+                    if (titleElement.length && titleElement.length > 0)
+                        titleElement[0].innerHTML = titleStr;
+                }
+
                 var containerTagBegin = "<div id=\"container\">";
                 var containerTagEnd   = "</div>";
                 var containerPosBegin = data.indexOf(containerTagBegin);
@@ -1662,6 +1675,19 @@ var UrlLoadAjax = {
             },
 
             success: function(data, xhr) {
+                var titleTagBegin = "<title>";
+                var titleTagEnd   = "</title>";
+                var titlePosBegin = data.indexOf(titleTagBegin);
+                var titlePosEnd   = data.indexOf(titleTagEnd);
+
+                if (titlePosBegin !== -1 && titlePosEnd !== -1) {
+                    var titleStr     = data.substr(titlePosBegin + titleTagBegin.length, titlePosEnd - (titlePosBegin + titleTagBegin.length));
+                    var titleElement = document.getElementsByTagName("title");
+
+                    if (titleElement.length && titleElement.length > 0)
+                        titleElement[0].innerHTML = titleStr;
+                }
+
                 var containerTagBegin = "<div id=\"container\">";
                 var containerTagEnd   = "</div>";
                 var containerPosBegin = data.indexOf(containerTagBegin);
