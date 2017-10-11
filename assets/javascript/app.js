@@ -200,13 +200,33 @@ var Ajax = {
                 for (var key in options.datas)
                     dataSend.append(key, options.datas[key]);
             } else if (options.dataFormElement && options.dataFormElement.getElementsByTagName) {
-                var inputs = options.dataFormElement.getElementsByTagName("input");
+                var arrays    = [];
+                var inputs    = options.dataFormElement.getElementsByTagName("input");
+                var textareas = options.dataFormElement.getElementsByTagName("textarea");
 
                 if (inputs.length && inputs.length > 0) {
-                    for (var i = 0; i < inputs.length; ++i) {
-                        var input = inputs[i];
+                    for (var i = 0; i < inputs.length; ++i)
+                        arrays.push(inputs[i]);
+                }
 
-                        if (input.type && input.type !== "submit" && input.name) {
+                if (textareas.length && textareas.length > 0) {
+                    for (var i = 0; i < textareas.length; ++i)
+                        arrays.push(textareas[i]);
+                }
+
+                if (arrays.length && arrays.length > 0) {
+                    for (var i = 0; i < arrays.length; ++i) {
+                        var input = arrays[i];
+
+                        if (input.name && input.tagName && input.tagName.toLowerCase() === "textarea") {
+                            var name  = input.name;
+                            var value = input.value;
+
+                            if (value == null || (value.length && value.length <= 0))
+                                value = "";
+
+                            dataSend.append(name, value);
+                        } else if (input.type && input.type !== "submit" && input.name) {
                             if (input.type === "checkbox" || input.type === "radio") {
                                 if (input.checked) {
                                     var value = null;
@@ -214,7 +234,7 @@ var Ajax = {
                                     if (input.value)
                                         value = input.value;
 
-                                    if (value == null || (value.length && value <= 0))
+                                    if (value == null || (value.length && value.length <= 0))
                                         value = "";
 
                                     dataSend.append(input.name, value);
@@ -232,7 +252,7 @@ var Ajax = {
                                 if (input.value)
                                     value = input.value;
 
-                                if (value == null || (value.length && value <= 0))
+                                if (value == null || (value.length && value.length <= 0))
                                     value = "";
 
                                 dataSend.append(input.name, value);
