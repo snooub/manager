@@ -11,7 +11,9 @@
     define('EXISTS_FUNC_SKIP',     2);
     define('EXISTS_FUNC_RENAME',   3);
 
-    set_time_limit(0);
+    if (function_exists('set_time_limit'))
+        @set_time_limit(0);
+
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     $title   = lng('upload.title_page');
