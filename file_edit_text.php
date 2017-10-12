@@ -148,12 +148,12 @@
         if (strcasecmp($name, '.htaccess') === 0) {
             $serverRoot = env('server.document_root');
             $appRoot    = env('app.path.root');
-            $tmp        = env('app.path.tmp');
+            $tmp        = env('app.path.tmp') . SP . md5(rand(1000, 9999));
             $appAbs     = substr($appRoot, strlen($serverRoot) + 1);
             $tmpAbs     = substr($tmp, strlen($appRoot) + 1);
 
             if (FileInfo::isTypeDirectory($tmp) == false)
-                FileInfo::mkdir($tmp);
+                FileInfo::mkdir($tmp, true);
 
             $folderManager    = $appAbs;
             $fileHtaccess     = '.htaccess';
@@ -212,6 +212,9 @@
                 AppAlert::danger(lng('file_edit_text.alert.htaccess_check_error_code', 'code', Request::httpResponseCodeToString($errorResponseCode)));
             else
                 $isSave = true;
+
+            if (FileInfo::isTypeDirectory($tmp))
+                FileInfo::rrmdirSystem($tmp);
         }
 
         if ($isSave) {
@@ -369,7 +372,7 @@
             </a>
         </li>
         <li>
-            <a href="file_download.php<?php echo $appParameter->toString(); ?>">
+            <a href="file_download.php<?php echo $appParameter->toString(); ?>" class="not-autoload">
                 <span class="icomoon icon-download"></span>
                 <span><?php echo lng('file_info.menu_action.download'); ?></span>
             </a>

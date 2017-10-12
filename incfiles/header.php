@@ -2,6 +2,7 @@
 
     use Librarys\App\AppAssets;
     use Librarys\App\AppUser;
+    use Librarys\App\AppAlert;
     use Librarys\App\Config\AppConfig;
     use Librarys\App\Mysql\AppMysqlConfig;
     use Librarys\Http\Request;
@@ -116,7 +117,7 @@
                             </li>
                         <?php } ?>
                         <li>
-                            <a href="<?php echo env('app.http.host'); ?>/auto.php" class="not-autoload">
+                            <a href="<?php echo env('app.http.host'); ?>/auto.php?id=<?php echo AppAlert::getId(); ?>" class="not-autoload">
                                 <span class="icomoon icon-spinner-2<?php if ($autoload == false) { ?> autoload-is-disable<?php } ?>"></span>
                             </a>
                         </li>

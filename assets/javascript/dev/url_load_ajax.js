@@ -108,7 +108,7 @@ var UrlLoadAjax = {
 
             before: function(xhr) {
                 ProgressBarBody.updateProgressCount(0);
-                ProgressBarBody.updateProgressCurrent(30);
+                ProgressBarBody.updateProgressCurrent(20);
                 ProgressBarBody.updateProgressTime(20);
             },
 
@@ -129,10 +129,10 @@ var UrlLoadAjax = {
 
             progress: function(e, xhr) {
                 if (e.lengthComputable == false) {
-                    ProgressBarBody.updateProgressCurrent(70);
+                    ProgressBarBody.updateProgressCurrent(80);
                     ProgressBarBody.updateProgressTime(1);
                 } else {
-                    var percent = (e.loaded / e.total * 70);
+                    var percent = (e.loaded / e.total * 60) + 20;
 
                     if (percent > ProgressBarBody.getProgressCurrent())
                         ProgressBarBody.updateProgressCurrent(percent);
@@ -144,70 +144,14 @@ var UrlLoadAjax = {
             },
 
             success: function(data, xhr) {
-                var titleTagBegin = "<title>";
-                var titleTagEnd   = "</title>";
-                var titlePosBegin = data.indexOf(titleTagBegin);
-                var titlePosEnd   = data.indexOf(titleTagEnd);
-
-                if (titlePosBegin !== -1 && titlePosEnd !== -1) {
-                    var titleStr     = data.substr(titlePosBegin + titleTagBegin.length, titlePosEnd - (titlePosBegin + titleTagBegin.length));
-                    var titleElement = document.getElementsByTagName("title");
-
-                    if (titleElement.length && titleElement.length > 0)
-                        titleElement[0].innerHTML = titleStr;
-                }
-
-                var containerTagBegin = "<div id=\"container\">";
-                var containerTagEnd   = "</div>";
-                var containerPosBegin = data.indexOf(containerTagBegin);
-                var containerPosEnd   = data.lastIndexOf(containerTagEnd);
-
-                if (containerPosBegin === -1 || containerPosEnd === -1)
-                    return;
-
-                ProgressBarBody.updateProgressCurrent(75);
-                ProgressBarBody.repaint();
-
-                for (var i = 0; i < UrlLoadAjax.aLinks.length; ++i) {
-                    if (UrlLoadAjax.aLinks[i].removeEventListener)
-                        UrlLoadAjax.aLinks[i].removeEventListener("click", UrlLoadAjax.eventclick);
-                    else if (UrlLoadAjax.aLinks[i].detachEvent)
-                        UrlLoadAjax.aLinks[i].detachEvent("click", UrlLoadAjax.eventclick);
-                }
-
-                ProgressBarBody.updateProgressCurrent(80);
-                ProgressBarBody.repaint();
-
-                var container        = data.substr(containerPosBegin + containerTagBegin.length, containerPosEnd - (containerPosBegin + containerTagBegin.length));
-                var containerElement = document.getElementById("container");
-
-                ProgressBarBody.updateProgressCurrent(85);
-                ProgressBarBody.repaint();
-
-                containerElement.innerHTML = container;
-
-                ProgressBarBody.updateProgressCurrent(90);
-                ProgressBarBody.repaint();
-
-                if (xhr.responseURL && xhr.responseURL != null && xhr.responseURL.length > 0)
-                    href = xhr.responseURL;
-
-                if (window.history.pushState) {
-                    window.history.pushState({
-                        path: href
-                    }, '', href);
-                } else if (History.pushState) {
-                    History.pushState(null, null, href);
-                }
-
-                ProgressBarBody.updateProgressCurrent(95);
-                ProgressBarBody.repaint();
-
-                if (OnLoad.reonload)
-                    OnLoad.reonload();
-
-                if (OnLoad.reload)
-                    OnLoad.reload();
+                ContentProgressAjax.progress(href, data, xhr, function() {
+                    for (var i = 0; i < UrlLoadAjax.aLinks.length; ++i) {
+                        if (UrlLoadAjax.aLinks[i].removeEventListener)
+                            UrlLoadAjax.aLinks[i].removeEventListener("click", UrlLoadAjax.eventclick);
+                        else if (UrlLoadAjax.aLinks[i].detachEvent)
+                            UrlLoadAjax.aLinks[i].detachEvent("click", UrlLoadAjax.eventclick);
+                    }
+                });
             }
         });
 

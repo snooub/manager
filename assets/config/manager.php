@@ -47,7 +47,7 @@
         ],
 
         'tmp' => [
-            'lifetime' => 3600,
+            'lifetime' => 86400,
             'limit' => 100,
         ],
 

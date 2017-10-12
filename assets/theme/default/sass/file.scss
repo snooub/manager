@@ -259,7 +259,7 @@ ul.file-list {
         &.type-directory a.file-name,
         &.type-file a.file-name {
             display: inline-block;
-            max-width: 55%;
+            max-width: 45%;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -274,17 +274,24 @@ ul.file-list {
             max-width: 95%;
         }
 
+        @media all and (min-width: 780px) {
+            &.type-directory a.file-name,
+            &.type-file a.file-name {
+                max-width: 50%;
+            }
+        }
+
         @media all and (max-width: 340px) {
             &.type-directory a.file-name,
             &.type-file a.file-name {
-                max-width: 55%;
+                max-width: 40%;
             }
         }
 
         @media all and (max-width: 300px) {
             &.type-directory a.file-name,
             &.type-file a.file-name {
-                max-width: 50%;
+                max-width: 35%;
             }
         }
     }

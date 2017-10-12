@@ -131,7 +131,9 @@
 
             $file = FileInfo::fileOpen($this->fileInfo->getFilePath(), 'rb');
 
-            set_time_limit(0);
+            if (function_exists('set_time_limit'))
+                @set_time_limit(0);
+
             FileInfo::fileSeek($file, $seekStart);
 
             while(FileInfo::fileEndOfFile($file) == false) {

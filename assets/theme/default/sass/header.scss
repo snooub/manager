@@ -1,3 +1,9 @@
+@include keyframes(spinnerFrames) {
+    from { @include transform(rotate(0deg)); }
+
+    to { @include transform(rotate(360deg)); }
+}
+
 div#header {
     background-color: #00897b;
 
@@ -24,19 +30,24 @@ div#header {
         text-align: center;
     }
 
-    span#logo {
-        color: #ffffff;
-        font-weight: normal;
-        font-variant: normal;
-        font-weight: 500;
-        font-size: 24px;
-        line-height: 55px;
-        margin: 0;
-        padding: 0;
+    a:link,
+    a:visited,
+    a:active {
+        span#logo {
+            color: #ffffff;
+            font-weight: normal;
+            font-variant: normal;
+            font-weight: 500;
+            font-size: 24px;
+            line-height: 55px;
+            margin: 0;
+            padding: 0;
+        }
     }
 
     a:hover span#logo {
         color: #e0e0e0;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
     }
 
     ul#action,
@@ -62,10 +73,16 @@ div#header {
             padding-left: 5px;
             padding-right: 5px;
 
-            span {
-                color:  #ffffff;
-                font-size: 20px;
-                line-height: 55px;
+            a,
+            a:link,
+            a:visited,
+            a:active {
+                span {
+                    color:  #ffffff;
+                    font-size: 20px;
+                    line-height: 55px;
+                    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+                }
             }
 
             a:hover span,
@@ -73,8 +90,19 @@ div#header {
                 color: #d0d0d0;
             }
 
-            a span.icomoon.autoload-is-disable {
-                color: #a0a0a0;
+            a span.icomoon {
+                &.autoload-is-disable {
+                    color: #00897b;
+                    text-shadow:  1px  1px 1px rgba(255, 255, 255, 0.2),
+                                 -1px -1px 1px rgba(255, 255, 255, 0.2),
+                                  1px -1px 1px rgba(255, 255, 255, 0.2),
+                                 -1px  1px 1px rgba(255, 255, 255, 0.2);
+                }
+
+                &.animation {
+                    display: inline-block;
+                    @include animation(spinnerFrames 1s linear infinite);
+                }
             }
         }
 

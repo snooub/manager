@@ -134,6 +134,9 @@
 
         AppJson::getInstance()->toResult();
     }
+
+    if (Request::isUseManagerDemo())
+        AppAlert::info(lng('user.login.alert.is_use_manager_demo'));
 ?>
 
     <div id="container-login">

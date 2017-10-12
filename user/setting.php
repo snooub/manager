@@ -4,6 +4,7 @@
     use Librarys\App\AppUser;
     use Librarys\App\Config\AppUserConfig;
     use Librarys\Http\Validate;
+    use Librarys\Http\Request;
 
     define('LOADED', 1);
     require_once('global.php');
@@ -85,6 +86,9 @@
                 AppUser::getInstance()->setConfig(AppUserConfig::ARRAY_KEY_PASSWORD, AppUser::createPassword($forms['password_new'])) == false
             ) {
                 AppAlert::danger(lng('user.setting.alert.change_config_password_failed'));
+            } else if (Request::isUseManagerDemo()) {
+                AppUser::getInstance()->exitSession();
+                AppAlert::warning(lng('user.setting.alert.save_change_config_demo_not_permission'), ALERT_USER_LOGIN, 'login.php');
             } else if (AppUser::getInstance()->writeConfig(true) == false) {
                 AppAlert::danger(lng('user.setting.alert.save_change_config_failed'));
             } else {

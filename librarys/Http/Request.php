@@ -213,6 +213,11 @@
             return false;
         }
 
+        public static function isUseManagerDemo()
+        {
+            return strpos(env('app.http.host'), 'demo-manager') !== false;
+        }
+
         public static function isDesktop($checkMethod = true)
         {
             return false;

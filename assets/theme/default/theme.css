@@ -2,8 +2,8 @@
 
 @font-face {
     font-family: 'icomoon';
-  src: url("fonts/icomoon.eot?7batv7");
-  src: url("fonts/icomoon.eot?7batv7#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?7batv7") format("truetype"), url("fonts/icomoon.woff?7batv7") format("woff"), url("fonts/icomoon.svg?7batv7#icomoon") format("svg");
+  src: url("fonts/icomoon.eot?60xmfs");
+  src: url("fonts/icomoon.eot?60xmfs#iefix") format("embedded-opentype"), url("fonts/icomoon.ttf?60xmfs") format("truetype"), url("fonts/icomoon.woff?60xmfs") format("woff"), url("fonts/icomoon.svg?60xmfs#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -20,14 +20,6 @@
   /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
-.icon-about:before {
-    content: "";
-}
-
-.icon-cord:before {
-    content: "";
 }
 
 .icon-dashboard:before {
@@ -158,12 +150,8 @@
     content: "";
 }
 
-.icon-help2:before {
+.icon-help-2:before {
     content: "";
-}
-
-.icon-config:before {
-    content: "";
 }
 
 .icon-close:before {
@@ -178,8 +166,108 @@
     content: "";
 }
 
+.icon-config:before {
+    content: "";
+}
+
 .icon-spinner-2:before {
-    content: "";
+    content: "";
+}
+
+.icon-about:before {
+    content: "";
+}
+
+.icon-secure:before {
+    content: "";
+}
+
+.icon-spinner:before {
+    content: "";
+}
+
+.icon-update:before {
+    content: "";
+}
+
+.icon-help:before {
+    content: "";
+}
+
+.icon-table:before {
+    content: "";
+}
+
+.icon-file-binary:before {
+    content: "";
+}
+
+.icon-copy:before {
+    content: "";
+}
+
+.icon-file:before {
+    content: "";
+}
+
+.icon-back:before {
+    content: "";
+}
+
+.icon-trash:before {
+    content: "";
+}
+
+.icon-folder-download:before {
+    content: "";
+}
+
+.icon-folder-upload:before {
+    content: "";
+}
+
+.icon-folder-create:before {
+    content: "";
+}
+
+.icon-mysql:before {
+    content: "";
+}
+
+.icon-pencil:before {
+    content: "";
+}
+
+.icon-users:before {
+    content: "";
+}
+
+.icon-spinner-bound:before {
+    content: "";
+}
+
+.icon-view:before {
+    content: "";
+}
+
+.icon-terminal:before {
+    content: "";
+}
+
+.icon-plus:before {
+    content: "";
+}
+
+.icon-cord:before {
+    content: "";
+}
+
+.icon-config:before {
+    content: "";
+}
+
+.icon-select-arrows:before {
+    content: "";
 }
 
 .icon-secure:before {
@@ -264,6 +352,18 @@
 
 .icon-select-arrows:before {
     content: "";
+}
+
+.icon-cord:before {
+    content: "";
+}
+
+.icon-cord:before {
+    content: "";
+}
+
+.icon-cord:before {
+    content: "";
 }
 
 body {
@@ -715,6 +815,96 @@ div#container {
     z-index: 0;
 }
 
+@-webkit-keyframes spinnerFrames {
+    from {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes spinnerFrames {
+    from {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-ms-keyframes spinnerFrames {
+    from {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-o-keyframes spinnerFrames {
+    from {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-keyframes spinnerFrames {
+    from {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
 div#header {
     background-color: #00897b;
     -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
@@ -744,7 +934,9 @@ div#header div#logo {
     text-align: center;
 }
 
-div#header span#logo {
+div#header a:link span#logo,
+  div#header a:visited span#logo,
+  div#header a:active span#logo {
     color: #ffffff;
     font-weight: normal;
     font-variant: normal;
@@ -757,6 +949,7 @@ div#header span#logo {
 
 div#header a:hover span#logo {
     color: #e0e0e0;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
 
 div#header ul#action,
@@ -784,10 +977,14 @@ div#header ul#action li {
     padding-right: 5px;
 }
 
-div#header ul#action li span {
+div#header ul#action li a span,
+      div#header ul#action li a:link span,
+      div#header ul#action li a:visited span,
+      div#header ul#action li a:active span {
     color: #ffffff;
     font-size: 20px;
     line-height: 55px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
 
 div#header ul#action li a:hover span,
@@ -796,7 +993,17 @@ div#header ul#action li a:hover span,
 }
 
 div#header ul#action li a span.icomoon.autoload-is-disable {
-    color: #a0a0a0;
+    color: #00897b;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.2), -1px -1px 1px rgba(255, 255, 255, 0.2), 1px -1px 1px rgba(255, 255, 255, 0.2), -1px 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+div#header ul#action li a span.icomoon.animation {
+    display: inline-block;
+    -webkit-animation: spinnerFrames 1s linear infinite;
+    -moz-animation: spinnerFrames 1s linear infinite;
+    -ms-animation: spinnerFrames 1s linear infinite;
+    -o-animation: spinnerFrames 1s linear infinite;
+    animation: spinnerFrames 1s linear infinite;
 }
 
 @media all and (max-width: 260px) {
@@ -2129,7 +2336,7 @@ ul.file-list > li.back a,
     ul.file-list > li.type-directory a.file-name,
     ul.file-list > li.type-file a.file-name {
     display: inline-block;
-    max-width: 55%;
+    max-width: 45%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -2148,17 +2355,24 @@ ul.file-list > li.back a {
     max-width: 95%;
 }
 
+@media all and (min-width: 780px) {
+    ul.file-list > li.type-directory a.file-name,
+      ul.file-list > li.type-file a.file-name {
+        max-width: 50%;
+    }
+}
+
 @media all and (max-width: 340px) {
     ul.file-list > li.type-directory a.file-name,
       ul.file-list > li.type-file a.file-name {
-        max-width: 55%;
+        max-width: 40%;
     }
 }
 
 @media all and (max-width: 300px) {
     ul.file-list > li.type-directory a.file-name,
       ul.file-list > li.type-file a.file-name {
-        max-width: 50%;
+        max-width: 35%;
     }
 }
 
@@ -2560,7 +2774,7 @@ ul.list-database > li.type-database a.name,
     ul.list-database > li.type-column a.name,
     ul.list-database > li.type-backup-record a.name {
     display: inline-block;
-    max-width: 50%;
+    max-width: 45%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -2572,12 +2786,21 @@ ul.list-database > li.type-database a.name,
     }
 }
 
+@media all and (minx-width: 780px) {
+    ul.list-database > li.type-database a.name,
+      ul.list-database > li.type-table a.name,
+      ul.list-database > li.type-column a.name,
+      ul.list-database > li.type-backup-record a.name {
+        max-width: 50%;
+    }
+}
+
 @media all and (max-width: 340px) {
     ul.list-database > li.type-database a.name,
       ul.list-database > li.type-table a.name,
       ul.list-database > li.type-column a.name,
       ul.list-database > li.type-backup-record a.name {
-        max-width: 45%;
+        max-width: 40%;
     }
 }
 
@@ -2586,7 +2809,7 @@ ul.list-database > li.type-database a.name,
       ul.list-database > li.type-table a.name,
       ul.list-database > li.type-column a.name,
       ul.list-database > li.type-backup-record a.name {
-        max-width: 40%;
+        max-width: 35%;
     }
 }
 

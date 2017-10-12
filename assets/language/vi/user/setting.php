@@ -47,7 +47,8 @@
             'change_config_info_failed'              => 'Thay đổi thông tin thất bại',
             'change_config_password_failed'          => 'Thay đổi mật khẩu thất bại',
             'save_change_config_failed'              => 'Lưu lại thay đổi thất bại',
-            'save_change_config_success'             => 'Lưu lại thay đổi thành công, hãy đăng nhập lại'
+            'save_change_config_success'             => 'Lưu lại thay đổi thành công, hãy đăng nhập lại',
+            'save_change_config_demo_not_permission' => 'Lưu lại thay đổi không thể hoạt động với bản demo, hãy đăng nhập lại'
         ]
     ];
 

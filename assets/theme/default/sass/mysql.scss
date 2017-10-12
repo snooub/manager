@@ -274,7 +274,7 @@ ul.list-database {
         &.type-column a.name,
         &.type-backup-record a.name {
             display: inline-block;
-            max-width: 50%;
+            max-width: 45%;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -286,12 +286,21 @@ ul.list-database {
             }
         }
 
+        @media all and (minx-width: 780px) {
+            &.type-database a.name,
+            &.type-table a.name,
+            &.type-column a.name,
+            &.type-backup-record a.name {
+                max-width: 50%;
+            }
+        }
+
         @media all and (max-width: 340px) {
             &.type-database a.name,
             &.type-table a.name,
             &.type-column a.name,
             &.type-backup-record a.name {
-                max-width: 45%;
+                max-width: 40%;
             }
         }
 
@@ -300,7 +309,7 @@ ul.list-database {
             &.type-table a.name,
             &.type-column a.name,
             &.type-backup-record a.name {
-                max-width: 40%;
+                max-width: 35%;
             }
         }
 

@@ -9,11 +9,18 @@
 
     $autoload    = AppConfig::getInstance()->getSystem('enable_disable.autoload');
     $httpReferer = env('app.http.host');
+    $idAlert     = null;
 
     if (isset($_GET['referer']))
         $httpReferer = trim($_GET['referer']);
     else if (isset($_SERVER['HTTP_REFERER']))
         $httpReferer = trim($_SERVER['HTTP_REFERER']);
+
+    if (isset($_GET['id']))
+        $idAlert = addslashes($_GET['id']);
+
+    if ($idAlert == null || empty($idAlert))
+        $idAlert = ALERT_INDEX;
 
     if (isset($_GET['referer']))
         Request::redirect($httpReferer);
@@ -21,11 +28,11 @@
     AppConfig::getInstance()->setSystem('enable_disable.autoload', $autoload == false);
     AppConfig::getInstance()->write(true);
 
-    $httpReferer = 'auto.php?referer=' . $httpReferer;
+    $httpReferer = 'auto.php?referer=' . $httpReferer . '&id=' . $idAlert;
 
     if ($autoload)
-        AppAlert::info(lng('auto.alert.disable_autoload_success'), ALERT_INDEX, $httpReferer);
+        AppAlert::info(lng('auto.alert.disable_autoload_success'), $idAlert, $httpReferer);
     else
-        AppAlert::info(lng('auto.alert.enable_autoload_success'), ALERT_INDEX, $httpReferer);
+        AppAlert::info(lng('auto.alert.enable_autoload_success'), $idAlert, $httpReferer);
 
 ?>

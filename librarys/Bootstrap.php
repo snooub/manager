@@ -77,7 +77,7 @@
                 if (AppConfig::getInstance()->setSystem('http_host', $httpHostApp))
                     AppConfig::getInstance()->write(true);
 
-                AppClean::scanAutoClean(true);
+                AppClean::scanAutoClean(false, false, true, true);
             } else {
                 AppClean::scanAutoClean();
             }

@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: 'icomoon';
-  src:  url('#{$icomoon-font-path}/icomoon.eot?7batv7');
-  src:  url('#{$icomoon-font-path}/icomoon.eot?7batv7#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/icomoon.ttf?7batv7') format('truetype'),
-    url('#{$icomoon-font-path}/icomoon.woff?7batv7') format('woff'),
-    url('#{$icomoon-font-path}/icomoon.svg?7batv7#icomoon') format('svg');
+  src:  url('#{$icomoon-font-path}/icomoon.eot?60xmfs');
+  src:  url('#{$icomoon-font-path}/icomoon.eot?60xmfs#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/icomoon.ttf?60xmfs') format('truetype'),
+    url('#{$icomoon-font-path}/icomoon.woff?60xmfs') format('woff'),
+    url('#{$icomoon-font-path}/icomoon.svg?60xmfs#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -26,16 +26,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-about {
-  &:before {
-    content: $icon-about;
-  }
-}
-.icon-cord {
-  &:before {
-    content: $icon-cord;
-  }
-}
 .icon-dashboard {
   &:before {
     content: $icon-dashboard;
@@ -196,14 +186,9 @@
     content: $icon-home;
   }
 }
-.icon-help2 {
+.icon-help-2 {
   &:before {
-    content: $icon-help2;
-  }
-}
-.icon-config {
-  &:before {
-    content: $icon-config;
+    content: $icon-help-2;
   }
 }
 .icon-close {
@@ -221,9 +206,134 @@
     content: $icon-email;
   }
 }
+.icon-config {
+  &:before {
+    content: $icon-config;
+  }
+}
 .icon-spinner-2 {
   &:before {
     content: $icon-spinner-2;
+  }
+}
+.icon-about {
+  &:before {
+    content: $icon-about;
+  }
+}
+.icon-secure {
+  &:before {
+    content: $icon-secure;
+  }
+}
+.icon-spinner {
+  &:before {
+    content: $icon-spinner;
+  }
+}
+.icon-update {
+  &:before {
+    content: $icon-update;
+  }
+}
+.icon-help {
+  &:before {
+    content: $icon-help;
+  }
+}
+.icon-table {
+  &:before {
+    content: $icon-table;
+  }
+}
+.icon-file-binary {
+  &:before {
+    content: $icon-file-binary;
+  }
+}
+.icon-copy {
+  &:before {
+    content: $icon-copy;
+  }
+}
+.icon-file {
+  &:before {
+    content: $icon-file;
+  }
+}
+.icon-back {
+  &:before {
+    content: $icon-back;
+  }
+}
+.icon-trash {
+  &:before {
+    content: $icon-trash;
+  }
+}
+.icon-folder-download {
+  &:before {
+    content: $icon-folder-download;
+  }
+}
+.icon-folder-upload {
+  &:before {
+    content: $icon-folder-upload;
+  }
+}
+.icon-folder-create {
+  &:before {
+    content: $icon-folder-create;
+  }
+}
+.icon-mysql {
+  &:before {
+    content: $icon-mysql;
+  }
+}
+.icon-pencil {
+  &:before {
+    content: $icon-pencil;
+  }
+}
+.icon-users {
+  &:before {
+    content: $icon-users;
+  }
+}
+.icon-spinner-bound {
+  &:before {
+    content: $icon-spinner-bound;
+  }
+}
+.icon-view {
+  &:before {
+    content: $icon-view;
+  }
+}
+.icon-terminal {
+  &:before {
+    content: $icon-terminal;
+  }
+}
+.icon-plus {
+  &:before {
+    content: $icon-plus;
+  }
+}
+.icon-cord {
+  &:before {
+    content: $icon-cord;
+  }
+}
+.icon-config {
+  &:before {
+    content: $icon-config;
+  }
+}
+.icon-select-arrows {
+  &:before {
+    content: $icon-select-arrows;
   }
 }
 .icon-secure {
@@ -329,6 +439,21 @@
 .icon-select-arrows {
   &:before {
     content: $icon-select-arrows;
+  }
+}
+.icon-cord {
+  &:before {
+    content: $icon-cord;
+  }
+}
+.icon-cord {
+  &:before {
+    content: $icon-cord;
+  }
+}
+.icon-cord {
+  &:before {
+    content: $icon-cord;
   }
 }
 

@@ -15,6 +15,7 @@
         ],
 
         'alert' => [
+            'is_use_manager_demo'            => 'Bạn đang sử dụng phiên bản manager demo, tài khoản: <strong>admin</strong>, mật khẩu: <strong>12345</strong>',
             'lock_count_failed'              => 'Bạn đã đăng nhập sai quá <strong>{$count}</strong> lần, bạn còn <strong>{$time}</strong> nữa để đăng nhập lại',
             'unlock_count'                   => 'Bạn có thể tiếp tục đăng nhập',
             'not_input_username_or_password' => 'Chưa nhập tên đăng nhập hoặc mật khẩu',

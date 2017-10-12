@@ -196,6 +196,11 @@
             return self::$langMsg;
         }
 
+        public static function getId()
+        {
+            return self::$id;
+        }
+
         public static function clean($id = null)
         {
             if ($id == null)

@@ -1,0 +1,88 @@
+<?php
+
+    use Librarys\File\FileInfo;
+
+    define('LOADED', 1);
+    require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
+
+    function pathIgone($path) {
+        $array = [
+            '.git',
+            '.gitattributes',
+            '.gitignore',
+            'gulpfile.js',
+            'package.json',
+            'asset.php',
+            'build.php',
+
+            'assets/backup',
+            'assets/config/manager.php',
+            'assets/config/user.php',
+            'assets/cache',
+            'assets/javascript/desktop',
+            'assets/javascript/dev',
+            'assets/javascript/lib/history.js',
+            'assets/javascript/app.js',
+            'assets/theme/default/sass',
+            'assets/theme/default/theme.css',
+            'assets/theme/default/theme_desktop.css',
+            'assets/theme/default/theme_desktop.min.css',
+            'assets/tmp',
+            'assets/token',
+            'assets/user',
+            'node_modules'
+        ];
+
+        foreach ($array AS $filename) {
+            $filepath = FileInfo::filterPaths(env('app.path.root') . SP . $filename);
+
+            if (strpos($path, $filepath) === 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    function scanBuild($pathSrc, $pathDest) {
+        $handle = FileInfo::scanDirectory($pathSrc);
+
+        if ($handle === false || is_array($handle) == false)
+            return false;
+
+        if (FileInfo::isTypeDirectory($pathDest) == false)
+            FileInfo::mkdir($pathDest, true);
+
+        foreach ($handle AS $filename) {
+            if ($filename != '.' && $filename != '..') {
+                $filepath     = FileInfo::filterPaths($pathSrc  . SP . $filename);
+                $filepathDest = FileInfo::filterPaths($pathDest . SP . $filename);
+
+                if (pathIgone($filepath) == false) {
+                    if (FileInfo::isTypeDirectory($filepath)) {
+                        if (scanBuild($filepath, $filepathDest) == false)
+                            return false;
+                    } else if (FileInfo::copySystem($filepath, $filepathDest) == false) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    };
+
+    $pathSrc  = env('app.path.root');
+    $pathDest = dirname(env('app.path.root')) . SP . 'Distro-Manager' . SP . 'manager';
+
+    if (FileInfo::fileExists($pathDest))
+        FileInfo::rrmdirSystem($pathDest);
+
+    FileInfo::mkdir($pathDest, true);
+
+    if (scanBuild(
+        $pathSrc,
+        $pathDest
+    ))
+        echo 'Build success';
+    else
+        echo 'Build failed';
