@@ -81,7 +81,10 @@
                     $pathStore = $pathRename;
                 }
 
-                if (FileInfo::copyFile($forms['file']['tmp_name'], $pathStore) == false) {
+                if (FileInfo::isTypeDirectory($databaseBackupRestore->getPathDirectoryDatabaseBackup()) == false)
+                    FileInfo::mkdir($databaseBackupRestore->getPathDirectoryDatabaseBackup(), true);
+
+                if (FileInfo::copySystem($forms['file']['tmp_name'], $pathStore) == false) {
                     AppAlert::danger(lng('mysql.restore_upload.alert.store_file_failed', 'name', $forms['file']['name']));
                     $isStoreSuccess = false;
                 } else if ($forms['func_upload'] === FUNC_STORE_FILE) {

@@ -75,7 +75,7 @@
                                 name="tables[]"
                                 id="<?php echo $id; ?>"
                                 value="<?php echo $mysqlAssoc['Name']; ?>"
-                                <?php if ($isCountCheckBoxList) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                <?php if ($isCountCheckBoxList) { ?> onclick="javascript:Main.CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                             <label for="<?php echo $id; ?>" class="not-content"></label>
                             <a href="info_table.php<?php echo $urlParameterTable; ?>">
@@ -98,7 +98,7 @@
 
                 <li class="end-list-option">
                     <div class="checkbox-all">
-                        <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
+                        <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:Main.CheckboxCheckAll.onCheckAll();"/>
                         <label for="form-list-checked-all-entry">
                             <span><?php echo lng('mysql.list_table.form.input.checkbox_all_entry'); ?></span>
                             <?php if ($isCountCheckBoxList) { ?>

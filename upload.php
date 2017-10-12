@@ -172,7 +172,7 @@
                 </li>
 
                 <li class="button">
-                    <button type="button" onclick="javascript:CustomInputFile.onAddMoreInputFile('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');">
+                    <button type="button" onclick="javascript:Main.CustomInputFile.onAddMore('template-input-file', 'file_', '<?php echo lng('upload.form.input.choose_file'); ?>');">
                         <span><?php echo lng('upload.form.button.more'); ?></span>
                     </button>
                     <button type="submit" name="upload" id="button-save-on-javascript">

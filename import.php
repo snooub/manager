@@ -262,7 +262,7 @@
                 </li>
 
                 <li class="button">
-                    <button type="button" onclick="javascript:MoreInputUrl.onAddMoreInputUrl('template-input-url', 'url_', 'label_index');">
+                    <button type="button" onclick="javascript:Main.CustomInputUrl.onAddMore('template-input-url', 'url_', 'label_index');">
                         <span><?php echo lng('import.form.button.more'); ?></span>
                     </button>
                     <button type="submit" name="import" id="button-save-on-javascript">

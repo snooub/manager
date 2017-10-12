@@ -499,7 +499,7 @@
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entryFilename); ?>"
                                         checked="checked"
-                                        <?php if ($isCountCheckBoxList) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                        <?php if ($isCountCheckBoxList) { ?> onclick="javascript:Main.CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <a href="file_info.php?<?php echo $urlEntryDirectory; ?>">
@@ -523,7 +523,7 @@
                                         id="<?php echo $id; ?>"
                                         value="<?php echo AppDirectory::rawEncode($entryFilename); ?>"
                                         checked="checked"
-                                        <?php if ($isCountCheckBoxList) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                        <?php if ($isCountCheckBoxList) { ?> onclick="javascript:Main.CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <span class="icomoon icon-file"></span>
@@ -545,7 +545,7 @@
 
                 <li class="end-list-option">
                     <div class="checkbox-all">
-                        <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:CheckboxCheckAll.onCheckAll();" checked="checked"/>
+                        <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:Main.CheckboxCheckAll.onCheckAll();" checked="checked"/>
                         <label for="form-list-checked-all-entry">
                             <span><?php echo lng('home.checkbox_all_entry'); ?></span>
                             <?php if ($isCountCheckBoxList) { ?>

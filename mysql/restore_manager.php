@@ -163,7 +163,7 @@
                                     id="<?php echo $id; ?>"
                                     value="<?php echo $entryFilename; ?>"
                                     <?php if ($isChecked) { ?>checked="checked"<?php } ?>
-                                    <?php if ($isCountCheckBoxList) { ?> onclick="javascript:CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+                                    <?php if ($isCountCheckBoxList) { ?> onclick="javascript:Main.CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
 
                                 <label for="<?php echo $id; ?>" class="not-content"></label>
                                 <span class="icomoon icon-backup"></span>
@@ -188,7 +188,7 @@
                                 name="checked_all_entry"
                                 id="form-list-checked-all-entry"
                                 <?php if ($countChecked === $countList) { ?>checked="checked"<?php } ?>
-                                onclick="javascript:CheckboxCheckAll.onCheckAll();"/>
+                                onclick="javascript:Main.CheckboxCheckAll.onCheckAll();"/>
 
                             <label for="form-list-checked-all-entry">
                                 <span><?php echo lng('mysql.restore_manager.form.input.checkbox_all_entry'); ?></span>

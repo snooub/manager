@@ -9,6 +9,7 @@ var minifyCss   = require("gulp-cssnano");
 var minifyJs    = require("gulp-uglify");
 var cssbeautify = require("gulp-cssbeautify");
 var del         = require("del");
+var prettify    = require("gulp-js-prettify");
 
 
 gulp.task("compress_js", function() {
@@ -98,7 +99,7 @@ gulp.task("compress_js_desktop", function() {
 gulp.task("concat_js", function() {
     gutil.log("Concat file js");
 
-    return gulp.src([ "assets/tmp/onload.unmin.js", "assets/tmp/progress_bar_body.unmin.js", "assets/tmp/content_progress_ajax.unmin.js", "assets/tmp/*.unmin.js" ])
+    return gulp.src([ "assets/tmp/main.unmin.js"/*, "assets/tmp/onload.unmin.js", "assets/tmp/progress_bar_body.unmin.js", "assets/tmp/content_progress_ajax.unmin.js", "assets/tmp/*.unmin.js" */])
                .pipe(concat("app.js"))
                .pipe(gulp.dest("assets/javascript"))
                .pipe(livereload());
@@ -107,9 +108,10 @@ gulp.task("concat_js", function() {
 gulp.task("concat_js_min", function() {
     gutil.log("Concat file js min");
 
-    return gulp.src([ "assets/tmp/onload.unmin.minify.js", "assets/tmp/progress_bar_body.unmin.minify.js", "assets/tmp/content_progress_ajax.unmin.minify.js", "assets/tmp/*.unmin.minify.js" ])
+    return gulp.src([ "assets/tmp/main.unmin.minify.js"/*, "assets/tmp/onload.unmin.minify.js", "assets/tmp/progress_bar_body.unmin.minify.js", "assets/tmp/content_progress_ajax.unmin.minify.js", "assets/tmp/*.unmin.minify.js" */])
                .pipe(concat("app.min.js"))
                .pipe(minifyJs())
+               // .pipe(prettify({ collapseWhitespace: true }))
                .pipe(gulp.dest("assets/javascript"))
                .pipe(livereload());
 });

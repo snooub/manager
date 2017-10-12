@@ -36,36 +36,28 @@
     <body>
         <?php if ($autoload) { ?>
             <script type="text/javascript">
-                OnLoad.add(function() {
-                    UrlLoadAjax.init(
-                        "<?php echo env('app.http.host'); ?>",
-                        "<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>"
-                    );
+                if (typeof Main !== "undefined" && Main.OnLoad) {
+                    Main.OnLoad.addOnload(function() {
+                        Main.LoadAjax.init(
+                            "<?php echo env('app.http.host'); ?>",
+                            "<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>"
+                        );
 
-                    FormLoadAjax.init(
-                        "<?php echo env('app.http.host'); ?>",
-                        "<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>"
-                    );
+                        Main.LoadAjax.reInitLoadTagA();
+                        Main.LoadAjax.reInitLoadTagForm();
 
-                    return false;
-                });
+                        Main.ButtonSaveOnJs.onload();
+                        Main.CheckboxCheckAll.init("form-list-checkbox-all", "form-list-checked-all-entry", "form-list-checkall-count");
+                        Main.ChmodInput.init("form-input-chmod", "form-input-chmod-checkbox");
+                    });
 
-                OnLoad.addReload(function() {
-                    UrlLoadAjax.reload();
-                    FormLoadAjax.reload();
-                });
+                    Main.OnLoad.addInvoke(function() {
+                        Main.LoadAjax.reInitLoadTagA();
+                        Main.LoadAjax.reInitLoadTagForm();
+                    });
+                }
             </script>
         <?php } ?>
-
-        <script type="text/javascript">
-            OnLoad.add(function() {
-                CheckboxCheckAll.onInitForm("form-list-checkbox-all", "form-list-checked-all-entry", "form-list-checkall-count");
-            });
-
-            OnLoad.add(function() {
-                ChmodInput.onAddEventChmodListener("form-input-chmod", "form-input-chmod-checkbox")
-            });
-        </script>
 
         <span id="progress-bar-body"></span>
         <div id="container">
