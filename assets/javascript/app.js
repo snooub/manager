@@ -316,7 +316,7 @@ var Ajax = {
                                     dataSend.append(input.name, value);
                                 }
                             } else if (input.type === "file") {
-                                var files = input[input.name];
+                                var files = input.files;
 
                                 if (files && files.length && files.length > 0) {
                                     for (var j = 0; j < files.length; ++j)
