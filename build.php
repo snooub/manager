@@ -3,6 +3,7 @@
     use Librarys\File\FileInfo;
 
     define('LOADED', 1);
+    set_time_limit(0);
     require_once('incfiles' . DIRECTORY_SEPARATOR . 'global.php');
 
     function pathIgone($path) {
