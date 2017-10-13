@@ -1,6 +1,7 @@
 <?php
 
     use Librarys\File\FileInfo;
+    use Librarys\Zip\PclZip;
 
     define('LOADED', 1);
     set_time_limit(0);
@@ -70,7 +71,26 @@
         }
 
         return true;
-    };
+    }
+
+    function zipBuild($filepath, $pathDest) {
+        if (FileInfo::fileExists($filepath))
+            FileInfo::unlink($filepath);
+
+        $zip    = new PclZip($filepath);
+        $handle = FileInfo::scanDirectory($pathDest);
+
+        foreach ($handle AS $filename) {
+            if ($filename != '.' && $filename != '..') {
+                $entryPath = FileInfo::filterPaths($pathDest . SP . $filename);
+
+                if ($zip->add($entryPath, PCLZIP_OPT_REMOVE_PATH, $pathDest) == false)
+                    return false;
+            }
+        }
+
+        return true;
+    }
 
     $pathSrc  = env('app.path.root');
     $pathDest = dirname(env('app.path.root')) . SP . 'Distro-Manager' . SP . 'manager';
@@ -87,3 +107,17 @@
         echo 'Build success';
     else
         echo 'Build failed';
+
+    echo '<br/>';
+
+    if (zipBuild(FileInfo::filterPaths($pathDest . SP . 'bin.zip'), $pathDest))
+        echo 'Zip bin success';
+    else
+        echo 'Zip bin failed';
+
+    echo '<br/>';
+
+    if (zipBuild(FileInfo::filterPaths($pathDest . SP . 'additional.zip'), $pathDest))
+        echo 'Zip additional success';
+    else
+        echo 'Zip additional failed';

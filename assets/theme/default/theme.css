@@ -368,7 +368,7 @@
 
 body {
     background-color: #e3e3e3;
-    font-family: Geneva, Tahoma, Verdana, sans-serif;
+    font-family: Helvetica, Arial, "Liberation Sans", sans-serif;
     font-size: 15px;
     margin: 0;
     padding: 0;
@@ -460,6 +460,7 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 input,
 textarea {
     outline: none;
+    font-family: Helvetica, Arial, "Liberation Sans", sans-serif;
 }
 
 input:focus, input:hover,
@@ -1746,7 +1747,7 @@ div#container-login form#login-form > ul li.button button, div#container-login f
     border: 0;
     outline: 0;
     font-size: 15px;
-    font-family: Geneva, Tahoma, Verdana, sans-serif;
+    font-family: Helvetica, Arial, "Liberation Sans", sans-serif;
     display: inline-block;
     width: 49%;
     height: 55px;

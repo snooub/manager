@@ -46,6 +46,10 @@
                         Main.LoadAjax.reInitLoadTagA();
                         Main.LoadAjax.reInitLoadTagForm();
 
+                        return false;
+                    });
+
+                    Main.OnLoad.addOnload(function() {
                         Main.ButtonSaveOnJs.onload();
                         Main.CheckboxCheckAll.init("form-list-checkbox-all", "form-list-checked-all-entry", "form-list-checkall-count");
                         Main.ChmodInput.init("form-input-chmod", "form-input-chmod-checkbox");

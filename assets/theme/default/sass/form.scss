@@ -48,6 +48,7 @@ input {
 input,
 textarea {
     outline: none;
+    font-family: $font-family;
 
     &:focus, &:hover {
         outline: none;

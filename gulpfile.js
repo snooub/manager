@@ -26,6 +26,7 @@ gulp.task("compress_js", function() {
                         this.emit("end");
                     }
                }))
+               .pipe(livereload())
                .pipe(minifyJs())
                .pipe(plumber({
                     errorHandler: function(error) {
@@ -54,6 +55,7 @@ gulp.task("compress_js_lib", function() {
                         this.emit("end");
                     }
                }))
+               .pipe(livereload())
                .pipe(minifyJs())
                .pipe(plumber({
                     errorHandler: function(error) {
@@ -82,6 +84,7 @@ gulp.task("compress_js_lib", function() {
 //                         this.emit("end");
 //                     }
 //                }))
+//                .pipe(livereload())
 //                .pipe(minifyJs())
 //                .pipe(plumber({
 //                     errorHandler: function(error) {
@@ -136,6 +139,7 @@ gulp.task("sass", function() {
                .pipe(cssbeautify())
                .pipe(rename("theme.css"))
                .pipe(gulp.dest("assets/theme/default"))
+               .pipe(livereload())
                .pipe(minifyCss())
                .pipe(rename("theme.min.css"))
                .pipe(gulp.dest("assets/theme/default"))
@@ -162,6 +166,7 @@ gulp.task("sass", function() {
 //                .pipe(cssbeautify())
 //                .pipe(rename("theme_desktop.css"))
 //                .pipe(gulp.dest("assets/theme/default"))
+//                .pipe(livereload())
 //                .pipe(minifyCss())
 //                .pipe(rename("theme_desktop.min.css"))
 //                .pipe(gulp.dest("assets/theme/default"))

@@ -537,50 +537,45 @@ var Main = (function() {
                 element.click();
         }
 
-        return {
-            init: function() {
-                if (element == null)
-                    element = getElementById("button-save-on-javascript");
-            },
+        function eventKeydown(event) {
+            if (event.which) {
+                if (event.which === WHICH_KEY_S && event.ctrlKey && event.ctrlKey == true) {
+                    isKeyS = true;
+                    event.preventDefault();
 
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function eventKeyup(event) {
+            if (event.which && event.which == WHICH_KEY_CTRL) {
+                isKeyCtrl = false;
+
+                if (isKeyS == true) {
+                    isKeyS = false;
+                    saveActionEvent();
+                    event.preventDefault();
+
+                    return true;
+                }
+            }
+
+            event.preventDefault();
+            return false;
+        }
+
+        return {
             onload: function() {
-                buttonSaveOnJs.init();
+                element = getElementById("button-save-on-javascript");
 
                 if (element === null || typeof element === "undefined" || typeof element.click === "undefined")
                     return;
 
-                var keydown = function(event) {
-                    if (event.which) {
-                        if (event.which === WHICH_KEY_S && event.ctrlKey && event.ctrlKey == true) {
-                            isKeyS = true;
-                            event.preventDefault();
-
-                            return false;
-                        }
-                    }
-
-                    return true;
-                };
-
-                var keyup = function(event) {
-                    if (event.which && event.which == WHICH_KEY_CTRL) {
-                        isKeyCtrl = false;
-
-                        if (isKeyS == true) {
-                            isKeyS = false;
-                            saveActionEvent();
-                            event.preventDefault();
-
-                            return true;
-                        }
-                    }
-
-                    event.preventDefault();
-                    return false;
-                };
-
-                addListener(window, EVENT_KEYDOWN, keydown, true);
-                addListener(window, EVENT_KEYUP,   keyup,   true);
+                addListener(window, EVENT_KEYDOWN, eventKeydown, true);
+                addListener(window, EVENT_KEYUP,   eventKeyup,   true);
             }
         };
     })();
