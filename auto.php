@@ -1,6 +1,7 @@
 <?php
 
     use Librarys\App\AppAlert;
+    use Librarys\App\AppDirectory;
     use Librarys\App\Config\AppConfig;
     use Librarys\Http\Request;
 
@@ -12,9 +13,9 @@
     $idAlert     = null;
 
     if (isset($_GET['referer']))
-        $httpReferer = trim($_GET['referer']);
+        $httpReferer = AppDirectory::rawDecode(trim($_GET['referer']));
     else if (isset($_SERVER['HTTP_REFERER']))
-        $httpReferer = trim($_SERVER['HTTP_REFERER']);
+        $httpReferer = AppDirectory::rawEncode(trim($_SERVER['HTTP_REFERER']));
 
     if (isset($_GET['id']))
         $idAlert = addslashes($_GET['id']);

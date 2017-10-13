@@ -1,1 +1,0 @@
-define(function(n){return{rawEncode:function(n){return encodeURIComponent(n)},rawDecode:function(n){return decodeURIComponent(n)}}});

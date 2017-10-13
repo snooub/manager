@@ -32,7 +32,7 @@
 
     if (AppUserConfig::getInstance()->hasEntryConfigArraySystem() == false) {
         $idAlert = ALERT_USER_LOGIN;
-        $urlGoto = $httpHostApp . '/user/login.php';
+        $urlGoto = env('app.http.host') . '/user/login.php';
 
         if (AppUser::getInstance()->createFirstUser())
             AppAlert::success(lng('default.global.create_first_user_success', 'username', AppUser::USERNAME_CREATE_FIRST, 'password', AppUser::PASSWORD_CREATE_FIRST), $idAlert, $urlGoto);

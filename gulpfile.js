@@ -68,38 +68,38 @@ gulp.task("compress_js_lib", function() {
                .pipe(livereload());
 });
 
-gulp.task("compress_js_desktop", function() {
-    gutil.log("Js desktop is change");
+// gulp.task("compress_js_desktop", function() {
+//     gutil.log("Js desktop is change");
 
-    return gulp.src("assets/javascript/dev/desktop/**/*.js")
-               .pipe(rename({
-                    extname: ".js"
-               }))
-               .pipe(gulp.dest("assets/javascript/desktop"))
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(minifyJs())
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(rename({
-                    extname: ".min.js"
-               }))
-               .pipe(gulp.dest("assets/javascript/desktop"))
-               .pipe(livereload());
-});
+//     return gulp.src("assets/javascript/dev/desktop/**/*.js")
+//                .pipe(rename({
+//                     extname: ".js"
+//                }))
+//                .pipe(gulp.dest("assets/javascript/desktop"))
+//                .pipe(plumber({
+//                     errorHandler: function(error) {
+//                         gutil.log(error.toString());
+//                         this.emit("end");
+//                     }
+//                }))
+//                .pipe(minifyJs())
+//                .pipe(plumber({
+//                     errorHandler: function(error) {
+//                         gutil.log(error.toString());
+//                         this.emit("end");
+//                     }
+//                }))
+//                .pipe(rename({
+//                     extname: ".min.js"
+//                }))
+//                .pipe(gulp.dest("assets/javascript/desktop"))
+//                .pipe(livereload());
+// });
 
 gulp.task("concat_js", function() {
     gutil.log("Concat file js");
 
-    return gulp.src([ "assets/tmp/main.unmin.js"/*, "assets/tmp/onload.unmin.js", "assets/tmp/progress_bar_body.unmin.js", "assets/tmp/content_progress_ajax.unmin.js", "assets/tmp/*.unmin.js" */])
+    return gulp.src([ "assets/tmp/main.unmin.js" ])
                .pipe(concat("app.js"))
                .pipe(gulp.dest("assets/javascript"))
                .pipe(livereload());
@@ -108,7 +108,7 @@ gulp.task("concat_js", function() {
 gulp.task("concat_js_min", function() {
     gutil.log("Concat file js min");
 
-    return gulp.src([ "assets/tmp/main.unmin.minify.js"/*, "assets/tmp/onload.unmin.minify.js", "assets/tmp/progress_bar_body.unmin.minify.js", "assets/tmp/content_progress_ajax.unmin.minify.js", "assets/tmp/*.unmin.minify.js" */])
+    return gulp.src([ "assets/tmp/main.unmin.minify.js" ])
                .pipe(concat("app.min.js"))
                .pipe(minifyJs())
                // .pipe(prettify({ collapseWhitespace: true }))
@@ -142,31 +142,31 @@ gulp.task("sass", function() {
                .pipe(livereload());
 });
 
-gulp.task("sass_desktop", function() {
-    gutil.log("Css desktop is change");
+// gulp.task("sass_desktop", function() {
+//     gutil.log("Css desktop is change");
 
-    return gulp.src("assets/theme/default/sass/desktop/theme.scss")
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(sass())
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(cssbeautify())
-               .pipe(rename("theme_desktop.css"))
-               .pipe(gulp.dest("assets/theme/default"))
-               .pipe(minifyCss())
-               .pipe(rename("theme_desktop.min.css"))
-               .pipe(gulp.dest("assets/theme/default"))
-               .pipe(livereload());
-});
+//     return gulp.src("assets/theme/default/sass/desktop/theme.scss")
+//                .pipe(plumber({
+//                     errorHandler: function(error) {
+//                         gutil.log(error.toString());
+//                         this.emit("end");
+//                     }
+//                }))
+//                .pipe(sass())
+//                .pipe(plumber({
+//                     errorHandler: function(error) {
+//                         gutil.log(error.toString());
+//                         this.emit("end");
+//                     }
+//                }))
+//                .pipe(cssbeautify())
+//                .pipe(rename("theme_desktop.css"))
+//                .pipe(gulp.dest("assets/theme/default"))
+//                .pipe(minifyCss())
+//                .pipe(rename("theme_desktop.min.css"))
+//                .pipe(gulp.dest("assets/theme/default"))
+//                .pipe(livereload());
+// });
 
 gulp.task("clone_icomoon_font", function() {
     gutil.log("Font icomoon is change");
@@ -181,10 +181,10 @@ gulp.task("watch", function() {
     livereload.listen();
 
     gulp.watch([ "assets/theme/default/sass/*.scss", "assets/theme/default/sass/icomoon/*.scss" ], [ "sass" ]);
-    gulp.watch([ "assets/theme/default/sass/desktop/*.scss" ], [ "sass_desktop" ]);
+    // gulp.watch([ "assets/theme/default/sass/desktop/*.scss" ], [ "sass_desktop" ]);
     gulp.watch([ "assets/javascript/dev/*.js" ], [ "compress_js" ]);
     gulp.watch([ "assets/javascript/dev/lib/**/*.js" ], [ "compress_js_lib" ]);
-    gulp.watch([ "assets/javascript/dev/desktop/**/*.js" ], [ "compress_js_desktop" ]);
+    // gulp.watch([ "assets/javascript/dev/desktop/**/*.js" ], [ "compress_js_desktop" ]);
     gulp.watch([ "assets/tmp/*.unmin.js" ], [ "concat_js" ]);
     gulp.watch([ "assets/tmp/*.unmin.minify.js" ], [ "concat_js_min" ]);
     gulp.watch([ "assets/theme/default/sass/icomoon/fonts/*.*"], [ "clone_icomoon_font" ]);
@@ -192,10 +192,10 @@ gulp.task("watch", function() {
 
 gulp.task("default", [
     "sass",
-    "sass_desktop",
+    // "sass_desktop",
     "compress_js",
     "compress_js_lib",
-    "compress_js_desktop",
+    // "compress_js_desktop",
     "concat_js",
     "concat_js_min",
     "clone_icomoon_font",

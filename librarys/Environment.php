@@ -38,9 +38,12 @@
                 if ($this->isUpdateCache == false)
                     return;
 
-                $cacheConfig = new AppEnvironmentCacheConfig($this->cacheFilePath);
-                $cacheConfig->setConfigArraySystem($this->cache);
-                $cacheConfig->write(true);
+               if (FileInfo::isTypeDirectory($this->cacheDirectory) == false)
+                   FileInfo::mkdir($this->cacheDirectory, true);
+
+               $cacheConfig = new AppEnvironmentCacheConfig($this->cacheFilePath);
+               $cacheConfig->setConfigArraySystem($this->cache);
+               $cacheConfig->write(true);
             });
         }
 
