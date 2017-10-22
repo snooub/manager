@@ -138,7 +138,10 @@
 
         public function setCharset($charset)
         {
-            return @mysql_set_charset($charset);
+            $this->query('SET NAMES "' . $charset . '"');
+            $this->query('SET CHARACTER SET ' . $charset);
+
+            return true;
         }
 
         public function errorConnect()

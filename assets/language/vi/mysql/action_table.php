@@ -50,11 +50,13 @@
 
             'delete' => [
                 'delete_table_failed' => 'Xóa bảng <strong>{$name}</strong> thất bại: <strong>{$error}</strong>',
+                'delete_failed'       => 'Xóa nhiều bảng thất bại',
                 'delete_success'      => 'Xóa nhiều bảng thành công'
             ],
 
             'truncate' => [
                 'truncate_table_failed' => 'Xóa sạch dữ liệu bảng <strong>{$name}</strong> thất bại: <strong>{$error}</strong>',
+                'truncate_failed'       => 'Xóa sạch dữ liệu nhiều bảng thất bại'
                 'truncate_success'      => 'Xóa sạch dữ liệu nhiều bảng thành công'
             ],
 

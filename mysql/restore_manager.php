@@ -138,7 +138,7 @@
                 <span><?php echo $title; ?>: <?php echo $appMysqlConnect->getName(); ?></span>
             </div>
 
-            <ul class="list-database no-box-shadow<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
+            <ul class="list no-box-shadow<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
 
                 <?php if ($countList <= 0) { ?>
                     <li class="empty">
@@ -152,7 +152,7 @@
                         <?php $entryFilename = $listBackups[$i]; ?>
                         <?php $entryFilepath = FileInfo::filterPaths($pathDatabaseBackup . SP . $entryFilename); ?>
 
-                        <li class="is-end-list-option type-backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($countList === 1) { ?> entry-only-one<?php } ?>">
+                        <li class="is-end-list-option backup-record<?php if ($i + 1 === $countList && ($countList % 2) !== 0) { ?> entry-odd<?php } ?><?php if ($countList === 1) { ?> entry-only-one<?php } ?>">
                             <div class="icon">
                                 <?php $id = 'backup-' . $entryFilename; ?>
                                 <?php $isChecked = in_array($entryFilename, $listRecords); ?>

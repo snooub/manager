@@ -439,7 +439,6 @@
                         <?php } ?>
                     </ul>
                 </li>
-
                 <li class="button">
                     <button type="submit" name="save" id="button-save-on-javascript">
                         <span><?php echo lng('system.setting_system.form.button.save'); ?></span>
@@ -467,6 +466,12 @@
             <a href="<?php echo env('app.http.host'); ?>/user/setting.php">
                 <span class="icomoon icon-config"></span>
                 <span><?php echo lng('system.setting.menu_action.setting_profile'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo env('app.http.host'); ?>/system/setting_theme.php">
+                <span class="icomoon icon-theme"></span>
+                <span><?php echo lng('system.setting.menu_action.setting_theme'); ?></span>
             </a>
         </li>
     </ul>

@@ -40,9 +40,9 @@
     <form action="<?php echo env('app.http.host'); ?>/mysql/action_table.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
-        <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
+        <ul class="list<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
             <?php if ($appMysqlConnect->isDatabaseNameCustom()) { ?>
-                <li class="back">
+                <li class="database back">
                     <a href="info_database.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_IS_REFERER_LIST_TABLE; ?>=1">
                         <span class="icomoon icon-mysql"></span>
                     </a>
@@ -66,7 +66,7 @@
                     <?php $urlParameterTable .= '&' . PARAMETER_TABLE_URL    . '=' . AppDirectory::rawEncode($mysqlAssoc['Name']); ?>
                     <?php $indexAssoc++; ?>
 
-                    <li class="has-first-not-entry is-end-list-option type-table">
+                    <li class="has-first-not-entry is-end-list-option table">
                         <div class="icon">
                             <?php $id = 'table-' . $mysqlAssoc['Name']; ?>
 

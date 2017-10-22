@@ -13,12 +13,6 @@
     define('DATABASE_CHECK_MYSQL', 1);
     define('TABLE_CHECK_MYSQL',    1);
 
-    define('PARAMETER_PAGE_DATA_URL',  'page_data');
-    define('PARAMETER_ORDER_DATA_URL', 'order_data');
-
-    define('ORDER_DATA_DESC', 'desc');
-    define('ORDER_DATA_ASC',  'asc');
-
     require_once('global.php');
 
     use Librarys\App\AppAlert;
@@ -44,6 +38,7 @@
     $title  = lng('mysql.list_data.title_page');
     AppAlert::setID(ALERT_MYSQL_LIST_DATA);
     require_once(ROOT . 'incfiles' . SP . 'header.php');
+    requireDefine('mysql_action_data');
 
     $orders = [
         'key'   => ORDER_DATA_DESC,
@@ -104,7 +99,9 @@
                     'ORDER BY `' . $mysqlBy . '` ' . $orders['query'];
     }
 
-    $mysqlQuery = $appMysqlConnect->query($mysqlStr);
+    $mysqlQuery          = $appMysqlConnect->query($mysqlStr);
+    $mysqlQueryColumn    = $appMysqlConnect->query('SHOW COLUMNS FROM `' . addslashes($appMysqlConnect->getTableCurrent()) . '`');
+    $isCountCheckBoxList = AppConfig::getInstance()->get('enable_disable.count_checkbox_file_javascript');
 ?>
 
     <?php echo AppAlert::display(); ?>
@@ -113,61 +110,115 @@
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
     </div>
 
-    <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
-        <li class="back">
-            <a href="info_table.php<?php echo $appParameter->toString(); ?>">
-                <span class="icomoon icon-table"></span>
-            </a>
-            <a href="list_table.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>&<?php echo PARAMETER_TABLE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()); ?>">
-                <span><?php echo $appMysqlConnect->getTableCurrent(); ?></span>
-            </a>
-        </li>
-        <?php if ($mysqlNums <= 0) { ?>
-            <li class="has-first-not-entry empty">
-                <span class="icomoon icon-column"></span>
-                <span><?php echo lng('mysql.list_data.alert.empty_list_data'); ?></span>
+    <?php $appParameter->add(PARAMETER_ORDER_DATA_URL, $orders['key'],      true); ?>
+    <?php $appParameter->add(PARAMETER_PAGE_DATA_URL,  $pagings['current'], true); ?>
+
+    <form action="<?php echo env('app.http.host'); ?>/mysql/action_data.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
+        <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
+        <input type="hidden" name="by" value="<?php echo AppDirectory::rawEncode($mysqlBy); ?>"/>
+
+        <ul class="list<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
+            <li class="database back">
+                <a href="info_table.php<?php echo $appParameter->toString(); ?>">
+                    <span class="icomoon icon-table"></span>
+                </a>
+                <a href="list_table.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getName()); ?>&<?php echo PARAMETER_TABLE_URL; ?>=<?php echo AppDirectory::rawEncode($appMysqlConnect->getTableCurrent()); ?>">
+                    <span><?php echo $appMysqlConnect->getTableCurrent(); ?></span>
+                </a>
             </li>
-        <?php } else { ?>
-            <li class="has-first-not-entry order">
-                <?php if ($orders['key'] == ORDER_DATA_ASC) { ?>
-                    <span class="current"><?php echo strtoupper(ORDER_DATA_ASC); ?></span>
-                    <span class="text">|</span>
-                    <a href="list_data.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ORDER_DATA_URL; ?>=<?php echo ORDER_DATA_DESC; ?>">
-                        <span class="choose"><?php echo strtoupper(ORDER_DATA_DESC); ?></span>
-                    </a>
-                <?php } else { ?>
-                    <a href="list_data.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ORDER_DATA_URL; ?>=<?php echo ORDER_DATA_ASC; ?>">
-                        <span class="choose"><?php echo strtoupper(ORDER_DATA_ASC); ?></span>
-                    </a>
-                    <span class="text">|</span>
-                    <span class="current"><?php echo strtoupper(ORDER_DATA_DESC); ?></span>
-                <?php } ?>
-            </li>
-
-            <?php $indexAssoc = 0; ?>
-
-            <?php while ($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery)) { ?>
-                <?php $indexAssoc++; ?>
-
-                <li class="has-first-not-entry type-column <?php if ($pagings['is_paging']) { ?> is-end-list-option<?php } ?>">
-                    <a href="#">
-                        <span class="icomoon icon-column"></span>
-                    </a>
-                    <a href="#">
-                        <span><?php echo $mysqlAssoc[$mysqlBy]; ?></span>
-                    </a>
+            <?php if ($mysqlNums <= 0) { ?>
+                <li class="has-first-not-entry empty">
+                    <span class="icomoon icon-column"></span>
+                    <span><?php echo lng('mysql.list_data.alert.empty_list_data'); ?></span>
                 </li>
-            <?php } ?>
+            <?php } else { ?>
+                <li class="has-first-not-entry order">
+                    <?php if ($orders['key'] == ORDER_DATA_ASC) { ?>
+                        <span class="current"><?php echo strtoupper(ORDER_DATA_ASC); ?></span>
+                        <span class="text">|</span>
+                        <a href="list_data.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ORDER_DATA_URL; ?>=<?php echo ORDER_DATA_DESC; ?>">
+                            <span class="choose"><?php echo strtoupper(ORDER_DATA_DESC); ?></span>
+                        </a>
+                    <?php } else { ?>
+                        <a href="list_data.php<?php echo $appParameter->toString(); ?>&<?php echo PARAMETER_ORDER_DATA_URL; ?>=<?php echo ORDER_DATA_ASC; ?>">
+                            <span class="choose"><?php echo strtoupper(ORDER_DATA_ASC); ?></span>
+                        </a>
+                        <span class="text">|</span>
+                        <span class="current"><?php echo strtoupper(ORDER_DATA_DESC); ?></span>
+                    <?php } ?>
+                </li>
 
-            <?php if ($pagings['is_paging']) { ?>
-                <li class="end-list-option">
-                    <div class="paging">
-                        <?php echo $pagePaging->display($pagings['current'], $pagings['total']); ?>
+                <li class="data">
+                    <div>
+                        <table>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="checked_all_entry" id="form-list-checked-all-entry" onclick="javascript:Main.CheckboxCheckAll.onCheckAll();"/>
+                                    <label for="form-list-checked-all-entry" class="not-content"></label>
+                                </td>
+
+                                <?php while ($mysqlAssocColumn = $appMysqlConnect->fetchAssoc($mysqlQueryColumn)) { ?>
+                                    <td>
+                                        <span><?php echo $mysqlAssocColumn['Field']; ?></span>
+                                    </td>
+                                <?php } ?>
+                            </tr>
+
+                            <?php $index = 0; ?>
+                            <?php while ($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery)) { ?>
+                                <?php $appParameter->add(PARAMETER_DATA_KEY_URL,   AppDirectory::rawEncode($mysqlBy), true); ?>
+                                <?php $appParameter->add(PARAMETER_DATA_VALUE_URL, AppDirectory::rawEncode($mysqlAssoc[$mysqlBy]), true); ?>
+
+                                <tr onclick="javascript:window.location.href='edit_data.php<?php echo $appParameter->toString(true); ?>'">
+                                    <?php $id = 'data-' . ($index++) . '-' . $mysqlAssoc[$mysqlBy]; ?>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            name="datas[]"
+                                            id="<?php echo $id; ?>"
+                                            value="<?php echo $mysqlAssoc[$mysqlBy]; ?>"
+                                            onclick="event.stopPropagation();"
+                                            <?php if ($isCountCheckBoxList) { ?> onclick="javascript:Main.CheckboxCheckAll.onCheckItem('<?php echo $id; ?>')"<?php } ?>/>
+
+                                        <label for="<?php echo $id; ?>" class="not-content" onclick="event.stopPropagation();"></label>
+                                    </td>
+
+                                    <?php foreach ($mysqlAssoc AS $data) { ?>
+                                        <td>
+                                            <span><?php echo substr($data, 0, 100); ?></span>
+                                        </td>
+                                    <?php } ?>
+                                </tr>
+                            <?php } ?>
+
+                            <?php $appParameter->remove(PARAMETER_DATA_KEY_URL); ?>
+                            <?php $appParameter->remove(PARAMETER_DATA_VALUE_URL); ?>
+                            <?php $appParameter->toString(true); ?>
+                        </table>
                     </div>
                 </li>
+
+                <?php if ($pagings['is_paging']) { ?>
+                    <li class="end-list-option">
+                        <div class="paging">
+                            <?php echo $pagePaging->display($pagings['current'], $pagings['total']); ?>
+                        </div>
+                    </li>
+                <?php } ?>
             <?php } ?>
-        <?php } ?>
-    </ul>
+        </ul>
+
+        <ul class="action-multi">
+            <li>
+                <button type="submit" name="action" value="<?php echo MYSQL_ACTION_DATA_DELETE_MULTI; ?>">
+                    <span class="icomoon icon-trash"></span>
+                    <span class="label"><?php echo lng('mysql.list_data.action_multi.delete'); ?></span>
+                </button>
+            </li>
+        </ul>
+    </form>
+    <?php $appParameter->remove(PARAMETER_ORDER_DATA_URL); ?>
+    <?php $appParameter->remove(PARAMETER_PAGE_DATA_URL); ?>
 
     <ul class="menu-action">
         <li>

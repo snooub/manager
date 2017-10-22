@@ -59,7 +59,7 @@
     <?php $appLocationPath->display(); ?>
     <?php $imageSize = null; ?>
 
-    <ul class="file-info">
+    <ul class="info">
         <li class="title">
             <?php if ($isDirectory) { ?>
                 <span><?php echo lng('file_info.title_page_directory'); ?></span>

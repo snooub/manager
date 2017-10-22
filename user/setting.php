@@ -176,6 +176,12 @@
                 </a>
             </li>
         <?php } ?>
+        <li>
+            <a href="<?php echo env('app.http.host'); ?>/system/setting_theme.php">
+                <span class="icomoon icon-theme"></span>
+                <span><?php echo lng('system.setting.menu_action.setting_theme'); ?></span>
+            </a>
+        </li>
     </ul>
 
 <?php require_once(ROOT . 'incfiles' . SP . 'footer.php'); ?>

@@ -22,10 +22,23 @@
     };
 
     $enabledDisabledToString = function($value) {
+        if ($value === null)
+            return 'Unknown';
+
         if (!!$value)
             return 'Enabled';
 
         return 'Disabled';
+    };
+
+    $moduleLoad = function($name) {
+        if (function_exists('apache_get_modules') == false)
+            return null;
+
+        if (in_array($name, apache_get_modules()) !== false)
+            return true;
+
+        return false;
     };
 
     $infos = [
@@ -124,7 +137,25 @@
         ],
 
         [
-            'title' => 'Support',
+            'title' => 'Module apache load',
+
+            'labels' => [
+                'deflate:',
+                'dir:',
+                'filter:',
+                'rewrite:',
+            ],
+
+            'values' => [
+                $enabledDisabledToString($moduleLoad('mod_deflate')),
+                $enabledDisabledToString($moduleLoad('mod_dir')),
+                $enabledDisabledToString($moduleLoad('mod_filter')),
+                $enabledDisabledToString($moduleLoad('mod_rewrite'))
+            ]
+        ],
+
+        [
+            'title' => 'Extension load',
 
             'labels' => [
                 'exif:',
@@ -201,7 +232,10 @@
                 <li class="value">
                     <ul>
                         <?php foreach ($arrs['values'] AS $value) { ?>
-                            <li><span><?php echo $value; ?></span></li>
+                            <?php $classHighlight = null; ?>
+                            <?php if (strpos('on off enabled disabled unknown', strtolower($value)) !== false) $classHighlight = ' class="status-' . strtolower($value) . '"'; ?>
+
+                            <li><span<?php echo $classHighlight; ?>><?php echo $value; ?></span></li>
                         <?php } ?>
                     </ul>
                 </li>

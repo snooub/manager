@@ -119,6 +119,19 @@
             $root = FileInfo::filterPaths(env('SERVER.DOCUMENT_ROOT'));
             $path = FileInfo::filterPaths($this->applicationPath);
 
+            if (is_link($root)) {
+                $rootLink = readlink($root);
+                $rootTmp  = null;
+
+                if (strpos($rootLink, '.' . SP) !== false)
+                    $rootTmp = dirname($root);
+
+                $rootTmp = FileInfo::filterPaths(realpath($rootTmp . SP . $rootLink));
+
+                if (empty($rootTmp) == false)
+                    $root = $rootTmp;
+            }
+
             if (strpos($path, SP) !== false) {
                 $split    = explode(SP, $path);
                 $count    = count($split);

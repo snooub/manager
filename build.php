@@ -25,10 +25,15 @@
             'assets/javascript/dev',
             'assets/javascript/lib/history.js',
             'assets/javascript/app.js',
+            'assets/theme/include',
             'assets/theme/default/sass',
+            'assets/theme/transparent/sass',
             'assets/theme/default/theme.css',
+            'assets/theme/transparent/theme.css',
             'assets/theme/default/theme_desktop.css',
+            'assets/theme/transparent/theme_desktop.css',
             'assets/theme/default/theme_desktop.min.css',
+            'assets/theme/transparent/theme_desktop.min.css',
             'assets/tmp',
             'assets/token',
             'assets/user',
@@ -81,7 +86,7 @@
         $handle = FileInfo::scanDirectory($pathDest);
 
         foreach ($handle AS $filename) {
-            if ($filename != '.' && $filename != '..') {
+            if ($filename != '.' && $filename != '..' && $filename != 'bin.zip') {
                 $entryPath = FileInfo::filterPaths($pathDest . SP . $filename);
 
                 if ($zip->add($entryPath, PCLZIP_OPT_REMOVE_PATH, $pathDest) == false)

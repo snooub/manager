@@ -298,7 +298,7 @@
         <div class="title">
             <span><?php echo lng('system.setting.title_page'); ?></span>
         </div>
-        <form action="<?php echo env('app.http.host'); ?>/system/setting.php" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/system/setting.php" method="post" class="not-autoload">
 	        <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
             <input type="hidden" name="http_referer" value="<?php echo $forms['http_referer']; ?>"/>
 
@@ -372,6 +372,12 @@
             <a href="<?php echo env('app.http.host'); ?>/user/setting.php">
                 <span class="icomoon icon-config"></span>
                 <span><?php echo lng('system.setting.menu_action.setting_profile'); ?></span>
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo env('app.http.host'); ?>/system/setting_theme.php">
+                <span class="icomoon icon-theme"></span>
+                <span><?php echo lng('system.setting.menu_action.setting_theme'); ?></span>
             </a>
         </li>
     </ul>

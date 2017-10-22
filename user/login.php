@@ -144,7 +144,7 @@
 
         <?php if ($isLockCountStatus == false) { ?>
             <div id="login">
-                <form action="<?php echo env('app.http.host'); ?>/user/login.php" method="post" id="login-form" autocomplete="off">
+                <form action="<?php echo env('app.http.host'); ?>/user/login.php" method="post" id="login-form" autocomplete="off" class="not-autoload">
                     <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
                     <ul>

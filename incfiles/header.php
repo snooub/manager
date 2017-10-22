@@ -19,7 +19,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
+        <title><?php if (isset($title)) echo $title; ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noindex, nofollow, noodp, nodir"/>
@@ -34,14 +34,12 @@
         <script type="text/javascript" src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.app')); ?>"></script>
     </head>
     <body>
-        <?php if ($autoload) { ?>
-            <script type="text/javascript">
-                if (typeof Main !== "undefined" && Main.OnLoad) {
+        <script type="text/javascript">
+            if (typeof Main !== "undefined" && Main.OnLoad) {
+                <?php if (AppConfig::getInstance()->get('enable_disable.autoload')) { ?>
                     Main.OnLoad.addOnload(function() {
-                        Main.LoadAjax.init(
-                            "<?php echo env('app.http.host'); ?>",
-                            "<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>"
-                        );
+                        Main.initHistoryScript("<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>");
+                        Main.LoadAjax.init("<?php echo env('app.http.host'); ?>");
 
                         Main.LoadAjax.reInitLoadTagA();
                         Main.LoadAjax.reInitLoadTagForm();
@@ -49,19 +47,29 @@
                         return false;
                     });
 
-                    Main.OnLoad.addOnload(function() {
-                        Main.ButtonSaveOnJs.onload();
-                        Main.CheckboxCheckAll.init("form-list-checkbox-all", "form-list-checked-all-entry", "form-list-checkall-count");
-                        Main.ChmodInput.init("form-input-chmod", "form-input-chmod-checkbox");
-                    });
-
                     Main.OnLoad.addInvoke(function() {
                         Main.LoadAjax.reInitLoadTagA();
                         Main.LoadAjax.reInitLoadTagForm();
                     });
-                }
-            </script>
-        <?php } ?>
+                <?php } ?>
+
+                Main.OnLoad.addOnload(function() {
+                    <?php if (AppConfig::getInstance()->get('enable_disable.button_save_on_javascript')) { ?>
+                        Main.ButtonSaveOnJs.onload();
+                    <?php } ?>
+
+                    <?php if (AppConfig::getInstance()->get('enable_disable.auto_focus_input_last')) { ?>
+                        //Main.AutoFocusInputLast.onload();
+                    <?php } ?>
+
+                    Main.CustomInputFile.onload();
+                    Main.EditorHighlight.init("editor-highlight");
+                    Main.CheckboxCheckAll.init("form-list-checkbox-all", "form-list-checked-all-entry", "form-list-checkall-count");
+                    Main.ChmodInput.init("form-input-chmod", "form-input-chmod-checkbox");
+                    Main.AutoChooseTypeFolderFile.init("form-create-directory-file");
+                });
+            }
+        </script>
 
         <span id="progress-bar-body"></span>
         <div id="container">

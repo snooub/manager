@@ -10,7 +10,7 @@
         'form' => [
             'input' => [
                 'path_copy'              => 'Đường dẫn sao chép đến:',
-                'name_copy'              => 'Tên sap chép đến:',
+                'name_copy'              => 'Tên sao chép đến:',
                 'radio_action_copy'      => 'Sao chép',
                 'radio_action_move'      => 'Di chuyển',
                 'if_has_entry_is_exists' => 'Nếu có thư mục hoặc tập tin đã tồn tại:',

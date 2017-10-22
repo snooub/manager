@@ -121,7 +121,7 @@
         <div class="title">
             <span><?php echo lng('create.title_page'); ?></span>
         </div>
-        <form action="<?php echo env('app.http.host'); ?>/create.php<?php echo $appParameter->toString(); ?>" method="post">
+        <form action="<?php echo env('app.http.host'); ?>/create.php<?php echo $appParameter->toString(); ?>" method="post" id="form-create-directory-file">
             <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
             <ul class="form-element">

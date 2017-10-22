@@ -59,7 +59,6 @@
     else
         AppAlert::danger(lng('file_action.alert.action_not_validate'), ALERT_INDEX, 'index.php');
 
-    $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
     AppAlert::setID(ALERT_FILE_ACTION);
 
     $forms = [
@@ -477,7 +476,7 @@
                 <span><?php echo $title; ?></span>
             </div>
 
-            <ul class="file-list no-box-shadow<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double') == false) { ?> not-double<?php } ?>">
+            <ul class="list no-box-shadow<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double') == false) { ?> not-double<?php } ?>">
                 <?php $indexLoop      = 0; ?>
                 <?php $countLoopEntry = 0; ?>
 
@@ -487,7 +486,7 @@
                     <?php if (FileInfo::permissionDenyPath($entryPath)) { ?>
 
                     <?php } else if (FileInfo::isTypeDirectory($entryPath)) { ?>
-                        <li class="is-end-list-option type-directory <?php if ($isOddEntrys && $indexLoop + 1 === $countEntrys) { ?> entry-odd<?php } ?>">
+                        <li class="is-end-list-option directory <?php if ($isOddEntrys && $indexLoop + 1 === $countEntrys) { ?> entry-odd<?php } ?>">
                             <?php $urlEntryDirectory = AppDirectory::PARAMETER_DIRECTORY_URL . '=' . AppDirectory::rawEncode($entryPath); ?>
 
                             <div class="icon">
@@ -513,7 +512,7 @@
 
                         <?php $countLoopEntry++; ?>
                     <?php } else if (FileInfo::isTypeFile($entryPath)) { ?>
-                        <li class="is-end-list-option type-file <?php if ($isOddEntrys && $indexLoop + 1 === $countEntrys) { ?> entry-odd<?php } ?>">
+                        <li class="is-end-list-option file <?php if ($isOddEntrys && $indexLoop + 1 === $countEntrys) { ?> entry-odd<?php } ?>">
                             <div class="icon">
                                 <?php $id = 'file-' . AppDirectory::rawEncode($entryFilename); ?>
 

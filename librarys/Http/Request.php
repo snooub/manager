@@ -197,6 +197,30 @@
             return null;
         }
 
+        public static function scheme()
+        {
+            $requestScheme = 'http';
+
+            // If server using reverce proxy
+            if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp(trim($_SERVER['HTTP_X_FORWARDED_PROTO']), 'https') === 0) {
+                $requestScheme = 'https';
+            } else if (isset($_SERVER['HTTP_HTTPS']) || isset($_SERVER['HTTPS'])) {
+                $httpHttps = null;
+
+                if (isset($_SERVER['HTTPS']))
+                    $httpHttps = trim($_SERVER['HTTPS']);
+                else if (isset($_SERVER['HTTP_HTTPS']))
+                    $httpHttps = trim($_SERVER['HTTP_HTTPS']);
+
+                if (empty($httpHttps))
+                    $requestScheme = 'http';
+                else if (strcasecmp($httpHttps, 'on') === 0 || strcasecmp($httpHttps, '1') || $httpHttps == true)
+                    $requestScheme = 'https';
+            }
+
+            return $requestScheme;
+        }
+
         public static function isLocal($igoneWebLocal = false)
         {
             $host = $_SERVER['HTTP_HOST'];

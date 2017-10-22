@@ -30,7 +30,7 @@
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
     </div>
 
-    <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
+    <ul class="list<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
         <?php if ($mysqlNums <= 0) { ?>
             <li class="empty">
                 <span class="icomoon icon-mysql"></span>
@@ -38,12 +38,9 @@
             </li>
         <?php } else { ?>
             <?php $mysqlAssoc = null; ?>
-            <?php $indexAssoc = 0; ?>
 
             <?php while (($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery))) { ?>
-                <?php $indexAssoc++; ?>
-
-                <li class="type-database">
+                <li class="database">
                     <div class="icon">
                         <a href="info_database.php?<?php echo PARAMETER_DATABASE_URL; ?>=<?php echo AppDirectory::rawEncode($mysqlAssoc['Database']); ?>">
                             <span class="icomoon icon-mysql"></span>

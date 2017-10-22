@@ -97,8 +97,12 @@
 				$this->port
 			);
 
-            if ($this->extensionObject->isResource($this->resource))
-                $this->extensionObject->setCharset($this->resource, $this->encoding);
+            if ($this->extensionObject->isResource($this->resource)) {
+                if (empty($this->encoding))
+                    $this->extensionObject->setCharset('uft8');
+                else
+                    $this->extensionObject->setCharset($this->encoding);
+            }
 
             $this->registerShutdown();
 

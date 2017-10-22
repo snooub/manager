@@ -71,23 +71,23 @@
         $countSuccess = $countTables;
 
         foreach ($listTables AS $tableName) {
-            if ($appMysqlConnect->query('DROP TABLE `' . addslashes($tableName)) == false) {
+            if ($appMysqlConnect->query('DROP TABLE `' . addslashes($tableName) . '`') == false) {
                 $isFailed = true;
                 $countSuccess--;
-                AppAlert::danger(lng('mysql.action_table.alert.DELETE.delete_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
+                AppAlert::danger(lng('mysql.action_table.alert.delete.delete_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
             }
         }
 
         if ($isFailed == false)
             AppAlert::success(lng('mysql.action_table.alert.delete.delete_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
         else if ($countTables > 1 && $countSuccess > 0)
-            AppAlert::success(lng('mysql.action_table.alert.delete.delete_success'));
+            AppAlert::success(lng('mysql.action_table.alert.delete.delete_failed'));
     } else if (isset($_POST['truncate_button'])) {
         $isFailed     = false;
         $countSuccess = $countTables;
 
         foreach ($listTables AS $tableName) {
-            if ($appMysqlConnect->query('TRUNCATE TABLE `' . addslashes($tableName)) == false) {
+            if ($appMysqlConnect->query('TRUNCATE TABLE `' . addslashes($tableName) . '`') == false) {
                 $isFailed = true;
                 $countSuccess--;
                 AppAlert::danger(lng('mysql.action_table.alert.truncate.truncate_table_failed', 'name', $tableName, 'error', $appMysqlConnect->error()));
@@ -97,7 +97,7 @@
         if ($isFailed == false)
             AppAlert::success(lng('mysql.action_table.alert.truncate.truncate_success'), ALERT_MYSQL_LIST_TABLE, 'list_table.php' . $appParameter->toString());
         else if ($countTables > 1 && $countSuccess > 0)
-            AppAlert::success(lng('mysql.action_table.alert.truncate.truncate_success'));
+            AppAlert::success(lng('mysql.action_table.alert.truncate.truncate_failed'));
     } else if (isset($_POST['backup_button'])) {
         $isFailed                    = false;
         $countSuccess                = $countTables;
@@ -131,7 +131,7 @@
         $forms['backup']['filename'] = stripslashes($forms['backup']['filename']);
     }
 
-    $isCountCheckBoxList = AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript')
+    $isCountCheckBoxList = AppConfig::getInstance()->get('enable_disable.count_checkbox_mysql_javascript');
 ?>
 
     <?php AppAlert::display(); ?>
@@ -145,15 +145,12 @@
                 <span><?php echo $title; ?></span>
             </div>
 
-            <ul class="list-database no-box-shadow<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
-                <?php $indexAssoc = 0; ?>
-
+            <ul class="list no-box-shadow<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
                 <?php while ($assocTable = $appMysqlConnect->fetchAssoc($queryTables)) { ?>
                     <?php $urlParameterTable  = '?' . PARAMETER_DATABASE_URL . '=' . AppDirectory::rawEncode($appMysqlConnect->getName()); ?>
                     <?php $urlParameterTable .= '&' . PARAMETER_TABLE_URL    . '=' . AppDirectory::rawEncode($assocTable['Name']); ?>
-                    <?php $indexAssoc++; ?>
 
-                    <li class="is-end-list-option type-table">
+                    <li class="is-end-list-option table">
                         <div class="icon">
                             <?php $id = 'table-' . $assocTable['Name']; ?>
 

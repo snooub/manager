@@ -6,6 +6,43 @@ var Main = (function() {
     var EVENT_KEYUP   = "keyup";
     var EVENT_INPUT   = "input";
     var EVENT_SUBMIT  = "submit";
+    var EVENT_CHANGE  = "change";
+    var EVENT_SCROLL  = "scroll";
+
+    function initHistoryScript(historyScriptLink) {
+        if (!window.history.pushState && !History.pushState && historyScriptLink != null) {
+            var head = getElementsByTagName("head");
+
+            if (head.length > 0) {
+                var history       = document.createElement("script");
+                    history.type  = "text/javascript";
+                    history.async = true;
+                    history.src   = historyScriptLink;
+
+                head[0].appendChild(history);
+            }
+
+            addListener(window, EVENT_KEYDOWN, function(e) {
+                if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) {
+                    var href      = window.location.href;
+                    var hastagPos = href.indexOf("#");
+
+                    if (hastagPos !== -1)
+                        href = httpHost + "/" + href.substr(hastagPos + 1);
+
+                    window.location.href = href;
+
+                    e.preventDefault();
+                } else {
+                    return true;
+                }
+
+                return false;
+            }, true);
+
+            historyScriptLink = null;
+        }
+    }
 
     function addListener(object, event, handle, isRemove) {
         if (typeof isRemove !== "undefined" && isRemove)
@@ -25,14 +62,14 @@ var Main = (function() {
     }
 
     function getElementById(id, element) {
-        if (typeof element === "undefined")
+        if (typeof element === "undefined" || element == null)
             element = document;
 
         return element.getElementById(id);
     }
 
     function getElementsByTagName(tagName, element) {
-        if (typeof element === "undefined")
+        if (element == null || typeof element === "undefined")
             element = document;
 
         return element.getElementsByTagName(tagName);
@@ -87,12 +124,23 @@ var Main = (function() {
         }
     }
 
+    function isMobileDevice() {
+        return "ontouchstart" in window || "onmsgesturechange" in window;
+    }
+
     // OnLoad
     var onLoad = (function() {
-        var onloads = [];
-        var invokes = [];
+        var onloads      = [];
+        var invokes      = [];
+        var loopCount    = 0;
+        var loopInterval = null;
 
         function runHandle(arrays) {
+            if (loopInterval != null) {
+                clearInterval(loopInterval);
+                loopInterval = null;
+            }
+
             var removes = [];
 
             for (var i = 0; i < arrays.length; ++i) {
@@ -116,6 +164,15 @@ var Main = (function() {
 
         return {
             run: function() {
+                loopInterval = setInterval(function() {
+                    if (++loopCount >= 200) {
+                        clearInterval(loopInterval);
+                        throw 'Crash loop';
+                    } else {
+                        console.log("Success load, not loop");
+                    }
+                }, 10);
+
                 addListener(window, EVENT_LOAD, onLoad.reOnload, true);
             },
 
@@ -399,12 +456,17 @@ var Main = (function() {
                 var hastagIndexHrefLocation = hrefLocation.lastIndexOf("#");
                 var hastagValue             = null;
 
+                if (hastagIndexHrefLocation === -1 && window.location.hash && window.location.hash != null) {
+                    hrefLocation           += window.location.hash;
+                    hastagIndexHrefLocation = hrefLocation.lastIndexOf("#");
+                }
+
                 if (hastagIndexHrefLocation !== -1) {
                     hastagValue = hrefLocation.substring(hastagIndexHrefLocation + 1);
 
                     cleanAutoFocusElement();
                     putAutoFocusElementName(hastagValue, true);
-                } else if (eelements.length && eelements.length > 0) {
+                } else if (elements.length && elements.length > 0) {
                     cleanAutoFocusElement();
                     putAutoFocusElement(elements[0]);
                 }
@@ -415,22 +477,14 @@ var Main = (function() {
             var element = this;
 
             if (element.form && typeof element.form !== "undefined") {
-                var actionForm   = getAttribute(element, "action");
-                var hrefLocation = window.location.href;
-                var nameElement  = element.name;
+                var actionForm  = getAttribute(element.form, "action");
+                var nameElement = element.name;
 
                 if (actionForm !== null && actionForm.length > 0) {
                     var hastagIndexAction = actionForm.lastIndexOf("#");
 
                     if (hastagIndexAction !== -1)
                         actionForm = actionForm.substring(0, hastagIndexAction);
-                }
-
-                if (hrefLocation !== null && hrefLocation.length > 0) {
-                    var hastagIndexHrefLocation = hrefLocation.lastIndexOf("#");
-
-                    if (hastagIndexHrefLocation !== -1)
-                        hrefLocation = hrefLocation.substring(0, hastagIndexHrefLocation);
                 }
 
                 if (typeof nameElement !== "undefined" && nameElement !== null)
@@ -475,7 +529,7 @@ var Main = (function() {
                 var nameElement = element.name;
 
                 if (typeof nameElement !== "undefined" && nameElement !== null)
-                    nameElement = element.tagName.toLowerCase() + "_" + nameElement;
+                    nameElement = element.tagName.toLowerCase() + "_" + nameElement.toLowerCase();
                 else
                     nameElement = element.tagName.toLowerCase();
 
@@ -590,7 +644,7 @@ var Main = (function() {
         var countCheckboxItem = 0;
 
         function putCountCheckedItem() {
-            if (isValidateVariable() == false)
+            if (isValidateVariable() == false || typeof textCount === "undefined" || textCount === null)
                 return;
 
             if (countCheckedItem > 0)
@@ -629,10 +683,10 @@ var Main = (function() {
         }
 
         function isValidateVariable() {
-            if (typeof form === "undefined" || typeof checkall === "undefined" || typeof textCount === "undefined")
+            if (typeof form === "undefined" || typeof checkall === "undefined")
                 return false;
 
-            if (form === null || checkall === null || textCount === null)
+            if (form === null || checkall === null)
                 return false;
 
             return true;
@@ -896,6 +950,8 @@ var Main = (function() {
 
     // CustomInputFile
     var customInputFile =  (function() {
+        var elements = [];
+
         function onChangeInputFileEventListener(env) {
             if (typeof env.target.nextElementSibling !== "undefined") {
                 var nextElement = env.target.nextElementSibling;
@@ -917,14 +973,19 @@ var Main = (function() {
 
         return {
             onload: function() {
-                var inputs = getElementsByTagName("input");
+                if (elements.length && elements.length > 0) {
+                    for (var i = 0; i < elements.length; ++i)
+                        removeListener(elements[i], EVENT_CHANGE, onChangeInputFileEventListener);
+                }
 
-                if (typeof inputs !== "undefined" && inputs.length > 0) {
-                    for (var i = 0; i < inputs.length; ++i) {
-                        var entry = inputs[i];
+                elements = getElementsByTagName("input");
+
+                if (typeof elements !== "undefined" && elements.length > 0) {
+                    for (var i = 0; i < elements.length; ++i) {
+                        var entry = elements[i];
 
                         if (entry.type && entry.type.toLowerCase() === "file")
-                            entry.onchange = onChangeInputFileEventListener;
+                            addListener(entry, EVENT_CHANGE, onChangeInputFileEventListener, true);
                     }
                 }
             },
@@ -1175,41 +1236,6 @@ var Main = (function() {
             onLoad.reInvoke();
         }
 
-        function reInitHistoryScript() {
-            if (!window.history.pushState && !History.pushState && historyScriptLink != null) {
-                var head = getElementsByTagName("head");
-
-                if (head.length > 0) {
-                    var history       = document.createElement("script");
-                        history.type  = "text/javascript";
-                        history.async = true;
-                        history.src   = historyScriptLink;
-
-                    head[0].appendChild(history);
-                }
-
-                addListener(window, EVENT_KEYDOWN, function(e) {
-                    if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) {
-                        var href      = window.location.href;
-                        var hastagPos = href.indexOf("#");
-
-                        if (hastagPos !== -1)
-                            href = httpHost + "/" + href.substr(hastagPos + 1);
-
-                        window.location.href = href;
-
-                        e.preventDefault();
-                    } else {
-                        return true;
-                    }
-
-                    return false;
-                }, true);
-
-                historyScriptLink = null;
-            }
-        }
-
         function processUrl(url) {
             if (url.indexOf && url.indexOf(httpHost) === -1) {
                 var strHttp  = "http://";
@@ -1344,11 +1370,8 @@ var Main = (function() {
         }
 
         return {
-            init: function(__httpHost, __historyScriptLink) {
-                httpHost           = __httpHost;
-                historyScriptLink  = __historyScriptLink;
-
-                reInitHistoryScript();
+            init: function(__httpHost) {
+                httpHost = __httpHost;
             },
 
             reInitLoadTagA: function() {
@@ -1409,17 +1432,540 @@ var Main = (function() {
         };
     })();
 
+    var chooseTheme = (function() {
+        var origin = null;
+
+        return {
+            preview: function(url) {
+                var head  = getElementsByTagName("head");
+                var style = null;
+
+                if (!head.length || head.length <= 0)
+                    return;
+
+                head = head[0];
+                style = getElementsByTagName("link", head);
+
+                if (!style.length || style.length <= 0)
+                    return;
+
+                for (var i = 0; i < style.length; ++i) {
+                    var rel = getAttribute(style[i], "rel");
+
+                    if (rel != null && rel.length && rel.indexOf("stylesheet") !== -1) {
+                        style = style[i];
+                        break;
+                    }
+                }
+
+                if (style.href) {
+                    if (origin === null)
+                        origin = style.href;
+
+                    style.href = url;
+                }
+            }
+        };
+    })();
+
+    var autoChooseTypeFolderFile = (function() {
+        var inputName       = null;
+        var radioTypeFolder = null;
+        var radioTypeFile   = null;
+
+        function eventInput(e) {
+            if (this.value && this.value.length) {
+                if (this.value.indexOf(".") !== -1) {
+                    radioTypeFolder.checked = false;
+                    radioTypeFile.checked   = true;
+                } else {
+                    radioTypeFolder.checked = true;
+                    radioTypeFile.checked   = false;
+                }
+            }
+        }
+
+        return {
+            init: function(formSelector) {
+                var form = getElementById(formSelector);
+
+                if (inputName != null) {
+                    removeListener(inputName, EVENT_INPUT, eventInput);
+                    inputName = null;
+                }
+
+                if (form != null && form.length && form.length > 0) {
+                    inputName       = form.querySelector("input[type=text][name=name]");
+                    radioTypeFolder = form.querySelector("input[type=radio][id=type-folder]");
+                    radioTypeFile   = form.querySelector("input[type=radio][id=type-file]");
+
+                    addListener(inputName, EVENT_INPUT, eventInput, true);
+                }
+            }
+        };
+    })();
+
+    var editorHighlight = (function() {
+        var element            = null;
+        var styledElement      = null;
+        var textarea           = null;
+        var lineNumber         = null;
+        var wrapper            = null;
+        var linesWrapper       = null;
+        var scrollLeftWrapper  = 0;
+        var scrollTopWrapper   = 0;
+        var scrollWidthWrapper = 0;
+        var lineHeight         = 0;
+        var heightWrapper      = 0;
+        var isWrapContent      = false;
+
+        function cleanChild() {
+            for (var i = 0; i < element.childNodes.length; ++i) {
+                var child = element.childNodes[i];
+
+                if (child != null && child.tagName && child != textarea)
+                    child.remove();
+            }
+        }
+
+        function initElement() {
+            styledElement = window.getComputedStyle(element);
+            lineNumber    = document.createElement("div");
+            wrapper       = document.createElement("ul");
+
+            lineNumber.className    = "line-number";
+            wrapper.className       = "wrapper";
+            lineNumber.style.height = styledElement.height;
+            wrapper.style.height    = styledElement.height;
+            heightWrapper           = parseInt(styledElement.height.replace("px", ""));
+
+            element.appendChild(lineNumber);
+            element.appendChild(wrapper);
+        }
+
+        function phpHighlight(content) {
+            console.log("phpHighlight");
+
+            var buffer        = "";
+            var indexChar     = "";
+            var indexLoop     = 0;
+            var lengthContent = content.length;
+
+            var keywordsPHP = [
+                "__halt_compiler", "break", "clone", "die", "empty",
+                "endswitch", "final", "global", "include_once", "list",
+                "private", "return", "try", "xor", "abstract", "callable",
+                "const", "do", "enddeclare", "endwhile", "finally",
+                "goto", "instanceof", "namespace", "protected", "static", "unset",
+                "yield", "and", "case", "continue", "echo", "endfor",
+                "eval", "for", "if", "insteadof", "new", "public",
+                "switch", "use", "array", "catch", "declare", "else",
+                "endforeach", "exit", "foreach", "exit", "implements",
+                "interface", "or", "require", "throw", "var",
+                "as", "class", "default", "elseif", "endif", "extends",
+                "function", "include", "isset", "print", "require_once",
+                "trai", "while"
+            ];
+
+            var symbolsPHP = [
+                "(", ")", "{", "}", "[", "]",
+                ".", ":", ";", "/", "=", "+",
+                "-", "^", "&", "!", "@", "$",
+                "%", "*", "-", "|", "~"
+            ];
+
+            function getChatAt(index) {
+                if (index < 0 || (!index || index == null))
+                    index = indexLoop;
+
+                if (index + 1 >= lengthContent)
+                    return false;
+
+                return content.charAt(index);
+            }
+
+            function updateBuffer(val, entity) {
+                if (!val || val == null)
+                    val = indexChar;
+
+                if (val !== false) {
+                    if (typeof entity === "undefined" || entity === true) {
+                        var buf      = "";
+                        var charCode = 0;
+
+                        for (var i = 0; i < val.length; ++i) {
+                            charCode = val.charCodeAt(i);
+
+                            if (charCode != 10 && charCode != 13)
+                                buf += "&#" + charCode + ";";
+                            else
+                                buf += val.charAt(i);
+                        }
+
+                        val = buf;
+                    }
+
+                    buffer += val;
+                }
+            }
+
+            function updateLoop(add) {
+                indexLoop += add;
+            }
+
+            function processPHPContent() {
+                var string   = "";
+                var tagQuote = "";
+
+                var comment      = "";
+                var tagSlashOpen = "";
+                var tagSlashClose = "";
+
+                while (indexLoop < lengthContent) {
+                    indexChar = getChatAt();
+
+                    if (("\"" === indexChar || "'" === indexChar || "\"" === tagQuote || "'" === tagQuote) && (tagSlashOpen == null || tagSlashOpen.length <= 0)) {
+                        if (tagQuote === null || tagQuote.length <= 0) {
+                            string   = indexChar;
+                            tagQuote = indexChar;
+                        } else {
+                            string = indexChar;
+                        }
+
+                        while ((indexChar = getChatAt(++indexLoop)) !== false) {
+                            if (" \r\n\t".indexOf(indexChar) !== -1)
+                                break;
+                            else
+                                string += indexChar;
+
+                            if (indexChar === tagQuote)
+                                break;
+                        }
+
+                        updateBuffer("<span class=\"php-string\">", false);
+                        updateBuffer(string);
+                        updateBuffer("</span>", false);
+
+                        if (indexChar === tagQuote) {
+                            string   = "";
+                            tagQuote = "";
+                            indexLoop++;
+                        }
+                    } else if (("/" === indexChar || "//".indexOf(tagSlashOpen) !== -1) && (tagQuote == null || tagQuote.length <= 0)) {
+                        tagSlashClose = "";
+
+                        if (tagSlashOpen == null || tagSlashOpen.length <= 0) {
+                            comment      = indexChar;
+                            tagSlashOpen = indexChar;
+                        } else {
+                            comment  = indexChar;
+                        }
+
+                        while ((indexChar = getChatAt(++indexLoop)) !== false) {
+                            if (" \r\n\t".indexOf(indexChar) !== -1) {
+                                break;
+                            } else if (tagSlashOpen === "/" && indexChar === "/") {
+                                tagSlashOpen += indexChar;
+                            }
+
+                            comment += indexChar;
+                        }
+
+                        if (tagSlashOpen == "//") {
+                            tagSlashOpen  = "";
+                            tagSlashClose = "";
+
+                            updateBuffer("<span class=\"php-comment\">", false);
+                            updateBuffer(comment);
+                            updateBuffer("</span>", false);
+                        } else {
+                            tagSlashOpen  = "";
+                            tagSlashClose = "";
+
+                            updateBuffer(comment);
+                        }
+                    } else if ("$" === indexChar) {
+                        var variable = "";
+                        var charCode = -1;
+
+                        while ((indexChar = getChatAt(++indexLoop)) !== false) {
+                            if (indexChar.toLowerCase)
+                                charCode = indexChar.toLowerCase().charCodeAt(0);
+                            else
+                                charCode = -1;
+
+                            if (variable.length <= 0 && ((charCode >= 97 && charCode <= 122) || charCode === 95))
+                                variable += indexChar;
+                            else if ((charCode >= 97 && charCode <= 122) || (charCode >= 48 && charCode <= 57) || charCode === 95)
+                                variable += indexChar;
+                            else
+                                break;
+                        }
+
+                        if (variable.length > 0) {
+                            updateBuffer("<span class=\"php-symbol\">", false);
+                            updateBuffer("$");
+                            updateBuffer("</span>", false);
+
+                            updateBuffer("<span class=\"php-variable-name\">", false);
+                            updateBuffer(variable);
+                            updateBuffer("</span>", false);
+                        } else {
+                            updateBuffer("$");
+                        }
+                    } else if ("?=" . indexOf(indexChar) !== -1) {
+                        var endTag = indexChar;
+
+                        while ((indexChar = getChatAt(++indexLoop)) !== false) {
+                            if (" \r\n\t".indexOf(indexChar) !== -1)
+                                break;
+                            else
+                                endTag += indexChar;
+                        }
+
+                        if (endTag === "?>" || endTag === "=?>") {
+                            updateBuffer("<span class=\"php-tag-close\">", false);
+                            updateBuffer(endTag)
+                            updateBuffer("</span>", false);
+
+                            break;
+                        } else {
+                            updateBuffer(endTag);
+                        }
+                    } else {
+                        if (indexChar.toLowerCase) {
+                            var charCode = indexChar.toLowerCase().charCodeAt(0);
+
+                            if ((charCode >= 97 && charCode <= 122) || (charCode >= 48 && charCode <= 57) || charCode === 95) {
+                                var name = indexChar;
+
+                                while ((indexChar = getChatAt(++indexLoop)) !== false) {
+                                    if (indexChar.toLowerCase)
+                                        charCode = indexChar.toLowerCase().charCodeAt(0);
+                                    else
+                                        charCode = -1;
+
+                                    if (" \r\n\t".indexOf(indexChar) !== -1)
+                                        break;
+                                    else if ((charCode >= 97 && charCode <= 122) || (charCode >= 48 && charCode <= 57) || charCode === 95)
+                                        name += indexChar;
+                                    else
+                                        break;
+                                }
+
+                                if (keywordsPHP.indexOf(name.toLowerCase()) !== -1) {
+                                    updateBuffer("<span class=\"php-keyword\">", false);
+                                    updateBuffer(name);
+                                    updateBuffer("</span>", false);
+                                } else if (isNaN(name) == false) {
+                                    updateBuffer("<span class=\"php-number\">", false);
+                                    updateBuffer(name);
+                                    updateBuffer("</span>", false);
+                                } else {
+                                    updateBuffer(name);
+                                }
+                            } else if (symbolsPHP.indexOf(indexChar) !== -1) {
+                                updateBuffer("<span class=\"php-symbol\">", false);
+                                updateBuffer(indexChar);
+                                updateBuffer("</span>", false);
+                                updateLoop(1);
+                            } else {
+                                updateBuffer();
+                                updateLoop(1);
+                            }
+                        } else {
+                            updateBuffer();
+                            updateLoop(1);
+                        }
+                    }
+                }
+            }
+
+            while (indexLoop < lengthContent) {
+                indexChar = getChatAt();
+
+                if (indexChar === "<") {
+                    var startTag = indexChar;
+
+                    while ((indexChar = getChatAt(++indexLoop)) !== false) {
+                        if (" \r\n\t".indexOf(indexChar) !== -1)
+                            break;
+                        else
+                            startTag += indexChar;
+                    }
+
+                    if (startTag === "<?php" || startTag === "<?" || startTag === "<?=") {
+                        updateBuffer("<span class=\"php-tag-open\">", false);
+                        updateBuffer(startTag);
+                        updateBuffer("</span>", false);
+                        processPHPContent();
+                    } else {
+                        updateBuffer(startTag);
+                    }
+                } else {
+                    updateBuffer();
+                    updateLoop(1);
+                }
+            }
+
+            return buffer;
+        }
+
+        function initContent() {
+            var content = textarea.value;
+            var lines   = [];
+
+            if (content != null && content.length && content.length > 0) {
+                content = phpHighlight(content);
+                lines   = content.split(/(?:\r\n|\r|\n)/g);
+            } else {
+                lines = [ "" ];
+            }
+
+            var childWrapper        = document.createElement("li");
+            var spanChildWrapper    = document.createElement("span");
+            var preChildWrapper     = document.createElement("pre");
+            var preSpanChildWrapper = document.createElement("span");
+            var childWrapperClone   = null;
+            var widthNumberEnd      = 0;
+
+            spanChildWrapper.textContent = lines.length;
+            setAttribute(spanChildWrapper, "unselectable", "on");
+            setAttribute(spanChildWrapper, "contenteditable", "false");
+
+            childWrapper.appendChild(spanChildWrapper);
+            childWrapper.appendChild(preChildWrapper);
+            preChildWrapper.append(preSpanChildWrapper);
+            wrapper.appendChild(childWrapper);
+
+            var spanStyled        = window.getComputedStyle(spanChildWrapper);
+            var spanWidth         = parseFloat(spanStyled.width.replace("px", ""));
+            var spanPaddingLeft   = parseFloat(spanStyled.paddingLeft.replace("px", ""));
+            var spanPadddingRight = parseFloat(spanStyled.paddingRight.replace("px", ""));
+
+            widthNumberEnd                   = spanWidth + spanPaddingLeft + spanPadddingRight;
+            preChildWrapper.style.marginLeft = widthNumberEnd + "px";
+            spanChildWrapper.style.width     = spanWidth + "px";
+            lineHeight                       = parseInt(spanStyled.lineHeight.replace("px", ""));
+
+            wrapper.childNodes[0].remove();
+
+            if (linesWrapper == null)
+                linesWrapper = [];
+
+            for (var i = 0; i < lines.length; ++i) {
+                childWrapperClone = childWrapper.cloneNode(true);
+                childWrapperClone.childNodes[0].textContent = i + 1;
+
+                if (!lines[i].length || lines[i].length <= 0)
+                    childWrapperClone.childNodes[1].childNodes[0].innerHTML = "\n";
+                else
+                    childWrapperClone.childNodes[1].childNodes[0].innerHTML = lines[i];
+
+                wrapper.appendChild(childWrapperClone);
+                linesWrapper.push(childWrapperClone);
+            }
+        }
+
+        function initEventScroll() {
+            scrollLeftWrapper  = 0;
+            scrollTopWrapper   = 0;
+            scrollWidthWrapper = 0;
+
+            if (isMobileDevice())
+                return;
+
+            addListener(wrapper, EVENT_SCROLL, eventScrollWrapper, true);
+        }
+
+        function eventScrollWrapper(e) {
+            if (isWrapContent)
+                return true;
+
+            var scrollLeft  = this.scrollLeft;
+            var scrollTop   = this.scrollTop;
+            var scrollWidth = this.scrollWidth;
+
+            if (linesWrapper == null)
+                linesWrapper = getElementsByTagName("li", this);
+
+            if (scrollLeftWrapper !== scrollLeft || scrollTopWrapper !== scrollTop || scrollWidthWrapper !== scrollWidth) {
+                if (linesWrapper.length && linesWrapper.length > 0) {
+                    var beginLoop = Math.floor(scrollTop / lineHeight);
+                    var endLoop   = Math.ceil((heightWrapper / lineHeight) + beginLoop) + 1;
+
+                    if (endLoop > linesWrapper.length)
+                        endLoop = linesWrapper.length;
+
+                    for (var i = beginLoop; i < endLoop; ++i)
+                        linesWrapper[i].childNodes[0].style.left  = scrollLeft + "px";
+                }
+
+                scrollLeftWrapper  = scrollLeft;
+                scrollTopWrapper   = scrollTop;
+                scrollWidthWrapper = scrollWidth;
+            }
+
+            return true;
+        }
+
+        return {
+            init: function(idEditorHightlight) {
+                editorHighlight.clean();
+
+                element  = getElementById(idEditorHightlight);
+                textarea = getElementsByTagName("textarea", element);
+
+                if (typeof element === "undefined" || typeof textarea === "undefined" || element == null || textarea == null)
+                    return;
+
+                if (!textarea.length || textarea.length <= 0)
+                    return;
+
+                textarea = textarea[0];
+
+                cleanChild();
+                initElement();
+                initContent();
+                initEventScroll();
+            },
+
+            clean: function() {
+                if (textarea != null)
+                    removeListener(textarea, EVENT_SCROLL, eventScrollWrapper);
+
+                element            = null;
+                styledElement      = null;
+                textarea           = null;
+                lineNumber         = null;
+                wrapper            = null;
+                linesWrapper       = null;
+                scrollLeftWrapper  = 0;
+                scrollTopWrapper   = 0;
+                scrollWidthWrapper = 0;
+                lineHeight         = 0;
+                heightWrapper      = 0;
+                isWrapContent      = false;
+            }
+        };
+    })();
+
     return {
-        Ajax:               ajax,
-        OnLoad:             onLoad,
-        ProgressBarBody:    progressBarBody,
-        AutoFocusInputLast: autoFocusInputLast,
-        ButtonSaveOnJs:     buttonSaveOnJs,
-        CheckboxCheckAll:   checkboxCheckAll,
-        ChmodInput:         chmodInput,
-        CustomInputFile:    customInputFile,
-        CustomInputUrl:     customInputUrl,
-        LoadAjax:           loadAjax
+        initHistoryScript:        initHistoryScript,
+
+        Ajax:                     ajax,
+        OnLoad:                   onLoad,
+        ProgressBarBody:          progressBarBody,
+        AutoFocusInputLast:       autoFocusInputLast,
+        ButtonSaveOnJs:           buttonSaveOnJs,
+        CheckboxCheckAll:         checkboxCheckAll,
+        ChmodInput:               chmodInput,
+        CustomInputFile:          customInputFile,
+        CustomInputUrl:           customInputUrl,
+        LoadAjax:                 loadAjax,
+        ChooseTheme:              chooseTheme,
+        AutoChooseTypeFolderFile: autoChooseTypeFolderFile,
+        EditorHighlight:          editorHighlight
     };
 })();
 

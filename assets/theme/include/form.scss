@@ -4,19 +4,19 @@ input {
     }
 
     &::-webkit-input-placeholder {
-        color: #808080;
+        color: $input-placeholder-color;
     }
 
     &:-ms-input-placeholder {
-        color: #808080;
+        color: $input-placeholder-color;
     }
 
     &:-moz-placeholder {
-        color: #808080;
+        color: $input-placeholder-color;
     }
 
     &::-moz-placeholder {
-        color: #808080;
+        color: $input-placeholder-color;
     }
 
     &[type=number] {
@@ -63,13 +63,16 @@ input[type=file] + label,
 
 textarea,
 select {
-    color: #c0c0c0;
+    color: $input-textara-select-color;
     background-color: transparent;
 
     @include box-sizing(border-box);
 
     border: 0;
-    border-bottom: 2px solid #e0e0e0;
+    border-bottom: $input-textara-select-border-bottom-size
+                   $input-textara-select-border-bottom-style
+                   $input-textara-select-border-bottom-color;
+
     padding: 10px;
     width: 100%;
     height: 50px;
@@ -90,7 +93,7 @@ input[type=file]:disabled + label,
 
 textarea:disabled,
 select:disabled {
-    background-color: #f0f0f0;
+    background-color: $input-textara-select-disabled-background-color;
 }
 
 input[type=file] + label {
@@ -146,13 +149,19 @@ div.select {
 
     &::before {
         content: "\e923";
-        color: #c0c0c0;
+        color: $div-select-before-color;
         font-size: 18px;
         line-height: 45px;
         position: absolute;
         top: 0;
         right: 10px;
         z-index: 1;
+    }
+
+    option,
+    optgroup {
+        color: $div-select-before-option-color;
+        background-color: $div-select-before-option-background-color;
     }
 }
 
@@ -182,8 +191,8 @@ textarea:disabled,
 textarea:disabled,
 select:disabled,
 select:disabled {
-    color: #707070;
-    border-bottom-color: #c0c0c0;
+    color: $input-textara-select-disabled-color;
+    border-bottom-color: $input-textara-select-disabled-border-bottom-color;
 }
 
 input[type=text]:enabled:hover,
@@ -204,21 +213,21 @@ select:enabled:focus,
 
 div.select:hover::before,
 div.select:focus::before {
-    color: #505050;
-    border-bottom-color: #a0a0a0;
+    color: $input-textara-select-hover-enabled-color;
+    border-bottom-color: $input-textara-select-hover-enabled-border-bottom-color;
 }
 
 input:enabled:not(.none):invalid,
 input:enabled:not(.none):invalid:hover,
 input:enabled:not(.none):invalid:focus {
-    color: #ef5350;
-    border-bottom-color: #ef5350;
+    color: $input-textara-select-enabled-not-none-invalid-color;
+    border-bottom-color: $input-textara-select-enabled-not-none-invalid-border-bottom-color;
 }
 
 input[type=checkbox],
 input[type=radio].radio-entry-list {
     & + label::before {
-        color: #a0a0a0;
+        color: $input-type-checkbox-radio-entry-list-label-before-color;
         content: "\e927";
         display: inline-block;
         font-size: 20px;
@@ -226,30 +235,33 @@ input[type=radio].radio-entry-list {
         width: 20px;
         height: 20px;
         text-align: center;
-        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.2);
         vertical-align: middle;
+        text-shadow: $input-type-checkbox-radio-entry-list-label-before-text-shadow-hoz
+                     $input-type-checkbox-radio-entry-list-label-before-text-shadow-ver
+                     $input-type-checkbox-radio-entry-list-label-before-text-shadow-blur
+                     $input-type-checkbox-radio-entry-list-label-before-text-shadow-color;
     }
 
     &:hover + label::before {
-        color: #c0c0c0;
+        color: $input-type-checkbox-radio-entry-list-hover-label-before-color;
     }
 
     &:checked + label::before {
-        color: #00a99b;
+        color: $input-type-checkbox-radio-entry-list-checked-label-before-color;
         content: "\e928";
     }
 
     &:checked:hover + label::before {
-        color: #00c9bb;
+        color: $input-type-checkbox-radio-entry-list-checked-hover-label-before-color;
     }
 
     &:disabled + label::before {
-        color: #c0c0c0;
-        background-color: #eaeaea;
+        color: $input-type-checkbox-radio-entry-list-disabled-label-before-color;
+        background-color: $input-type-checkbox-radio-entry-list-disabled-label-before-background-color;
     }
 
     & + label span {
-        color: #707070;
+        color: $input-type-checkbox-radio-entry-list-label-span-color;
         margin-left: 5px;
         line-height: 15px;
         font-size: 15px;
@@ -257,19 +269,19 @@ input[type=radio].radio-entry-list {
     }
 
     &:hover + label span {
-        color: #909090;
+        color: $input-type-checkbox-radio-entry-list-hover-label-span-color;
     }
 
     &:checked + label span {
-        color: #505050;
+        color: $input-type-checkbox-radio-entry-list-checked-label-span-color;
     }
 
     &:checked:hover + label span {
-        color: #707070;
+        color: $input-type-checkbox-radio-entry-list-checked-hover-label-span-color;
     }
 
     &:disabled + label span {
-        color: #a0a0a0;
+        color: $input-type-checkbox-radio-entry-list-disabled-label-span-color;
     }
 }
 
@@ -352,7 +364,7 @@ ul.radio-choose-tab {
 
             & + label {
                 display: block;
-                background-color: #f0f0f0;
+                background-color: $ul-radio-choose-tab-li-input-label-background-color;
                 width: 100%;
                 cursor: pointer;
             }
@@ -365,29 +377,29 @@ ul.radio-choose-tab > li input:enabled:checked + label {
 }
 
 ul.radio-choose-tab > li input + label span {
-    color: #505050;
+    color: $ul-radio-choose-tab-li-input-label-span-color;
     line-height: 40px;
     font-size: $font-size;
 }
 
 ul.radio-choose-tab > li input:disabled + label span {
-    color: #c0c0c0;
+    color: $ul-radio-choose-tab-li-input-disabled-label-span-color;
 }
 
 ul.radio-choose-tab > li input:enabled:checked + label,
 ul.radio-choose-tab > li input:enabled:checked + label:hover {
-    background-color: #00897b;
+    background-color: $ul-radio-choose-tab-li-input-enabled-checked-label-hover;
 }
 
 ul.radio-choose-tab > li input:enabled + label:hover {
-    background-color: #e0e0e0;
+    background-color: $ul-radio-choose-tab-li-input-enabled-label-hover;
 }
 
 ul.radio-choose-tab > li input:enabled:checked + label span,
 ul.radio-choose-tab > li input:enabled:checked + label:hover span {
-    color: #ffffff;
+    color: $ul-radio-choose-tab-li-input-enabled-checked-label-hover-span;
 }
 
 ul.radio-choose-tab > li input + label:enabled:hover span {
-    color:  #00897b;
+    color:  $ul-radio-choose-tab-li-input-label-enabled-hover-span;
 }

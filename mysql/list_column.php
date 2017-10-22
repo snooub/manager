@@ -33,8 +33,8 @@
         <span><?php echo $appMysqlConnect->getMysqlQueryExecStringCurrent(); ?></span>
     </div>
 
-    <ul class="list-database<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
-        <li class="back">
+    <ul class="list<?php if (AppConfig::getInstance()->get('enable_disable.list_database_double') == false) { ?> not-double<?php } ?>">
+        <li class="database back">
             <a href="info_table.php<?php echo $appParameter->toString(); ?>">
                 <span class="icomoon icon-table"></span>
             </a>
@@ -48,12 +48,8 @@
                 <span><?php echo lng('mysql.list_column.alert.empty_list_column'); ?></span>
             </li>
         <?php } else { ?>
-            <?php $indexAssoc = 0; ?>
-
             <?php while ($mysqlAssoc = $appMysqlConnect->fetchAssoc($mysqlQuery)) { ?>
-                <?php $indexAssoc++; ?>
-
-                <li class="has-first-not-entry type-column">
+                <li class="has-first-not-entry column">
                     <a href="#">
                         <span class="icomoon icon-column"></span>
                     </a>

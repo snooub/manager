@@ -7,8 +7,15 @@
     define('PARAMETER_DATABASE_URL',          'database');
     define('PARAMETER_TABLE_URL',             'table');
     define('PARAMETER_COLUMN_URL',            'column');
+    define('PARAMETER_DATA_KEY_URL',          'data_key');
+    define('PARAMETER_DATA_VALUE_URL',        'data_value');
     define('PARAMETER_IS_REFERER_LIST_TABLE', 'is_referer_list_table');
+    define('PARAMETER_PAGE_DATA_URL',         'page_data');
+    define('PARAMETER_ORDER_DATA_URL',        'order_data');
     define('ROOT',                            '..' . DIRECTORY_SEPARATOR);
+
+    define('ORDER_DATA_DESC', 'desc');
+    define('ORDER_DATA_ASC',  'asc');
 
     require_once(
         realpath(ROOT) .

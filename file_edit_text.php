@@ -52,9 +52,6 @@
 
     $isEnableEditHighlight = false; //Request::isLocal();
 
-    if ($isEnableEditHighlight)
-        $scripts = [ 'editor_highlight' ];
-
     AppAlert::setID(ALERT_FILE_EDIT_TEXT);
     require_once('incfiles' . SP . 'header.php');
 
@@ -300,26 +297,8 @@
                 <li class="textarea">
                     <span><?php echo lng('file_edit_text.form.input.content_file'); ?></span>
                     <?php if ($isEnableEditHighlight) { ?>
-                        <div class="editor-highlight" id="editor-highlight">
-                            <div class="editor-highlight-box-parent" id="editor-highlight-box-parent">
-                                <div class="editor-highlight-box-line" id="editor-highlight-box-line"></div>
-                                <div class="editor-highlight-box-content">
-                                    <pre class="editor-highlight-content" id="editor-highlight-content"><?php echo htmlspecialchars($edits['content']); ?></pre>
-                                    <div class="editor-highlight-box-cursor" id="editor-highlight-box-cursor"></div>
-                                </div>
-                            </div>
-                            <script type="text/javascript">
-                                OnLoad.add(function() {
-                                    EditorHighlight.init(
-                                        "editor-highlight",
-                                        "editor-highlight-box-parent",
-                                        "editor-highlight-box-content",
-                                        "editor-highlight-content",
-                                        "editor-highlight-box-line",
-                                        "editor-highlight-box-cursor"
-                                    );
-                                });
-                            </script>
+                        <div id="editor-highlight" class="editor-highlight">
+                            <textarea name="content"><?php echo htmlspecialchars($edits['content']); ?></textarea>
                         </div>
                     <?php } else { ?>
                         <textarea name="content" rows="20"><?php echo htmlspecialchars($edits['content']); ?></textarea>

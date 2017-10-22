@@ -111,7 +111,7 @@
     <?php $appLocationPath->display(); ?>
     <?php $classEndListOptions = $zipList->isPaging() ? ' is-end-list-option' : null; ?>
 
-    <ul class="file-list<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double') == false) { ?> not-double<?php } ?>">
+    <ul class="list<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double') == false) { ?> not-double<?php } ?>">
         <?php if ($zipListArrayEntrys == null || $zipListCountArrayEntry <= 0) { ?>
             <li class="empty">
                 <span class="icomoon icon-folder-o"></span>
@@ -124,7 +124,7 @@
                 <?php $entry = $zipListArrayEntrys[$i]; ?>
 
                 <?php if ($entry['is_dir']) { ?>
-                    <li class="type-directory has-first-not-entry<?php echo $classEndListOptions; ?>">
+                    <li class="directory has-first-not-entry<?php echo $classEndListOptions; ?>">
                         <div class="icon">
                             <a href="#">
                                 <span class="icomoon icon-folder"></span>
@@ -135,7 +135,7 @@
                         </a>
                     </li>
                 <?php } else { ?>
-                    <li class="type-file has-first-not-entry <?php echo $classEndListOptions; ?>">
+                    <li class="file has-first-not-entry <?php echo $classEndListOptions; ?>">
                         <div class="icon">
                             <span class="icomoon <?php echo $entry['icon']; ?>"></span>
                         </div>

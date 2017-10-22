@@ -8,12 +8,17 @@ ul.menu-action li {
 }
 
 ul.menu-action {
-    background-color: #ffffff;
+    background-color: $menu-action-background-color;
 
-    @include box-shadow(1px 1px 2px rgba(0, 0, 0, 0.15));
+    @include box-shadow(
+        $menu-action-box-shadow-hoz
+        $menu-action-box-shadow-ver
+        $menu-action-box-shadow-blur
+        $menu-action-box-shadow-color
+    );
 
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: $menu-action-margin-top;
+    margin-bottom: $menu-action-margin-bottom;
 
     li {
         @include box-sizing(border-box);
@@ -63,7 +68,7 @@ ul.menu-action {
 
         a {
             span {
-                color: #505050;
+                color: $menu-action-li-a-span-color;
                 line-height: 45px;
                 vertical-align: middle;
             }
@@ -73,11 +78,10 @@ ul.menu-action {
                 margin-right: 3px;
             }
 
-            &:hover,
-            &:focus {
+            &:hover {
                 span,
                 strong {
-                    color:  #707070;
+                    color:  $menu-action-li-a-hover-span-color;
                     vertical-align: middle;
                 }
             }

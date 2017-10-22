@@ -140,6 +140,9 @@
 
         public function setCharset($charset)
         {
+            $this->query('SET NAMES "' . $charset . '"');
+            $this->query('SET CHARACTER SET ' . $charset);
+
             return true;
         }
 

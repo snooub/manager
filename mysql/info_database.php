@@ -91,7 +91,7 @@
 
     <?php echo AppAlert::display(); ?>
 
-    <ul class="mysql-info">
+    <ul class="info">
         <li class="title">
             <span><?php echo lng('mysql.info_database.title_page'); ?></span>
         </li>

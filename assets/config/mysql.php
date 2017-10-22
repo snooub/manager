@@ -9,6 +9,7 @@
         'mysql_password'   => '',
         'mysql_name'       => '',
         'mysql_port'       => '3306',
+        'mysql_encoding'   => 'utf8',
         'mysql_improved'   => true,
         'mysql_is_connect' => false
     ];

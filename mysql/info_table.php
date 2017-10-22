@@ -79,11 +79,11 @@
 
     <?php echo AppAlert::display(); ?>
 
-    <ul class="mysql-info">
+    <ul class="info">
         <li class="title">
             <span><?php echo lng('mysql.info_table.title_page'); ?></span>
         </li>
-        <li class="title_list">
+        <li class="title-list">
             <span><?php echo lng('mysql.info_table.title_statistics'); ?></span>
         </li>
         <li class="label">
@@ -140,7 +140,7 @@
             </ul>
         </li>
         <li class="divider"></li>
-        <li class="title_list">
+        <li class="title-list">
             <span><?php echo lng('mysql.info_table.title_space_usage'); ?></span>
         </li>
         <li class="label">

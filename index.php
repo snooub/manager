@@ -26,8 +26,7 @@
         exit(255);
     }
 
-    $title   = lng('home.title_page_root');
-    $scripts = [ env('resource.filename.javascript.checkbox_checkall') ];
+    $title = lng('home.title_page_root');
     AppAlert::setID(ALERT_INDEX);
 
     require_once('incfiles' . SP . 'header.php');
@@ -391,7 +390,7 @@
     <form action="<?php echo env('app.http.host'); ?>/file_action.php<?php echo $appParameter->toString(); ?>" method="post" id="form-list-checkbox-all">
         <input type="hidden" name="<?php echo cfsrTokenName(); ?>" value="<?php echo cfsrTokenValue(); ?>"/>
 
-        <ul class="file-list<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double') == false) { ?> not-double<?php } ?>">
+        <ul class="list<?php if (AppConfig::getInstance()->get('enable_disable.list_file_double') == false) { ?> not-double<?php } ?>">
             <?php echo $bufferBack; ?>
 
             <?php if ($handlerCount > 0) { ?>
@@ -402,7 +401,7 @@
                     <?php $urlParameter = $appParameter->toString() . '&' . AppDirectory::PARAMETER_NAME_URL . '=' . AppDirectory::rawEncode($entry['name']); ?>
 
                     <?php if ($entry['is_directory']) { ?>
-                        <li class="has-first-not-entry is-end-list-option type-directory is-has-checkbox">
+                        <li class="has-first-not-entry is-end-list-option directory is-has-checkbox">
                             <div class="icon">
                                 <?php $id = 'folder-' . AppDirectory::rawEncode($entry['name']); ?>
 
@@ -426,7 +425,7 @@
                             </a>
                         </li>
                     <?php } else { ?>
-                        <li class="has-first-not-entry is-end-list-option type-file">
+                        <li class="has-first-not-entry is-end-list-option file">
                             <div class="icon">
                                 <?php $id = 'file-' . AppDirectory::rawEncode($entry['name']); ?>
 

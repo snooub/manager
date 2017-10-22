@@ -2,6 +2,8 @@
 
     namespace Librarys\App;
 
+    use Librarys\Http\Request;
+
     if (defined('LOADED') == false)
         exit;
 
@@ -114,6 +116,9 @@
          */
         public function display($current, $total)
         {
+            if ($current > $total)
+                Request::redirect($this->urlDefault);
+
             $buffer = '<ul class="paging">';
             $between = $this->itemNums - 2;
 
