@@ -27,7 +27,6 @@
                     'enable'           => true,
                     'enable_producted' => false,
                     'level'            => ErrorHandler::EU_ALL,
-
                     'tpl'              => '${app.path.error}${SP}handler.php'
                 ]
             ],

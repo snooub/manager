@@ -23,6 +23,8 @@
     if ($idAlert == null || empty($idAlert))
         $idAlert = ALERT_INDEX;
 
+    sleep(1);
+
     if (isset($_GET['referer']))
         Request::redirect($httpReferer);
 

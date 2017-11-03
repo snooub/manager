@@ -14,6 +14,31 @@
         requireDefine('asset');
 
     $autoload = AppConfig::getInstance()->getSystem('enable_disable.autoload');
+    $headers  = array();
+
+    if (function_exists('getallheaders'))
+        $headers = getallheaders();
+
+    if (count($headers) > 0) {
+        $isSaveData = false;
+
+        foreach ($headers AS $key => $value) {
+            if (strcasecmp($key, 'Save-Data') === 0 && (strcasecmp($value, 'On') === 0 || $value === 1)) {
+                $isSaveData = true;
+                break;
+            }
+        }
+
+        unset($key);
+        unset($value);
+
+        if ($isSaveData) {
+            require_once(env('app.path.error') . SP . 'save-data.php');
+            exit;
+        }
+
+        unset($isSaveData);
+    }
 ?>
 
 <!DOCTYPE html>

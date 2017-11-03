@@ -17,7 +17,12 @@
             'file_not_found'      => 'Tập tin tài nguyên không tồn tại'
         ],
 
-        'loading' => 'Đang tải...'
+        'loading' => 'Đang tải...',
+
+        'save_data' => [
+            'title'   => 'Lỗi',
+            'message' => 'Bạn vui lòng tắt chế độ tiết kiệm dữ liệu đi để sử dụng được app, app không thể hoạt động trên chế độ tiết kiệm dữ liệu được.'
+        ]
     ];
 
 ?>

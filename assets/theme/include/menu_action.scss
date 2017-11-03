@@ -23,6 +23,7 @@ ul.menu-action {
     li {
         @include box-sizing(border-box);
 
+        color: $menu-action-li-a-span-color;
         background-color: transparent;
         height: 45px;
         width: 50%;
