@@ -84,7 +84,7 @@
                     <?php } ?>
 
                     <?php if (AppConfig::getInstance()->get('enable_disable.auto_focus_input_last')) { ?>
-                        Main.AutoFocusInputLast.onload();
+                        //Main.AutoFocusInputLast.onload();
                     <?php } ?>
 
                     Main.CustomInputFile.onload();
