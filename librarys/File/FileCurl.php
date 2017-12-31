@@ -203,7 +203,7 @@
 
             $this->parseURL();
             $this->makeHeaders();
-bug("Curl");
+
             if ($this->isUseCurl)
                 $result = $this->useCurl();
             else
