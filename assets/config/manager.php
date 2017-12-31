@@ -57,11 +57,11 @@
 
         'check_update' => [
             'enable' => true,
-            'time' => 86400,
+            'time' => true,
         ],
 
         'language' => 'vi',
-        'http_host' => 'http://izerocs.net/Manager',
+        'http_host' => 'http://izerocs.local/Manager',
     ];
 
 ?>

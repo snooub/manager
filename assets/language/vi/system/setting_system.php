@@ -11,13 +11,16 @@
                 'cache_lifetime'                => 'Thời gian lưu cache (tính bằng giây):',
                 'tmp_lifetime'                  => 'Thời gian lưu tập tin tạm (tính bằng giây):',
                 'tmp_limit'                     => 'Số lượng tập tin tạm được tạo ra:',
+                'check_update_time'             => 'Thời gian kiểm tra cập nhật tự động (tính bằng giây):',
 
                 'enable_disable_label'          => 'Bật/Tắt',
                 'enable_forgot_password'        => 'Lấy lại mật khẩu',
                 'enable_lock_count_failed'      => 'Khóa khi đăng nhập sai quá số lần',
                 'enable_captcha_secure'         => 'Mã bảo vệ khi đăng nhập',
                 'enable_check_password_default' => 'Kiểm tra mật khẩu có là mặc định và cảnh báo',
-                'enable_development'            => 'Chế độ phát triển'
+                'enable_development'            => 'Chế độ phát triển',
+
+                'check_update_enable'           => 'Tự động kiểm tra cập nhật (nên bật)'
             ],
 
             'button' => [
@@ -31,7 +34,8 @@
                 'input_login_time_login'     => 'Nhập thời gian cho một phiên đăng nhập',
                 'input_cache_lifetime'       => 'Nhập thời gian lưu cache',
                 'input_tmp_lifetime'         => 'Nhập thời gian lưu tập tin tạm',
-                'input_tmp_limit'            => 'Nhập giới hạn số lượng tập tin được tạo ra'
+                'input_tmp_limit'            => 'Nhập giới hạn số lượng tập tin được tạo ra',
+                'input_check_update_time'    => 'Nhập thời gian tự động kiểm tra cập nhật'
             ]
         ],
 
@@ -51,6 +55,8 @@
             'tmp_lifetime_is_large'         => 'Thời gian lưu tập tin tạm phải nhỏ hơn hoặc bằng <strong>{$time}</strong> giây',
             'tmp_limit_is_small'            => 'Số lượng tập tin tạm được tạo ra phải lớn hơn hoặc bằng <strong>{$count}</strong>',
             'tmp_limit_is_large'            => 'Số lượng tập tin tạm được tạo ra phải nhỏ hơn hoặc bằng <strong>{$count}</strong>',
+            'check_update_time_is_small'    => 'Thời gian tự động kiểm tra cập nhật phải lớn hơn hoặc bằng <strong>{$time}</strong> giây',
+            'check_update_time_is_large'    => 'Thời gian tự động kiểm tra cập nhật phải nhỏ hơn hoặc bằng <strong>{$time}</strong> giây',
             'save_setting_failed'           => 'Lưu cài đặt thất bại',
             'save_setting_success'          => 'Lưu cài đặt thành công'
         ]

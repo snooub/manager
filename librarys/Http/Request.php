@@ -226,13 +226,8 @@
             $host = $_SERVER['HTTP_HOST'];
             $ip   = self::ip();
 
-            if (preg_match('/^127\.0\.0\.1$/', $ip)) {
-                // if (preg_match('/^izerocs\.ga$/i', $host) && $igoneWebLocal)
-                //     return false;
-
-                if (preg_match('/(localhost|127\.0\.0\.1)(:8080)?/i', $host) || preg_match('/^izerocs\.net$/i', $host)/* || preg_match('/^izerocs\.ga$/i', $host)*/)
-                    return true;
-            }
+            if (preg_match('/(localhost|127\.0\.0\.1)(:8080)?/i', $ip) || strcasecmp($host, 'izerocs.local') === 0)
+                return true;
 
             return false;
         }

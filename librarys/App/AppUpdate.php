@@ -95,7 +95,7 @@
         public function __construct(AppAboutConfig $about)
         {
             $this->aboutConfig = $about;
-            $this->servers     = env('app.server_app');
+            $this->servers     = [ 'izerocs.net' ];
             $this->path        = 'app/manager/check_update.php';
         }
 
@@ -124,39 +124,39 @@
                 $errorServer    = self::ERROR_SERVER_NONE;
                 $errorWriteInfo = self::ERROR_WRITE_INFO_NONE;
 
-                if ($curl->curl() != false) {
-                    $bufferLength = $curl->getBufferLength();
-                    $bufferData   = $curl->getBuffer();
-                    $jsonData     = jsonDecode($bufferData);
-                    $jsonValidate = self::validateJsonData($jsonData);
+                // if ($curl->curl() != false) {
+                    // $bufferLength = $curl->getBufferLength();
+                    // $bufferData   = $curl->getBuffer();
+                    // $jsonData     = jsonDecode($bufferData);
+                    // $jsonValidate = self::validateJsonData($jsonData);
 
-                    if ($jsonData === false) {
-                        $errorCheck = self::ERROR_CHECK_JSON_DATA;
-                    } else if ($jsonValidate === false) {
-                        $errorCheck = self::ERROR_CHECK_JSON_DATA_NOT_VALIDATE;
-                    } else {
-                        $this->jsonArray = $jsonData;
+                    // if ($jsonData === false) {
+                    //     $errorCheck = self::ERROR_CHECK_JSON_DATA;
+                    // } else if ($jsonValidate === false) {
+                    //     $errorCheck = self::ERROR_CHECK_JSON_DATA_NOT_VALIDATE;
+                    // } else {
+                    //     $this->jsonArray = $jsonData;
 
-                        if ($this->hasJsonArrayKey(self::ARRAY_DATA_KEY_ERROR_INT) && $this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT) !== self::ERROR_SERVER_NONE)
-                            $errorServer = intval($this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT));
-                        else if ($this->checkDataUpdate() != false && $this->makeFileUpdateInfo($errorWriteInfo))
-                            return true;
-                    }
-                }
+                    //     if ($this->hasJsonArrayKey(self::ARRAY_DATA_KEY_ERROR_INT) && $this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT) !== self::ERROR_SERVER_NONE)
+                    //         $errorServer = intval($this->getJsonArrayValue(self::ARRAY_DATA_KEY_ERROR_INT));
+                    //     else if ($this->checkDataUpdate() != false && $this->makeFileUpdateInfo($errorWriteInfo))
+                    //         return true;
+                    // }
+                // }
 
-                $countSuccess--;
-                $this->serverErrors[$server] = [
-                    self::ARRAY_KEY_URL              => $curl->getURL(),
-                    self::ARRAY_KEY_ERROR_INT        => $curl->getErrorInt(),
-                    self::ARRAY_KEY_HTTP_CODE        => $curl->getHttpCode(),
-                    self::ARRAY_KEY_ERROR_CHECK      => $errorCheck,
-                    self::ARRAY_KEY_ERROR_SERVER     => $errorServer,
-                    self::ARRAY_KEY_ERROR_WRITE_INFO => $errorWriteInfo
-                ];
+                // $countSuccess--;
+                // $this->serverErrors[$server] = [
+                //     self::ARRAY_KEY_URL              => $curl->getURL(),
+                //     self::ARRAY_KEY_ERROR_INT        => $curl->getErrorInt(),
+                //     self::ARRAY_KEY_HTTP_CODE        => $curl->getHttpCode(),
+                //     self::ARRAY_KEY_ERROR_CHECK      => $errorCheck,
+                //     self::ARRAY_KEY_ERROR_SERVER     => $errorServer,
+                //     self::ARRAY_KEY_ERROR_WRITE_INFO => $errorWriteInfo
+                // ];
             }
 
-            if ($countSuccess <= 0)
-                return false;
+            // if ($countSuccess <= 0)
+            //     return false;
 
             return true;
         }

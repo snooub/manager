@@ -40,6 +40,11 @@
         'enable_disable' => [
             'check_password_default' => AppConfig::getInstance()->getSystem('enable_disable.check_password_default'),
             'development'            => AppConfig::getInstance()->getSystem('enable_disable.development')
+        ],
+
+        'check_update' => [
+            'enable' => AppConfig::getInstance()->getSystem('check_update.enable'),
+            'time' => AppConfig::getInstance()->getSystem('check_update.time'),
         ]
     ];
 
@@ -166,6 +171,28 @@
 
                     'callback' => function($value) {
                         return $value > 100;
+                    }
+                ]
+            ],
+
+            'check_update.time' => [
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.check_update_time_is_small', 'time', 86400);
+                    },
+
+                    'callback' => function($value) {
+                        return $value < 86400;
+                    }
+                ],
+
+                [
+                    'alert' => function($value) {
+                        return lng('system.setting_system.alert.check_update_time_is_large', 'time', 86400 * 7);
+                    },
+
+                    'callback' => function($value) {
+                        return $value > (7 * 86400);
                     }
                 ]
             ]
@@ -301,6 +328,36 @@
         }
 
         if ($isFailed == false && $isFailedCheck == false) {
+            foreach ($forms['check_update'] AS $key => &$value) {
+                $envKey  = 'check_update.' . $key;
+                $formKey = 'check_update_' . $key;
+
+                if (isset($_POST[$formKey]))
+                    $value = boolval(addslashes($_POST[$formKey]));
+                else
+                    $value = false;
+
+                if (array_key_exists($envKey, $listCheck)) {
+                    foreach ($listCheck[$envKey] AS $arrs) {
+                        if ($arrs['callback']($value)) {
+                            $isFailedCheck = true;
+
+                            AppAlert::danger($arrs['alert']($value));
+                            break;
+                        }
+                    }
+                }
+
+                if ($isFailedCheck == false && AppConfig::getInstance()->setSystem($envKey, $value) == false) {
+                    $isFailed = true;
+                    AppAlert::danger(lng('system.setting_system.alert.save_setting_failed'));
+
+                    break;
+                }
+            }
+        }
+
+        if ($isFailed == false && $isFailedCheck == false) {
             if (AppConfig::getInstance()->write(true))
                 AppAlert::success(lng('system.setting_system.alert.save_setting_success'));
             else
@@ -361,6 +418,15 @@
             'name_input'      => 'tmp_limit',
             'type_input'      => 'number',
             'value_input'     => $forms['tmp']['limit']
+        ],
+
+        [
+            'config_key'      => 'check_update.time',
+            'label_lng'       => 'system.setting_system.form.input.check_update_time',
+            'placeholder_lng' => 'system.setting_system.form.placeholder.input_check_update_time',
+            'name_input'      => 'check_update_time',
+            'type_input'      => 'number',
+            'value_input'     => $forms['check_update']['time']
         ]
     ];
 
@@ -405,6 +471,16 @@
                 'name_input'      => 'enable_disable_development',
                 'value_input'     => $forms['enable_disable']['development']
             ]
+        ],
+
+        'check_update' => [
+            [
+                'config_key'      => 'check_update.enable',
+                'label_lng'       => 'system.setting_system.form.input.check_update_enable',
+                'id_input'        => 'check-update-enable',
+                'name_input'      => 'check_update_enable',
+                'value_input'     => $forms['check_update']['enable']
+            ]
         ]
     ];
 
@@ -430,6 +506,14 @@
                     <span><?php echo lng('system.setting_system.form.input.enable_disable_label'); ?></span>
                     <ul>
                         <?php foreach ($settingCheckboxInputs['enable_disable'] AS $checkboxs) { ?>
+                            <li>
+                                <input type="checkbox" id="<?php echo $checkboxs['id_input']; ?>" name="<?php echo $checkboxs['name_input']; ?>" value="1"<?php if ($checkboxs['value_input'] == true) { ?> checked="checked"<?php } ?>/>
+                                <label for="<?php echo $checkboxs['id_input']; ?>">
+                                    <span><?php echo lng($checkboxs['label_lng']); ?></span>
+                                </label>
+                            </li>
+                        <?php } ?>
+                        <?php foreach ($settingCheckboxInputs['check_update'] AS $checkboxs) { ?>
                             <li>
                                 <input type="checkbox" id="<?php echo $checkboxs['id_input']; ?>" name="<?php echo $checkboxs['name_input']; ?>" value="1"<?php if ($checkboxs['value_input'] == true) { ?> checked="checked"<?php } ?>/>
                                 <label for="<?php echo $checkboxs['id_input']; ?>">

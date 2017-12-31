@@ -120,6 +120,8 @@
 
         Request::session()->put(SESSION_NAME_LOCK_COUNT, intval(++$currentCountLock));
         Request::session()->put(SESSION_NAME_LOCK_TIME,  intval(time()));
+
+        $captcha = null;
     }
 
     if (Request::isDesktop()) {

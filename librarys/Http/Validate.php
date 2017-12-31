@@ -10,10 +10,13 @@
             if ($ip === null || is_string($ip) == false)
                 return false;
 
+            if (function_exists('filter_var'))
+                return filter_var($ip, FILTER_VALIDATE_IP);
+
             if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip) != false)
                 return true;
 
-            if (preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $ip) != false)
+            if (preg_match('/^(((?=(?>.*?(::))(?!.+\3)))\3?|([\dA-F]{1,4}(\3|:(?!$)|$)|\2))(?4){5}((?4){2}|((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?7)){3})\z/i', $ip) != false)
                 return true;
 
             return false;

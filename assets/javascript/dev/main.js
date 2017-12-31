@@ -1965,7 +1965,7 @@ var Main = (function() {
         LoadAjax:                 loadAjax,
         ChooseTheme:              chooseTheme,
         AutoChooseTypeFolderFile: autoChooseTypeFolderFile,
-        EditorHighlight:          editorHighlight
+        //EditorHighlight:          editorHighlight
     };
 })();
 
