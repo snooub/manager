@@ -239,7 +239,7 @@
 
         public static function isDesktop($checkMethod = true)
         {
-            return false;
+            //return false;
 
             if (SimpleDetect::getInstance()->getDeviceType() !== SimpleDetect::DEVICE_TYPE_COMPUTER)
                 return false;

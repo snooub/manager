@@ -447,7 +447,7 @@ var Main = (function() {
 
     // AutoFocusInputLast
     var autoFocusInputLast = (function() {
-        var elements = [];
+/*        var elements = [];
 
         function autoFocusOnHastagUrl() {
             var hrefLocation = window.location.href;
@@ -574,7 +574,7 @@ var Main = (function() {
 
                 autoFocusOnHastagUrl(true);
             }
-        };
+        };*/
     })();
 
     // ButtonSaveOnJs
@@ -1567,11 +1567,14 @@ var Main = (function() {
                 "trai", "while"
             ];
 
+            var functionsPHP = [
+                "define", "intval"
+            ];
+
             var symbolsPHP = [
-                "(", ")", "{", "}", "[", "]",
-                ".", ":", ";", "/", "=", "+",
-                "-", "^", "&", "!", "@", "$",
-                "%", "*", "-", "|", "~"
+                "%", "@", "-", "*", "&", "!",
+                "~", ":", "|", "/", "=", "+",
+                "-", "^"
             ];
 
             function getChatAt(index) {
@@ -1582,6 +1585,22 @@ var Main = (function() {
                     return false;
 
                 return content.charAt(index);
+            }
+
+            function getStringAt(index, length) {
+                var buffer = "";
+                var char   = "";
+
+                for (var i = 0; i < length; ++i) {
+                    char = getChatAt(index + i);
+
+                    if (char === false)
+                        break;
+
+                    buffer += char;
+                }
+
+                return buffer;
             }
 
             function updateBuffer(val, entity) {
@@ -1613,18 +1632,70 @@ var Main = (function() {
                 indexLoop += add;
             }
 
-            function processPHPContent() {
-                var string   = "";
-                var tagQuote = "";
+            var isMatchPHP = false;
+            var startTag   = "";
+            var endTag     = "";
+            var string     = "";
+            var tagQuote   = "";
 
-                var comment      = "";
-                var tagSlashOpen = "";
-                var tagSlashClose = "";
+            var comment       = "";
+            var tagSlashOpen  = "";
+            var tagSlashClose = "";
 
-                while (indexLoop < lengthContent) {
-                    indexChar = getChatAt();
+            while (indexLoop < lengthContent) {
+                indexChar = getChatAt();
 
-                    if (("\"" === indexChar || "'" === indexChar || "\"" === tagQuote || "'" === tagQuote) && (tagSlashOpen == null || tagSlashOpen.length <= 0)) {
+                // Check start tag php
+                if (indexChar === "<") {
+                    startTag = indexChar;
+
+                    while ((indexChar = getChatAt(++indexLoop)) !== false) {
+                        if (" \r\n\t".indexOf(indexChar) !== -1)
+                            break;
+                        else
+                            startTag += indexChar;
+                    }
+
+                    if (startTag === "<?php" || startTag === "<?" || startTag === "<?=") {
+                        updateBuffer("<span class=\"php-tag-open\">", false);
+                        updateBuffer(startTag);
+                        updateBuffer("</span>", false);
+
+                        isMatchPHP = true;
+                        startTag   = "";
+                    } else {
+                        updateBuffer(startTag);
+                    }
+                // Is php script
+                } else if (isMatchPHP) {
+                    // Check end tag php
+                    if (indexChar === "?") {
+                        endTag = indexChar;
+
+                        while ((indexChar = getChatAt(++indexLoop)) !== false) {
+                            if (" \r\n\t".indexOf(indexChar) !== -1) {
+                                break;
+                            } else if (indexChar === ">") {
+                                endTag += indexChar;
+                                break;
+                            } else {
+                                endTag += indexChar;
+                            }
+                        }
+
+                        if (endTag === "?>") {
+                            updateBuffer("<span class=\"php-tag-close\">", false);
+                            updateBuffer(endTag);
+                            updateBuffer("</span>", false);
+                            updateLoop(1);
+
+                            isMatchPHP = false;
+                            endTag     = "";
+                        } else {
+                            updateBuffer(endTag);
+                        }
+                    // Check string
+                    } else if (("\"" === indexChar || "'" === indexChar || "\"" === tagQuote || "'" === tagQuote) && (tagSlashOpen == null || tagSlashOpen.length <= 0)) {
                         if (tagQuote === null || tagQuote.length <= 0) {
                             string   = indexChar;
                             tagQuote = indexChar;
@@ -1649,43 +1720,12 @@ var Main = (function() {
                         if (indexChar === tagQuote) {
                             string   = "";
                             tagQuote = "";
-                            indexLoop++;
+
+                            updateLoop(1);
                         }
-                    } else if (("/" === indexChar || "//".indexOf(tagSlashOpen) !== -1) && (tagQuote == null || tagQuote.length <= 0)) {
-                        tagSlashClose = "";
-
-                        if (tagSlashOpen == null || tagSlashOpen.length <= 0) {
-                            comment      = indexChar;
-                            tagSlashOpen = indexChar;
-                        } else {
-                            comment  = indexChar;
-                        }
-
-                        while ((indexChar = getChatAt(++indexLoop)) !== false) {
-                            if (" \r\n\t".indexOf(indexChar) !== -1) {
-                                break;
-                            } else if (tagSlashOpen === "/" && indexChar === "/") {
-                                tagSlashOpen += indexChar;
-                            }
-
-                            comment += indexChar;
-                        }
-
-                        if (tagSlashOpen == "//") {
-                            tagSlashOpen  = "";
-                            tagSlashClose = "";
-
-                            updateBuffer("<span class=\"php-comment\">", false);
-                            updateBuffer(comment);
-                            updateBuffer("</span>", false);
-                        } else {
-                            tagSlashOpen  = "";
-                            tagSlashClose = "";
-
-                            updateBuffer(comment);
-                        }
+                    // Check variable
                     } else if ("$" === indexChar) {
-                        var variable = "";
+                        var variable = indexChar;
                         var charCode = -1;
 
                         while ((indexChar = getChatAt(++indexLoop)) !== false) {
@@ -1703,34 +1743,11 @@ var Main = (function() {
                         }
 
                         if (variable.length > 0) {
-                            updateBuffer("<span class=\"php-symbol\">", false);
-                            updateBuffer("$");
-                            updateBuffer("</span>", false);
-
                             updateBuffer("<span class=\"php-variable-name\">", false);
                             updateBuffer(variable);
                             updateBuffer("</span>", false);
                         } else {
                             updateBuffer("$");
-                        }
-                    } else if ("?=" . indexOf(indexChar) !== -1) {
-                        var endTag = indexChar;
-
-                        while ((indexChar = getChatAt(++indexLoop)) !== false) {
-                            if (" \r\n\t".indexOf(indexChar) !== -1)
-                                break;
-                            else
-                                endTag += indexChar;
-                        }
-
-                        if (endTag === "?>" || endTag === "=?>") {
-                            updateBuffer("<span class=\"php-tag-close\">", false);
-                            updateBuffer(endTag)
-                            updateBuffer("</span>", false);
-
-                            break;
-                        } else {
-                            updateBuffer(endTag);
                         }
                     } else {
                         if (indexChar.toLowerCase) {
@@ -1753,21 +1770,46 @@ var Main = (function() {
                                         break;
                                 }
 
+                                // Check keyword
                                 if (keywordsPHP.indexOf(name.toLowerCase()) !== -1) {
                                     updateBuffer("<span class=\"php-keyword\">", false);
                                     updateBuffer(name);
                                     updateBuffer("</span>", false);
+                                } else if (functionsPHP.indexOf(name.toLowerCase()) !== -1) {
+                                    updateBuffer("<span class=\"php-function\">", false);
+                                    updateBuffer(name);
+                                    updateBuffer("</span>", false);
+                                // Check number
                                 } else if (isNaN(name) == false) {
                                     updateBuffer("<span class=\"php-number\">", false);
                                     updateBuffer(name);
                                     updateBuffer("</span>", false);
                                 } else {
-                                    updateBuffer(name);
+                                    var tagSelfStatic = getStringAt(indexLoop, 2);
+
+                                    if (tagSelfStatic === "::") {
+                                        updateBuffer("<span class=\"php-class-name\">", false);
+                                        updateBuffer(name);
+                                        updateBuffer("</span>", false);
+
+                                        updateBuffer("<span class=\"php-class-tag-self\">", false);
+                                        updateBuffer(tagSelfStatic);
+                                        updateBuffer("</span>", false);
+
+                                        updateLoop(2);
+                                    } else {
+                                        updateBuffer(name);
+                                    }
                                 }
                             } else if (symbolsPHP.indexOf(indexChar) !== -1) {
-                                updateBuffer("<span class=\"php-symbol\">", false);
-                                updateBuffer(indexChar);
-                                updateBuffer("</span>", false);
+                                if ((indexChar === "-" || indexChar === "=") && getChatAt(indexLoop + 1) === ">") {
+                                    updateBuffer(indexChar);
+                                } else {
+                                    updateBuffer("<span class=\"php-symbol\">", false);
+                                    updateBuffer(indexChar);
+                                    updateBuffer("</span>", false);
+                                }
+
                                 updateLoop(1);
                             } else {
                                 updateBuffer();
@@ -1777,30 +1819,6 @@ var Main = (function() {
                             updateBuffer();
                             updateLoop(1);
                         }
-                    }
-                }
-            }
-
-            while (indexLoop < lengthContent) {
-                indexChar = getChatAt();
-
-                if (indexChar === "<") {
-                    var startTag = indexChar;
-
-                    while ((indexChar = getChatAt(++indexLoop)) !== false) {
-                        if (" \r\n\t".indexOf(indexChar) !== -1)
-                            break;
-                        else
-                            startTag += indexChar;
-                    }
-
-                    if (startTag === "<?php" || startTag === "<?" || startTag === "<?=") {
-                        updateBuffer("<span class=\"php-tag-open\">", false);
-                        updateBuffer(startTag);
-                        updateBuffer("</span>", false);
-                        processPHPContent();
-                    } else {
-                        updateBuffer(startTag);
                     }
                 } else {
                     updateBuffer();
@@ -1950,6 +1968,20 @@ var Main = (function() {
         };
     })();
 
+    var translateLanguage = (function() {
+        return {
+            translate: function(str, langFrom, langTo) {
+                ajax.open({
+                    url: "translate.php?submit&from_lang=" + encodeURI(langFrom) + "&to_lang=" + encodeURI(langTo) + "&text=" + str,
+
+                    success: function(data) {
+                        console.log(data);
+                    }
+                });
+            }
+        };
+    })();
+
     return {
         initHistoryScript:        initHistoryScript,
 
@@ -1965,7 +1997,8 @@ var Main = (function() {
         LoadAjax:                 loadAjax,
         ChooseTheme:              chooseTheme,
         AutoChooseTypeFolderFile: autoChooseTypeFolderFile,
-        EditorHighlight:          editorHighlight
+        EditorHighlight:          editorHighlight,
+        TranslateLanguage:        translateLanguage
     };
 })();
 

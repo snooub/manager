@@ -52,11 +52,11 @@
         ],
 
         'theme' => [
-            'directory' => 'transparent',
+            'directory' => 'purpe',
         ],
 
         'check_update' => [
-            'enable' => true,
+            'enable' => false,
             'time' => true,
         ],
 

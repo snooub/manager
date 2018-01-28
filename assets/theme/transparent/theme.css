@@ -1945,7 +1945,7 @@ div#about > ul > li.message > div.title {
 }
 
 div#about > ul > li.message > div.title span {
-    color: #00897b;
+    color: #66bb6a;
     font-weight: bold;
 }
 
@@ -2706,7 +2706,7 @@ ul.theme-choose li {
     height: 200px;
     float: left;
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: 50px;
     text-align: center;
 }
 
@@ -2717,23 +2717,20 @@ ul.theme-choose li {
 }
 
 ul.theme-choose li label:hover > div {
-    -webkit-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3), -1px 1px 10px rgba(0, 0, 0, 0.3), 1px -1px 10px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3), -1px 1px 10px rgba(0, 0, 0, 0.3), 1px -1px 10px rgba(0, 0, 0, 0.3);
-    -ms-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3), -1px 1px 10px rgba(0, 0, 0, 0.3), 1px -1px 10px rgba(0, 0, 0, 0.3);
-    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3), -1px -1px 10px rgba(0, 0, 0, 0.3), -1px 1px 10px rgba(0, 0, 0, 0.3), 1px -1px 10px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3), -1px 1px 5px rgba(0, 0, 0, 0.3), 1px -1px 5px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3), -1px 1px 5px rgba(0, 0, 0, 0.3), 1px -1px 5px rgba(0, 0, 0, 0.3);
+    -ms-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3), -1px 1px 5px rgba(0, 0, 0, 0.3), 1px -1px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3), -1px -1px 5px rgba(0, 0, 0, 0.3), -1px 1px 5px rgba(0, 0, 0, 0.3), 1px -1px 5px rgba(0, 0, 0, 0.3);
 }
 
 ul.theme-choose li label > div {
+    border: 1px solid #909090;
     cursor: pointer;
     display: inline-block;
     height: 100%;
     width: 70%;
     text-align: left;
     overflow: hidden;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    -ms-border-radius: 6px;
-    border-radius: 6px;
 }
 
 ul.theme-choose li label > div > div:first-child {
@@ -2741,14 +2738,6 @@ ul.theme-choose li label > div > div:first-child {
     display: inline-block;
     height: 55px;
     width: 100%;
-    -webkit-border-top-left-radius: 6px;
-    -moz-border-top-left-radius: 6px;
-    -ms-border-top-left-radius: 6px;
-    border-top-left-radius: 6px;
-    -webkit-border-top-right-radius: 6px;
-    -moz-border-top-right-radius: 6px;
-    -ms-border-top-right-radius: 6px;
-    border-top-right-radius: 6px;
 }
 
 ul.theme-choose li label > div > div:first-child span {
@@ -2789,10 +2778,10 @@ ul.theme-choose li input[type=radio]:checked + label > div {
 }
 
 div.editor-highlight {
-    border: 1px solid #e0e0e0;
+    border: 1px solid #404040;
     position: relative;
     overflow: hidden;
-    height: 480px;
+    height: 680px;
     padding: 0;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -2825,13 +2814,16 @@ div.editor-highlight ul.wrapper {
 }
 
 div.editor-highlight ul.wrapper > li {
+    font-size: 18px;
+    font-family: monospace;
     position: relative;
 }
 
 div.editor-highlight ul.wrapper > li > span:first-child {
-    color: #707070;
-    background-color: #f0f0f0;
-    border-right: 1px solid #e0e0e0;
+    color: #ffffff;
+    font-size: inherit;
+    background-color: transparent;
+    border-right: 1px solid #404040;
     display: inline-block;
     position: absolute;
     line-height: 24px;
@@ -2850,7 +2842,8 @@ div.editor-highlight ul.wrapper > li > span:first-child {
 
 div.editor-highlight ul.wrapper > li > pre:last-child {
     display: inline-block;
-    line-height: 24px;
+    font-size: inherit;
+    font-family: inherit;
     margin: 0;
     padding: 0;
     padding-left: 5px;
@@ -2865,30 +2858,37 @@ div.editor-highlight ul.wrapper > li > pre:last-child.wrap {
 }
 
 div.editor-highlight ul.wrapper > li > pre:last-child > span {
-    color: #505050;
+    color: #d6d7d9;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+div.editor-highlight ul.wrapper > li > pre:last-child > span span {
+    font-size: inherit;
+    font-family: inherit;
 }
 
 div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-tag-open,
           div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-tag-close {
-    color: #d32f2f;
+    color: #d6d7d9;
 }
 
-div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-symbol {
-    color: #1976d2;
+div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-variable-name,
+          div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-class-tag-self {
+    color: #d6d7d9;
 }
 
-div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-variable-name {
-    color: #2196f3;
-}
-
-div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-keyword {
-    color: #673ab7;
+div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-symbol,
+          div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-keyword {
+    color: #f35656;
 }
 
 div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-string {
-    color: #689f38;
+    color: #f0da5e;
 }
 
-div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-number {
-    color: #fc5700;
+div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-number,
+          div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-class-name,
+          div.editor-highlight ul.wrapper > li > pre:last-child > span span.php-function {
+    color: #74f1c6;
 }

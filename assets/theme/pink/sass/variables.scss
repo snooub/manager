@@ -41,10 +41,10 @@ $input-type-checkbox-radio-entry-list-label-before-text-shadow-blur: 1px;
 $input-type-checkbox-radio-entry-list-label-before-text-shadow-color: rgba(255, 255, 255, 0.2);
 
 $input-type-checkbox-radio-entry-list-hover-label-before-color: #c0c0c0;
-$input-type-checkbox-radio-entry-list-checked-label-before-color: #00a99b;
+$input-type-checkbox-radio-entry-list-checked-label-before-color: #f06292;
 $input-type-checkbox-radio-entry-list-disabled-label-before-color: #c0c0c0;
 $input-type-checkbox-radio-entry-list-disabled-label-before-background-color: #eaeaea;
-$input-type-checkbox-radio-entry-list-checked-hover-label-before-color: #00c9bb;
+$input-type-checkbox-radio-entry-list-checked-hover-label-before-color: #ec407a;
 
 $input-type-checkbox-radio-entry-list-label-span-color: #707070;
 $input-type-checkbox-radio-entry-list-hover-label-span-color: #707070;
@@ -60,12 +60,12 @@ $ul-radio-choose-tab-li-input-label-background-color: #f0f0f0;
 $ul-radio-choose-tab-li-input-label-span-color: #505050;
 $ul-radio-choose-tab-li-input-disabled-label-span-color: #505050;
 $ul-radio-choose-tab-li-input-enabled-label-hover: #e0e0e0;
-$ul-radio-choose-tab-li-input-enabled-checked-label-hover: #00897b;
+$ul-radio-choose-tab-li-input-enabled-checked-label-hover: #ec407a;
 $ul-radio-choose-tab-li-input-enabled-checked-label-hover-span: #ffffff;
-$ul-radio-choose-tab-li-input-label-enabled-hover-span: #00897b;
+$ul-radio-choose-tab-li-input-label-enabled-hover-span: #ec407a;
 
 $header-height: 55px;
-$header-background-color: #00897b;
+$header-background-color: #ec407a;
 $header-box-shadow-hoz: 0;
 $header-box-shadow-ver: 1px;
 $header-box-shadow-blur: 5px;
@@ -141,10 +141,10 @@ $paging-box-shadow-blur: 2px;
 $paging-box-shadow-color: rgba(0, 0, 0, 0.15);
 
 $paging-li-current-strong-color: #ffffff;
-$paging-li-current-strong-background-color: #00897b;
+$paging-li-current-strong-background-color: #ec407a;
 $paging-li-current-strong-padding: 5px;
 
-$paging-li-other-span-color: #00897b;
+$paging-li-other-span-color: #ec407a;
 $paging-li-other-a-hover-span-color: #ffffff;
 $paging-li-other-span-background-color: #f0f0f0;
 $paging-li-other-span-a-hover-background-color: #404040;
@@ -163,9 +163,9 @@ $form-action-box-shadow-color: $box-shadow-color-all;
 $form-action-div-title-span-color: #505050;
 $form-action-div-title-span-font-size: 17px;
 
-$form-action-ul-form-element-li-span-label: #00897b;
+$form-action-ul-form-element-li-span-label: #ec407a;
 $form-action-ul-form-element-li-input-chmod-color: #ffffff;
-$form-action-ul-form-element-li-input-chmod-background-color: #00897b;
+$form-action-ul-form-element-li-input-chmod-background-color: #ec407a;
 $form-action-ul-form-element-li-input-chmod-input-checkbox-label-background-color: #f0f0f0;
 $form-action-ul-form-element-li-input-chmod-input-checkbox-label-span-color: #e0e0e0;
 $form-action-ul-form-element-li-input-chmod-input-checkbox-label-hover-span-color: #c0c0c0;
@@ -173,18 +173,18 @@ $form-action-ul-form-element-li-input-chmod-input-checkbox-checked-label-backgro
 $form-action-ul-form-element-li-input-chmod-input-checkbox-checked-label-span-color: #505050;
 $form-action-ul-form-element-li-input-chmod-input-checkbox-checked-label-hover-background-color: #eaeaea;
 
-$form-action-ul-form-element-li-radio-choose-span-color: #00897b;
+$form-action-ul-form-element-li-radio-choose-span-color: #ec407a;
 $form-action-ul-form-element-li-radio-choose-span-margin-bottom: 10px;
 
 $form-action-ul-form-element-li-accept-span-color: #505050;
 $form-action-ul-form-element-li-accept-strong-color: #e53935;
 $form-action-ul-form-element-li-accept-span-line-height: 22px;
 
-$form-action-ul-form-element-li-button-button-span-color: #00897b;
-$form-action-ul-form-element-li-button-button-hover-span-color: #00a99b;
+$form-action-ul-form-element-li-button-button-span-color: #ec407a;
+$form-action-ul-form-element-li-button-button-hover-span-color: #f06292;
 
 $form-action-ul-form-element-li-button-a-span-color: #404040;
-$form-action-ul-form-element-li-button-a-hover-span-color: #00897b;
+$form-action-ul-form-element-li-button-a-hover-span-color: #ec407a;
 $form-action-ul-form-element-li-button-button-a-hover-backround-color: #f0f0f0;
 
 $action-multi-background-color: $background-all;
@@ -232,7 +232,7 @@ $about-box-shadow-ver: 1px;
 $about-box-shadow-blur: 2px;
 $about-box-shadow-color: $box-shadow-color-all;
 
-$about-h1-color: #00897b;
+$about-h1-color: #ec407a;
 $about-h5-color: #c0c0c0;
 $about-h1-font-size: 300%;
 $about-h5-font-size: 100%;
@@ -246,7 +246,7 @@ $about-ul-border-top-size: 1px;
 $about-ul-border-top-style: dashed;
 $about-ul-border-top-color: #e0e0e0;
 
-$about-ul-li-lable-li-span-color: #00897b;
+$about-ul-li-lable-li-span-color: #ec407a;
 $about-ul-li-lable-li-span-font-weight: bold;
 $about-ul-li-lable-li-span-font-size: 15px;
 
@@ -255,7 +255,7 @@ $about-ul-li-value-li-span-status-on-enabled-color: #2d7e32;
 $about-ul-li-value-li-span-status-off-disabled-color: #c62828;
 $about-ul-li-value-li-span-status-unknown-color: #ff8f00;
 
-$about-ul-li-message-div-title-span-color: #00897b;
+$about-ul-li-message-div-title-span-color: #ec407a;
 $about-ul-li-message-div-content-span-color: #505050;
 $about-ul-li-message-div-title-span-font-weight: bold;
 
@@ -299,7 +299,7 @@ $list-li-border-style: dashed;
 $list-li-border-color: #e0e0e0;
 
 $list-li-a-hover-color: #909090;
-$list-li-a-hover-icon-color: #ffd300;
+$list-li-a-hover-icon-color: #f06292;
 
 $list-li-div-info-span-color: #d0d0d0;
 $list-li-div-info-a-hover-span-color: #a0a0a0;
@@ -309,15 +309,15 @@ $list-li-li-div-a-chmod-size-span-color: #d0d0d0;
 $list-li-li-div-a-chmod-size-a-hover-span-color: #a0a0a0;
 
 $list-li-directory-color: #505050;
-$list-li-directory-icon-color: #ffb300;
+$list-li-directory-icon-color: #e91e63;
 $list-li-directory-icon-font-size: 25px;
 
-$list-li-database-icon-color: #26a69a;
-$list-li-database-a-hover-icon-color: #80cbc4;
+$list-li-database-icon-color: #e91e63;
+$list-li-database-a-hover-icon-color: #f06292;
 $list-li-database-icon-font-size: 22px;
 
-$list-li-order-span-choose-color: #00897b;
-$list-li-order-a-hover-span-choose-color: #00a99b;
+$list-li-order-span-choose-color: #ec407a;
+$list-li-order-a-hover-span-choose-color: #f06292;
 $list-li-order-span-current-color: #707070;
 $list-li-order-span-text-color: #505050;
 
@@ -349,7 +349,7 @@ $info-li-divider-border-top-size: 1px;
 $info-li-divider-border-top-style: dashed;
 $info-li-divider-border-top-color: #e0e0e0;
 
-$info-li-label-span-color: #00897b;
+$info-li-label-span-color: #ec407a;
 $info-li-value-span-color: #707070;
 $info-li-label-span-font-weight: bold;
 
@@ -359,7 +359,7 @@ $info-li-comment-border-top-size: 1px;
 $info-li-comment-border-top-style: dashed;
 $info-li-comment-border-top-color: #e0e0e0;
 
-$info-li-comment-div-title-span-color: #00897b;
+$info-li-comment-div-title-span-color: #ec407a;
 $info-li-comment-div-title-span-font-weight: bold;
 
 $info-li-comment-div-comment-span-color: #707070;
@@ -370,5 +370,5 @@ $markdown-hr-border-bottom-size: 1px;
 $markdown-hr-border-bottom-style: solid;
 $markdown-hr-border-bottom-color: #e0e0e0;
 
-$theme-choose-li-label-hover-div-box-shadow-color: rgba(0, 0, 0, 0.3);
-$theme-choose-li-checked-label-hover-div-box-shadow-color: rgba(0, 0, 0, 0.3);
+$theme-choose-li-label-hover-div-box-shadow-color: rgba(0, 0, 0, 0.1);
+$theme-choose-li-checked-label-hover-div-box-shadow-color: rgba(0, 0, 0, 0.1);

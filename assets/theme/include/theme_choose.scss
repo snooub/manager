@@ -18,7 +18,7 @@ ul.theme-choose {
         height: 200px;
         float: left;
         position: relative;
-        margin-bottom: 15px;
+        margin-bottom: 50px;
         text-align: center;
 
         @media all and(max-width: 480px) {
@@ -29,15 +29,16 @@ ul.theme-choose {
             &:hover {
                 & > div {
                     @include box-shadow(
-                         1px  1px 10px $theme-choose-li-label-hover-div-box-shadow-color,
-                        -1px -1px 10px $theme-choose-li-label-hover-div-box-shadow-color,
-                        -1px  1px 10px $theme-choose-li-label-hover-div-box-shadow-color,
-                         1px -1px 10px $theme-choose-li-label-hover-div-box-shadow-color
+                         1px  1px 5px $theme-choose-li-label-hover-div-box-shadow-color,
+                        -1px -1px 5px $theme-choose-li-label-hover-div-box-shadow-color,
+                        -1px  1px 5px $theme-choose-li-label-hover-div-box-shadow-color,
+                         1px -1px 5px $theme-choose-li-label-hover-div-box-shadow-color
                     );
                 }
             }
 
             & > div {
+                border: 1px solid #909090;
                 cursor: pointer;
                 display: inline-block;
                 height: 100%;
@@ -45,16 +46,11 @@ ul.theme-choose {
                 text-align: left;
                 overflow: hidden;
 
-                @include border-radius(6px);
-
                 & > div:first-child {
                     cursor: pointer;
                     display: inline-block;
                     height: $header-height;
                     width: 100%;
-
-                    @include border-top-left-radius(6px);
-                    @include border-top-right-radius(6px);
 
                     span {
                         display: inline-block;

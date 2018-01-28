@@ -1,8 +1,8 @@
 div.editor-highlight {
-    border: 1px solid #e0e0e0;
+    border: 1px solid #404040;
     position: relative;
     overflow: hidden;
-    height: 480px;
+    height: 680px;
     padding: 0;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -33,12 +33,15 @@ div.editor-highlight {
         overflow: scroll;
 
         & > li {
+            font-size: 18px;
+            font-family: monospace;
             position: relative;
 
             & > span:first-child {
-                color: #707070;
-                background-color: #f0f0f0;
-                border-right: 1px solid #e0e0e0;
+                color: #ffffff;
+                font-size: inherit;
+                background-color: transparent;
+                border-right: 1px solid #404040;
                 display: inline-block;
                 position: absolute;
                 line-height: 24px;
@@ -55,7 +58,8 @@ div.editor-highlight {
 
             & > pre:last-child {
                 display: inline-block;
-                line-height: 24px;
+                font-size: inherit;
+                font-family: inherit;
                 margin: 0;
                 padding: 0;
                 padding-left: 5px;
@@ -69,31 +73,38 @@ div.editor-highlight {
                 }
 
                 & > span {
-                    color: #505050;
+                    color: rgb(214, 215, 217);
+                    font-size: inherit;
+                    font-family: inherit;
+
+                    span {
+                        font-size: inherit;
+                        font-family: inherit;
+                    }
 
                     span.php-tag-open,
                     span.php-tag-close {
-                        color: #d32f2f;
+                        color: rgb(214, 215, 217);
                     }
 
-                    span.php-symbol {
-                        color: #1976d2;
+                    span.php-variable-name,
+                    span.php-class-tag-self {
+                        color: rgb(214, 215, 217);
                     }
 
-                    span.php-variable-name {
-                        color: #2196f3;
-                    }
-
+                    span.php-symbol,
                     span.php-keyword {
-                        color: #673ab7;
+                        color: rgb(243, 86, 86);
                     }
 
                     span.php-string {
-                        color: #689f38;
+                        color: rgb(240, 218, 94);
                     }
 
-                    span.php-number {
-                        color: #fc5700;
+                    span.php-number,
+                    span.php-class-name,
+                    span.php-function {
+                        color: rgb(116, 241, 198);
                     }
                 }
             }

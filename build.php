@@ -16,6 +16,7 @@
             'package.json',
             'asset.php',
             'build.php',
+            'transalate.php',
 
             'assets/backup',
             'assets/config/manager.php',
