@@ -1,11 +1,9 @@
 define([
     "jquery",
-    "define",
-    "selector"
+    "define"
 ], function(
     jquery,
-    define,
-    selector
+    define
 ) {
     return {
         lang: null,
@@ -19,7 +17,7 @@ define([
             this.lang  = lang;
             this.login = login;
 
-            selector.contextmenu.unbind("click contextmenu").bind("click contextmenu", function(e) {
+            define.element.contextmenu.unbind("click contextmenu").bind("click contextmenu", function(e) {
                 self.hidden();
                 e.preventDefault();
             });
@@ -33,7 +31,7 @@ define([
                 callback = function(index, object) { };
 
             var contextListLeft   = (this.ePageX + 20);
-            var contextListTop    = (this.ePageY - selector.header.height()) + 20;
+            var contextListTop    = (this.ePageY - define.element.header.height()) + 20;
             var contextListBuffer = "";
 
             for (var key in options) {
@@ -44,8 +42,8 @@ define([
                 contextListBuffer += "</p></li>";
             }
 
-            selector.contextmenuList.html(contextListBuffer);
-            selector.contextmenuList.find("li > p").each(function(index, object) {
+            define.element.contextmenuList.html(contextListBuffer);
+            define.element.contextmenuList.find("li > p").each(function(index, object) {
                 var element = $(this);
 
                 element.unbind("click contextmenu").bind("click contextmenu", function(e) {
@@ -56,12 +54,12 @@ define([
                 });
             });
 
-            selector.contextmenuList.css({
+            define.element.contextmenuList.css({
                 left: contextListLeft + "px",
                 top:  contextListTop  + "px"
             });
 
-            selector.contextmenu.css({
+            define.element.contextmenu.css({
                 display: "block",
                 opacity: 0
             }).animate({
@@ -70,14 +68,14 @@ define([
         },
 
         hidden: function() {
-            selector.contextmenu.animate({
+            define.element.contextmenu.animate({
                 opacity: 0
             }, define.time.animate_hidden, function() {
-                selector.contextmenu.css({
+                define.element.contextmenu.css({
                     display: "none"
                 });
 
-                selector.contextmenuList.find("li > p").each(function() {
+                define.element.contextmenuList.find("li > p").each(function() {
                     $(this).unbind("click").parent().remove();
                 });
             });

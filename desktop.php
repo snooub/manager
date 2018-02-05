@@ -6,11 +6,11 @@
     use Librarys\App\AppAssets;
     use Librarys\App\AppDirectory;
     use Librarys\App\Config\AppConfig;
+    use Librarys\Http\Request;
 
     requireDefine('asset');
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,45 +44,37 @@
             media="all"
             href="<?php echo AppAssets::makeURLResourceTheme(AppConfig::getInstance()->get('theme.directory'), 'theme_desktop'); ?>"/>
 
-        <script
-            type="text/javascript"
-            src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.desktop.file.require'), env('resource.filename.javascript.desktop.directory.lib')); ?>"
-            data-main="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.desktop.file.bundle'), env('resource.filename.javascript.desktop.directory.base')); ?>"></script>
+        <?php if (Request::isLocal()) { ?>
+            <script
+                async
+                type="text/javascript"
+                src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.desktop.file.require'), env('resource.filename.javascript.desktop.directory.lib')); ?>"
+                data-main="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.desktop.file.bundle'), env('resource.filename.javascript.desktop.directory.base')); ?>"></script>
+        <?php } else { ?>
+            <script
+                async
+                type="text/javascript"
+                src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.desktop.file.app_min')); ?>"></script>
+        <?php } ?>
+
+        <script type="text/javascript">
+            window.addEventListener("load", function() {
+                if (typeof require !== "undefined")
+                    require([ "main" ]);
+            })
+        </script>
     </head>
-    <body>
+    <body token-name="<?php echo cfsrTokenName(); ?>" token-value="<?php echo cfsrTokenValue(); ?>">
         <div id="container-full">
             <div id="header">
-                <div id="logo">
-                    <a href="<?php echo env('app.http.host'); ?>">
-                        <span class="icomoon icon-home"></span>
-                    </a>
-                </div>
-                <ul id="action">
-                    <li login="true">
-                        <a href="#">
-                            <span class="icomoon icon-search"></span>
-                        </a>
-                    </li>
-                    <li login="true">
-                        <a href="#">
-                            <span class="icomoon icon-mysql"></span>
-                        </a>
-                    </li>
-                    <li login="true">
-                        <a href="#">
-                            <span class="icomoon icon-config"></span>
-                        </a>
-                    </li>
-                    <li class="about" login="false">
-                        <a href="#">
-                            <span class="icomoon icon-about"></span>
-                        </a>
-                    </li>
-                    <li login="true">
-                        <a href="#">
-                            <span class="icomoon icon-exit"></span>
-                        </a>
-                    </li>
+                <ul class="action left">
+                    <li><span class="icomoon icon-home"></span></li>
+                </ul>
+                <ul class="action right">
+                    <li><span class="icomoon icon-database"></span></li>
+                    <li><span class="icomoon icon-setting"></span></li>
+                    <li><span class="icomoon icon-about"></span></li>
+                    <li><span class="icomoon icon-exit"></span></li>
                 </ul>
             </div>
             <div id="container">
@@ -132,7 +124,7 @@
                         </ul>
                     </form>
                 </div>
-                <div id="contextmenu">
+<!--                 <div id="contextmenu">
                     <ul>
                         <li><p><span>Open</span></p></li>
                         <li><p><span>Open with...</span></p></li>
@@ -141,13 +133,13 @@
                         <li><p><span>Delete</span></p></li>
                         <li><p><span>Chmod</span></p></li>
                     </ul>
-                </div>
+                </div> -->
                 <div id="alert">
                     <ul></ul>
                 </div>
                 <div id="loading">
                     <div id="box">
-                        <span class="icomoon icon-spinner spinner-animation"></span>
+                        <span class="spinner-animation"></span>
                         <span class="notice"><?php echo lng('default.loading'); ?></span>
                     </div>
                 </div>

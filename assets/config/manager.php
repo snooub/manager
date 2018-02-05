@@ -52,7 +52,7 @@
         ],
 
         'theme' => [
-            'directory' => 'purpe',
+            'directory' => 'default',
         ],
 
         'check_update' => [

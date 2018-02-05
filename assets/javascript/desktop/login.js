@@ -3,7 +3,6 @@ define([
     "jquery",
     "container",
     "define",
-    "selector",
     "alert",
     "contextmenu",
     "sidebar",
@@ -13,7 +12,6 @@ define([
     jquery,
     container,
     define,
-    selector,
     alert,
     contextmenu,
     sidebar,
@@ -50,21 +48,28 @@ define([
 
         check: function(data) {
             if ((data.code_sys & define.code.is_not_login) !== 0)
-                this.show();
+                this.show(data);
             else
                 return true;
 
             return false;
         },
 
-        show: function() {
+        show: function(data) {
             var self = this;
 
             container.hidden();
-            alert.add(this.lang.get("user.login.alert.not_login"));
 
-            selector.login.stop().css({ display: "block", opacity: 0 }).animate({ opacity: 1 }, define.time.animate_show, function() {
-                var form     = selector.login.find("form");
+            if ((data.code_sys & define.code.is_login_error) === 0)
+                alert.add(this.lang.get("user.login.alert.not_login"));
+
+            define.element.login.stop().css({
+                display: "block",
+                opacity: 0
+            }).animate({
+                opacity: 1
+            }, define.time.animate_show, function() {
+                var form     = define.element.login.find("form");
                 var username = form.find("input[name=username]");
                 var password = form.find("input[name=password]");
                 var submit   = form.find("button[type=submit]");
@@ -99,8 +104,8 @@ define([
         },
 
         hidden: function() {
-            selector.login.stop().animate({ opacity: 0 }, define.time.animate_hidden, function() {
-                selector.login.css({ display: "none" });
+            define.element.login.stop().animate({ opacity: 0 }, define.time.animate_hidden, function() {
+                define.element.login.css({ display: "none" });
             });
         },
 
@@ -108,6 +113,7 @@ define([
             if (typeof instance === "undefined")
                 instance = this;
 
+            instance.hidden();
             container.show();
             contextmenu.init(instance.lang, instance);
             sidebar.file.init(instance.lang, instance, content);

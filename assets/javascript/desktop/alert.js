@@ -1,9 +1,9 @@
 define([
     "jquery",
-    "selector"
+    "define"
 ], function(
     jquery,
-    selector
+    define
 ) {
     return {
         maxShow:  5,
@@ -45,8 +45,8 @@ define([
                 if (typeof self.arrays === "undefined")
                     return;
 
-                var elementAlert     = selector.alert;
-                var elementAlertList = selector.alertList;
+                var elementAlert     = define.element.alert;
+                var elementAlertList = define.element.alertList;
                 var lengthArray      = self.arrays.length;
                 var lengthElement    = elementAlertList.get(0).childElementCount;
 

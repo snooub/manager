@@ -138,8 +138,9 @@
                         ],
 
                         'file'      => [
-                            'require' => 'require.js',
-                            'bundle'  => 'bundle.js'
+                            'app_min' => 'app.desktop.min.js',
+                            'require' => $isLocal ? 'require.js' : 'require.min.js',
+                            'bundle'  => $isLocal ? 'bundle.js'  : 'bundle.min.js',
                         ]
                     ],
 

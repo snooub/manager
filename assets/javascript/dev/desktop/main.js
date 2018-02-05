@@ -1,19 +1,13 @@
 define([
-    "jquery",
-    "container",
-    "define",
+    "token",
     "lang"
 ], function(
-    jquery,
-    container,
-    define,
+    token,
     lang
 ) {
     return {
         init: function() {
-            container.fixSizeChild();
-            container.registerWindowOnResize();
-            container.registerDocumentOnMouseMove();
+            token.init();
             lang.init(this);
 
             return this;

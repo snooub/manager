@@ -3,20 +3,29 @@ define([
     "jquery",
     "scroll",
     "define",
-    "selector",
-    "contextmenu",
-    "lib/file",
-    "lib/url"
+    "contextmenu"
 ], function(
     ajax,
     jquery,
     scroll,
     define,
-    selector,
-    contextmenu,
-    file,
-    url
+    contextmenu
 ) {
+    var fileFunction = {
+        parseSize: function(size) {
+            if (size < 1024)
+                return size + 'B';
+            else if (size < 1048576)
+                return Math.round(size / 1024, 2) + 'KB';
+            else if (size < 1073741824)
+                return Math.round(size / 1048576, 2) + 'MB';
+            else
+                return Math.round(size / 1073741824, 2) + 'GB';
+
+            return size + 'B';
+        }
+    };
+
     return {
         file: {
             lang:  null,
@@ -30,15 +39,15 @@ define([
             },
 
             fixSize: function() {
-                var height         = selector.contentFileManager.height();
-                var locationHeight = selector.contentFileManagerLocation.height();
+                var height         = define.element.contentFileManager.height();
+                var locationHeight = define.element.contentFileManagerLocation.height();
                 var listHeight     = height - locationHeight;
 
-                selector.contentFileManagerList.css({
+                define.element.contentFileManagerList.css({
                     height: listHeight + "px"
                 });
 
-                scroll.emulator(define.contentFileManagerListSelector);
+                scroll.emulator(define.selector.contentFileManagerListSelector);
             },
 
             renderLocationPath: function(dataPath) {
@@ -67,7 +76,7 @@ define([
                     if ((i === 0 && pathSeparator === "\\") || i > 0)
                         pathBuffer += pathSeparator;
 
-                    buffer += "<li path=\"" + url.rawEncode(pathBuffer) + "\">";
+                    buffer += "<li path=\"" + encodeURIComponent(pathBuffer) + "\">";
                     buffer += "<span class=\"label\">" + pathOffset + "</span>";
 
                     if (i + 1 < pathSplits.length)
@@ -76,18 +85,18 @@ define([
                     buffer += "</li>";
                 }
 
-               selector.contentFileManagerLocation.html(buffer);
+               define.element.contentFileManagerLocation.html(buffer);
             },
 
             renderDataList: function(dataPath, dataList) {
                 this.renderLocationPath(dataPath);
 
-                selector.contentFileManagerList.stop().css({
+                define.element.contentFileManagerList.stop().css({
                     display: "inline-block",
                     opacity: 0
                 });
 
-                selector.contentFileManagerListRender.find("div:only-child").each(function() {
+                define.element.contentFileManagerListRender.find("div:only-child").each(function() {
                     $(this).unbind("click contextmenu");
                 });
 
@@ -98,9 +107,9 @@ define([
                     entry = dataList[i];
 
                     if (entry.is_directory)
-                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"true\" path=\"" + url.rawEncode(entry.path) + "\">";
+                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"true\" path=\"" + encodeURIComponent(entry.path) + "\">";
                     else
-                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"false\" path=\"" + url.rawEncode(entry.path) + "\">";
+                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"false\" path=\"" + encodeURIComponent(entry.path) + "\">";
 
                     buffer += "<div>";
                     buffer += "<p class=\"label\">";
@@ -115,14 +124,14 @@ define([
                     buffer += "<p class=\"info\">";
 
                     if (entry.is_directory == false)
-                        buffer += "<span class=\"size\">" + file.parseSize(entry.size) + "</span><span>,</span>";
+                        buffer += "<span class=\"size\">" + fileFunction.parseSize(entry.size) + "</span><span>,</span>";
 
                     buffer += "<span class=\"perms\">" + entry.perms + "</span>";
                     buffer += "</p>";
                     buffer += "</li>";
                 }
 
-                selector.contentFileManagerListRender.html(buffer).find("div:only-child").each(function() {
+                define.element.contentFileManagerListRender.html(buffer).find("div:only-child").each(function() {
                     var element = $(this);
 
                     element.unbind("click contextmenu").bind("click", function() {
@@ -147,7 +156,7 @@ define([
                     });
                 });
 
-                selector.contentFileManagerList.animate({
+                define.element.contentFileManagerList.animate({
                     opacity: 1
                 }, define.time.animate_show);
             }

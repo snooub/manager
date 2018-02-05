@@ -1,9 +1,11 @@
 define([
     "ajax",
+    "header",
     "alert",
     "login"
 ], function(
     ajax,
+    header,
     alert,
     login
 ) {
@@ -27,6 +29,7 @@ define([
                     self.datas = data;
 
                     self.render();
+                    header.show();
                     alert.init();
                     login.init(self);
                 }

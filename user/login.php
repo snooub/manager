@@ -82,7 +82,7 @@
             $timeLockCalc       = $timeLockCalcHour . ':' . $timeLockCalcMinute . ':' . $timeLockCalcSecond . 's';
         }
 
-        if (isset($_SERVER['REQUEST_METHOD']) && strcasecmp($_SERVER['REQUEST_METHOD'], 'post') === 0)
+        if (Request::isDesktop() == false && isset($_SERVER['REQUEST_METHOD']) && strcasecmp($_SERVER['REQUEST_METHOD'], 'post') === 0)
             Request::redirect('login.php');
 
         AppAlert::danger(lng('user.login.alert.lock_count_failed', 'count', $currentCountLock, 'time', $timeLockCalc));
@@ -126,9 +126,9 @@
 
     if (Request::isDesktop()) {
         if (AppUser::getInstance()->isLogin())
-            AppJson::getInstance()->setResponseCodeSystem(DESKTOP_CODE_IS_LOGIN);
+            AppJson::getInstance()->setResponseCodeSystem(DESKTOP_CODE_IS_LOGIN | DEKSTOP_CODE_IS_LOGIN_ERROR);
         else
-            AppJson::getInstance()->setResponseCodeSystem(DESKTOP_CODE_IS_NOT_LOGIN);
+            AppJson::getInstance()->setResponseCodeSystem(DESKTOP_CODE_IS_NOT_LOGIN | DEKSTOP_CODE_IS_LOGIN_ERROR);
 
         AppJson::getInstance()->setResponseDataSystem([
             'is_login' => AppUser::getInstance()->isLogin()

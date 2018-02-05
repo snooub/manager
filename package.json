@@ -24,7 +24,7 @@
     "gulp-cssnano": "^2.1.2",
     "gulp-js-prettify": "^0.1.0",
     "gulp-livereload": "^3.8.1",
-    "gulp-notify": "^3.0.0",
+    "gulp-notify": "^3.2.0",
     "gulp-obfuscate": "^0.2.9",
     "gulp-plumber": "^1.1.0",
     "gulp-remove-files": "0.0.3",
@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "array-unique": "^0.3.2",
-    "del": "^3.0.0"
+    "del": "^3.0.0",
+    "node-notifier": "^5.2.1"
   }
 }

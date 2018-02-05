@@ -2,20 +2,18 @@ define([
     "ajax",
     "jquery",
     "define",
-    "selector",
     "scroll",
     "contextmenu",
     "content",
-    "lib/url"
+    "header"
 ], function(
     ajax,
     jquery,
     define,
-    selector,
     scroll,
     contextmenu,
     content,
-    url
+    header
 ) {
     return {
         file: {
@@ -39,7 +37,7 @@ define([
                     buffer += "</p>";
                     buffer += "</li>";
 
-                selector.sidebarFileList.html(buffer);
+                define.element.sidebarFileList.html(buffer);
                 this.repaintListEntry();
             },
 
@@ -59,7 +57,7 @@ define([
                     url += "?directory=" + path;
 
                 if (typeof elementEntry === "undefined" || elementEntry.get(0).tagName.toLowerCase() !== "p")
-                    elementEntry = selector.sidebarFileList.find("> li > p.root");
+                    elementEntry = define.element.sidebarFileList.find("> li > p.root");
 
                 var elementIcon   = elementEntry.find("span.icomoon");
                 var elementParent = elementEntry.parent();
@@ -107,12 +105,12 @@ define([
             bindClickListEntry: function() {
                 var self = this;
 
-                selector.sidebarFileList.find("p").each(function() {
+                define.element.sidebarFileList.find("p").each(function() {
                     var element = $(this);
                     var parent  = element.parent();
 
                     element.unbind("click").bind("click", function() {
-                        self.loadPath(url.rawDecode(parent.attr("path")), element);
+                        self.loadPath(decodeURIComponent(parent.attr("path")), element);
                         console.log("Click: " + element);
                         console.log(parent);
                     }).unbind("contextmenu").bind("contextmenu", function(e) {
@@ -136,12 +134,12 @@ define([
             startSpinner: function(elementEntryLi) {
                 var elementIcon = elementEntryLi.find("> p > span.icomoon");
                     elementIcon.removeClass("icon-folder")
-                               .addClass("icon-spinner spinner-animation");
+                               .addClass("spinner-animation");
             },
 
             stopSpinner: function(elementEntryLi) {
                 var elementIcon = elementEntryLi.find("> p > span.icomoon");
-                    elementIcon.removeClass("icon-spinner spinner-animation")
+                    elementIcon.removeClass("spinner-animation")
                                .addClass("icon-folder");
             },
 
@@ -158,7 +156,7 @@ define([
                 var pathSplitsTmp  = [];
                 var pathSeparator  = "/";
                 var pathBuffer     = "";
-                var elementCurrent = selector.sidebarFileList.find("> li");
+                var elementCurrent = define.element.sidebarFileList.find("> li");
 
                 if (dataPath.indexOf("/") === 0) {
                     pathSplits.push("/");
@@ -209,7 +207,7 @@ define([
                         elementCurrent = elementSub;
                         elementCurrent.find("> p:first-child > span:last-child").html(pathOffset);
                         elementCurrent.find("> p:first-child > span.icomoon:first-child").removeClass("icon-folder").addClass("icon-folder-open");
-                        elementCurrent.attr("path", url.rawEncode(pathBuffer));
+                        elementCurrent.attr("path", encodeURIComponent(pathBuffer));
                     }
                 }
 
@@ -226,9 +224,9 @@ define([
                     entry = dataList[i];
 
                     if (entry.is_directory)
-                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"true\" path=\"" + url.rawEncode(entry.path) + "\">";
+                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"true\" path=\"" + encodeURIComponent(entry.path) + "\">";
                     else
-                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"false\" path=\"" + url.rawEncode(entry.path) + "\">";
+                        buffer += "<li name=\"" + entry.name + "\" is_directory=\"false\" path=\"" + encodeURIComponent(entry.path) + "\">";
 
                     buffer += "<p>";
 
@@ -246,13 +244,13 @@ define([
             },
 
             repaintListEntry: function() {
-                selector.sidebarFileList.find("li > p").each(function() {
+                define.element.sidebarFileList.find("li > p").each(function() {
                     var element     = $(this);
                     var parent      = element.parent().parent().parent();
                     var paddingLeft = 0;
 
                     if (typeof element.attr("class") === "undefined" || element.attr("class").indexOf("root") === -1)
-                        paddingLeft += 30;
+                        paddingLeft += 15;
                     else
                         paddingLeft += 10;
 

@@ -8,11 +8,51 @@ var livereload   = require("gulp-livereload");
 var minifyCss    = require("gulp-cssnano");
 var minifyJs     = require("gulp-uglify");
 var cssbeautify  = require("gulp-cssbeautify");
-var del          = require("del");
 var prettify     = require("gulp-js-prettify");
+var wait         = require("gulp-wait");
+var color        = require("gulp-color");
+var notifier     = require("node-notifier").WindowsBalloon;
+var del          = require("del");
 
-gulp.task("compress_js", function() {
-    gutil.log("Js is change");
+var notifier = new notifier({
+  withFallback: false, // Use Growl Fallback if <= 10.8
+  customPath: void 0 // Relative/Absolute path to binary if you want to use your own fork of terminal-notifier
+});
+
+var listSass = {
+    basic: [
+        "default",
+        "pink",
+        "purpe",
+        "transparent"
+    ],
+
+    desktop: [
+        "default"
+    ]
+};
+
+function notify(options) {
+    gutil.log(options.message);
+
+    if (!options.time)
+        options.time = 3;
+
+    if (!options.type)
+        options.type = "info";
+
+    notifier.notify({
+        title: options.title,
+        message: options.message.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''),
+        sound: true,
+        wait: false,
+        time: options.time,
+        type: options.type
+    });
+}
+
+gulp.task("compress-javascript-basic", function() {
+    var isSuccess = true;
 
     return gulp.src("assets/javascript/dev/*.js")
                .pipe(rename({
@@ -21,7 +61,15 @@ gulp.task("compress_js", function() {
                .pipe(gulp.dest("assets/tmp"))
                .pipe(plumber({
                     errorHandler: function(error) {
-                        gutil.log(error.toString());
+                        isSuccess = false;
+
+                        notify({
+                            title: "Error compress javascript basic",
+                            message: error.toString(),
+                            type: "error",
+                            time: 2
+                        });
+
                         this.emit("end");
                     }
                }))
@@ -29,7 +77,15 @@ gulp.task("compress_js", function() {
                .pipe(minifyJs())
                .pipe(plumber({
                     errorHandler: function(error) {
-                        gutil.log(error.toString());
+                        isSuccess = false;
+
+                        notify({
+                            title: "Error compress javascript basic minify",
+                            message: error.toString(),
+                            type: "error",
+                            time: 2
+                        });
+
                         this.emit("end");
                     }
                }))
@@ -37,11 +93,19 @@ gulp.task("compress_js", function() {
                     extname: ".minify.js"
                }))
                .pipe(gulp.dest("assets/tmp"))
-               .pipe(livereload());
+               .pipe(livereload())
+               .on("end", function() {
+                    if (isSuccess) {
+                        notify({
+                            title: "Compress javascript basic",
+                            message: "Javascript basic is change"
+                        });
+                    }
+               });
 });
 
-gulp.task("compress_js_lib", function() {
-    gutil.log("Js desktop is change");
+gulp.task("compress-javascript-lib-basic", function() {
+    var isSuccess = true;
 
     return gulp.src("assets/javascript/dev/lib/**/*.js")
                .pipe(rename({
@@ -50,7 +114,15 @@ gulp.task("compress_js_lib", function() {
                .pipe(gulp.dest("assets/javascript/lib"))
                .pipe(plumber({
                     errorHandler: function(error) {
-                        gutil.log(error.toString());
+                        isSuccess = false;
+
+                        notify({
+                            title: "Error compress javascript lib basic",
+                            message: error.toString(),
+                            type: "error",
+                            time: 2
+                        });
+
                         this.emit("end");
                     }
                }))
@@ -58,7 +130,15 @@ gulp.task("compress_js_lib", function() {
                .pipe(minifyJs())
                .pipe(plumber({
                     errorHandler: function(error) {
-                        gutil.log(error.toString());
+                        isSuccess = false;
+
+                        notify({
+                            title: "Error compress javascript lib minify basic",
+                            message: error.toString(),
+                            type: "error",
+                            time: 2
+                        });
+
                         this.emit("end");
                     }
                }))
@@ -66,11 +146,19 @@ gulp.task("compress_js_lib", function() {
                     extname: ".min.js"
                }))
                .pipe(gulp.dest("assets/javascript/lib"))
-               .pipe(livereload());
+               .pipe(livereload())
+               .on("end", function() {
+                    if (isSuccess) {
+                        notify({
+                            title: "Compress javascript lib basic",
+                            message: "Javascript lib basic is change"
+                        });
+                    }
+               });
 });
 
-gulp.task("compress_js_desktop", function() {
-    gutil.log("Js desktop is change");
+gulp.task("compress-javascript-desktop", function() {
+    var isSuccess = true;
 
     return gulp.src("assets/javascript/dev/desktop/**/*.js")
                .pipe(rename({
@@ -79,218 +167,277 @@ gulp.task("compress_js_desktop", function() {
                .pipe(gulp.dest("assets/javascript/desktop"))
                .pipe(plumber({
                     errorHandler: function(error) {
-                        gutil.log(error.toString());
+                        isSuccess = false;
+
+                        notify({
+                            title: "Error compress javascript desktop",
+                            message: error.toString(),
+                            type: "error",
+                            time: 2
+                        });
+
                         this.emit("end");
                     }
                }))
                .pipe(livereload())
-               .pipe(minifyJs())
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
+               .on("end", function() {
+                    if (isSuccess) {
+                        notify({
+                            title: "Compress javascript desktop",
+                            message: "Javascript desktop is change"
+                        });
                     }
-               }))
-               .pipe(rename({
-                    extname: ".min.js"
-               }))
-               .pipe(gulp.dest("assets/javascript/desktop"))
-               .pipe(livereload());
+               });
 });
 
-gulp.task("concat_js", function() {
-    gutil.log("Concat file js");
-
+gulp.task("concat-javascript", function() {
     return gulp.src([ "assets/tmp/main.unmin.js" ])
                .pipe(concat("app.js"))
                .pipe(gulp.dest("assets/javascript"))
-               .pipe(livereload());
+               .pipe(livereload())
+               .on("end", function() {
+                    if (isSuccess) {
+                        notify({
+                            title: "Concat javascript",
+                            message: "Javascript basic is change"
+                        });
+                    }
+               });
 });
 
-gulp.task("concat_js_min", function() {
-    gutil.log("Concat file js min");
-
+gulp.task("concat-javascript-min", function() {
     return gulp.src([ "assets/tmp/main.unmin.minify.js" ])
                .pipe(concat("app.min.js"))
                .pipe(minifyJs())
                // .pipe(prettify({ collapseWhitespace: true }))
                .pipe(gulp.dest("assets/javascript"))
-               .pipe(livereload());
-});
-
-gulp.task("sass_default", function() {
-    gutil.log("Css default is change");
-
-    return gulp.src("assets/theme/default/sass/theme.scss")
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(sass())
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(cssbeautify())
-               .pipe(rename("theme.css"))
-               .pipe(gulp.dest("assets/theme/default"))
                .pipe(livereload())
-               .pipe(minifyCss())
-               .pipe(rename("theme.min.css"))
-               .pipe(gulp.dest("assets/theme/default"))
-               .pipe(livereload());
+               .on("end", function() {
+                    notify({
+                        title: "Concat javascript minify",
+                        message: "Javascript minify basic is change"
+                    });
+               });
 });
 
-gulp.task("sass_purpe", function() {
-    gutil.log("Css purpe is change");
+// Sass theme
+(function(lists) {
+    gutil.log(color("+ Create task sass theme basic", "cyan"));
 
-    return gulp.src("assets/theme/purpe/sass/theme.scss")
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(sass())
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(cssbeautify())
-               .pipe(rename("theme.css"))
-               .pipe(gulp.dest("assets/theme/purpe"))
-               .pipe(livereload())
-               .pipe(minifyCss())
-               .pipe(rename("theme.min.css"))
-               .pipe(gulp.dest("assets/theme/purpe"))
-               .pipe(livereload());
-});
+    for (var i = 0; i < lists.length; ++i) {
+        var key = lists[i];
 
-gulp.task("sass_pink", function() {
-    gutil.log("Css pink is change");
+        gutil.log("- Create task sass theme " + color(key, "green") + " basic");
+        gulp.task("sass-theme-" + key, function() {
+            var name      = this.seq[0];
+            var lastIndex = name.lastIndexOf("-");
+            var lastName  = name.substring(lastIndex + 1);
+            var isSuccess = true;
 
-    return gulp.src("assets/theme/pink/sass/theme.scss")
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(sass())
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(cssbeautify())
-               .pipe(rename("theme.css"))
-               .pipe(gulp.dest("assets/theme/pink"))
-               .pipe(livereload())
-               .pipe(minifyCss())
-               .pipe(rename("theme.min.css"))
-               .pipe(gulp.dest("assets/theme/pink"))
-               .pipe(livereload());
-});
+            return gulp.src("assets/theme/" + lastName + "/sass/theme.scss")
+                       .pipe(wait(500))
+                       .pipe(plumber({
+                            errorHandler: function(error) {
+                                isSuccess = false;
 
-gulp.task("sass_transparent", function() {
-    gutil.log("Css transparent is change");
+                                notify({
+                                    title: "Error sass theme " + lastName + " basic",
+                                    message: error.toString(),
+                                    type: "error",
+                                    time: 2
+                                });
 
-    return gulp.src("assets/theme/transparent/sass/theme.scss")
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(sass())
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(cssbeautify())
-               .pipe(rename("theme.css"))
-               .pipe(gulp.dest("assets/theme/transparent"))
-               .pipe(livereload())
-               .pipe(minifyCss())
-               .pipe(rename("theme.min.css"))
-               .pipe(gulp.dest("assets/theme/transparent"))
-               .pipe(livereload());
-});
+                                this.emit("end");
+                            }
+                       }))
+                       .pipe(sass())
+                       .pipe(plumber({
+                            errorHandler: function(error) {
+                                isSuccess = false;
 
-gulp.task("sass_deafult_desktop", function() {
-    gutil.log("Css desktop default is change");
+                                notify({
+                                    title: "Error sass theme " + lastName + " basic",
+                                    message: error.toString(),
+                                    type: "error",
+                                    time: 2
+                                });
 
-    return gulp.src("assets/theme/desktop/default/sass/theme.scss")
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(sass())
-               .pipe(plumber({
-                    errorHandler: function(error) {
-                        gutil.log(error.toString());
-                        this.emit("end");
-                    }
-               }))
-               .pipe(cssbeautify())
-               .pipe(rename("theme_desktop.css"))
-               .pipe(gulp.dest("assets/theme/default"))
-               .pipe(livereload())
-               .pipe(minifyCss())
-               .pipe(rename("theme_desktop.min.css"))
-               .pipe(gulp.dest("assets/theme/default"))
-               .pipe(livereload());
-});
+                                this.emit("end");
+                            }
+                       }))
+                       .pipe(cssbeautify())
+                       .pipe(rename("theme.css"))
+                       .pipe(gulp.dest("assets/theme/" + lastName))
+                       .pipe(livereload())
+                       .pipe(minifyCss())
+                       .pipe(rename("theme.min.css"))
+                       .pipe(gulp.dest("assets/theme/" + lastName))
+                       .pipe(livereload())
+                       .on("end", function() {
+                            if (isSuccess) {
+                                notify({
+                                    title: "Sass theme " + lastName + " basic",
+                                    message: "Theme " + color(lastName, "green") + " basic is change"
+                                });
+                            }
+                       });
+        });
+    }
+})(listSass.basic);
 
-gulp.task("clone_icomoon_font", function() {
-    gutil.log("Font icomoon is change");
+(function(lists) {
+    gutil.log(color("+ Create task sass theme desktop", "cyan"));
 
-    return gulp.src("assets/theme/include/sass/icomoon/fonts/*.*")
-               .pipe(gulp.dest("assets/theme/default/fonts"))
-               .pipe(livereload())
-               .pipe(gulp.dest("assets/theme/transparent/fonts"))
-               .pipe(livereload());
-});
+    for (var i = 0; i < lists.length; ++i) {
+        var key = lists[i];
 
-gulp.task("watch", function() {
-    gutil.log("Gulp watch");
+        gutil.log("- Create task sass theme " + color(key, "green") + " desktop");
+        gulp.task("sass-theme-desktop-" + key, function() {
+            var name      = this.seq[0];
+            var lastIndex = name.lastIndexOf("-");
+            var lastName  = name.substring(lastIndex + 1);
+            var isSuccess = true;
+
+            return gulp.src("assets/theme/desktop/" + lastName + "/sass/theme.scss")
+                       .pipe(wait(500))
+                       .pipe(plumber({
+                            errorHandler: function(error) {
+                                isSuccess = false;
+
+                                notify({
+                                    title: "Error sass theme " + lastName + " desktop",
+                                    message: error.toString(),
+                                    type: "error",
+                                    time: 2
+                                });
+
+                                this.emit("end");
+                            }
+                       }))
+                       .pipe(sass())
+                       .pipe(plumber({
+                            errorHandler: function(error) {
+                                isSuccess = false;
+
+                                notify({
+                                    title: "Error sass theme " + lastName + " desktop",
+                                    message: error.toString(),
+                                    type: "error",
+                                    time: 2
+                                });
+
+                                this.emit("end");
+                            }
+                       }))
+                       .pipe(cssbeautify())
+                       .pipe(rename("theme_desktop.css"))
+                       .pipe(gulp.dest("assets/theme/" + lastName))
+                       .pipe(livereload())
+                       .pipe(minifyCss())
+                       .pipe(rename("theme_desktop.min.css"))
+                       .pipe(gulp.dest("assets/theme/" + lastName))
+                       .pipe(livereload())
+                       .on("end", function() {
+                            if (isSuccess) {
+                                notify({
+                                    title: "Sass theme " + lastName + " desktop",
+                                    message: "Theme " + lastName + " desktop is change"
+                                });
+                            }
+                       });
+        });
+    }
+})(listSass.desktop);
+
+// Clone icomoon font theme basic
+(function(lists) {
+    gutil.log(color("+ Create task clone icomoon font theme basic", "cyan"));
+
+    gulp.task("clone-icomoon-font-theme-basic", function() {
+        var res = gulp.src("assets/theme/include/sass/icomoon/fonts/*.*");
+
+        for (var i = 0; i < lists.length; ++i)
+            res = res.pipe(gulp.dest("assets/theme/" + lists[i] + "/fonts")).pipe(livereload());
+
+        return res.on("end", function() {
+            notify({
+                title: "Clone icomoon theme basic",
+                message: "Font icomoon theme basic is change"
+            });
+        });
+    });
+})(listSass.basic);
+
+// Clone icomoon font theme desktop
+(function(lists) {
+    gutil.log(color("+ Create task clone icomoon font theme desktop", "cyan"));
+
+    gulp.task("clone-icomoon-font-theme-desktop", function() {
+        var res = gulp.src("assets/theme/desktop/include/icomoon/fonts/*.*");
+
+        for (var i = 0; i < lists.length; ++i)
+            res = res.pipe(gulp.dest("assets/theme/" + lists[i] + "/desktop-fonts")).pipe(livereload());
+
+        return res.on("end", function() {
+            notify({
+                title: "Clone icomoon theme desktop",
+                message: "Font icomoon theme desktop is change"
+            });
+        });
+    });
+})(listSass.desktop);
+
+gulp.task("default", function() {
+    notify({
+        title: "Gulp",
+        message: "Watch start"
+    });
     livereload.listen();
 
-    gulp.watch([ "assets/theme/default/sass/*.scss", "assets/theme/include/*.scss", "assets/theme/include/sass/icomoon/*.scss" ], [ "sass_default" ]);
-    gulp.watch([ "assets/theme/purpe/sass/*.scss", "assets/theme/include/*.scss", "assets/theme/include/sass/icomoon/*.scss" ], [ "sass_purpe" ]);
-    gulp.watch([ "assets/theme/pink/sass/*.scss", "assets/theme/include/*.scss", "assets/theme/include/sass/icomoon/*.scss" ], [ "sass_pink" ]);
-    gulp.watch([ "assets/theme/transparent/sass/*.scss", "assets/theme/include/*.scss", "assets/theme/include/sass/icomoon/*.scss" ], [ "sass_transparent" ]);
-    gulp.watch([ "assets/theme/desktop/default/sass/*.scss" ], [ "sass_deafult_desktop" ]);
-    gulp.watch([ "assets/javascript/dev/*.js" ], [ "compress_js" ]);
-    gulp.watch([ "assets/javascript/dev/lib/**/*.js" ], [ "compress_js_lib" ]);
-    gulp.watch([ "assets/javascript/dev/desktop/**/*.js" ], [ "compress_js_desktop" ]);
-    gulp.watch([ "assets/tmp/*.unmin.js" ], [ "concat_js" ]);
-    gulp.watch([ "assets/tmp/*.unmin.minify.js" ], [ "concat_js_min" ]);
-    gulp.watch([ "assets/theme/include/sass/icomoon/fonts/*.*"], [ "clone_icomoon_font_default" ]);
-});
+    (function(lists) {
+        for (var i = 0; i < lists.length; ++i) {
+            gutil.log("* Watch sass theme basic " + color(lists[i], "green") + " basic");
 
-gulp.task("default", [
-    "sass_default",
-    "sass_transparent",
-    "sass_pink",
-    "sass_purpe",
-    "sass_deafult_desktop",
-    "compress_js",
-    "compress_js_lib",
-    "compress_js_desktop",
-    "concat_js",
-    "concat_js_min",
-    "clone_icomoon_font",
-    "watch"
-]);
+            gulp.watch([
+                "assets/theme/" + lists[i] + "/sass/*.scss",
+                "assets/theme/include/*.scss",
+                "assets/theme/include/sass/icomoon/*.scss"
+            ], [
+                "sass-theme-" + lists[i]
+            ]);
+        }
+    })(listSass.basic);
+
+    (function(lists) {
+        for (var i = 0; i < lists.length; ++i) {
+            gutil.log("* Watch sass theme desktop " + color(lists[i], "green") + " basic");
+
+            gulp.watch([
+                "assets/theme/desktop/" + lists[i] + "/sass/*.scss",
+                "assets/theme/desktop/include/*.scss",
+                "assets/theme/desktop/include/icomoon/*.scss"
+            ], [
+                "sass-theme-desktop-" + lists[i]
+            ]);
+        }
+    })(listSass.desktop);
+
+    (function() {
+        gutil.log("* Watch clone icomoon font theme " + color("basic", "green"));
+        gutil.log("* Watch clone icomoon font theme " + color("desktop", "green"));
+
+        gulp.watch([ "assets/theme/include/sass/icomoon/fonts/*.*"    ], [ "clone-icomoon-font-theme-basic" ]);
+        gulp.watch([ "assets/theme/desktop/include/icomoon/fonts/*.*" ], [ "clone-icomoon-font-theme-desktop" ]);
+    })();
+
+    (function() {
+        gutil.log("* Watch javascript on change");
+        gulp.watch([ "assets/javascript/dev/*.js"            ], [ "compress-javascript-basic" ]);
+        gulp.watch([ "assets/javascript/dev/lib/**/*.js"     ], [ "compress-javascript-lib-basic" ]);
+        gulp.watch([ "assets/javascript/dev/desktop/**/*.js" ], [ "compress-javascript-desktop" ]);
+
+        gutil.log("* Watch javascript is change and concat");
+        gulp.watch([ "assets/tmp/*.unmin.js"        ], [ "concat-javascript" ]);
+        gulp.watch([ "assets/tmp/*.unmin.minify.js" ], [ "concat-javascript-min" ]);
+    })();
+});

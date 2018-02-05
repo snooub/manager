@@ -56,7 +56,7 @@
 
             'truncate' => [
                 'truncate_table_failed' => 'Xóa sạch dữ liệu bảng <strong>{$name}</strong> thất bại: <strong>{$error}</strong>',
-                'truncate_failed'       => 'Xóa sạch dữ liệu nhiều bảng thất bại'
+                'truncate_failed'       => 'Xóa sạch dữ liệu nhiều bảng thất bại',
                 'truncate_success'      => 'Xóa sạch dữ liệu nhiều bảng thành công'
             ],
 

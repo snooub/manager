@@ -1,11 +1,13 @@
 define([
     "jquery",
     "define",
-    "alert"
+    "alert",
+    "token"
 ], function(
     jquery,
     define,
-    alert
+    alert,
+    token
 ) {
     return {
         script: {
@@ -40,6 +42,12 @@ define([
                     submit: 1
                 };
             }
+
+            var tokenName  = token.getName();
+            var tokenValue = token.getValue();
+
+            if (typeof options.data[tokenName] === "undefined")
+                options.data[tokenName] = tokenValue;
 
             var self           = this;
             var handlerError   = null;

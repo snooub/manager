@@ -48,6 +48,12 @@
             box-sizing: $mode;
 }
 
+@mixin box-flex($number) {
+    -webkit-box-flex: $number;
+       -moz-box-flex: $number;
+        -ms-box-flex: $number;
+            box-flex: $number;
+}
 
 @mixin animation-name($name...) {
     -webkit-animation-name: $name;
