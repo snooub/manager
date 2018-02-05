@@ -2,6 +2,7 @@
 
     use Librarys\App\AppUser;
     use Librarys\App\AppAlert;
+    use Librarys\App\AppAssets;
     use Librarys\App\Config\AppConfig;
     use Librarys\File\FileInfo;
 
@@ -16,7 +17,7 @@
     $themeName       = env('resource.filename.theme.app');
     $httpHost        = env('app.http.host');
     $rootDirectory   = env('app.path.root');
-    $themeDirectory  = env('app.path.theme');
+    $themeDirectory  = env('app.path.theme') . SP . AppAssets::getDeviceType();
     $httpThemeUrl    = $httpHost . substr($themeDirectory, strlen($rootDirectory));
     $handleDirectory = FileInfo::scanDirectory($themeDirectory);
     $currentTheme    = AppConfig::getInstance()->get('theme.directory');

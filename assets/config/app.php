@@ -126,8 +126,8 @@
 
             'filename' => [
                 'theme' => [
-                    'app'         => $isLocal ? 'theme.css'         : 'theme.min.css',
-                    'app_desktop' => $isLocal ? 'theme_desktop.css' : 'theme_desktop.min.css',
+                    'app'         => $isLocal ? 'theme.css' : 'theme.min.css',
+                    'app_desktop' => $isLocal ? 'theme.css' : 'theme.min.css'
                 ],
 
                 'javascript' => [

@@ -15,6 +15,22 @@
 
         private static $uid;
         private static $rand;
+        private static $device;
+
+        const DEVICE_BASIC   = 'basic';
+        const DEVICE_DESKTOP = 'desktop';
+
+        public static function getDeviceType()
+        {
+            if (self::$device == null) {
+                if (Request::isDesktop(false))
+                    self::$device = self::DEVICE_DESKTOP;
+                else
+                    self::$device = self::DEVICE_BASIC;
+            }
+
+            return self::$device;
+        }
 
         public static function getUID()
         {
@@ -32,17 +48,19 @@
                 return self::$rand;
         }
 
-        public static function makeURLResourceTheme($themeDirectory, $filename)
+        public static function makeURLResourceTheme($themeDirectory, $filename, $device = null)
         {
+            if ($device == null)
+                $device = self::getDeviceType();
+
             $rootPath  = env('app.path.root');
             $themePath = env('app.path.theme');
-            $filename  = str_ireplace('.css', null, basename($filename));
-            $themePath = FileInfo::filterPaths($themePath . SP . $themeDirectory);
+            $themePath = FileInfo::filterPaths($themePath . SP . $device);
 
             if (FileInfo::isTypeDirectory($themePath) == false)
                 return null;
 
-            $themeFilename = $filename . '.css';
+            $themeFilename = $themeDirectory . SP . $filename;
             $themeFilepath = FileInfo::filterPaths($themePath . SP . $themeFilename);
 
             if (FileInfo::isTypeFile($themeFilepath) == false)

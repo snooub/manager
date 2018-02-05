@@ -37,6 +37,7 @@ define([
                     buffer += "</p>";
                     buffer += "</li>";
 
+                define.element.sidebarFileList.css({ top: header.getHeight() + "px" });
                 define.element.sidebarFileList.html(buffer);
                 this.repaintListEntry();
             },

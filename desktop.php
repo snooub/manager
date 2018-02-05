@@ -42,7 +42,7 @@
             rel="stylesheet"
             type="text/css"
             media="all"
-            href="<?php echo AppAssets::makeURLResourceTheme(AppConfig::getInstance()->get('theme.directory'), 'theme_desktop'); ?>"/>
+            href="<?php echo AppAssets::makeURLResourceTheme(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.theme.app_desktop')); ?>"/>
 
         <?php if (Request::isLocal()) { ?>
             <script
