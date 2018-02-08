@@ -46,19 +46,23 @@ function notify(options) {
         message: options.message.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''),
         sound: true,
         wait: false,
-        time: options.time,
+        time: options.time * 1000,
         type: options.type
+    }, function(err, res) {
+        if (typeof err !== "undefined") {
+            console.log("----- Notifier error -----");
+            console.log(err);
+            console.log(res);
+        }
     });
 }
 
 gulp.task("compress-javascript-basic", function() {
     var isSuccess = true;
 
-    return gulp.src("assets/javascript/dev/*.js")
-               .pipe(rename({
-                    extname: ".unmin.js"
-               }))
-               .pipe(gulp.dest("assets/tmp"))
+    return gulp.src("assets/build/javascript/basic/main.js")
+               .pipe(rename("app.js"))
+               .pipe(gulp.dest("assets/javascript/basic"))
                .pipe(plumber({
                     errorHandler: function(error) {
                         isSuccess = false;
@@ -89,10 +93,8 @@ gulp.task("compress-javascript-basic", function() {
                         this.emit("end");
                     }
                }))
-               .pipe(rename({
-                    extname: ".minify.js"
-               }))
-               .pipe(gulp.dest("assets/tmp"))
+               .pipe(rename("app.min.js"))
+               .pipe(gulp.dest("assets/javascript/basic"))
                .pipe(livereload())
                .on("end", function() {
                     if (isSuccess) {
@@ -107,11 +109,11 @@ gulp.task("compress-javascript-basic", function() {
 gulp.task("compress-javascript-lib-basic", function() {
     var isSuccess = true;
 
-    return gulp.src("assets/javascript/dev/lib/**/*.js")
+    return gulp.src("assets/build/javascript/basic/lib/**/*.js")
                .pipe(rename({
                     extname: ".js"
                }))
-               .pipe(gulp.dest("assets/javascript/lib"))
+               .pipe(gulp.dest("assets/javascript/basic/lib"))
                .pipe(plumber({
                     errorHandler: function(error) {
                         isSuccess = false;
@@ -145,7 +147,7 @@ gulp.task("compress-javascript-lib-basic", function() {
                .pipe(rename({
                     extname: ".min.js"
                }))
-               .pipe(gulp.dest("assets/javascript/lib"))
+               .pipe(gulp.dest("assets/javascript/basic/lib"))
                .pipe(livereload())
                .on("end", function() {
                     if (isSuccess) {
@@ -160,7 +162,7 @@ gulp.task("compress-javascript-lib-basic", function() {
 gulp.task("compress-javascript-desktop", function() {
     var isSuccess = true;
 
-    return gulp.src("assets/javascript/dev/desktop/**/*.js")
+    return gulp.src("assets/build/javascript/desktop/**/*.js")
                .pipe(rename({
                     extname: ".js"
                }))
@@ -187,36 +189,6 @@ gulp.task("compress-javascript-desktop", function() {
                             message: "Javascript desktop is change"
                         });
                     }
-               });
-});
-
-gulp.task("concat-javascript", function() {
-    return gulp.src([ "assets/tmp/main.unmin.js" ])
-               .pipe(concat("app.js"))
-               .pipe(gulp.dest("assets/javascript"))
-               .pipe(livereload())
-               .on("end", function() {
-                    if (isSuccess) {
-                        notify({
-                            title: "Concat javascript",
-                            message: "Javascript basic is change"
-                        });
-                    }
-               });
-});
-
-gulp.task("concat-javascript-min", function() {
-    return gulp.src([ "assets/tmp/main.unmin.minify.js" ])
-               .pipe(concat("app.min.js"))
-               .pipe(minifyJs())
-               // .pipe(prettify({ collapseWhitespace: true }))
-               .pipe(gulp.dest("assets/javascript"))
-               .pipe(livereload())
-               .on("end", function() {
-                    notify({
-                        title: "Concat javascript minify",
-                        message: "Javascript minify basic is change"
-                    });
                });
 });
 
@@ -558,13 +530,9 @@ gulp.task("watch", function() {
 
     (function() {
         gutil.log("* Watch javascript on change");
-        gulp.watch([ "assets/javascript/dev/*.js"            ], [ "compress-javascript-basic" ]);
-        gulp.watch([ "assets/javascript/dev/lib/**/*.js"     ], [ "compress-javascript-lib-basic" ]);
-        gulp.watch([ "assets/javascript/dev/desktop/**/*.js" ], [ "compress-javascript-desktop" ]);
-
-        gutil.log("* Watch javascript is change and concat");
-        gulp.watch([ "assets/tmp/*.unmin.js"        ], [ "concat-javascript" ]);
-        gulp.watch([ "assets/tmp/*.unmin.minify.js" ], [ "concat-javascript-min" ]);
+        gulp.watch([ "assets/build/javascript/basic/main.js"        ], [ "compress-javascript-basic" ]);
+        gulp.watch([ "assets/build/javascript/basic/lib/**/*.js" ], [ "compress-javascript-lib-basic" ]);
+        gulp.watch([ "assets/build/javascript/desktop/**/*.js"   ], [ "compress-javascript-desktop" ]);
     })();
 });
 
