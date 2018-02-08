@@ -405,7 +405,7 @@ gulp.task("compress-javascript-desktop", function() {
                         });
         });
     }
-})(listSass.basic);
+})(listSass.desktop);
 
 // Clone ini theme basic
 (function(lists) {

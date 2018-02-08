@@ -115,9 +115,18 @@
             return separator($buffer, '/');
         }
 
-        public static function makeURLResourceIcon($themeDirectory, $filename)
+        public static function makeURLResourceIcon($themeDirectory, $filename, $deviceType = null)
         {
-            return env('app.http.theme') . '/' . $themeDirectory . '/icon/' . $filename;
+            $res = env('app.http.theme');
+
+            if ($deviceType == null)
+                $deviceType = '/' . self::getDeviceType();
+
+            $res .= $deviceType;
+            $res .= '/' . $themeDirectory;
+            $res .= '/icon/' . $filename;
+
+            return $res;
         }
 
     }
