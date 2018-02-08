@@ -131,10 +131,19 @@
                 ],
 
                 'javascript' => [
+                    'basic' => [
+                        'directory' => [
+                            'lib' => 'lib'
+                        ],
+
+                        'app'     => $isLocal ? 'app.js' : 'app.min.js',
+                        'history' => $isLocal ? 'history.js' : 'history.min.js'
+                    ],
+
                     'desktop' => [
                         'directory' => [
                             'base' => 'desktop',
-                            'lib'  => '${resource.filename.javascript.desktop.directory.base}/lib'
+                            'lib'  => 'lib'
                         ],
 
                         'file'      => [
@@ -142,14 +151,7 @@
                             'require' => $isLocal ? 'require.js' : 'require.min.js',
                             'bundle'  => $isLocal ? 'bundle.js'  : 'bundle.min.js',
                         ]
-                    ],
-
-                    'directory' => [
-                        'lib' => 'lib'
-                    ],
-
-                    'app'     => $isLocal ? 'app.js' : 'app.min.js',
-                    'history' => $isLocal ? 'history.js' : 'history.min.js'
+                    ]
                 ],
 
                 'icon' => [

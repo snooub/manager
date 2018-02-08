@@ -48,14 +48,14 @@
                 return self::$rand;
         }
 
-        public static function makeURLResourceTheme($themeDirectory, $filename, $device = null)
+        public static function makeURLResourceTheme($themeDirectory, $filename, $deviceType = null)
         {
-            if ($device == null)
-                $device = self::getDeviceType();
+            if ($deviceType == null)
+                $deviceType = self::getDeviceType();
 
             $rootPath  = env('app.path.root');
             $themePath = env('app.path.theme');
-            $themePath = FileInfo::filterPaths($themePath . SP . $device);
+            $themePath = FileInfo::filterPaths($themePath . SP . $deviceType);
 
             if (FileInfo::isTypeDirectory($themePath) == false)
                 return null;
@@ -79,11 +79,16 @@
             return separator($buffer, '/');
         }
 
-        public static function makeURLResourceJavascript($filename, $scriptDirectory = null)
+        public static function makeURLResourceJavascript($filename, $scriptDirectory = null, $deviceType = null)
         {
             $filename = str_ireplace('.js', null, basename($filename));
             $root     = env('app.path.root');
             $jsPath   = env('app.path.javascript');
+
+            if ($deviceType == null)
+                $deviceType = self::getDeviceType();
+
+            $jsPath .= SP . $deviceType;
 
             if ($scriptDirectory != null)
                 $jsPath .= SP . $scriptDirectory;

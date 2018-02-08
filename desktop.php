@@ -49,7 +49,7 @@
                 async
                 type="text/javascript"
                 src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.desktop.file.require'), env('resource.filename.javascript.desktop.directory.lib')); ?>"
-                data-main="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.desktop.file.bundle'), env('resource.filename.javascript.desktop.directory.base')); ?>"></script>
+                data-main="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.desktop.file.bundle')); ?>"></script>
         <?php } else { ?>
             <script
                 async

@@ -56,14 +56,14 @@
         <link rel="icon" type="image/png" href="<?php echo AppAssets::makeURLResourceIcon(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.icon.favicon_png')); ?>"/>
         <link rel="icon" type="image/x-icon" href="<?php echo AppAssets::makeURLResourceIcon(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.icon.favicon_ico')); ?>"/>
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo AppAssets::makeURLResourceIcon(AppConfig::getInstance()->get('theme.directory'), env('resource.filename.icon.favicon_ico')); ?>"/>
-        <script type="text/javascript" src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.app')); ?>"></script>
+        <script type="text/javascript" src="<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.basic.app')); ?>"></script>
     </head>
     <body>
         <script type="text/javascript">
             if (typeof Main !== "undefined" && Main.OnLoad) {
                 <?php if (AppConfig::getInstance()->get('enable_disable.autoload')) { ?>
                     Main.OnLoad.addOnload(function() {
-                        Main.initHistoryScript("<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.history'), env('resource.filename.javascript.directory.lib')); ?>");
+                        Main.initHistoryScript("<?php echo AppAssets::makeURLResourceJavascript(env('resource.filename.javascript.basic.history'), env('resource.filename.javascript.basic.directory.lib')); ?>");
                         Main.LoadAjax.init("<?php echo env('app.http.host'); ?>");
 
                         Main.LoadAjax.reInitLoadTagA();
